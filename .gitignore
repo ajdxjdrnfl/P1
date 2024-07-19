@@ -100,6 +100,7 @@ P1/Binaries/*
 P1/Intermediate/*
 P1/Saved/*
 P1/.vs/
+!P1/Source/ProtobufCore/Lib/Win64/libprotobuf.lib
 
 # Server Specific
 
