@@ -106,3 +106,4 @@ P1/.vs/
 Server/.vs/
 Server/Intermediate/*
 Server/Binaries/*
+!Server/Server.sln
