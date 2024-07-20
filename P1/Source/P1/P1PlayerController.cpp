@@ -123,3 +123,7 @@ void AP1PlayerController::OnTouchReleased()
 	bIsTouch = false;
 	OnSetDestinationReleased();
 }
+
+void AP1PlayerController::OnSkill1Triggered()
+{
+}
