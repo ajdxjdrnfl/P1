@@ -14,7 +14,7 @@ void USkillSlotWidget::NativePreConstruct()
 	CooldownMatInstance = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), CircleCooldownMaterial);
 	CooldownImage->SetBrushFromMaterial(CooldownMatInstance);
 	CooldownMatInstance->SetScalarParameterValue(FName("Percentage"), 0.0f);
-	SetCooldownVisibility(true);
+	SetCooldownVisibility(false);
 }
 
 void USkillSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -39,16 +39,19 @@ void USkillSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 FText USkillSlotWidget::FloatToText1DecimalPlace(float value)
 {
-	FString Str = FString::SanitizeFloat(value);
-	UKismetStringLibrary::GetSubstring(Str, 0, 3);
+	int32 FloorVal = FMath::FloorToInt(value);
+	FString Str = FString::FromInt(FloorVal);
 	return FText::FromString(Str);
 }
 
-void USkillSlotWidget::SetCooldownTime(float time)
+void USkillSlotWidget::ActivateSlot(float time)
 {
+	if (bIsActivated)
+		return;
+
 	DefaultCooldownTime = RemainingCooldownTime = time;
 	bIsActivated = true;
-	
+	SetCooldownVisibility(true);
 }
 
 void USkillSlotWidget::SetCooldownVisibility(bool bIsVisible)
@@ -56,4 +59,15 @@ void USkillSlotWidget::SetCooldownVisibility(bool bIsVisible)
 	ESlateVisibility SlateVisible = bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 	TimeText->SetVisibility(SlateVisible);
 	CooldownImage->SetVisibility(SlateVisible);
+}
+
+void USkillSlotWidget::SetSkill(/*TODO: SkillInfo*/)
+{
+	// SkillImage = SkillInfo.Image;
+	// ...
+}
+
+void USkillSlotWidget::SetKeyText(FString Key)
+{
+	KeyText->SetText(FText::FromString(Key));
 }

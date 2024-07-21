@@ -14,7 +14,9 @@ class AP1Character : public ACharacter
 public:
 	AP1Character();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostInitializeComponents() override;
 
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -34,5 +36,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCharacterWidgetComponent* WidgetComponent;
+
+public:
+	void Init();
+	void UseSkill(uint16 SkillIndex);
+
+	FORCEINLINE UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 };
 

@@ -13,6 +13,8 @@
 #include "Component/SkillComponent/CharacterSkillComponent.h"
 #include "Component/StatComponent/CharacterStatComponent.h"
 #include "Component/WidgetComponent/CharacterWidgetComponent.h"
+#include "Widget/Stat/CharacterStatWidget.h"
+#include "Widget/CharacterOverlayWidget.h"
 
 AP1Character::AP1Character()
 {
@@ -49,7 +51,42 @@ AP1Character::AP1Character()
 	WidgetComponent = CreateDefaultSubobject<UCharacterWidgetComponent>(TEXT("CharacterSWidgetComponent"));
 }
 
+void AP1Character::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Init();
+
+
+	//if (StatComponent == nullptr) return;
+	//StatComponent->OnCharacterHealthChangedDelegate.AddDynamic(WidgetComponent->GetCharacterOverlayWidget()->GetStatWidget(), &UCharacterStatWidget::OnCharacterHealthChanged);
+}
+
 void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void AP1Character::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (SkillComponent)
+		SkillComponent->OwnerAnimInstance = GetMesh()->GetAnimInstance();
+}
+
+void AP1Character::Init()
+{
+	if (WidgetComponent == nullptr || StatComponent == nullptr)
+		return;
+
+	WidgetComponent->SetCharacterStat(StatComponent);
+}
+
+void AP1Character::UseSkill(uint16 SkillIndex)
+{
+	if (SkillComponent == nullptr || WidgetComponent == nullptr) return;
+
+	SkillComponent->UseSkill(SkillIndex);
+	WidgetComponent->UseSkill(SkillIndex);
 }

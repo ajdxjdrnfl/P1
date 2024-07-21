@@ -14,3 +14,9 @@ message S_LOGIN
 	bool success = 1;
 	
 }
+
+message S_MOVE
+{
+	float x;
+	float y;
+}

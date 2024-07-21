@@ -5,29 +5,43 @@
 #include "P1/Component/StatComponent/CharacterStatComponent.h"
 #include "Components/ProgressBar.h"
 
+void UCharacterStatWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// TODO:
+	//if (!CharacterStatComponent->OnCharacterHealthChangedDelegate.IsBound())
+	//	CharacterStatComponent->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterStatWidget::OnCharacterHealthChanged);
+}
+
 void UCharacterStatWidget::SetHealthBar()
 {
-	if (CharacterStat == nullptr) 
+	if (CharacterStatComponent == nullptr)
 		return;
 
-	float HealthRate = CharacterStat->GetCurrentHealth() / CharacterStat->GetMaxHealth();
+	float HealthRate = CharacterStatComponent->GetCurrentHealth() / CharacterStatComponent->GetMaxHealth();
 	HealthBar->SetPercent(HealthRate);
 }
 
 void UCharacterStatWidget::SetStaminaBar()
 {
-	if (CharacterStat == nullptr) 
+	if (CharacterStatComponent == nullptr)
 		return;
 
-	float StaminaRate = CharacterStat->GetCurrentStamina() / CharacterStat->GetMaxStamina();
+	float StaminaRate = CharacterStatComponent->GetCurrentStamina() / CharacterStatComponent->GetMaxStamina();
 	StaminaBar->SetPercent(StaminaRate);
 }
 
-void UCharacterStatWidget::SetStat(UCharacterStatComponent* StatComponent)
+void UCharacterStatWidget::OnCharacterHealthChanged()
 {
-	CharacterStat = StatComponent;
-	CharacterStat->SetCurrentHealth(CharacterStat->GetMaxHealth());
-	CharacterStat->SetCurrentStamina(CharacterStat->GetMaxStamina());
+	SetHealthBar();
+}
+
+void UCharacterStatWidget::SetCharacterStat(UCharacterStatComponent* StatComponent)
+{
+	CharacterStatComponent = StatComponent;
+	CharacterStatComponent->SetCurrentHealth(CharacterStatComponent->GetMaxHealth());
+	CharacterStatComponent->SetCurrentStamina(CharacterStatComponent->GetMaxStamina());
 	SetHealthBar();
 	SetStaminaBar();
 }

@@ -4,12 +4,13 @@
 #include "SkillButtonWidget.h"
 #include "Components/WrapBox.h"
 #include "SkillSlotWidget.h"
+#include "P1/Data/SkillData.h"
 
 void USkillButtonWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	if (SkillButtons->GetChildrenCount() < SkillSlotNum)
+	if (SkillButtons->GetChildrenCount() < SkillSlotNum && KeyString.Num() >= SkillSlotNum)
 	{
 		for (int i = 0; i < SkillSlotNum; i++)
 		{
@@ -24,7 +25,14 @@ void USkillButtonWidget::NativePreConstruct()
 				break;
 
 			SkillSlotWidget->SetSlotID(i);
+			SkillSlotWidget->SetKeyText(KeyString[i]);
 			SkillButtons->AddChildToWrapBox(SkillSlotWidget);
 		}
 	}
+}
+
+void USkillButtonWidget::UseSkill(FSkillInfo SkillInfo)
+{
+	// TODO:
+	Cast<USkillSlotWidget>(SkillButtons->GetChildAt(0))->ActivateSlot(SkillInfo.CooldownTime);
 }

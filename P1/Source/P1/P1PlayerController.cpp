@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "P1Character.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -53,11 +54,21 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP1PlayerController::OnTouchReleased);
+
+		// Q Skill
+		EnhancedInputComponent->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnQSkillTriggered);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AP1PlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	OwnerCharacter = Cast<AP1Character>(aPawn);
 }
 
 void AP1PlayerController::OnInputStarted()
@@ -124,6 +135,9 @@ void AP1PlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void AP1PlayerController::OnSkill1Triggered()
+void AP1PlayerController::OnQSkillTriggered()
 {
+	if (OwnerCharacter == nullptr) return;
+
+	OwnerCharacter->UseSkill(0);
 }

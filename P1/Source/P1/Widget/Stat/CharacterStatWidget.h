@@ -14,6 +14,9 @@ class P1_API UCharacterStatWidget : public UStatWidgetBase
 {
 	GENERATED_BODY()
 
+public:
+	virtual void NativeConstruct() override;
+
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UProgressBar* HealthBar;
@@ -22,11 +25,14 @@ private:
 	class UProgressBar* StaminaBar;
 
 	UPROPERTY()
-	class UCharacterStatComponent* CharacterStat;
+	class UCharacterStatComponent* CharacterStatComponent;
 
 public:
 	void SetHealthBar();
 	void SetStaminaBar();
 
-	void SetStat(class UCharacterStatComponent* StatComponent);
+	UFUNCTION()
+	void OnCharacterHealthChanged();
+
+	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 };

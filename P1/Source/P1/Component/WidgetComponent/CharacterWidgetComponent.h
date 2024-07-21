@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Component/WidgetComponent/WidgetComponentBase.h"
+#include "P1/Data/SkillData.h"
 #include "CharacterWidgetComponent.generated.h"
 
 /**
@@ -13,5 +14,33 @@ UCLASS()
 class P1_API UCharacterWidgetComponent : public UWidgetComponentBase
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> CharacterOverlayWidgetClass;
+
+	UPROPERTY()
+	class UCharacterOverlayWidget* CharacterOverlayWidget;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	class UDataTable* SkillDataTable;
+
+	TArray<FSkillInfo> Skills;
+
+	void OpenOverlayWidget();
+
+	void SetSkills();
+
+public:
+	void UseSkill(uint32 SkillIndex);
+	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 	
+	UFUNCTION()
+	void OnCharacterHealthChanged();
+	
+	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() { return CharacterOverlayWidget; }
+
 };

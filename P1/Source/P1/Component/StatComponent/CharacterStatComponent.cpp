@@ -13,13 +13,14 @@ void UCharacterStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitStat();
 }
 
-void UCharacterStatComponent::TakeDamage(FDamageInfo DamageInfo)
+void UCharacterStatComponent::TakeDamage(/* TODO:FDamageInfo DamageInfo*/)
 {
 	// MainCharacter->GetPlayerCombatComponent()->ReceiveAttack(DamageInfo);
 
-	Health -= DamageInfo.Damage;
+	//Health -= DamageInfo.Damage;
 
 	OnCharacterHealthChangedDelegate.Broadcast();
 
@@ -41,4 +42,6 @@ void UCharacterStatComponent::InitStat()
 {
 	Health = MaxHealth;
 	Stamina = MaxStamina;
+
+	OnCharacterHealthChangedDelegate.Broadcast();
 }

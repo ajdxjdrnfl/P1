@@ -43,7 +43,7 @@ private:
 	float MaxStamina;
 
 public:
-	void TakeDamage(FDamageInfo DamageInfo);
+	void TakeDamage(/* TODO: FDamageInfo DamageInfo*/);
 
 	void UseStamina(float Amount);
 

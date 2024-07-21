@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "P1/Data/SkillData.h"
 #include "SkillButtonWidget.generated.h"
 
 /**
@@ -26,5 +27,11 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> SkillSlotWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FString> KeyString;
+
+public:
+	void UseSkill(FSkillInfo SkillInfo);
 
 };

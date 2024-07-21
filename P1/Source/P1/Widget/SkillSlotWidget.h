@@ -33,6 +33,9 @@ private:
 	UPROPERTY(meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UTextBlock* TimeText;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
+	class UTextBlock* KeyText;
+
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* CircleCooldownMaterial;
 
@@ -42,8 +45,10 @@ private:
 	FText FloatToText1DecimalPlace(float value);
 
 public:
-	void SetCooldownTime(float time);
+	void ActivateSlot(float time);
 	void SetCooldownVisibility(bool bIsVisible);
+	void SetSkill(/*TODO: SkillInfo*/);
+	void SetKeyText(FString Key);
 
 	FORCEINLINE uint16 GetSlotID() const { return SlotID; }
 	FORCEINLINE void SetSlotID(uint16 IDToSet) { SlotID = IDToSet; }

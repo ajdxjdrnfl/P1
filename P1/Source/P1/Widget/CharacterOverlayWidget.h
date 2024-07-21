@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "P1/Data/SkillData.h"
 #include "CharacterOverlayWidget.generated.h"
 
 /**
@@ -21,4 +22,9 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UCharacterStatWidget* StatWidget;
 
+public:
+	void UseSkill(FSkillInfo SkillInfo);
+	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
+
+	FORCEINLINE class UCharacterStatWidget* GetStatWidget() { return StatWidget; }
 };

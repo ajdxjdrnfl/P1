@@ -43,13 +43,15 @@ public:
 	UInputAction* SetDestinationTouchAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Skill1Action;
+	UInputAction* QSkillAction;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
 	virtual void SetupInputComponent() override;
+
+	virtual void OnPossess(APawn* aPawn) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
@@ -60,13 +62,16 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
-	void OnSkill1Triggered();
+	void OnQSkillTriggered();
 
 private:
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
+
+	UPROPERTY()
+	class AP1Character* OwnerCharacter;
 };
 
 
