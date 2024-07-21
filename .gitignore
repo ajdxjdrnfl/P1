@@ -110,3 +110,4 @@ Server/Binaries/*
 !Server/Server.sln
 !Server/Libraries/Libs/Protobuf/Debug/*
 !Server/Libraries/Libs/Protobuf/Release/*
+!Server/Tools/PacketGenerator/GenPackets.exe
