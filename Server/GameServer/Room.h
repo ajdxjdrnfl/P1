@@ -16,6 +16,7 @@ public:
 	
 private:
 	void		EnterGame(PlayerRef player);
+	void		SetPlayerToRandomPos(PlayerRef player);
 
 public:
 	void		Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);

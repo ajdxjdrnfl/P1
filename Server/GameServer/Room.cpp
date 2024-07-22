@@ -105,7 +105,16 @@ void Room::EnterGame(PlayerRef player)
 		return;
 
 	_players[id] = player;
+	SetPlayerToRandomPos(player);
+}
 
+void Room::SetPlayerToRandomPos(PlayerRef player)
+{
+	player->GetObjectInfo()->set_x(Utils::GetRandom(-500.f, 500.f));
+	player->GetObjectInfo()->set_y(Utils::GetRandom(-500.f, 500.f));
+	player->GetObjectInfo()->set_z(500.f);
+
+	player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
