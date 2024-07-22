@@ -17,7 +17,9 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
 
+	GRoom->DoAsync(&Room::HandleEnterGame, gameSession);
 	
 
 	return true;

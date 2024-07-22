@@ -4,6 +4,8 @@
 #include "GameSession.h"
 #include "ObjectUtils.h"
 
+RoomRef GRoom = make_shared<Room>();
+
 Room::Room()
 {
 }

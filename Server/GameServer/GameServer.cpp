@@ -2,6 +2,7 @@
 #include "ThreadManager.h"
 #include "Service.h"
 #include "GameSession.h"
+#include "Room.h"
 
 enum
 {
@@ -30,6 +31,7 @@ void DoWorkerJob(ServerServiceRef& service)
 int main()
 {
 	ServerPacketHandler::Init();
+	GRoom->Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),

@@ -30,3 +30,4 @@ protected:
 
 };
 
+extern RoomRef GRoom;
