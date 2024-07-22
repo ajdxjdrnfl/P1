@@ -14,7 +14,17 @@ UCLASS()
 class P1_API UP1GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+
+private:
+	// GameServer
+	class FSocket* Socket;
+	FString IpAddress = TEXT("127.0.0.1");
+	int16 Port = 7777;
+	TSharedPtr<class PacketSession> GameServerSession;
+
+	UPROPERTY()
+	class AP1Character* MyCharacter;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
@@ -27,12 +37,15 @@ public:
 
 	void SendPacket(SendBufferRef SendBuffer);
 
-private:
-	// GameServer
-	class FSocket* Socket;
-	FString IpAddress = TEXT("127.0.0.1");
-	int16 Port = 7777;
-	TSharedPtr<class PacketSession> GameServerSession;
+	bool IsMyCharacter(uint64 ID);
 
+
+	void CharacterSpawn(Protocol::S_SPAWN& Pkt);
+	void CharacterMove(Protocol::S_MOVE& Pkt);
+
+	UPROPERTY()
+	TMap<uint64, class AP1Character*> Characters;
+
+	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 
 };

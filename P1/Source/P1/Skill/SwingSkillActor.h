@@ -3,18 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "P1ObjectBase.generated.h"
+#include "SkillActorBase.h"
+#include "SwingSkillActor.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class P1_API UP1ObjectBase : public UObject
+class P1_API ASwingSkillActor : public ASkillActorBase
 {
 	GENERATED_BODY()
 	
-public:
-	uint64 ObjectID;
-
 };

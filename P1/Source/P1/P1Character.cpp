@@ -65,6 +65,11 @@ void AP1Character::BeginPlay()
 void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+	if (CharacterState == ECharacterState::EMove)
+	{
+
+	}
 }
 
 void AP1Character::PostInitializeComponents()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "P1.h"
 #include "P1GameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -13,6 +14,7 @@ class AP1GameMode : public AGameModeBase
 
 public:
 	AP1GameMode();
+
 };
 
 

@@ -41,4 +41,4 @@ USING_SHARED_PTR(SendBuffer);
 
 #define SEND_PACKET(Pkt)														\
 	SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);		\
-	Cast<US1GameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);	
+	Cast<UP1GameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);	

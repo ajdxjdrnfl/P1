@@ -9,6 +9,8 @@
 #include "Network/PacketSession.h"
 #include "Protocol.pb.h"
 #include "ClientPacketHandler.h"
+#include "P1Character.h"
+#include "P1ObjectBase.h"
 
 void UP1GameInstance::ConnectToGameServer()
 {
@@ -72,4 +74,34 @@ void UP1GameInstance::SendPacket(SendBufferRef SendBuffer)
 		return;
 
 	GameServerSession->SendPacket(SendBuffer);
+}
+
+bool UP1GameInstance::IsMyCharacter(uint64 ID)
+{
+	return MyCharacter->GetObjectBase()->ObjectID == ID;
+}
+
+void UP1GameInstance::CharacterSpawn(Protocol::S_SPAWN& Pkt)
+{
+	for (int32 i = 0; i < Pkt.info_size(); i++)
+	{
+		Protocol::ObjectInfo info = Pkt.info(i);
+
+		FVector Loc = FVector(info.x(), info.y(), info.z());
+		AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(AP1Character::StaticClass(), &Loc));
+		SpawnedActor->Info.CopyFrom(info);
+		// SpawnedActor->GetObjectBase()->ObjectID = info.object_id();
+
+		Characters.Add({ info.object_id(), SpawnedActor });
+	}
+}
+
+void UP1GameInstance::CharacterMove(Protocol::S_MOVE& Pkt)
+{
+	AP1Character* Character = *Characters.Find(Pkt.info().object_id());
+
+	if (Character == nullptr)
+		return;
+
+	//Character->MoveByServer();
 }

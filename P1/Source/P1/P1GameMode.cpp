@@ -4,6 +4,7 @@
 #include "P1PlayerController.h"
 #include "P1Character.h"
 #include "UObject/ConstructorHelpers.h"
+#include "P1ObjectBase.h"
 
 AP1GameMode::AP1GameMode()
 {

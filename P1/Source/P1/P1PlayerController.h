@@ -72,6 +72,9 @@ private:
 
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
+
+	void SendMovePacketToServer(FVector Direction);
+
 };
 
 
