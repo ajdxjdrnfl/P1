@@ -15,8 +15,23 @@ message S_LOGIN
 	
 }
 
+message S_ENTER_GAME
+{
+	bool success = 1;
+	ObjectInfo info = 2;
+}
+
+message S_SPAWN
+{
+	repeated ObjectInfo info = 1;
+}
+
 message S_MOVE
 {
-	float x;
-	float y;
+	ObjectInfo info = 1;
+}
+
+message C_MOVE
+{
+	ObjectInfo info = 1;
 }

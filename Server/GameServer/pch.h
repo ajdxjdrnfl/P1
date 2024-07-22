@@ -19,7 +19,18 @@
 #include "Enum.pb.h"
 #include "Struct.pb.h"
 #include "ServerPacketHandler.h"
+#include "Utils.h"
+
+#include "GameSessionManager.h"
 
 #define SEND_PACKET(pkt)													\
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);	\
 	session->Send(sendBuffer);
+
+#define USING_SHARED_PTR(name) \
+	using name##Ref = shared_ptr<class name>;
+
+USING_SHARED_PTR(GameSession);
+USING_SHARED_PTR(Room);
+USING_SHARED_PTR(GameObject);
+USING_SHARED_PTR(Player);

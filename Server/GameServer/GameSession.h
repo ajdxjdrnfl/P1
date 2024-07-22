@@ -16,6 +16,6 @@ public:
 	virtual void OnSend(int32 len) override;
 
 public:
-	
+	atomic<PlayerRef> _player;
 };
 

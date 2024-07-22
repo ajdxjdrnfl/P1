@@ -46,35 +46,35 @@ struct TableStruct_Struct_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Struct_2eproto;
 namespace Protocol {
-class PlayerInfo;
-struct PlayerInfoDefaultTypeInternal;
-extern PlayerInfoDefaultTypeInternal _PlayerInfo_default_instance_;
+class ObjectInfo;
+struct ObjectInfoDefaultTypeInternal;
+extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Protocol::PlayerInfo* Arena::CreateMaybeMessage<::Protocol::PlayerInfo>(Arena*);
+template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
 // ===================================================================
 
-class PlayerInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.PlayerInfo) */ {
+class ObjectInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.ObjectInfo) */ {
  public:
-  inline PlayerInfo() : PlayerInfo(nullptr) {}
-  ~PlayerInfo() override;
-  explicit PROTOBUF_CONSTEXPR PlayerInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ObjectInfo() : ObjectInfo(nullptr) {}
+  ~ObjectInfo() override;
+  explicit PROTOBUF_CONSTEXPR ObjectInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  PlayerInfo(const PlayerInfo& from);
-  PlayerInfo(PlayerInfo&& from) noexcept
-    : PlayerInfo() {
+  ObjectInfo(const ObjectInfo& from);
+  ObjectInfo(ObjectInfo&& from) noexcept
+    : ObjectInfo() {
     *this = ::std::move(from);
   }
 
-  inline PlayerInfo& operator=(const PlayerInfo& from) {
+  inline ObjectInfo& operator=(const ObjectInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline PlayerInfo& operator=(PlayerInfo&& from) noexcept {
+  inline ObjectInfo& operator=(ObjectInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -97,20 +97,20 @@ class PlayerInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const PlayerInfo& default_instance() {
+  static const ObjectInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const PlayerInfo* internal_default_instance() {
-    return reinterpret_cast<const PlayerInfo*>(
-               &_PlayerInfo_default_instance_);
+  static inline const ObjectInfo* internal_default_instance() {
+    return reinterpret_cast<const ObjectInfo*>(
+               &_ObjectInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(PlayerInfo& a, PlayerInfo& b) {
+  friend void swap(ObjectInfo& a, ObjectInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(PlayerInfo* other) {
+  inline void Swap(ObjectInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -123,7 +123,7 @@ class PlayerInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(PlayerInfo* other) {
+  void UnsafeArenaSwap(ObjectInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -131,14 +131,14 @@ class PlayerInfo final :
 
   // implements Message ----------------------------------------------
 
-  PlayerInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<PlayerInfo>(arena);
+  ObjectInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ObjectInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const PlayerInfo& from);
+  void CopyFrom(const ObjectInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const PlayerInfo& from) {
-    PlayerInfo::MergeImpl(*this, from);
+  void MergeFrom( const ObjectInfo& from) {
+    ObjectInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -156,15 +156,15 @@ class PlayerInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(PlayerInfo* other);
+  void InternalSwap(ObjectInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.PlayerInfo";
+    return "Protocol.ObjectInfo";
   }
   protected:
-  explicit PlayerInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ObjectInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -249,7 +249,7 @@ class PlayerInfo final :
   void _internal_set_hp(float value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
+  // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
 
@@ -278,146 +278,146 @@ class PlayerInfo final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// PlayerInfo
+// ObjectInfo
 
 // uint64 object_id = 1;
-inline void PlayerInfo::clear_object_id() {
+inline void ObjectInfo::clear_object_id() {
   _impl_.object_id_ = uint64_t{0u};
 }
-inline uint64_t PlayerInfo::_internal_object_id() const {
+inline uint64_t ObjectInfo::_internal_object_id() const {
   return _impl_.object_id_;
 }
-inline uint64_t PlayerInfo::object_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.object_id)
+inline uint64_t ObjectInfo::object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.object_id)
   return _internal_object_id();
 }
-inline void PlayerInfo::_internal_set_object_id(uint64_t value) {
+inline void ObjectInfo::_internal_set_object_id(uint64_t value) {
   
   _impl_.object_id_ = value;
 }
-inline void PlayerInfo::set_object_id(uint64_t value) {
+inline void ObjectInfo::set_object_id(uint64_t value) {
   _internal_set_object_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.object_id)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.object_id)
 }
 
 // float x = 2;
-inline void PlayerInfo::clear_x() {
+inline void ObjectInfo::clear_x() {
   _impl_.x_ = 0;
 }
-inline float PlayerInfo::_internal_x() const {
+inline float ObjectInfo::_internal_x() const {
   return _impl_.x_;
 }
-inline float PlayerInfo::x() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.x)
+inline float ObjectInfo::x() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.x)
   return _internal_x();
 }
-inline void PlayerInfo::_internal_set_x(float value) {
+inline void ObjectInfo::_internal_set_x(float value) {
   
   _impl_.x_ = value;
 }
-inline void PlayerInfo::set_x(float value) {
+inline void ObjectInfo::set_x(float value) {
   _internal_set_x(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.x)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.x)
 }
 
 // float y = 3;
-inline void PlayerInfo::clear_y() {
+inline void ObjectInfo::clear_y() {
   _impl_.y_ = 0;
 }
-inline float PlayerInfo::_internal_y() const {
+inline float ObjectInfo::_internal_y() const {
   return _impl_.y_;
 }
-inline float PlayerInfo::y() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.y)
+inline float ObjectInfo::y() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.y)
   return _internal_y();
 }
-inline void PlayerInfo::_internal_set_y(float value) {
+inline void ObjectInfo::_internal_set_y(float value) {
   
   _impl_.y_ = value;
 }
-inline void PlayerInfo::set_y(float value) {
+inline void ObjectInfo::set_y(float value) {
   _internal_set_y(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.y)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.y)
 }
 
 // float z = 4;
-inline void PlayerInfo::clear_z() {
+inline void ObjectInfo::clear_z() {
   _impl_.z_ = 0;
 }
-inline float PlayerInfo::_internal_z() const {
+inline float ObjectInfo::_internal_z() const {
   return _impl_.z_;
 }
-inline float PlayerInfo::z() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.z)
+inline float ObjectInfo::z() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.z)
   return _internal_z();
 }
-inline void PlayerInfo::_internal_set_z(float value) {
+inline void ObjectInfo::_internal_set_z(float value) {
   
   _impl_.z_ = value;
 }
-inline void PlayerInfo::set_z(float value) {
+inline void ObjectInfo::set_z(float value) {
   _internal_set_z(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.z)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.z)
 }
 
 // float yaw = 5;
-inline void PlayerInfo::clear_yaw() {
+inline void ObjectInfo::clear_yaw() {
   _impl_.yaw_ = 0;
 }
-inline float PlayerInfo::_internal_yaw() const {
+inline float ObjectInfo::_internal_yaw() const {
   return _impl_.yaw_;
 }
-inline float PlayerInfo::yaw() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.yaw)
+inline float ObjectInfo::yaw() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.yaw)
   return _internal_yaw();
 }
-inline void PlayerInfo::_internal_set_yaw(float value) {
+inline void ObjectInfo::_internal_set_yaw(float value) {
   
   _impl_.yaw_ = value;
 }
-inline void PlayerInfo::set_yaw(float value) {
+inline void ObjectInfo::set_yaw(float value) {
   _internal_set_yaw(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.yaw)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.yaw)
 }
 
 // .Protocol.MoveState state = 6;
-inline void PlayerInfo::clear_state() {
+inline void ObjectInfo::clear_state() {
   _impl_.state_ = 0;
 }
-inline ::Protocol::MoveState PlayerInfo::_internal_state() const {
+inline ::Protocol::MoveState ObjectInfo::_internal_state() const {
   return static_cast< ::Protocol::MoveState >(_impl_.state_);
 }
-inline ::Protocol::MoveState PlayerInfo::state() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.state)
+inline ::Protocol::MoveState ObjectInfo::state() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.state)
   return _internal_state();
 }
-inline void PlayerInfo::_internal_set_state(::Protocol::MoveState value) {
+inline void ObjectInfo::_internal_set_state(::Protocol::MoveState value) {
   
   _impl_.state_ = value;
 }
-inline void PlayerInfo::set_state(::Protocol::MoveState value) {
+inline void ObjectInfo::set_state(::Protocol::MoveState value) {
   _internal_set_state(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.state)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.state)
 }
 
 // float hp = 7;
-inline void PlayerInfo::clear_hp() {
+inline void ObjectInfo::clear_hp() {
   _impl_.hp_ = 0;
 }
-inline float PlayerInfo::_internal_hp() const {
+inline float ObjectInfo::_internal_hp() const {
   return _impl_.hp_;
 }
-inline float PlayerInfo::hp() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.hp)
+inline float ObjectInfo::hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.hp)
   return _internal_hp();
 }
-inline void PlayerInfo::_internal_set_hp(float value) {
+inline void ObjectInfo::_internal_set_hp(float value) {
   
   _impl_.hp_ = value;
 }
-inline void PlayerInfo::set_hp(float value) {
+inline void ObjectInfo::set_hp(float value) {
   _internal_set_hp(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.hp)
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.hp)
 }
 
 #ifdef __GNUC__
