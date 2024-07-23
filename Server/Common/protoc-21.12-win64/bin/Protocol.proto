@@ -21,9 +21,19 @@ message S_ENTER_GAME
 	ObjectInfo info = 2;
 }
 
+message C_LEAVE_GAME
+{
+
+}
+
 message S_SPAWN
 {
 	repeated ObjectInfo info = 1;
+}
+
+message S_DESPAWN
+{
+	repeated uint64 object_ids = 1;
 }
 
 message S_MOVE
@@ -34,4 +44,29 @@ message S_MOVE
 message C_MOVE
 {
 	ObjectInfo info = 1;
+}
+
+message C_SKILL
+{
+	ObjectInfo caster =1;
+	SkillInfo skillinfo =2;
+}
+
+message S_SKILL
+{
+	ObjectInfo caster = 1;
+	ObjectInfo skillactor = 2;
+	SkillInfo skillinfo = 3;
+}
+
+message C_ATTACK
+{
+	ObjectInfo instigator = 1;
+	ObjectInfo victim =2;
+}
+
+message S_ATTACK
+{
+	ObjectInfo instigator = 1;
+	ObjectInfo victim = 2;
 }

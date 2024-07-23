@@ -8,6 +8,9 @@ public:
     Player(GameSessionRef session, RoomRef room);
     virtual ~Player();
 
+    virtual void Init() override;
+    virtual void Update(float deltaTime) override;
+
     GameSessionRef GetSessionRef() { return _session.lock(); }
 
 protected:

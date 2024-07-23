@@ -19,6 +19,21 @@
     <Filter Include="Game\Utils">
       <UniqueIdentifier>{a172398f-d168-4b4e-980c-e9579c74c540}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Manager">
+      <UniqueIdentifier>{e50a7340-f8a1-4e97-98a9-4255a2e253a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Headers">
+      <UniqueIdentifier>{bbfc691e-fcab-4bf1-8649-39c894c7d58e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObject\Monster">
+      <UniqueIdentifier>{56205e8f-d191-447c-b090-ffb9e177ca95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObject\SkillActor">
+      <UniqueIdentifier>{659a5410-d71d-44ff-94c3-e5902cd67c42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Component">
+      <UniqueIdentifier>{1859e14d-d6a7-43a7-b7d1-bff0e8eb525b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat">
@@ -35,9 +50,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="GameSession.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -69,14 +81,35 @@
       <Filter>Game\Utils</Filter>
     </ClInclude>
     <ClInclude Include="GameSessionManager.h">
-      <Filter>Game</Filter>
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoomManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Game\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Game\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTickManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game\GameObject\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillActor.h">
+      <Filter>Game\GameObject\SkillActor</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentBase.h">
+      <Filter>Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillTimer.h">
+      <Filter>Game\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="GameSession.cpp">
@@ -110,7 +143,28 @@
       <Filter>Game\Utils</Filter>
     </ClCompile>
     <ClCompile Include="GameSessionManager.cpp">
-      <Filter>Game</Filter>
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRoomManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Game\Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTickManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game\GameObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillActor.cpp">
+      <Filter>Game\GameObject\SkillActor</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentBase.cpp">
+      <Filter>Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillTimer.cpp">
+      <Filter>Game\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

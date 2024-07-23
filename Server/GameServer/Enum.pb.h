@@ -76,6 +76,34 @@ inline bool MoveState_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MoveState>(
     MoveState_descriptor(), name, value);
 }
+enum CasterType : int {
+  CASTER_TYPE_NONE = 0,
+  CASTER_TYPE_WARRIOR = 1,
+  CASTER_TYPE_MAGE = 2,
+  CASTER_TYPE_BOSS = 3,
+  CASTER_TYPE_MOB = 4,
+  CasterType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CasterType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CasterType_IsValid(int value);
+constexpr CasterType CasterType_MIN = CASTER_TYPE_NONE;
+constexpr CasterType CasterType_MAX = CASTER_TYPE_MOB;
+constexpr int CasterType_ARRAYSIZE = CasterType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CasterType_descriptor();
+template<typename T>
+inline const std::string& CasterType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CasterType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CasterType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CasterType_descriptor(), enum_t_value);
+}
+inline bool CasterType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CasterType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CasterType>(
+    CasterType_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -102,6 +130,11 @@ template <> struct is_proto_enum< ::Protocol::MoveState> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MoveState>() {
   return ::Protocol::MoveState_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::CasterType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CasterType>() {
+  return ::Protocol::CasterType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

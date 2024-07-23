@@ -20,6 +20,7 @@
 #include "Struct.pb.h"
 #include "ServerPacketHandler.h"
 #include "Utils.h"
+#include "Types.h"
 
 #include "GameSessionManager.h"
 
@@ -34,3 +35,5 @@ USING_SHARED_PTR(GameSession);
 USING_SHARED_PTR(Room);
 USING_SHARED_PTR(GameObject);
 USING_SHARED_PTR(Player);
+USING_SHARED_PTR(Enemy);
+USING_SHARED_PTR(SkillActor);
