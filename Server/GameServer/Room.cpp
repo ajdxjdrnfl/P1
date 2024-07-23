@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Room.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "SkillActor.h"
 #include "GameSession.h"
 #include "ObjectUtils.h"
 
@@ -16,10 +18,32 @@ Room::~Room()
 
 void Room::Init()
 {
+	// TODO : enemy 추가
+	for (int32 i = 0; i < _maxEnemyCount; i++)
+	{
+		EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
+		_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+		SetObjectToRandomPos(enemy);
+	}
 }
 
-void Room::Update()
+void Room::Update(float deltaTime)
 {
+	for (auto& item : _players)
+	{
+		PlayerRef player = item.second;
+		player->Update(deltaTime);
+	}
+	for (auto& item : _enemies)
+	{
+		EnemyRef enemy = item.second;
+		enemy->Update(deltaTime);
+	}
+	for (auto& item : _skillActors)
+	{
+		SkillActorRef skillActor = item.second;
+		skillActor->Update(deltaTime);
+	}
 }
 
 bool Room::HandleEnterGame(GameSessionRef session)
@@ -61,6 +85,14 @@ bool Room::HandleEnterGame(GameSessionRef session)
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*player->GetObjectInfo());
 		}
+		for (auto& item : _enemies)
+		{
+			EnemyRef enemy = item.second;
+			Protocol::ObjectInfo* info = pkt.add_info();
+			info->CopyFrom(*enemy->GetObjectInfo());
+		}
+
+		// TODO : 새로 접속한 유저에게 스킬 액터들도 같이 스폰할지?
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		if (auto session = player->GetSessionRef())
@@ -69,6 +101,49 @@ bool Room::HandleEnterGame(GameSessionRef session)
 	}
 	
 	return true;
+}
+
+bool Room::HandleLeaveGame(GameSessionRef session)
+{
+	PlayerRef player = session->_player;
+	const uint64 objectId = player->GetObjectInfo()->object_id();
+	session->_player.store(nullptr);
+	LeaveGame(player);
+
+	// 퇴장하는 플레이어에게 퇴장 사실 전달
+	{
+		Protocol::S_DESPAWN pkt;
+
+		for (auto& item : _players)
+		{
+			pkt.add_object_ids(item.first);
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
+		if (session)
+			session->Send(sendBuffer);
+	}
+	
+	{
+		/*Protocol::S_LEAVE_GAME pkt;
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
+		if (session)
+			session->Send(sendBuffer);*/
+	}
+
+	// 다른 플레이어들에게 퇴장 사실 전달
+	{
+		Protocol::S_DESPAWN pkt;
+		pkt.add_object_ids(objectId);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+		Broadcast(sendBuffer, objectId);
+	}
+	
+	return false;
 }
 
 bool Room::HandleMove(Protocol::C_MOVE pkt)
@@ -97,6 +172,34 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 
 }
 
+bool Room::HandleSkill(Protocol::C_SKILL pkt)
+{
+	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
+
+	if (caster == nullptr)
+		return false;
+
+	SkillActorRef skillActor = ObjectUtils::CreateSkillActor(caster, GetRoomRef());
+	Protocol::ObjectInfo* info = skillActor->GetObjectInfo();
+	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
+	info->set_x(casterInfo->x());
+	info->set_y(casterInfo->y());
+	info->set_z(casterInfo->z());
+	info->set_yaw(casterInfo->yaw());
+
+	// TODO : S_SKILL 구조 수정
+	{
+		Protocol::S_SKILL skillPkt;
+		*skillPkt.mutable_caster() = *caster->GetObjectInfo();
+		*skillPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
+		*skillPkt.mutable_skillinfo() = pkt.skillinfo();
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
+		Broadcast(sendBuffer, casterInfo->object_id());
+	}
+	return true;
+}
+
 void Room::EnterGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();
@@ -105,10 +208,21 @@ void Room::EnterGame(PlayerRef player)
 		return;
 
 	_players[id] = player;
-	SetPlayerToRandomPos(player);
+	SetObjectToRandomPos(player);
 }
 
-void Room::SetPlayerToRandomPos(PlayerRef player)
+void Room::LeaveGame(PlayerRef player)
+{
+	const uint64 id = player->GetObjectInfo()->object_id();
+
+	if (_players.find(id) != _players.end())
+		return;
+
+	_players.erase(id);
+
+}
+
+void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	player->GetObjectInfo()->set_x(Utils::GetRandom(-500.f, 500.f));
 	player->GetObjectInfo()->set_y(Utils::GetRandom(-500.f, 500.f));
@@ -136,4 +250,18 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 RoomRef Room::GetRoomRef()
 {
 	return static_pointer_cast<Room>(shared_from_this());
+}
+
+GameObjectRef Room::GetGameObjectRef(uint64 id)
+{
+	if (_players.find(id) != _players.end())
+		return _players[id];
+
+	if (_enemies.find(id) != _enemies.end())
+		return _players[id];
+
+	if (_skillActors.find(id) != _skillActors.end())
+		return _skillActors[id];
+
+	return nullptr;
 }

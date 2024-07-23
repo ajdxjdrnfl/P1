@@ -189,6 +189,7 @@ class ObjectInfo final :
     kYawFieldNumber = 5,
     kStateFieldNumber = 6,
     kHpFieldNumber = 7,
+    kCastertypeFieldNumber = 8,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -253,6 +254,15 @@ class ObjectInfo final :
   void _internal_set_hp(float value);
   public:
 
+  // .Protocol.CasterType castertype = 8;
+  void clear_castertype();
+  ::Protocol::CasterType castertype() const;
+  void set_castertype(::Protocol::CasterType value);
+  private:
+  ::Protocol::CasterType _internal_castertype() const;
+  void _internal_set_castertype(::Protocol::CasterType value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -268,6 +278,7 @@ class ObjectInfo final :
     float yaw_;
     int state_;
     float hp_;
+    int castertype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -570,6 +581,26 @@ inline void ObjectInfo::_internal_set_hp(float value) {
 inline void ObjectInfo::set_hp(float value) {
   _internal_set_hp(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.hp)
+}
+
+// .Protocol.CasterType castertype = 8;
+inline void ObjectInfo::clear_castertype() {
+  _impl_.castertype_ = 0;
+}
+inline ::Protocol::CasterType ObjectInfo::_internal_castertype() const {
+  return static_cast< ::Protocol::CasterType >(_impl_.castertype_);
+}
+inline ::Protocol::CasterType ObjectInfo::castertype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.castertype)
+  return _internal_castertype();
+}
+inline void ObjectInfo::_internal_set_castertype(::Protocol::CasterType value) {
+  
+  _impl_.castertype_ = value;
+}
+inline void ObjectInfo::set_castertype(::Protocol::CasterType value) {
+  _internal_set_castertype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.castertype)
 }
 
 // -------------------------------------------------------------------
