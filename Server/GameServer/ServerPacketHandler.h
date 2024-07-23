@@ -16,12 +16,15 @@ enum : uint16
 	PKT_S_SPAWN = 1003,
 	PKT_S_MOVE = 1004,
 	PKT_C_MOVE = 1005,
+	PKT_C_SKILL = 1006,
+	PKT_S_SKILL = 1007,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
 bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
+bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt);
 
 class ServerPacketHandler
 {
@@ -32,6 +35,7 @@ public:
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
 		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
+		GPacketHandler[PKT_C_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -43,6 +47,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S_MOVE); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_S_SKILL); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

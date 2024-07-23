@@ -15,6 +15,7 @@
 #include "Component/WidgetComponent/CharacterWidgetComponent.h"
 #include "Widget/Stat/CharacterStatWidget.h"
 #include "Widget/CharacterOverlayWidget.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AP1Character::AP1Character()
 {
@@ -28,6 +29,7 @@ AP1Character::AP1Character()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	GetCharacterMovement()->bRunPhysicsWithNoController = true;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -49,6 +51,8 @@ AP1Character::AP1Character()
 	StatComponent = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("CharacterStatComponent"));
 
 	WidgetComponent = CreateDefaultSubobject<UCharacterWidgetComponent>(TEXT("CharacterSWidgetComponent"));
+
+	Info = new Protocol::ObjectInfo();
 }
 
 void AP1Character::BeginPlay()
@@ -66,10 +70,7 @@ void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	if (CharacterState == ECharacterState::EMove)
-	{
-
-	}
+	MoveByServer(DeltaSeconds);
 }
 
 void AP1Character::PostInitializeComponents()
@@ -94,4 +95,44 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 
 	SkillComponent->UseSkill(SkillIndex);
 	WidgetComponent->UseSkill(SkillIndex);
+}
+
+void AP1Character::MoveByServer(float DeltaTime)
+{
+	if (CharacterState == ECharacterState::Move)
+	{
+		FVector TargetLocation = FVector(Info->x(), Info->y(), GetActorLocation().Z);
+		FVector CurrentLocation = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Info->yaw(), GetActorRotation().Roll);
+		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
+
+		//SetActorLocation(TargetLocation);
+		AddMovementInput((TargetLocation - CurrentLocation).GetSafeNormal());
+		SetActorRotation(NextRotation);
+	}
+}
+
+void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
+{
+	// TODO: 부들부들
+	FTransform TargetTransform;
+	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
+	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
+	TargetTransform.SetLocation(TargetLocation);
+	TargetTransform.SetRotation(TargetRotation.Quaternion());
+	
+	bool bIsNear = UKismetMathLibrary::NearlyEqual_TransformTransform(TargetTransform, GetActorTransform(), 100);
+
+	if (bIsNear)
+	{
+		CharacterState = ECharacterState::Idle;
+	}
+	else
+	{
+		CharacterState = ECharacterState::Move;
+		Info->set_x(TargetLocation.X);
+		Info->set_y(TargetLocation.Y);
+		Info->set_z(TargetLocation.Z);
+		Info->set_yaw(TargetRotation.Yaw);
+	}
 }

@@ -19,9 +19,18 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	TArray<FGeneralSkillInfo> Skills;
+
+	UPROPERTY()
+	class UDataTable* SkillDataTable;
+
+	UPROPERTY()
+	class UAnimInstance* OwnerAnimInstance;
+
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	void UseSkill(uint16 SkillIndex);
+	void SetSkills();
+	virtual void UseSkill(uint16 SkillIndex);
 };

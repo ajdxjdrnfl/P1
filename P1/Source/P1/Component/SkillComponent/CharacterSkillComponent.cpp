@@ -3,6 +3,8 @@
 
 #include "CharacterSkillComponent.h"
 #include "Engine/DataTable.h"
+#include "P1/Skill/SkillActorBase.h"
+#include "P1/P1.h"
 
 void UCharacterSkillComponent::BeginPlay()
 {
@@ -11,16 +13,30 @@ void UCharacterSkillComponent::BeginPlay()
 	SetSkills();
 }
 
-void UCharacterSkillComponent::SetSkills()
-{
-	if (SkillDataTable == nullptr) return;
-	FString ContextString;
-	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
-	Skills = SkillsByClass.SkillInfos;
-}
-
-void UCharacterSkillComponent::UseSkill(int32 SkillIndex)
+void UCharacterSkillComponent::UseSkill(uint16 SkillIndex)
 {
 	// TODO: Skills[SkillIndex];
+	FGeneralSkillInfo GeneralSkillInfo = Skills[SkillIndex];
+
+	if (OwnerAnimInstance == nullptr)
+		return;
+
+	//if (SkillInfo.AnimMontage == nullptr) 
+	//	return;
+
+	FVector Loc = GetOwner()->GetActorLocation();
+	FRotator Rot = GetOwner()->GetActorRotation();
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GetWorld()->SpawnActor(GeneralSkillInfo.SkillActor, &Loc, &Rot));
+	if (SkillActor == nullptr)
+		return;
+
+	{
+		Protocol::C_SKILL Pkt;
+		Protocol::SkillInfo* SkillInfo = Pkt.mutable_skillinfo();
+		SkillInfo->set_skill_id(1);
+		SEND_PACKET(Pkt);
+	}
+
+	SkillActor->ActivateSkill();
 }
 

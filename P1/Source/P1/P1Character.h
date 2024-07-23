@@ -11,11 +11,11 @@
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
-	EIdle UMETA(Displayname = "Idle"),
-	EStun UMETA(Displayname = "Stun"),
-	EMove UMETA(Displayname = "Move"),
-	ESkill UMETA(Displayname = "Skill"),
-	EMax UMETA(Displayname = "Max"),
+	Idle UMETA(Displayname = "Idle"),
+	Stun UMETA(Displayname = "Stun"),
+	Move UMETA(Displayname = "Move"),
+	Skill UMETA(Displayname = "Skill"),
+	Max UMETA(Displayname = "Max"),
 };
 
 UCLASS(Blueprintable)
@@ -52,12 +52,14 @@ private:
 	class UCharacterWidgetComponent* WidgetComponent;
 
 public:
-	Protocol::ObjectInfo Info;
+	Protocol::ObjectInfo* Info;
 		
 	void Init();
 	void UseSkill(uint16 SkillIndex);
+	void MoveByServer(float DeltaTime);
+	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
-	FORCEINLINE UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
-	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { Info = InfoToSet; }
+	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
+	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { Info->CopyFrom(InfoToSet); }
 };
 

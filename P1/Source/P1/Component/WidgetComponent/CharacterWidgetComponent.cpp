@@ -13,19 +13,8 @@ void UCharacterWidgetComponent::BeginPlay()
 
 	OpenOverlayWidget();
 
-	SetSkills();
-
 	// TODO: 
 	Cast<AP1Character>(GetOwner())->GetStatComponent()->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterHealthChanged);
-}
-
-
-void UCharacterWidgetComponent::SetSkills()
-{
-	if (SkillDataTable == nullptr) return;
-	FString ContextString;
-	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
-	Skills = SkillsByClass.SkillInfos;
 }
 
 void UCharacterWidgetComponent::OpenOverlayWidget()

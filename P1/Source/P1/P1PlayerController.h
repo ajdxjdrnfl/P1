@@ -43,7 +43,16 @@ public:
 	UInputAction* SetDestinationTouchAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* QSkillAction;
+	UInputAction* Skill1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill2Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill3Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill4Action;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -55,6 +64,7 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
@@ -62,9 +72,15 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
-	void OnQSkillTriggered();
+	void OnSkillTriggered();
 
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TArray<FKey> KeyArray;
+
+	float CurrentTimeToSendPacket;
+	float DefaultTimeToSendPacket = 0.1f;
+
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
@@ -73,7 +89,10 @@ private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
-	void SendMovePacketToServer(FVector Direction);
+	//TMap<EKeys, uint16> KeySkillMap;
+
+	void MoveByServer(float DeltaTime);
+	void SendMovePacketToServer();
 
 };
 

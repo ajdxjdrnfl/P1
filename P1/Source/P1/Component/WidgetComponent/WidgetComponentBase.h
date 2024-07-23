@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "P1/Data/SkillData.h"
 #include "WidgetComponentBase.generated.h"
 
 
@@ -24,5 +25,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+protected:
+	UPROPERTY()
+	class UDataTable* SkillDataTable;
+
+	TArray<FGeneralSkillInfo> Skills;
+
+public:
+	virtual void SetSkills();
 };

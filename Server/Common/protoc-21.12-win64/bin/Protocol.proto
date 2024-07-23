@@ -35,3 +35,16 @@ message C_MOVE
 {
 	ObjectInfo info = 1;
 }
+
+message C_SKILL
+{
+    ObjectInfo caster = 1;
+    SkillInfo skillinfo = 2;
+}
+
+message S_SKILL
+{
+    ObjectInfo caster = 1;
+    ObjectInfo skillactor = 2;
+    SkillInfo skillinfo = 3;
+}

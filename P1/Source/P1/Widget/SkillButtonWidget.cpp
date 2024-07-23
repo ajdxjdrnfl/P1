@@ -5,6 +5,7 @@
 #include "Components/WrapBox.h"
 #include "SkillSlotWidget.h"
 #include "P1/Data/SkillData.h"
+#include "P1/Skill/SkillActorBase.h"
 
 void USkillButtonWidget::NativePreConstruct()
 {
@@ -31,8 +32,13 @@ void USkillButtonWidget::NativePreConstruct()
 	}
 }
 
-void USkillButtonWidget::UseSkill(FSkillInfo SkillInfo)
+void USkillButtonWidget::UseSkill(FGeneralSkillInfo SkillInfo)
 {
 	// TODO:
-	Cast<USkillSlotWidget>(SkillButtons->GetChildAt(0))->ActivateSlot(SkillInfo.CooldownTime);
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActor->GetDefaultObject());
+
+	if (SkillActor == nullptr)
+		return;
+
+	Cast<USkillSlotWidget>(SkillButtons->GetChildAt(0))->ActivateSlot(SkillActor->GetSkillInfo().CooldownTime);
 }

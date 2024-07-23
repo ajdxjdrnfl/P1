@@ -12,5 +12,11 @@ message ObjectInfo
 	float yaw = 5;
 	MoveState state = 6;
 	float hp = 7;
+	CasterType castertype = 8;
 
+}
+
+message SkillInfo
+{
+    uint64 skill_id = 1;
 }

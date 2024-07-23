@@ -32,6 +32,6 @@ private:
 	TArray<FString> KeyString;
 
 public:
-	void UseSkill(FSkillInfo SkillInfo);
+	void UseSkill(FGeneralSkillInfo SkillInfo);
 
 };

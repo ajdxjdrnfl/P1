@@ -27,3 +27,8 @@ void UStatComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	// ...
 }
 
+void UStatComponentBase::TakeDamage()
+{
+
+}
+

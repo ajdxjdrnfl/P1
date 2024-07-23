@@ -21,3 +21,8 @@ void ASkillActorBase::Tick(float DeltaTime)
 
 }
 
+void ASkillActorBase::ActivateSkill()
+{
+
+}
+

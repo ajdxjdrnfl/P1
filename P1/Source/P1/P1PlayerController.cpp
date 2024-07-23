@@ -14,6 +14,8 @@
 #include "P1Character.h"
 #include "P1.h"
 #include "P1ObjectBase.h"
+#include "InputMappingContext.h"
+#include "InputAction.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -32,7 +34,20 @@ void AP1PlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+
+		for (int i = 0; i < 12; i++)
+		{
+			//6254!
+			// KeySkillMap.Add(KeyArray[i], i);
+		}
 	}
+}
+
+void AP1PlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	MoveByServer(DeltaTime);
 }
 
 void AP1PlayerController::SetupInputComponent()
@@ -51,7 +66,10 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP1PlayerController::OnTouchReleased);
 
-		EnhancedInputComponent->BindAction(QSkillAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnQSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
 	}
 	else
 	{
@@ -96,8 +114,6 @@ void AP1PlayerController::OnSetDestinationTriggered()
 	{
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
-
-		//SendMovePacketToServer(WorldDirection);
 	}
 }
 
@@ -124,22 +140,40 @@ void AP1PlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void AP1PlayerController::OnQSkillTriggered()
+void AP1PlayerController::OnSkillTriggered()
 {
 	if (OwnerCharacter == nullptr) return;
 
+	// TODO:
 	OwnerCharacter->UseSkill(0);
 }
 
-void AP1PlayerController::SendMovePacketToServer(FVector Direction)
+void AP1PlayerController::SendMovePacketToServer()
 {
+	if (OwnerCharacter == nullptr) return;
+
 	Protocol::C_MOVE Pkt;
 	Protocol::ObjectInfo* info = Pkt.mutable_info();
 	// TODO: State
-	info->set_object_id(OwnerCharacter->GetObjectBase()->ObjectID);
-	info->set_x(CachedDestination.X);
-	info->set_y(CachedDestination.Y);
-	info->set_z(CachedDestination.Z);
-	info->set_yaw(Direction.Rotation().Yaw);
+	info->set_object_id(OwnerCharacter->Info->object_id());
+	info->set_x(OwnerCharacter->GetActorLocation().X);
+	info->set_y(OwnerCharacter->GetActorLocation().Y);
+	info->set_z(OwnerCharacter->GetActorLocation().Z);
+	info->set_yaw(OwnerCharacter->GetActorRotation().Yaw);
 	SEND_PACKET(Pkt);
+}
+
+void AP1PlayerController::MoveByServer(float DeltaTime)
+{
+	if (OwnerCharacter == nullptr) return;
+
+	if (CurrentTimeToSendPacket < DefaultTimeToSendPacket)
+	{
+		CurrentTimeToSendPacket += DeltaTime;
+	}
+	else
+	{
+		SendMovePacketToServer();
+		CurrentTimeToSendPacket = 0.f;
+	}
 }

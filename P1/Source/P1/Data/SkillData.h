@@ -39,16 +39,33 @@ enum class ECCType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FSkillInfo : public FTableRowBase
+struct FGeneralSkillInfo
 {
 public:
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* AnimMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ASkillActorBase> SkillActor;
+};
+
+USTRUCT(BlueprintType)
+struct FSkillActorInfo
+{
+public:
+	GENERATED_USTRUCT_BODY()
+
+	// 타겟팅인지 아닌지
+	// 즉발인지 차징인지
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CooldownTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	// if HitNum == -1, infinite penetrate
-	uint16 HitNum = -1;
+	int32 HitNum = -1;
 
 	// TODO:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -56,9 +73,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EDamageType DamageType;
-
-	// 타겟팅인지 아닌지
-	// 즉발인지 차징인지
 };
 
 USTRUCT(BlueprintType)
@@ -68,5 +82,5 @@ public:
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FSkillInfo> SkillInfos;
+	TArray<FGeneralSkillInfo> SkillInfos;
 };

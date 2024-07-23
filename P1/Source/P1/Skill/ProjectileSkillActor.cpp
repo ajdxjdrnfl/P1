@@ -3,6 +3,8 @@
 
 #include "ProjectileSkillActor.h"
 #include "Components/SphereComponent.h"
+#include "P1/P1Character.h"
+#include "P1/P1.h"
 
 AProjectileSkillActor::AProjectileSkillActor()
 {
@@ -19,8 +21,8 @@ void AProjectileSkillActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectileSkillActor::OnSphereOverlapBegin);
-	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AProjectileSkillActor::OnSphereOverlapEnd);
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectileSkillActor::OnCollisionOverlapBegin);
+	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AProjectileSkillActor::OnCollisionOverlapEnd);
 }
 
 void AProjectileSkillActor::Tick(float DeltaTime)
@@ -33,27 +35,24 @@ void AProjectileSkillActor::Tick(float DeltaTime)
 	if (MoveDistance <= 0) 
 		Destroy();
 
-	AddActorWorldOffset(MoveDirection * MoveSpeed);
-	MoveDistance -= MoveDirection.Size() * MoveSpeed;
+	AddActorWorldOffset(GetActorRotation().Vector() * MoveSpeed);
+	MoveDistance -= DeltaTime;
 }
 
-void AProjectileSkillActor::MoveProjectile(FVector Direction, float Speed, float Dist, FSkillInfo InfoOfSkill)
+void AProjectileSkillActor::ActivateSkill()
 {
-	MoveDirection = Direction;
-	MoveDirection.Normalize();
+	Super::ActivateSkill();
 
-	MoveSpeed = Speed;
-	MoveDistance = Dist;
+	MoveDirection.Normalize();
 	bIsActivated = true;
 }
 
-void AProjectileSkillActor::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AProjectileSkillActor::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// TODO: enemy 인지 character 인지 enum으로 구분
-	
+	// TODO:
 }
 
-void AProjectileSkillActor::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AProjectileSkillActor::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 
 }

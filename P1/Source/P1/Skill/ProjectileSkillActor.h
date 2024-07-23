@@ -23,8 +23,13 @@ public:
 private:
 	bool bIsActivated;
 
+	UPROPERTY(EditAnywhere)
 	FVector MoveDirection;
+
+	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
+
+	UPROPERTY(EditAnywhere)
 	float MoveDistance;
 
 	UPROPERTY(EditAnywhere)
@@ -35,11 +40,9 @@ private:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void MoveProjectile(FVector Direction, float Speed, float Dist, FSkillInfo InfoOfSkill);
+	virtual void ActivateSkill() override;
 
-	UFUNCTION()
-	void OnSphereOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnSphereOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual void OnCollisionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 };

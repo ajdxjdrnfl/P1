@@ -25,14 +25,7 @@ private:
 	UPROPERTY()
 	class UCharacterOverlayWidget* CharacterOverlayWidget;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
-	class UDataTable* SkillDataTable;
-
-	TArray<FSkillInfo> Skills;
-
 	void OpenOverlayWidget();
-
-	void SetSkills();
 
 public:
 	void UseSkill(uint32 SkillIndex);

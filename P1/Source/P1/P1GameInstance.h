@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "P1.h"
+#include "P1/Data/SkillData.h"
 #include "P1GameInstance.generated.h"
 
 /**
@@ -25,7 +26,14 @@ private:
 	UPROPERTY()
 	class AP1Character* MyCharacter;
 
+	void InitSkillMap();
+
 public:
+	virtual void Init() override;
+
+	UPROPERTY(EditAnywhere)
+	UDataTable* SkillDataTable;
+
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
 
@@ -39,12 +47,19 @@ public:
 
 	bool IsMyCharacter(uint64 ID);
 
-
 	void CharacterSpawn(Protocol::S_SPAWN& Pkt);
 	void CharacterMove(Protocol::S_MOVE& Pkt);
 
+	void SkillSpawn(Protocol::S_SKILL& Pkt);
+
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
+
+	UPROPERTY()
+	TMap<uint64, FGeneralSkillInfo> Skills;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AP1Character> CharacterClass;
 
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 
