@@ -14,6 +14,7 @@ void UCharacterWidgetComponent::BeginPlay()
 	OpenOverlayWidget();
 
 	// TODO: 
+	Cast<AP1Character>(GetOwner())->GetStatComponent()->OnCharacterStaminaChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterStaminaChanged);
 	Cast<AP1Character>(GetOwner())->GetStatComponent()->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterHealthChanged);
 }
 
@@ -47,9 +48,17 @@ void UCharacterWidgetComponent::SetCharacterStat(UCharacterStatComponent* StatCo
 	CharacterOverlayWidget->SetCharacterStat(StatComponent);
 }
 
-void UCharacterWidgetComponent::OnCharacterHealthChanged()
+void UCharacterWidgetComponent::OnCharacterStaminaChanged()
 {
 	if (CharacterOverlayWidget == nullptr) 
+		return;
+
+	CharacterOverlayWidget->GetStatWidget()->SetStaminaBar();
+}
+
+void UCharacterWidgetComponent::OnCharacterHealthChanged()
+{
+	if (CharacterOverlayWidget == nullptr)
 		return;
 
 	CharacterOverlayWidget->GetStatWidget()->SetHealthBar();

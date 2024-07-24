@@ -3,6 +3,8 @@
 
 #include "WidgetComponentBase.h"
 #include "P1/P1GameInstance.h"
+#include "P1/P1Creature.h"
+#include "P1/Component/StatComponent/StatComponentBase.h"
 
 // Sets default values for this component's properties
 UWidgetComponentBase::UWidgetComponentBase()
@@ -43,5 +45,9 @@ void UWidgetComponentBase::SetSkills()
 	FString ContextString;
 	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
 	Skills = SkillsByClass.SkillInfos;
+}
+
+void UWidgetComponentBase::UseSkill(uint32 SkillIndex)
+{
 }
 

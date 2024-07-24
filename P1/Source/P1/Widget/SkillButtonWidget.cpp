@@ -40,5 +40,11 @@ void USkillButtonWidget::UseSkill(FGeneralSkillInfo SkillInfo)
 	if (SkillActor == nullptr)
 		return;
 
-	Cast<USkillSlotWidget>(SkillButtons->GetChildAt(0))->ActivateSlot(SkillActor->GetSkillInfo().CooldownTime);
+	USkillSlotWidget* CurrentSkillSlotWidget = Cast<USkillSlotWidget>(SkillButtons->GetChildAt(SkillInfo.SkillNum));
+
+	if (CurrentSkillSlotWidget == nullptr) 
+		return;
+
+	CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNum);
+	CurrentSkillSlotWidget->ActivateSlot(SkillActor->GetSkillInfo().CooldownTime);
 }

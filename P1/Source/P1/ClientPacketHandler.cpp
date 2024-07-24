@@ -27,6 +27,7 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 		return false;
 
 	GameInstance->GetMyCharacter()->SetInfo(pkt.info());
+	GameInstance->Characters.Add(pkt.info().object_id(), GameInstance->GetMyCharacter());
 	GameInstance->GetMyCharacter()->SetActorLocation(FVector(pkt.info().x(), pkt.info().y(), pkt.info().z()));
 
 	return true;
@@ -42,6 +43,11 @@ bool Handle_S_SPAWN(PacketSessionRef& session, Protocol::S_SPAWN& pkt)
 	GameInstance->CharacterSpawn(pkt);
 
 	return true;
+}
+
+bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
+{
+	return false;
 }
 
 bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
@@ -65,10 +71,24 @@ bool Handle_S_SKILL(PacketSessionRef& session, Protocol::S_SKILL& pkt)
 	if (GameInstance == nullptr || GameInstance->IsMyCharacter(id))
 		return false;
 
-	if (!GameInstance->Skills.Contains(pkt.skillinfo().skill_id())) 
+	uint64 SkillID = pkt.skillinfo().skill_id();
+	if (!GameInstance->Skills.Contains(SkillID))
 		return false;
 
 	GameInstance->SkillSpawn(pkt);
+
+	return false;
+}
+
+bool Handle_S_ATTACK(PacketSessionRef& session, Protocol::S_ATTACK& pkt)
+{
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->AttackEnemy(pkt);
+
 
 	return false;
 }

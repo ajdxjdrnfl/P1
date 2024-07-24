@@ -5,6 +5,9 @@
 #include "Components/SphereComponent.h"
 #include "P1/P1Character.h"
 #include "P1/P1.h"
+#include "P1/Enemy/EnemyBase.h"
+#include "P1/Component/StatComponent/EnemyStatComponent.h"
+#include "P1/P1GameInstance.h"
 
 AProjectileSkillActor::AProjectileSkillActor()
 {
@@ -47,9 +50,55 @@ void AProjectileSkillActor::ActivateSkill()
 	bIsActivated = true;
 }
 
+void AProjectileSkillActor::SendCollisionPacketToServer(AEnemyBase* Enemy)
+{
+	Protocol::C_ATTACK Pkt;
+	Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+	Protocol::ObjectInfo* SkillActorInfoLocal = Pkt.mutable_skillactor();
+	Protocol::ObjectInfo* VictimInfo = Pkt.mutable_victim();
+
+	AP1Creature* InstigatorLocal = Cast<AP1Creature>(GetOwner());
+
+	if (InstigatorLocal == nullptr)
+		return;
+
+	UP1GameInstance* P1GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance());
+	if (P1GameInstance == nullptr)
+		return;
+
+	if (!P1GameInstance->IsMyCharacter(InstigatorLocal->Info->object_id()))
+		return;
+
+	if (InstigatorLocal->GetClassType() == 1)
+	{
+		CasterInfo->set_castertype(Protocol::CASTER_TYPE_WARRIOR);
+	}
+	else
+	{
+		// TODO:
+	}
+
+	if (Enemy->GetClassType() == 3)
+	{
+		VictimInfo->set_castertype(Protocol::CASTER_TYPE_BOSS);
+	}
+	else
+	{
+		// TODO:
+	}
+	CasterInfo->set_object_id(InstigatorLocal->Info->object_id());
+	VictimInfo->set_object_id(Enemy->Info->object_id());
+	SkillActorInfoLocal->set_object_id(Info->object_id());
+
+	SEND_PACKET(Pkt);
+}
+
 void AProjectileSkillActor::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// TODO:
+	if (AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor))
+	{
+		SendCollisionPacketToServer(Enemy);
+	}
 }
 
 void AProjectileSkillActor::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

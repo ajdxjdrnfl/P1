@@ -4,31 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "StatWidgetBase.h"
-#include "CharacterStatWidget.generated.h"
+#include "EnemyStatWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class P1_API UCharacterStatWidget : public UStatWidgetBase
+class P1_API UEnemyStatWidget : public UStatWidgetBase
 {
 	GENERATED_BODY()
 
 public:
 	virtual void NativeConstruct() override;
-
+	
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UProgressBar* HealthBar;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
-	class UProgressBar* StaminaBar;
-
 	UPROPERTY()
-	class UCharacterStatComponent* CharacterStatComponent;
+	class UEnemyStatComponent* EnemyStatComponent;
 
 public:
 	void SetHealthBar();
-	void SetStaminaBar();
-	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
+	void SetEnemyStat(class UEnemyStatComponent* StatComponent);
 };

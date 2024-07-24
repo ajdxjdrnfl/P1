@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Protocol {
 }  // namespace Protocol
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[1];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[5];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Enum_2eproto = nullptr;
 const uint32_t TableStruct_Enum_2eproto::offsets[1] = {};
 static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
@@ -33,11 +33,20 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "MOVE_STATE_NONE\020\000\022\023\n\017MOVE_STATE_IDLE\020\001\022\022"
   "\n\016MOVE_STATE_RUN\020\002\022\023\n\017MOVE_STATE_JUMP\020\003\022"
   "\024\n\020MOVE_STATE_SKILL\020\004\022\023\n\017MOVE_STATE_STUN"
-  "\020\005b\006proto3"
+  "\020\005*|\n\nCasterType\022\024\n\020CASTER_TYPE_NONE\020\000\022\027"
+  "\n\023CASTER_TYPE_WARRIOR\020\001\022\024\n\020CASTER_TYPE_M"
+  "AGE\020\002\022\024\n\020CASTER_TYPE_BOSS\020\003\022\023\n\017CASTER_TY"
+  "PE_MOB\020\004*[\n\rCollisionType\022\027\n\023COLLISION_T"
+  "YPE_NONE\020\000\022\031\n\025COLLISION_TYPE_CIRCLE\020\001\022\026\n"
+  "\022COLLISION_TYPE_BOX\020\002*O\n\nDamageType\022\026\n\022D"
+  "AMAGE_TYPE_NORMAL\020\000\022\023\n\017DAMAGE_TYPE_DOT\020\001"
+  "\022\024\n\020DAMAGE_TYPE_BUFF\020\002*V\n\006CCType\022\022\n\016CC_T"
+  "YPE_NORMAL\020\000\022\020\n\014CC_TYPE_STUN\020\001\022\020\n\014CC_TYP"
+  "E_SLOW\020\002\022\024\n\020CC_TYPE_AIRBORNE\020\003b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 170, descriptor_table_protodef_Enum_2eproto,
+    false, false, 558, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -63,6 +72,69 @@ bool MoveState_IsValid(int value) {
     case 3:
     case 4:
     case 5:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CasterType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[1];
+}
+bool CasterType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CollisionType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[2];
+}
+bool CollisionType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* DamageType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[3];
+}
+bool DamageType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CCType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[4];
+}
+bool CCType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
       return true;
     default:
       return false;

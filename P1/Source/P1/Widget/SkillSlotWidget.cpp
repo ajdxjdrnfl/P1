@@ -6,6 +6,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 
 void USkillSlotWidget::NativePreConstruct()
 {
@@ -25,7 +26,11 @@ void USkillSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 	if (RemainingCooldownTime <= 0)
 	{
-		bIsActivated = false;
+		if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SkillSubSystem->SkillCanUseMap[SkillNum] = true;
+			bIsActivated = false;
+		}
 		SetCooldownVisibility(false);
 	}
 
@@ -50,7 +55,13 @@ void USkillSlotWidget::ActivateSlot(float time)
 		return;
 
 	DefaultCooldownTime = RemainingCooldownTime = time;
-	bIsActivated = true;
+
+	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SkillSubSystem->SkillCanUseMap[SkillNum] = false;
+		bIsActivated = true;
+	}
+	
 	SetCooldownVisibility(true);
 }
 

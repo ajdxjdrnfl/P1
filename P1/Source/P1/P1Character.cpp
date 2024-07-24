@@ -16,6 +16,8 @@
 #include "Widget/Stat/CharacterStatWidget.h"
 #include "Widget/CharacterOverlayWidget.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "P1/Widget/SkillButtonWidget.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 
 AP1Character::AP1Character()
 {
@@ -51,8 +53,6 @@ AP1Character::AP1Character()
 	StatComponent = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("CharacterStatComponent"));
 
 	WidgetComponent = CreateDefaultSubobject<UCharacterWidgetComponent>(TEXT("CharacterSWidgetComponent"));
-
-	Info = new Protocol::ObjectInfo();
 }
 
 void AP1Character::BeginPlay()
@@ -87,14 +87,35 @@ void AP1Character::Init()
 		return;
 
 	WidgetComponent->SetCharacterStat(StatComponent);
+	StatComponent->InitStat();
+}
+
+void AP1Character::InitOnSpawn(float HealthToSet, float StaminaToSet)
+{
+	if (WidgetComponent == nullptr || StatComponent == nullptr)
+		return;
+
+	WidgetComponent->SetCharacterStat(StatComponent);
+	StatComponent->InitStat(HealthToSet, StaminaToSet);
+}
+
+void AP1Character::OnSpawn(float HealthToSet, float StaminaToSet)
+{
+	InitOnSpawn(HealthToSet, StaminaToSet);
 }
 
 void AP1Character::UseSkill(uint16 SkillIndex)
 {
 	if (SkillComponent == nullptr || WidgetComponent == nullptr) return;
 
-	SkillComponent->UseSkill(SkillIndex);
-	WidgetComponent->UseSkill(SkillIndex);
+	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		if (SkillSubSystem->SkillCanUseMap[SkillIndex])
+		{
+			SkillComponent->UseSkill(SkillIndex);
+			WidgetComponent->UseSkill(SkillIndex);
+		}
+	}
 }
 
 void AP1Character::MoveByServer(float DeltaTime)

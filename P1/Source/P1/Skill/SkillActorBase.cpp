@@ -2,11 +2,13 @@
 
 
 #include "SkillActorBase.h"
+#include "P1/P1.h"
 
 ASkillActorBase::ASkillActorBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Info = new Protocol::ObjectInfo();
 }
 
 void ASkillActorBase::BeginPlay()

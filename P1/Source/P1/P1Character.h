@@ -52,14 +52,14 @@ private:
 	class UCharacterWidgetComponent* WidgetComponent;
 
 public:
-	Protocol::ObjectInfo* Info;
-		
+	void OnSpawn(float HealthToSet, float StaminaToSet);
+	void InitOnSpawn(float HealthToSet, float StaminaToSet);
 	void Init();
 	void UseSkill(uint16 SkillIndex);
 	void MoveByServer(float DeltaTime);
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
-	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { Info->CopyFrom(InfoToSet); }
+	
 };
 

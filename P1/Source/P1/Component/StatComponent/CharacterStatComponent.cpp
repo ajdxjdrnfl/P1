@@ -2,6 +2,9 @@
 
 
 #include "CharacterStatComponent.h"
+#include "P1/P1Character.h"
+#include "P1/P1.h"
+#include "P1/P1Creature.h"
 
 UCharacterStatComponent::UCharacterStatComponent()
 {
@@ -13,35 +16,92 @@ void UCharacterStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitStat();
 }
 
-void UCharacterStatComponent::TakeDamage(/* TODO:FDamageInfo DamageInfo*/)
+void UCharacterStatComponent::TakeDamage(FDamageInfo DamageInfo)
 {
-	// MainCharacter->GetPlayerCombatComponent()->ReceiveAttack(DamageInfo);
-
 	//Health -= DamageInfo.Damage;
-
-	OnCharacterHealthChangedDelegate.Broadcast();
-
-	if (Health <= 0)
-	{
+	//if (Health < 0) Health = 0;
+	//
+	//OnCharacterHealthChangedDelegate.Broadcast();
+//
+	//if (Health <= 0)
+	//{
 		//MainCharacter->Die();
-	}
+	//}
 }
 
 void UCharacterStatComponent::UseStamina(float Amount)
 {
-	Stamina -= Amount;
-	if (Stamina < 0) Stamina = 0;
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
 
-	// OwnerCharacter->GetWidgetManagerComponent()->CharacterOverlayWidget->SetStaminaBar();
+	//Creature->Info->stamina() -= Amount;
+	//
+	//if (Stamina < 0) Stamina = 0;
+
+	//OnCharacterStaminaChangedDelegate.Broadcast();
 }
 
 void UCharacterStatComponent::InitStat()
 {
-	Health = MaxHealth;
-	Stamina = MaxStamina;
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	Creature->Info->set_hp(Creature->Info->max_hp());
+	Creature->Info->set_stamina(Creature->Info->max_stamina());
 
 	OnCharacterHealthChangedDelegate.Broadcast();
+	OnCharacterStaminaChangedDelegate.Broadcast();
+}
+
+void UCharacterStatComponent::InitStat(float HealthToSet, float StaminaToSet)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	//Creature->Info->set_hp(HealthToSet);
+	//Creature->Info->set_stamina(StaminaToSet);
+
+	OnCharacterHealthChangedDelegate.Broadcast();
+	OnCharacterStaminaChangedDelegate.Broadcast();
+}
+
+void UCharacterStatComponent::SetCurrentStamina(float StaminaToSet)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	Creature->Info->set_stamina(StaminaToSet);
+}
+
+float UCharacterStatComponent::GetCurrentStamina()
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return 0;
+
+	return Creature->Info->stamina();
+}
+
+void UCharacterStatComponent::SetMaxStamina(float StaminaToSet)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	Creature->Info->set_max_stamina(StaminaToSet);
+}
+
+float UCharacterStatComponent::GetMaxStamina()
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return 0;
+
+	return Creature->Info->max_stamina();
 }

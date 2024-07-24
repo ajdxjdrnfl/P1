@@ -33,4 +33,6 @@ protected:
 
 public:
 	virtual void SetSkills();
+	virtual void UseSkill(uint32 SkillIndex);
+
 };

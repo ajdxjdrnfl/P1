@@ -23,6 +23,7 @@ private:
 	float RemainingCooldownTime;
 	float DefaultCooldownTime;
 	uint16 SlotID;
+	int32 SkillNum;
 
 	UPROPERTY(meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UImage* SkillImage;
@@ -50,6 +51,8 @@ public:
 	void SetSkill(/*TODO: SkillInfo*/);
 	void SetKeyText(FString Key);
 
+	FORCEINLINE void SetSkillNum(int32 Num) { SkillNum = Num; }
+	FORCEINLINE bool CanUseSkill() const { return !bIsActivated; }
 	FORCEINLINE uint16 GetSlotID() const { return SlotID; }
 	FORCEINLINE void SetSlotID(uint16 IDToSet) { SlotID = IDToSet; }
 };

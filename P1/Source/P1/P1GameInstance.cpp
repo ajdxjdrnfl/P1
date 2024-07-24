@@ -13,12 +13,13 @@
 #include "P1ObjectBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "P1/Skill/SkillActorBase.h"
+#include "P1/Enemy/EnemyBase.h"
+#include "P1/Enemy/EnemyMob.h"
 
 void UP1GameInstance::Init()
 {
-	Super::Init();
-
 	InitSkillMap();
+	Super::Init();
 }
 
 void UP1GameInstance::InitSkillMap()
@@ -85,8 +86,8 @@ void UP1GameInstance::DisconnectFromGameServer()
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
 
-	//Protocol::C_LEAVE_GAME LeavePkt;
-	//SEND_PACKET(LeavePkt);
+	Protocol::C_LEAVE_GAME LeavePkt;
+	SEND_PACKET(LeavePkt);
 }
 
 void UP1GameInstance::HandleRecvPackets()
@@ -121,13 +122,32 @@ void UP1GameInstance::CharacterSpawn(Protocol::S_SPAWN& Pkt)
 
 		Protocol::ObjectInfo info = Pkt.info(i);
 		FVector Loc = FVector(info.x(), info.y(), info.z());
-		AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(CharacterClass, &Loc));
-		if (SpawnedActor == nullptr)
-			return;
-		SpawnedActor->Info->CopyFrom(info);
-		// SpawnedActor->GetObjectBase()->ObjectID = info.object_id();
 
-		Characters.Add({ info.object_id(), SpawnedActor });
+		if (info.castertype() == Protocol::CASTER_TYPE_MOB)
+		{
+			AEnemyMob* SpawnedMob = Cast<AEnemyMob>(GetWorld()->SpawnActor(EnemyMobClass, &Loc));
+
+			if (SpawnedMob == nullptr)
+				return;
+
+			SpawnedMob->Info->CopyFrom(info);
+			SpawnedMob->InitOnSpawn(Pkt.info(i).hp());
+			
+			Enemies.Add({ info.object_id(), SpawnedMob });
+		}
+		else if (info.castertype() == Protocol::CASTER_TYPE_WARRIOR)
+		{
+			AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(CharacterClass, &Loc));
+
+			if (SpawnedActor == nullptr)
+				return;
+
+			SpawnedActor->Info->CopyFrom(info);
+			SpawnedActor->InitOnSpawn(Pkt.info(i).hp(), Pkt.info(i).stamina());
+			
+			Characters.Add({ info.object_id(), SpawnedActor });
+		}
+		
 	}
 }
 
@@ -154,4 +174,44 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 		return;
 
 	SkillActor->ActivateSkill();
+}
+
+void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
+{
+	int32 EnemyID = Pkt.victim().object_id();
+
+	FDamageInfo DamageInfo;
+	DamageInfo.Damage = Pkt.skillinfo().damage();
+
+	if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_NORMAL)
+	{
+		DamageInfo.DamageType = EDamageType::Normal;
+	}
+	else if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_DOT)
+	{
+		DamageInfo.DamageType = EDamageType::Dot;
+	}
+	else if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_BUFF)
+	{
+		DamageInfo.DamageType = EDamageType::Buff;
+	}
+
+	if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_NORMAL)
+	{
+		DamageInfo.CCType = ECCType::Normal;
+	}
+	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_SLOW) 
+	{
+		DamageInfo.CCType = ECCType::Slow;
+	}
+	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_STUN)
+	{
+		DamageInfo.CCType = ECCType::Stun;
+	}
+	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_AIRBORNE)
+	{
+		DamageInfo.CCType = ECCType::Airborne;
+	}
+
+	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp(), DamageInfo);
 }

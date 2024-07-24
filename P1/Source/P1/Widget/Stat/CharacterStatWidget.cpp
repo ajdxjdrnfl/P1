@@ -9,9 +9,6 @@ void UCharacterStatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// TODO:
-	//if (!CharacterStatComponent->OnCharacterHealthChangedDelegate.IsBound())
-	//	CharacterStatComponent->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterStatWidget::OnCharacterHealthChanged);
 }
 
 void UCharacterStatWidget::SetHealthBar()
@@ -30,11 +27,6 @@ void UCharacterStatWidget::SetStaminaBar()
 
 	float StaminaRate = CharacterStatComponent->GetCurrentStamina() / CharacterStatComponent->GetMaxStamina();
 	StaminaBar->SetPercent(StaminaRate);
-}
-
-void UCharacterStatWidget::OnCharacterHealthChanged()
-{
-	SetHealthBar();
 }
 
 void UCharacterStatWidget::SetCharacterStat(UCharacterStatComponent* StatComponent)

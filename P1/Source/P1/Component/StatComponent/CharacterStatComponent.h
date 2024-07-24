@@ -7,6 +7,7 @@
 #include "P1/Data/SkillData.h"
 #include "CharacterStatComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterStaminaChangedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterHealthChangedDelegate);
 
 UCLASS()
@@ -20,6 +21,7 @@ public:
 
 	friend class AP1Character;
 
+	FOnCharacterStaminaChangedDelegate OnCharacterStaminaChangedDelegate;
 	FOnCharacterHealthChangedDelegate OnCharacterHealthChangedDelegate;
 
 protected:
@@ -30,31 +32,16 @@ private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Health;
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth;
-
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Stamina;
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float MaxStamina;
-
 public:
-	void TakeDamage(/* TODO: FDamageInfo DamageInfo*/);
+	virtual void TakeDamage(FDamageInfo DamageInfo) override;
 
 	void UseStamina(float Amount);
 
 	void InitStat();
+	void InitStat(float HealthToSet, float StaminaToSet);
 
-	FORCEINLINE float GetCurrentHealth() { return Health; }
-	FORCEINLINE float GetMaxHealth() { return MaxHealth; }
-	FORCEINLINE void SetCurrentHealth(float HealthToSet) { Health = HealthToSet; }
-	FORCEINLINE void SetMaxHealth(float HealthToSet) { MaxHealth = HealthToSet; }
-	FORCEINLINE void SetCurrentStamina(float StaminaToSet) { Stamina = StaminaToSet; }
-	FORCEINLINE float GetCurrentStamina() { return Stamina; }
-	FORCEINLINE void SetMaxStamina(float StaminaToSet) { MaxStamina = StaminaToSet; }
-	FORCEINLINE float GetMaxStamina() { return MaxStamina; }
+	void SetCurrentStamina(float StaminaToSet);
+	float GetCurrentStamina();
+	void SetMaxStamina(float StaminaToSet);
+	float GetMaxStamina();
 };

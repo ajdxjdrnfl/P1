@@ -30,6 +30,10 @@ PROTOBUF_CONSTEXPR ObjectInfo::ObjectInfo(
   , /*decltype(_impl_.yaw_)*/0
   , /*decltype(_impl_.state_)*/0
   , /*decltype(_impl_.hp_)*/0
+  , /*decltype(_impl_.max_hp_)*/0
+  , /*decltype(_impl_.stamina_)*/0
+  , /*decltype(_impl_.max_stamina_)*/0
+  , /*decltype(_impl_.castertype_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ObjectInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ObjectInfoDefaultTypeInternal()
@@ -43,6 +47,13 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR SkillInfo::SkillInfo(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.skill_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.damage_type_)*/0
+  , /*decltype(_impl_.collision_type_)*/0
+  , /*decltype(_impl_.cc_type_)*/0
+  , /*decltype(_impl_.damage_)*/0
+  , /*decltype(_impl_.cooldown_)*/0
+  , /*decltype(_impl_.size_x_)*/0
+  , /*decltype(_impl_.size_y_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct SkillInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR SkillInfoDefaultTypeInternal()
@@ -72,6 +83,10 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.yaw_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.state_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.hp_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.max_hp_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.stamina_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.max_stamina_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.castertype_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -79,10 +94,17 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.skill_id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.damage_type_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.collision_type_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.cc_type_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.damage_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.cooldown_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.size_x_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.size_y_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::ObjectInfo)},
-  { 13, -1, -1, sizeof(::Protocol::SkillInfo)},
+  { 17, -1, -1, sizeof(::Protocol::SkillInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -91,19 +113,26 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"}\n\n"
-  "ObjectInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 \001(\002"
-  "\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\"\n\005s"
-  "tate\030\006 \001(\0162\023.Protocol.MoveState\022\n\n\002hp\030\007 "
-  "\001(\002\"\035\n\tSkillInfo\022\020\n\010skill_id\030\001 \001(\004b\006prot"
-  "o3"
+  "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\335\001\n"
+  "\nObjectInfo\022\021\n\tobject_id\030\001 \001(\004\022\t\n\001x\030\002 \001("
+  "\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\013\n\003yaw\030\005 \001(\002\022\"\n\005"
+  "state\030\006 \001(\0162\023.Protocol.MoveState\022\n\n\002hp\030\007"
+  " \001(\002\022\016\n\006max_hp\030\010 \001(\002\022\017\n\007stamina\030\t \001(\002\022\023\n"
+  "\013max_stamina\030\n \001(\002\022(\n\ncastertype\030\013 \001(\0162\024"
+  ".Protocol.CasterType\"\336\001\n\tSkillInfo\022\020\n\010sk"
+  "ill_id\030\001 \001(\004\022)\n\013damage_type\030\002 \001(\0162\024.Prot"
+  "ocol.DamageType\022/\n\016collision_type\030\003 \001(\0162"
+  "\027.Protocol.CollisionType\022!\n\007cc_type\030\004 \001("
+  "\0162\020.Protocol.CCType\022\016\n\006damage\030\005 \001(\002\022\020\n\010c"
+  "ooldown\030\006 \001(\002\022\016\n\006size_x\030\007 \001(\002\022\016\n\006size_y\030"
+  "\010 \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 202, descriptor_table_protodef_Struct_2eproto,
+    false, false, 493, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 2,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -141,12 +170,16 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
     , decltype(_impl_.yaw_){}
     , decltype(_impl_.state_){}
     , decltype(_impl_.hp_){}
+    , decltype(_impl_.max_hp_){}
+    , decltype(_impl_.stamina_){}
+    , decltype(_impl_.max_stamina_){}
+    , decltype(_impl_.castertype_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.object_id_, &from._impl_.object_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.hp_) -
-    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.hp_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.castertype_) -
+    reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.castertype_));
   // @@protoc_insertion_point(copy_constructor:Protocol.ObjectInfo)
 }
 
@@ -162,6 +195,10 @@ inline void ObjectInfo::SharedCtor(
     , decltype(_impl_.yaw_){0}
     , decltype(_impl_.state_){0}
     , decltype(_impl_.hp_){0}
+    , decltype(_impl_.max_hp_){0}
+    , decltype(_impl_.stamina_){0}
+    , decltype(_impl_.max_stamina_){0}
+    , decltype(_impl_.castertype_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -190,8 +227,8 @@ void ObjectInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.object_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.hp_) -
-      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.hp_));
+      reinterpret_cast<char*>(&_impl_.castertype_) -
+      reinterpret_cast<char*>(&_impl_.object_id_)) + sizeof(_impl_.castertype_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -255,6 +292,39 @@ const char* ObjectInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
           _impl_.hp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float max_hp = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
+          _impl_.max_hp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float stamina = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 77)) {
+          _impl_.stamina_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float max_stamina = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 85)) {
+          _impl_.max_stamina_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.CasterType castertype = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_castertype(static_cast<::Protocol::CasterType>(val));
         } else
           goto handle_unusual;
         continue;
@@ -350,6 +420,43 @@ uint8_t* ObjectInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_hp(), target);
   }
 
+  // float max_hp = 8;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_hp = this->_internal_max_hp();
+  uint32_t raw_max_hp;
+  memcpy(&raw_max_hp, &tmp_max_hp, sizeof(tmp_max_hp));
+  if (raw_max_hp != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_max_hp(), target);
+  }
+
+  // float stamina = 9;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_stamina = this->_internal_stamina();
+  uint32_t raw_stamina;
+  memcpy(&raw_stamina, &tmp_stamina, sizeof(tmp_stamina));
+  if (raw_stamina != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_stamina(), target);
+  }
+
+  // float max_stamina = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_stamina = this->_internal_max_stamina();
+  uint32_t raw_max_stamina;
+  memcpy(&raw_max_stamina, &tmp_max_stamina, sizeof(tmp_max_stamina));
+  if (raw_max_stamina != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(10, this->_internal_max_stamina(), target);
+  }
+
+  // .Protocol.CasterType castertype = 11;
+  if (this->_internal_castertype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      11, this->_internal_castertype(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -422,6 +529,39 @@ size_t ObjectInfo::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
+  // float max_hp = 8;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_hp = this->_internal_max_hp();
+  uint32_t raw_max_hp;
+  memcpy(&raw_max_hp, &tmp_max_hp, sizeof(tmp_max_hp));
+  if (raw_max_hp != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float stamina = 9;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_stamina = this->_internal_stamina();
+  uint32_t raw_stamina;
+  memcpy(&raw_stamina, &tmp_stamina, sizeof(tmp_stamina));
+  if (raw_stamina != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float max_stamina = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_stamina = this->_internal_max_stamina();
+  uint32_t raw_max_stamina;
+  memcpy(&raw_max_stamina, &tmp_max_stamina, sizeof(tmp_max_stamina));
+  if (raw_max_stamina != 0) {
+    total_size += 1 + 4;
+  }
+
+  // .Protocol.CasterType castertype = 11;
+  if (this->_internal_castertype() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_castertype());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -481,6 +621,30 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (raw_hp != 0) {
     _this->_internal_set_hp(from._internal_hp());
   }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_hp = from._internal_max_hp();
+  uint32_t raw_max_hp;
+  memcpy(&raw_max_hp, &tmp_max_hp, sizeof(tmp_max_hp));
+  if (raw_max_hp != 0) {
+    _this->_internal_set_max_hp(from._internal_max_hp());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_stamina = from._internal_stamina();
+  uint32_t raw_stamina;
+  memcpy(&raw_stamina, &tmp_stamina, sizeof(tmp_stamina));
+  if (raw_stamina != 0) {
+    _this->_internal_set_stamina(from._internal_stamina());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_max_stamina = from._internal_max_stamina();
+  uint32_t raw_max_stamina;
+  memcpy(&raw_max_stamina, &tmp_max_stamina, sizeof(tmp_max_stamina));
+  if (raw_max_stamina != 0) {
+    _this->_internal_set_max_stamina(from._internal_max_stamina());
+  }
+  if (from._internal_castertype() != 0) {
+    _this->_internal_set_castertype(from._internal_castertype());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -499,8 +663,8 @@ void ObjectInfo::InternalSwap(ObjectInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.hp_)
-      + sizeof(ObjectInfo::_impl_.hp_)
+      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.castertype_)
+      + sizeof(ObjectInfo::_impl_.castertype_)
       - PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.object_id_)>(
           reinterpret_cast<char*>(&_impl_.object_id_),
           reinterpret_cast<char*>(&other->_impl_.object_id_));
@@ -529,10 +693,19 @@ SkillInfo::SkillInfo(const SkillInfo& from)
   SkillInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.skill_id_){}
+    , decltype(_impl_.damage_type_){}
+    , decltype(_impl_.collision_type_){}
+    , decltype(_impl_.cc_type_){}
+    , decltype(_impl_.damage_){}
+    , decltype(_impl_.cooldown_){}
+    , decltype(_impl_.size_x_){}
+    , decltype(_impl_.size_y_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _this->_impl_.skill_id_ = from._impl_.skill_id_;
+  ::memcpy(&_impl_.skill_id_, &from._impl_.skill_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.size_y_) -
+    reinterpret_cast<char*>(&_impl_.skill_id_)) + sizeof(_impl_.size_y_));
   // @@protoc_insertion_point(copy_constructor:Protocol.SkillInfo)
 }
 
@@ -542,6 +715,13 @@ inline void SkillInfo::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.skill_id_){uint64_t{0u}}
+    , decltype(_impl_.damage_type_){0}
+    , decltype(_impl_.collision_type_){0}
+    , decltype(_impl_.cc_type_){0}
+    , decltype(_impl_.damage_){0}
+    , decltype(_impl_.cooldown_){0}
+    , decltype(_impl_.size_x_){0}
+    , decltype(_impl_.size_y_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -569,7 +749,9 @@ void SkillInfo::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.skill_id_ = uint64_t{0u};
+  ::memset(&_impl_.skill_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.size_y_) -
+      reinterpret_cast<char*>(&_impl_.skill_id_)) + sizeof(_impl_.size_y_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -584,6 +766,65 @@ const char* SkillInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _impl_.skill_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.DamageType damage_type = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_damage_type(static_cast<::Protocol::DamageType>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.CollisionType collision_type = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_collision_type(static_cast<::Protocol::CollisionType>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.CCType cc_type = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_cc_type(static_cast<::Protocol::CCType>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // float damage = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _impl_.damage_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float cooldown = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          _impl_.cooldown_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float size_x = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
+          _impl_.size_x_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float size_y = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
+          _impl_.size_y_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
@@ -622,6 +863,67 @@ uint8_t* SkillInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_skill_id(), target);
   }
 
+  // .Protocol.DamageType damage_type = 2;
+  if (this->_internal_damage_type() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      2, this->_internal_damage_type(), target);
+  }
+
+  // .Protocol.CollisionType collision_type = 3;
+  if (this->_internal_collision_type() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_collision_type(), target);
+  }
+
+  // .Protocol.CCType cc_type = 4;
+  if (this->_internal_cc_type() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      4, this->_internal_cc_type(), target);
+  }
+
+  // float damage = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_damage = this->_internal_damage();
+  uint32_t raw_damage;
+  memcpy(&raw_damage, &tmp_damage, sizeof(tmp_damage));
+  if (raw_damage != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_damage(), target);
+  }
+
+  // float cooldown = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cooldown = this->_internal_cooldown();
+  uint32_t raw_cooldown;
+  memcpy(&raw_cooldown, &tmp_cooldown, sizeof(tmp_cooldown));
+  if (raw_cooldown != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_cooldown(), target);
+  }
+
+  // float size_x = 7;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_x = this->_internal_size_x();
+  uint32_t raw_size_x;
+  memcpy(&raw_size_x, &tmp_size_x, sizeof(tmp_size_x));
+  if (raw_size_x != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_size_x(), target);
+  }
+
+  // float size_y = 8;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_y = this->_internal_size_y();
+  uint32_t raw_size_y;
+  memcpy(&raw_size_y, &tmp_size_y, sizeof(tmp_size_y));
+  if (raw_size_y != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_size_y(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -641,6 +943,60 @@ size_t SkillInfo::ByteSizeLong() const {
   // uint64 skill_id = 1;
   if (this->_internal_skill_id() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_skill_id());
+  }
+
+  // .Protocol.DamageType damage_type = 2;
+  if (this->_internal_damage_type() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_damage_type());
+  }
+
+  // .Protocol.CollisionType collision_type = 3;
+  if (this->_internal_collision_type() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_collision_type());
+  }
+
+  // .Protocol.CCType cc_type = 4;
+  if (this->_internal_cc_type() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_cc_type());
+  }
+
+  // float damage = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_damage = this->_internal_damage();
+  uint32_t raw_damage;
+  memcpy(&raw_damage, &tmp_damage, sizeof(tmp_damage));
+  if (raw_damage != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float cooldown = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cooldown = this->_internal_cooldown();
+  uint32_t raw_cooldown;
+  memcpy(&raw_cooldown, &tmp_cooldown, sizeof(tmp_cooldown));
+  if (raw_cooldown != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float size_x = 7;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_x = this->_internal_size_x();
+  uint32_t raw_size_x;
+  memcpy(&raw_size_x, &tmp_size_x, sizeof(tmp_size_x));
+  if (raw_size_x != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float size_y = 8;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_y = this->_internal_size_y();
+  uint32_t raw_size_y;
+  memcpy(&raw_size_y, &tmp_size_y, sizeof(tmp_size_y));
+  if (raw_size_y != 0) {
+    total_size += 1 + 4;
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -664,6 +1020,43 @@ void SkillInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (from._internal_skill_id() != 0) {
     _this->_internal_set_skill_id(from._internal_skill_id());
   }
+  if (from._internal_damage_type() != 0) {
+    _this->_internal_set_damage_type(from._internal_damage_type());
+  }
+  if (from._internal_collision_type() != 0) {
+    _this->_internal_set_collision_type(from._internal_collision_type());
+  }
+  if (from._internal_cc_type() != 0) {
+    _this->_internal_set_cc_type(from._internal_cc_type());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_damage = from._internal_damage();
+  uint32_t raw_damage;
+  memcpy(&raw_damage, &tmp_damage, sizeof(tmp_damage));
+  if (raw_damage != 0) {
+    _this->_internal_set_damage(from._internal_damage());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cooldown = from._internal_cooldown();
+  uint32_t raw_cooldown;
+  memcpy(&raw_cooldown, &tmp_cooldown, sizeof(tmp_cooldown));
+  if (raw_cooldown != 0) {
+    _this->_internal_set_cooldown(from._internal_cooldown());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_x = from._internal_size_x();
+  uint32_t raw_size_x;
+  memcpy(&raw_size_x, &tmp_size_x, sizeof(tmp_size_x));
+  if (raw_size_x != 0) {
+    _this->_internal_set_size_x(from._internal_size_x());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_size_y = from._internal_size_y();
+  uint32_t raw_size_y;
+  memcpy(&raw_size_y, &tmp_size_y, sizeof(tmp_size_y));
+  if (raw_size_y != 0) {
+    _this->_internal_set_size_y(from._internal_size_y());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -681,7 +1074,12 @@ bool SkillInfo::IsInitialized() const {
 void SkillInfo::InternalSwap(SkillInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.skill_id_, other->_impl_.skill_id_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SkillInfo, _impl_.size_y_)
+      + sizeof(SkillInfo::_impl_.size_y_)
+      - PROTOBUF_FIELD_OFFSET(SkillInfo, _impl_.skill_id_)>(
+          reinterpret_cast<char*>(&_impl_.skill_id_),
+          reinterpret_cast<char*>(&other->_impl_.skill_id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata SkillInfo::GetMetadata() const {

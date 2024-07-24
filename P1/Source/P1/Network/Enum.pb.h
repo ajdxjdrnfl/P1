@@ -76,6 +76,113 @@ inline bool MoveState_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MoveState>(
     MoveState_descriptor(), name, value);
 }
+enum CasterType : int {
+  CASTER_TYPE_NONE = 0,
+  CASTER_TYPE_WARRIOR = 1,
+  CASTER_TYPE_MAGE = 2,
+  CASTER_TYPE_BOSS = 3,
+  CASTER_TYPE_MOB = 4,
+  CasterType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CasterType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CasterType_IsValid(int value);
+constexpr CasterType CasterType_MIN = CASTER_TYPE_NONE;
+constexpr CasterType CasterType_MAX = CASTER_TYPE_MOB;
+constexpr int CasterType_ARRAYSIZE = CasterType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CasterType_descriptor();
+template<typename T>
+inline const std::string& CasterType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CasterType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CasterType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CasterType_descriptor(), enum_t_value);
+}
+inline bool CasterType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CasterType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CasterType>(
+    CasterType_descriptor(), name, value);
+}
+enum CollisionType : int {
+  COLLISION_TYPE_NONE = 0,
+  COLLISION_TYPE_CIRCLE = 1,
+  COLLISION_TYPE_BOX = 2,
+  CollisionType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CollisionType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CollisionType_IsValid(int value);
+constexpr CollisionType CollisionType_MIN = COLLISION_TYPE_NONE;
+constexpr CollisionType CollisionType_MAX = COLLISION_TYPE_BOX;
+constexpr int CollisionType_ARRAYSIZE = CollisionType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CollisionType_descriptor();
+template<typename T>
+inline const std::string& CollisionType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CollisionType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CollisionType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CollisionType_descriptor(), enum_t_value);
+}
+inline bool CollisionType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CollisionType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CollisionType>(
+    CollisionType_descriptor(), name, value);
+}
+enum DamageType : int {
+  DAMAGE_TYPE_NORMAL = 0,
+  DAMAGE_TYPE_DOT = 1,
+  DAMAGE_TYPE_BUFF = 2,
+  DamageType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  DamageType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool DamageType_IsValid(int value);
+constexpr DamageType DamageType_MIN = DAMAGE_TYPE_NORMAL;
+constexpr DamageType DamageType_MAX = DAMAGE_TYPE_BUFF;
+constexpr int DamageType_ARRAYSIZE = DamageType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* DamageType_descriptor();
+template<typename T>
+inline const std::string& DamageType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, DamageType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function DamageType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    DamageType_descriptor(), enum_t_value);
+}
+inline bool DamageType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, DamageType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<DamageType>(
+    DamageType_descriptor(), name, value);
+}
+enum CCType : int {
+  CC_TYPE_NORMAL = 0,
+  CC_TYPE_STUN = 1,
+  CC_TYPE_SLOW = 2,
+  CC_TYPE_AIRBORNE = 3,
+  CCType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CCType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CCType_IsValid(int value);
+constexpr CCType CCType_MIN = CC_TYPE_NORMAL;
+constexpr CCType CCType_MAX = CC_TYPE_AIRBORNE;
+constexpr int CCType_ARRAYSIZE = CCType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CCType_descriptor();
+template<typename T>
+inline const std::string& CCType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CCType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CCType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CCType_descriptor(), enum_t_value);
+}
+inline bool CCType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CCType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CCType>(
+    CCType_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -102,6 +209,26 @@ template <> struct is_proto_enum< ::Protocol::MoveState> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MoveState>() {
   return ::Protocol::MoveState_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::CasterType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CasterType>() {
+  return ::Protocol::CasterType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::CollisionType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CollisionType>() {
+  return ::Protocol::CollisionType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::DamageType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::DamageType>() {
+  return ::Protocol::DamageType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::CCType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CCType>() {
+  return ::Protocol::CCType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

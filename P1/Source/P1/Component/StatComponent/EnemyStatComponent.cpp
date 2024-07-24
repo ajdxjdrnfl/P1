@@ -2,11 +2,55 @@
 
 
 #include "EnemyStatComponent.h"
-#include "EnemyStatComponent.h"
+#include "P1/P1.h"
+#include "P1/P1Creature.h"
 
-void UEnemyStatComponent::TakeDamage()
+void UEnemyStatComponent::InitStat()
 {
-	Super::TakeDamage();
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
 
+	Creature->Info->set_hp(Creature->Info->hp());
 
+	OnEnemyHealthChangedDelegate.Broadcast();
+}
+
+void UEnemyStatComponent::InitStat(float InitHealth)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	//Creature->Info->set_hp(InitHealth);
+
+	OnEnemyHealthChangedDelegate.Broadcast();
+}
+
+void UEnemyStatComponent::TakeDamage(FDamageInfo DamageInfo)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	//Health -= DamageInfo.Damage;
+	/*if (Health < 0) Health = 0;
+
+	OnEnemyHealthChangedDelegate.Broadcast();
+
+	if (Health <= 0)
+	{
+		//MainCharacter->Die();
+	}*/
+}
+
+void UEnemyStatComponent::SetHealth(float HealthToSet, FDamageInfo DamageInfo)
+{
+	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
+	if (Creature == nullptr)
+		return;
+
+	Creature->Info->set_hp(HealthToSet);
+
+	OnEnemyHealthChangedDelegate.Broadcast();
 }

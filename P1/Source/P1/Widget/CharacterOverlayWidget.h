@@ -27,4 +27,5 @@ public:
 	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 
 	FORCEINLINE class UCharacterStatWidget* GetStatWidget() { return StatWidget; }
+	FORCEINLINE class USkillButtonWidget* GetSkillWidget() { return SkillWidget; }
 };

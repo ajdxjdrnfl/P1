@@ -28,9 +28,11 @@ private:
 	void OpenOverlayWidget();
 
 public:
-	void UseSkill(uint32 SkillIndex);
+	virtual void UseSkill(uint32 SkillIndex) override;
 	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 	
+	UFUNCTION()
+	void OnCharacterStaminaChanged();
 	UFUNCTION()
 	void OnCharacterHealthChanged();
 	

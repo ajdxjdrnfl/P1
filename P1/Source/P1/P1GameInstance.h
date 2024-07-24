@@ -52,14 +52,22 @@ public:
 
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
 
+	void AttackEnemy(Protocol::S_ATTACK& Pkt);
+
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
+
+	UPROPERTY()
+	TMap<uint64, class AEnemyBase*> Enemies;
 
 	UPROPERTY()
 	TMap<uint64, FGeneralSkillInfo> Skills;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AP1Character> CharacterClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AEnemyMob> EnemyMobClass;
 
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 

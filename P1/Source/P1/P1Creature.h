@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "P1.h"
 #include "P1Creature.generated.h"
 
 UCLASS()
@@ -19,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -30,7 +31,14 @@ private:
 	UPROPERTY()
 	class UP1ObjectBase* ObjectBase;
 
-public:
-	class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
+	UPROPERTY(EditAnywhere)
+	int32 ClassType;
 
+public:
+	Protocol::ObjectInfo* Info;
+
+
+	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
+	FORCEINLINE int32 GetClassType() const { return ClassType; }
+	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { Info->CopyFrom(InfoToSet); }
 };
