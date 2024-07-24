@@ -13,8 +13,13 @@ public:
 
 protected:
     virtual void BroadcastUpdate() override;
+    virtual void TakeDamage(GameObjectRef instigator, float damage) override;
 
 private:
     void RandomWalk();
+
+    float randomWalkDuration = 0.f;
+    float randomWalkCoolDonw = 2.f;
+
 };
 

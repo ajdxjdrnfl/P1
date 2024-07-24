@@ -109,3 +109,111 @@ struct Vector
 		return { x * cos(degree) - y * sin(degree), x * sin(degree) + y * cos(degree) };
 	}
 };
+
+struct Bound
+{
+	Bound()
+	{
+
+	}
+
+	Bound(float x1, float y1, float x2, float y2)
+	{
+		topLeft.x = x1;
+		topLeft.y = y1;
+		BottomRight.x = x2;
+		BottomRight.y = y2;
+	}
+
+	bool IsInBound(float x, float y)
+	{
+		if (topLeft.x > x || BottomRight.x < x)
+			return false;
+
+		else if (topLeft.y > y || BottomRight.y < y)
+			return false;
+
+		return true;
+	}
+
+	Vector GetSize()
+	{
+		return { BottomRight.x - topLeft.x, BottomRight.y - topLeft.y };
+	}
+
+	Vector topLeft = { 0,0 };
+	Vector BottomRight = { 0, 0 };
+
+
+};
+
+struct OBB
+{
+	Vector extent;
+	Vector pos;
+	float orientation;
+
+	Vector GetMin()
+	{
+		Vector xAxis = { 1,0 };
+		Vector yAxis = { 0,1 };
+
+		Vector oX = xAxis.Rotate(orientation);
+		Vector oY = yAxis.Rotate(orientation);
+		oX = { oX.x * extent.x , oX.y * extent.x };
+		oY = { oY.x * extent.y , oY.y * extent.y };
+
+		Vector result = pos - oX - oY;
+
+		return result;
+	}
+	Vector GetMax()
+	{
+		Vector xAxis = { 1,0 };
+		Vector yAxis = { 0,1 };
+
+		Vector oX = xAxis.Rotate(orientation);
+		Vector oY = yAxis.Rotate(orientation);
+		oX = { oX.x * extent.x , oX.y * extent.x };
+		oY = { oY.x * extent.y , oY.y * extent.y };
+
+		Vector result = pos + oX + oY;
+
+		return result;
+	}
+
+	Vector ClosestPoint(Vector point)
+	{
+		Vector xAxis = { 1,0 };
+		Vector yAxis = { 0,1 };
+
+		Vector oX = xAxis.Rotate(orientation);
+		Vector oY = yAxis.Rotate(orientation);
+
+		Vector dir = point - pos;
+
+		float X = oX.Dot(dir);
+		float Y = oY.Dot(dir);
+
+		Vector result;
+
+		if (X > extent.x)
+			X = extent.x;
+
+		if (X < -extent.x)
+			X = -extent.x;
+
+		if (Y > extent.y)
+			Y = extent.y;
+
+		if (Y < -extent.y)
+			Y = -extent.y;
+
+		oX = { oX.x * X , oX.y * X };
+		oY = { oY.x * Y , oY.y * Y };
+
+		result = oX + oY;
+
+		return result;
+	}
+};

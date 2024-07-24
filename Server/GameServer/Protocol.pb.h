@@ -1783,28 +1783,47 @@ class C_ATTACK final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kInstigatorFieldNumber = 1,
-    kVictimFieldNumber = 2,
+    kCasterFieldNumber = 1,
+    kSkillactorFieldNumber = 2,
+    kVictimFieldNumber = 3,
   };
-  // .Protocol.ObjectInfo instigator = 1;
-  bool has_instigator() const;
+  // .Protocol.ObjectInfo caster = 1;
+  bool has_caster() const;
   private:
-  bool _internal_has_instigator() const;
+  bool _internal_has_caster() const;
   public:
-  void clear_instigator();
-  const ::Protocol::ObjectInfo& instigator() const;
-  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_instigator();
-  ::Protocol::ObjectInfo* mutable_instigator();
-  void set_allocated_instigator(::Protocol::ObjectInfo* instigator);
+  void clear_caster();
+  const ::Protocol::ObjectInfo& caster() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_caster();
+  ::Protocol::ObjectInfo* mutable_caster();
+  void set_allocated_caster(::Protocol::ObjectInfo* caster);
   private:
-  const ::Protocol::ObjectInfo& _internal_instigator() const;
-  ::Protocol::ObjectInfo* _internal_mutable_instigator();
+  const ::Protocol::ObjectInfo& _internal_caster() const;
+  ::Protocol::ObjectInfo* _internal_mutable_caster();
   public:
-  void unsafe_arena_set_allocated_instigator(
-      ::Protocol::ObjectInfo* instigator);
-  ::Protocol::ObjectInfo* unsafe_arena_release_instigator();
+  void unsafe_arena_set_allocated_caster(
+      ::Protocol::ObjectInfo* caster);
+  ::Protocol::ObjectInfo* unsafe_arena_release_caster();
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  bool has_skillactor() const;
+  private:
+  bool _internal_has_skillactor() const;
+  public:
+  void clear_skillactor();
+  const ::Protocol::ObjectInfo& skillactor() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_skillactor();
+  ::Protocol::ObjectInfo* mutable_skillactor();
+  void set_allocated_skillactor(::Protocol::ObjectInfo* skillactor);
+  private:
+  const ::Protocol::ObjectInfo& _internal_skillactor() const;
+  ::Protocol::ObjectInfo* _internal_mutable_skillactor();
+  public:
+  void unsafe_arena_set_allocated_skillactor(
+      ::Protocol::ObjectInfo* skillactor);
+  ::Protocol::ObjectInfo* unsafe_arena_release_skillactor();
+
+  // .Protocol.ObjectInfo victim = 3;
   bool has_victim() const;
   private:
   bool _internal_has_victim() const;
@@ -1830,7 +1849,8 @@ class C_ATTACK final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::ObjectInfo* instigator_;
+    ::Protocol::ObjectInfo* caster_;
+    ::Protocol::ObjectInfo* skillactor_;
     ::Protocol::ObjectInfo* victim_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1960,28 +1980,48 @@ class S_ATTACK final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kInstigatorFieldNumber = 1,
-    kVictimFieldNumber = 2,
+    kCasterFieldNumber = 1,
+    kSkillactorFieldNumber = 2,
+    kVictimFieldNumber = 3,
+    kSkillinfoFieldNumber = 4,
   };
-  // .Protocol.ObjectInfo instigator = 1;
-  bool has_instigator() const;
+  // .Protocol.ObjectInfo caster = 1;
+  bool has_caster() const;
   private:
-  bool _internal_has_instigator() const;
+  bool _internal_has_caster() const;
   public:
-  void clear_instigator();
-  const ::Protocol::ObjectInfo& instigator() const;
-  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_instigator();
-  ::Protocol::ObjectInfo* mutable_instigator();
-  void set_allocated_instigator(::Protocol::ObjectInfo* instigator);
+  void clear_caster();
+  const ::Protocol::ObjectInfo& caster() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_caster();
+  ::Protocol::ObjectInfo* mutable_caster();
+  void set_allocated_caster(::Protocol::ObjectInfo* caster);
   private:
-  const ::Protocol::ObjectInfo& _internal_instigator() const;
-  ::Protocol::ObjectInfo* _internal_mutable_instigator();
+  const ::Protocol::ObjectInfo& _internal_caster() const;
+  ::Protocol::ObjectInfo* _internal_mutable_caster();
   public:
-  void unsafe_arena_set_allocated_instigator(
-      ::Protocol::ObjectInfo* instigator);
-  ::Protocol::ObjectInfo* unsafe_arena_release_instigator();
+  void unsafe_arena_set_allocated_caster(
+      ::Protocol::ObjectInfo* caster);
+  ::Protocol::ObjectInfo* unsafe_arena_release_caster();
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  bool has_skillactor() const;
+  private:
+  bool _internal_has_skillactor() const;
+  public:
+  void clear_skillactor();
+  const ::Protocol::ObjectInfo& skillactor() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_skillactor();
+  ::Protocol::ObjectInfo* mutable_skillactor();
+  void set_allocated_skillactor(::Protocol::ObjectInfo* skillactor);
+  private:
+  const ::Protocol::ObjectInfo& _internal_skillactor() const;
+  ::Protocol::ObjectInfo* _internal_mutable_skillactor();
+  public:
+  void unsafe_arena_set_allocated_skillactor(
+      ::Protocol::ObjectInfo* skillactor);
+  ::Protocol::ObjectInfo* unsafe_arena_release_skillactor();
+
+  // .Protocol.ObjectInfo victim = 3;
   bool has_victim() const;
   private:
   bool _internal_has_victim() const;
@@ -1999,6 +2039,24 @@ class S_ATTACK final :
       ::Protocol::ObjectInfo* victim);
   ::Protocol::ObjectInfo* unsafe_arena_release_victim();
 
+  // .Protocol.SkillInfo skillinfo = 4;
+  bool has_skillinfo() const;
+  private:
+  bool _internal_has_skillinfo() const;
+  public:
+  void clear_skillinfo();
+  const ::Protocol::SkillInfo& skillinfo() const;
+  PROTOBUF_NODISCARD ::Protocol::SkillInfo* release_skillinfo();
+  ::Protocol::SkillInfo* mutable_skillinfo();
+  void set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo);
+  private:
+  const ::Protocol::SkillInfo& _internal_skillinfo() const;
+  ::Protocol::SkillInfo* _internal_mutable_skillinfo();
+  public:
+  void unsafe_arena_set_allocated_skillinfo(
+      ::Protocol::SkillInfo* skillinfo);
+  ::Protocol::SkillInfo* unsafe_arena_release_skillinfo();
+
   // @@protoc_insertion_point(class_scope:Protocol.S_ATTACK)
  private:
   class _Internal;
@@ -2007,8 +2065,10 @@ class S_ATTACK final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::ObjectInfo* instigator_;
+    ::Protocol::ObjectInfo* caster_;
+    ::Protocol::ObjectInfo* skillactor_;
     ::Protocol::ObjectInfo* victim_;
+    ::Protocol::SkillInfo* skillinfo_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2869,39 +2929,39 @@ inline void S_SKILL::set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo) {
 
 // C_ATTACK
 
-// .Protocol.ObjectInfo instigator = 1;
-inline bool C_ATTACK::_internal_has_instigator() const {
-  return this != internal_default_instance() && _impl_.instigator_ != nullptr;
+// .Protocol.ObjectInfo caster = 1;
+inline bool C_ATTACK::_internal_has_caster() const {
+  return this != internal_default_instance() && _impl_.caster_ != nullptr;
 }
-inline bool C_ATTACK::has_instigator() const {
-  return _internal_has_instigator();
+inline bool C_ATTACK::has_caster() const {
+  return _internal_has_caster();
 }
-inline const ::Protocol::ObjectInfo& C_ATTACK::_internal_instigator() const {
-  const ::Protocol::ObjectInfo* p = _impl_.instigator_;
+inline const ::Protocol::ObjectInfo& C_ATTACK::_internal_caster() const {
+  const ::Protocol::ObjectInfo* p = _impl_.caster_;
   return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
       ::Protocol::_ObjectInfo_default_instance_);
 }
-inline const ::Protocol::ObjectInfo& C_ATTACK::instigator() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_ATTACK.instigator)
-  return _internal_instigator();
+inline const ::Protocol::ObjectInfo& C_ATTACK::caster() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ATTACK.caster)
+  return _internal_caster();
 }
-inline void C_ATTACK::unsafe_arena_set_allocated_instigator(
-    ::Protocol::ObjectInfo* instigator) {
+inline void C_ATTACK::unsafe_arena_set_allocated_caster(
+    ::Protocol::ObjectInfo* caster) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.instigator_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.caster_);
   }
-  _impl_.instigator_ = instigator;
-  if (instigator) {
+  _impl_.caster_ = caster;
+  if (caster) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_ATTACK.instigator)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_ATTACK.caster)
 }
-inline ::Protocol::ObjectInfo* C_ATTACK::release_instigator() {
+inline ::Protocol::ObjectInfo* C_ATTACK::release_caster() {
   
-  ::Protocol::ObjectInfo* temp = _impl_.instigator_;
-  _impl_.instigator_ = nullptr;
+  ::Protocol::ObjectInfo* temp = _impl_.caster_;
+  _impl_.caster_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2913,48 +2973,133 @@ inline ::Protocol::ObjectInfo* C_ATTACK::release_instigator() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::ObjectInfo* C_ATTACK::unsafe_arena_release_instigator() {
-  // @@protoc_insertion_point(field_release:Protocol.C_ATTACK.instigator)
+inline ::Protocol::ObjectInfo* C_ATTACK::unsafe_arena_release_caster() {
+  // @@protoc_insertion_point(field_release:Protocol.C_ATTACK.caster)
   
-  ::Protocol::ObjectInfo* temp = _impl_.instigator_;
-  _impl_.instigator_ = nullptr;
+  ::Protocol::ObjectInfo* temp = _impl_.caster_;
+  _impl_.caster_ = nullptr;
   return temp;
 }
-inline ::Protocol::ObjectInfo* C_ATTACK::_internal_mutable_instigator() {
+inline ::Protocol::ObjectInfo* C_ATTACK::_internal_mutable_caster() {
   
-  if (_impl_.instigator_ == nullptr) {
+  if (_impl_.caster_ == nullptr) {
     auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
-    _impl_.instigator_ = p;
+    _impl_.caster_ = p;
   }
-  return _impl_.instigator_;
+  return _impl_.caster_;
 }
-inline ::Protocol::ObjectInfo* C_ATTACK::mutable_instigator() {
-  ::Protocol::ObjectInfo* _msg = _internal_mutable_instigator();
-  // @@protoc_insertion_point(field_mutable:Protocol.C_ATTACK.instigator)
+inline ::Protocol::ObjectInfo* C_ATTACK::mutable_caster() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_caster();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_ATTACK.caster)
   return _msg;
 }
-inline void C_ATTACK::set_allocated_instigator(::Protocol::ObjectInfo* instigator) {
+inline void C_ATTACK::set_allocated_caster(::Protocol::ObjectInfo* caster) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.instigator_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.caster_);
   }
-  if (instigator) {
+  if (caster) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(instigator));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(caster));
     if (message_arena != submessage_arena) {
-      instigator = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, instigator, submessage_arena);
+      caster = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, caster, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.instigator_ = instigator;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.C_ATTACK.instigator)
+  _impl_.caster_ = caster;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_ATTACK.caster)
 }
 
-// .Protocol.ObjectInfo victim = 2;
+// .Protocol.ObjectInfo skillactor = 2;
+inline bool C_ATTACK::_internal_has_skillactor() const {
+  return this != internal_default_instance() && _impl_.skillactor_ != nullptr;
+}
+inline bool C_ATTACK::has_skillactor() const {
+  return _internal_has_skillactor();
+}
+inline const ::Protocol::ObjectInfo& C_ATTACK::_internal_skillactor() const {
+  const ::Protocol::ObjectInfo* p = _impl_.skillactor_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
+      ::Protocol::_ObjectInfo_default_instance_);
+}
+inline const ::Protocol::ObjectInfo& C_ATTACK::skillactor() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ATTACK.skillactor)
+  return _internal_skillactor();
+}
+inline void C_ATTACK::unsafe_arena_set_allocated_skillactor(
+    ::Protocol::ObjectInfo* skillactor) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillactor_);
+  }
+  _impl_.skillactor_ = skillactor;
+  if (skillactor) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_ATTACK.skillactor)
+}
+inline ::Protocol::ObjectInfo* C_ATTACK::release_skillactor() {
+  
+  ::Protocol::ObjectInfo* temp = _impl_.skillactor_;
+  _impl_.skillactor_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::ObjectInfo* C_ATTACK::unsafe_arena_release_skillactor() {
+  // @@protoc_insertion_point(field_release:Protocol.C_ATTACK.skillactor)
+  
+  ::Protocol::ObjectInfo* temp = _impl_.skillactor_;
+  _impl_.skillactor_ = nullptr;
+  return temp;
+}
+inline ::Protocol::ObjectInfo* C_ATTACK::_internal_mutable_skillactor() {
+  
+  if (_impl_.skillactor_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
+    _impl_.skillactor_ = p;
+  }
+  return _impl_.skillactor_;
+}
+inline ::Protocol::ObjectInfo* C_ATTACK::mutable_skillactor() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_skillactor();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_ATTACK.skillactor)
+  return _msg;
+}
+inline void C_ATTACK::set_allocated_skillactor(::Protocol::ObjectInfo* skillactor) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillactor_);
+  }
+  if (skillactor) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillactor));
+    if (message_arena != submessage_arena) {
+      skillactor = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, skillactor, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.skillactor_ = skillactor;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_ATTACK.skillactor)
+}
+
+// .Protocol.ObjectInfo victim = 3;
 inline bool C_ATTACK::_internal_has_victim() const {
   return this != internal_default_instance() && _impl_.victim_ != nullptr;
 }
@@ -3043,39 +3188,39 @@ inline void C_ATTACK::set_allocated_victim(::Protocol::ObjectInfo* victim) {
 
 // S_ATTACK
 
-// .Protocol.ObjectInfo instigator = 1;
-inline bool S_ATTACK::_internal_has_instigator() const {
-  return this != internal_default_instance() && _impl_.instigator_ != nullptr;
+// .Protocol.ObjectInfo caster = 1;
+inline bool S_ATTACK::_internal_has_caster() const {
+  return this != internal_default_instance() && _impl_.caster_ != nullptr;
 }
-inline bool S_ATTACK::has_instigator() const {
-  return _internal_has_instigator();
+inline bool S_ATTACK::has_caster() const {
+  return _internal_has_caster();
 }
-inline const ::Protocol::ObjectInfo& S_ATTACK::_internal_instigator() const {
-  const ::Protocol::ObjectInfo* p = _impl_.instigator_;
+inline const ::Protocol::ObjectInfo& S_ATTACK::_internal_caster() const {
+  const ::Protocol::ObjectInfo* p = _impl_.caster_;
   return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
       ::Protocol::_ObjectInfo_default_instance_);
 }
-inline const ::Protocol::ObjectInfo& S_ATTACK::instigator() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.instigator)
-  return _internal_instigator();
+inline const ::Protocol::ObjectInfo& S_ATTACK::caster() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.caster)
+  return _internal_caster();
 }
-inline void S_ATTACK::unsafe_arena_set_allocated_instigator(
-    ::Protocol::ObjectInfo* instigator) {
+inline void S_ATTACK::unsafe_arena_set_allocated_caster(
+    ::Protocol::ObjectInfo* caster) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.instigator_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.caster_);
   }
-  _impl_.instigator_ = instigator;
-  if (instigator) {
+  _impl_.caster_ = caster;
+  if (caster) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ATTACK.instigator)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ATTACK.caster)
 }
-inline ::Protocol::ObjectInfo* S_ATTACK::release_instigator() {
+inline ::Protocol::ObjectInfo* S_ATTACK::release_caster() {
   
-  ::Protocol::ObjectInfo* temp = _impl_.instigator_;
-  _impl_.instigator_ = nullptr;
+  ::Protocol::ObjectInfo* temp = _impl_.caster_;
+  _impl_.caster_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -3087,48 +3232,133 @@ inline ::Protocol::ObjectInfo* S_ATTACK::release_instigator() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::ObjectInfo* S_ATTACK::unsafe_arena_release_instigator() {
-  // @@protoc_insertion_point(field_release:Protocol.S_ATTACK.instigator)
+inline ::Protocol::ObjectInfo* S_ATTACK::unsafe_arena_release_caster() {
+  // @@protoc_insertion_point(field_release:Protocol.S_ATTACK.caster)
   
-  ::Protocol::ObjectInfo* temp = _impl_.instigator_;
-  _impl_.instigator_ = nullptr;
+  ::Protocol::ObjectInfo* temp = _impl_.caster_;
+  _impl_.caster_ = nullptr;
   return temp;
 }
-inline ::Protocol::ObjectInfo* S_ATTACK::_internal_mutable_instigator() {
+inline ::Protocol::ObjectInfo* S_ATTACK::_internal_mutable_caster() {
   
-  if (_impl_.instigator_ == nullptr) {
+  if (_impl_.caster_ == nullptr) {
     auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
-    _impl_.instigator_ = p;
+    _impl_.caster_ = p;
   }
-  return _impl_.instigator_;
+  return _impl_.caster_;
 }
-inline ::Protocol::ObjectInfo* S_ATTACK::mutable_instigator() {
-  ::Protocol::ObjectInfo* _msg = _internal_mutable_instigator();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_ATTACK.instigator)
+inline ::Protocol::ObjectInfo* S_ATTACK::mutable_caster() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_caster();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_ATTACK.caster)
   return _msg;
 }
-inline void S_ATTACK::set_allocated_instigator(::Protocol::ObjectInfo* instigator) {
+inline void S_ATTACK::set_allocated_caster(::Protocol::ObjectInfo* caster) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.instigator_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.caster_);
   }
-  if (instigator) {
+  if (caster) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(instigator));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(caster));
     if (message_arena != submessage_arena) {
-      instigator = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, instigator, submessage_arena);
+      caster = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, caster, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.instigator_ = instigator;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.instigator)
+  _impl_.caster_ = caster;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.caster)
 }
 
-// .Protocol.ObjectInfo victim = 2;
+// .Protocol.ObjectInfo skillactor = 2;
+inline bool S_ATTACK::_internal_has_skillactor() const {
+  return this != internal_default_instance() && _impl_.skillactor_ != nullptr;
+}
+inline bool S_ATTACK::has_skillactor() const {
+  return _internal_has_skillactor();
+}
+inline const ::Protocol::ObjectInfo& S_ATTACK::_internal_skillactor() const {
+  const ::Protocol::ObjectInfo* p = _impl_.skillactor_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
+      ::Protocol::_ObjectInfo_default_instance_);
+}
+inline const ::Protocol::ObjectInfo& S_ATTACK::skillactor() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.skillactor)
+  return _internal_skillactor();
+}
+inline void S_ATTACK::unsafe_arena_set_allocated_skillactor(
+    ::Protocol::ObjectInfo* skillactor) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillactor_);
+  }
+  _impl_.skillactor_ = skillactor;
+  if (skillactor) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ATTACK.skillactor)
+}
+inline ::Protocol::ObjectInfo* S_ATTACK::release_skillactor() {
+  
+  ::Protocol::ObjectInfo* temp = _impl_.skillactor_;
+  _impl_.skillactor_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::ObjectInfo* S_ATTACK::unsafe_arena_release_skillactor() {
+  // @@protoc_insertion_point(field_release:Protocol.S_ATTACK.skillactor)
+  
+  ::Protocol::ObjectInfo* temp = _impl_.skillactor_;
+  _impl_.skillactor_ = nullptr;
+  return temp;
+}
+inline ::Protocol::ObjectInfo* S_ATTACK::_internal_mutable_skillactor() {
+  
+  if (_impl_.skillactor_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
+    _impl_.skillactor_ = p;
+  }
+  return _impl_.skillactor_;
+}
+inline ::Protocol::ObjectInfo* S_ATTACK::mutable_skillactor() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_skillactor();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_ATTACK.skillactor)
+  return _msg;
+}
+inline void S_ATTACK::set_allocated_skillactor(::Protocol::ObjectInfo* skillactor) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillactor_);
+  }
+  if (skillactor) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillactor));
+    if (message_arena != submessage_arena) {
+      skillactor = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, skillactor, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.skillactor_ = skillactor;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.skillactor)
+}
+
+// .Protocol.ObjectInfo victim = 3;
 inline bool S_ATTACK::_internal_has_victim() const {
   return this != internal_default_instance() && _impl_.victim_ != nullptr;
 }
@@ -3211,6 +3441,91 @@ inline void S_ATTACK::set_allocated_victim(::Protocol::ObjectInfo* victim) {
   }
   _impl_.victim_ = victim;
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.victim)
+}
+
+// .Protocol.SkillInfo skillinfo = 4;
+inline bool S_ATTACK::_internal_has_skillinfo() const {
+  return this != internal_default_instance() && _impl_.skillinfo_ != nullptr;
+}
+inline bool S_ATTACK::has_skillinfo() const {
+  return _internal_has_skillinfo();
+}
+inline const ::Protocol::SkillInfo& S_ATTACK::_internal_skillinfo() const {
+  const ::Protocol::SkillInfo* p = _impl_.skillinfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::SkillInfo&>(
+      ::Protocol::_SkillInfo_default_instance_);
+}
+inline const ::Protocol::SkillInfo& S_ATTACK::skillinfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.skillinfo)
+  return _internal_skillinfo();
+}
+inline void S_ATTACK::unsafe_arena_set_allocated_skillinfo(
+    ::Protocol::SkillInfo* skillinfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
+  }
+  _impl_.skillinfo_ = skillinfo;
+  if (skillinfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ATTACK.skillinfo)
+}
+inline ::Protocol::SkillInfo* S_ATTACK::release_skillinfo() {
+  
+  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
+  _impl_.skillinfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::SkillInfo* S_ATTACK::unsafe_arena_release_skillinfo() {
+  // @@protoc_insertion_point(field_release:Protocol.S_ATTACK.skillinfo)
+  
+  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
+  _impl_.skillinfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::SkillInfo* S_ATTACK::_internal_mutable_skillinfo() {
+  
+  if (_impl_.skillinfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::SkillInfo>(GetArenaForAllocation());
+    _impl_.skillinfo_ = p;
+  }
+  return _impl_.skillinfo_;
+}
+inline ::Protocol::SkillInfo* S_ATTACK::mutable_skillinfo() {
+  ::Protocol::SkillInfo* _msg = _internal_mutable_skillinfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_ATTACK.skillinfo)
+  return _msg;
+}
+inline void S_ATTACK::set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
+  }
+  if (skillinfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillinfo));
+    if (message_arena != submessage_arena) {
+      skillinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, skillinfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.skillinfo_ = skillinfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.skillinfo)
 }
 
 #ifdef __GNUC__

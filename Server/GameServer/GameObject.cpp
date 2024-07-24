@@ -6,6 +6,11 @@ GameObject::GameObject(RoomRef room)
 {
 	_objectInfo = new Protocol::ObjectInfo();
 	_room = room;
+
+	for (auto& item : _components)
+	{
+		item = nullptr;
+	}
 }
 
 GameObject::~GameObject()
@@ -23,21 +28,20 @@ GameObject::~GameObject()
 
 void GameObject::Init()
 {
-	for (int32 i = 0; i < _components.size(); i++)
-	{
-		_components[i]->Init();
-	}
+
 }
 
 void GameObject::Update(float deltaTime)
 {
-	for (int32 i = 0; i < _components.size(); i++)
+	
+	for (auto& item : _components)
 	{
-		_components[i]->Update(deltaTime);
+		if (item != nullptr)
+			item->Update(deltaTime);
 	}
-	_dirtyFlag = false;
 
 	BroadcastUpdate();
+	_dirtyFlag = false;
 }
 
 void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool dirtyFlag)
@@ -53,14 +57,24 @@ void GameObject::BroadcastUpdate()
 		// TODO : Send update packet
 	}
 }
-
-ComponentBase* GameObject::GetComponent()
+void GameObject::TakeDamage(GameObjectRef instigator, float damage)
 {
-	return nullptr;
+	// TODO : »ç¸Á Ã³¸®
+	float currentHp = _objectInfo->hp();
+	float hp = max(0, currentHp - damage);
+	_objectInfo->set_hp(hp);
+}
+
+ComponentBase* GameObject::GetComponent(EComponentType type)
+{
+	return _components[type];
 }
 
 void GameObject::AddComponent(ComponentBase* component)
 {
-	_components.push_back(component);
+	assert(_components[component->GetComponentType()] == nullptr);
+
+	component->Init();
+	_components[component->GetComponentType()] = component;
 	component->SetOwner(shared_from_this());
 }

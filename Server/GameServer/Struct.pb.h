@@ -189,7 +189,10 @@ class ObjectInfo final :
     kYawFieldNumber = 5,
     kStateFieldNumber = 6,
     kHpFieldNumber = 7,
-    kCastertypeFieldNumber = 8,
+    kMaxHpFieldNumber = 8,
+    kStaminaFieldNumber = 9,
+    kMaxStaminaFieldNumber = 10,
+    kCastertypeFieldNumber = 11,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -254,7 +257,34 @@ class ObjectInfo final :
   void _internal_set_hp(float value);
   public:
 
-  // .Protocol.CasterType castertype = 8;
+  // float max_hp = 8;
+  void clear_max_hp();
+  float max_hp() const;
+  void set_max_hp(float value);
+  private:
+  float _internal_max_hp() const;
+  void _internal_set_max_hp(float value);
+  public:
+
+  // float stamina = 9;
+  void clear_stamina();
+  float stamina() const;
+  void set_stamina(float value);
+  private:
+  float _internal_stamina() const;
+  void _internal_set_stamina(float value);
+  public:
+
+  // float max_stamina = 10;
+  void clear_max_stamina();
+  float max_stamina() const;
+  void set_max_stamina(float value);
+  private:
+  float _internal_max_stamina() const;
+  void _internal_set_max_stamina(float value);
+  public:
+
+  // .Protocol.CasterType castertype = 11;
   void clear_castertype();
   ::Protocol::CasterType castertype() const;
   void set_castertype(::Protocol::CasterType value);
@@ -278,6 +308,9 @@ class ObjectInfo final :
     float yaw_;
     int state_;
     float hp_;
+    float max_hp_;
+    float stamina_;
+    float max_stamina_;
     int castertype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -408,6 +441,13 @@ class SkillInfo final :
 
   enum : int {
     kSkillIdFieldNumber = 1,
+    kDamageTypeFieldNumber = 2,
+    kCollisionTypeFieldNumber = 3,
+    kCcTypeFieldNumber = 4,
+    kDamageFieldNumber = 5,
+    kCooldownFieldNumber = 6,
+    kSizeXFieldNumber = 7,
+    kSizeYFieldNumber = 8,
   };
   // uint64 skill_id = 1;
   void clear_skill_id();
@@ -416,6 +456,69 @@ class SkillInfo final :
   private:
   uint64_t _internal_skill_id() const;
   void _internal_set_skill_id(uint64_t value);
+  public:
+
+  // .Protocol.DamageType damage_type = 2;
+  void clear_damage_type();
+  ::Protocol::DamageType damage_type() const;
+  void set_damage_type(::Protocol::DamageType value);
+  private:
+  ::Protocol::DamageType _internal_damage_type() const;
+  void _internal_set_damage_type(::Protocol::DamageType value);
+  public:
+
+  // .Protocol.CollisionType collision_type = 3;
+  void clear_collision_type();
+  ::Protocol::CollisionType collision_type() const;
+  void set_collision_type(::Protocol::CollisionType value);
+  private:
+  ::Protocol::CollisionType _internal_collision_type() const;
+  void _internal_set_collision_type(::Protocol::CollisionType value);
+  public:
+
+  // .Protocol.CCType cc_type = 4;
+  void clear_cc_type();
+  ::Protocol::CCType cc_type() const;
+  void set_cc_type(::Protocol::CCType value);
+  private:
+  ::Protocol::CCType _internal_cc_type() const;
+  void _internal_set_cc_type(::Protocol::CCType value);
+  public:
+
+  // float damage = 5;
+  void clear_damage();
+  float damage() const;
+  void set_damage(float value);
+  private:
+  float _internal_damage() const;
+  void _internal_set_damage(float value);
+  public:
+
+  // float cooldown = 6;
+  void clear_cooldown();
+  float cooldown() const;
+  void set_cooldown(float value);
+  private:
+  float _internal_cooldown() const;
+  void _internal_set_cooldown(float value);
+  public:
+
+  // float size_x = 7;
+  void clear_size_x();
+  float size_x() const;
+  void set_size_x(float value);
+  private:
+  float _internal_size_x() const;
+  void _internal_set_size_x(float value);
+  public:
+
+  // float size_y = 8;
+  void clear_size_y();
+  float size_y() const;
+  void set_size_y(float value);
+  private:
+  float _internal_size_y() const;
+  void _internal_set_size_y(float value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.SkillInfo)
@@ -427,6 +530,13 @@ class SkillInfo final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     uint64_t skill_id_;
+    int damage_type_;
+    int collision_type_;
+    int cc_type_;
+    float damage_;
+    float cooldown_;
+    float size_x_;
+    float size_y_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -583,7 +693,67 @@ inline void ObjectInfo::set_hp(float value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.hp)
 }
 
-// .Protocol.CasterType castertype = 8;
+// float max_hp = 8;
+inline void ObjectInfo::clear_max_hp() {
+  _impl_.max_hp_ = 0;
+}
+inline float ObjectInfo::_internal_max_hp() const {
+  return _impl_.max_hp_;
+}
+inline float ObjectInfo::max_hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.max_hp)
+  return _internal_max_hp();
+}
+inline void ObjectInfo::_internal_set_max_hp(float value) {
+  
+  _impl_.max_hp_ = value;
+}
+inline void ObjectInfo::set_max_hp(float value) {
+  _internal_set_max_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.max_hp)
+}
+
+// float stamina = 9;
+inline void ObjectInfo::clear_stamina() {
+  _impl_.stamina_ = 0;
+}
+inline float ObjectInfo::_internal_stamina() const {
+  return _impl_.stamina_;
+}
+inline float ObjectInfo::stamina() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.stamina)
+  return _internal_stamina();
+}
+inline void ObjectInfo::_internal_set_stamina(float value) {
+  
+  _impl_.stamina_ = value;
+}
+inline void ObjectInfo::set_stamina(float value) {
+  _internal_set_stamina(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.stamina)
+}
+
+// float max_stamina = 10;
+inline void ObjectInfo::clear_max_stamina() {
+  _impl_.max_stamina_ = 0;
+}
+inline float ObjectInfo::_internal_max_stamina() const {
+  return _impl_.max_stamina_;
+}
+inline float ObjectInfo::max_stamina() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.max_stamina)
+  return _internal_max_stamina();
+}
+inline void ObjectInfo::_internal_set_max_stamina(float value) {
+  
+  _impl_.max_stamina_ = value;
+}
+inline void ObjectInfo::set_max_stamina(float value) {
+  _internal_set_max_stamina(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.max_stamina)
+}
+
+// .Protocol.CasterType castertype = 11;
 inline void ObjectInfo::clear_castertype() {
   _impl_.castertype_ = 0;
 }
@@ -625,6 +795,146 @@ inline void SkillInfo::_internal_set_skill_id(uint64_t value) {
 inline void SkillInfo::set_skill_id(uint64_t value) {
   _internal_set_skill_id(value);
   // @@protoc_insertion_point(field_set:Protocol.SkillInfo.skill_id)
+}
+
+// .Protocol.DamageType damage_type = 2;
+inline void SkillInfo::clear_damage_type() {
+  _impl_.damage_type_ = 0;
+}
+inline ::Protocol::DamageType SkillInfo::_internal_damage_type() const {
+  return static_cast< ::Protocol::DamageType >(_impl_.damage_type_);
+}
+inline ::Protocol::DamageType SkillInfo::damage_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.damage_type)
+  return _internal_damage_type();
+}
+inline void SkillInfo::_internal_set_damage_type(::Protocol::DamageType value) {
+  
+  _impl_.damage_type_ = value;
+}
+inline void SkillInfo::set_damage_type(::Protocol::DamageType value) {
+  _internal_set_damage_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.damage_type)
+}
+
+// .Protocol.CollisionType collision_type = 3;
+inline void SkillInfo::clear_collision_type() {
+  _impl_.collision_type_ = 0;
+}
+inline ::Protocol::CollisionType SkillInfo::_internal_collision_type() const {
+  return static_cast< ::Protocol::CollisionType >(_impl_.collision_type_);
+}
+inline ::Protocol::CollisionType SkillInfo::collision_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.collision_type)
+  return _internal_collision_type();
+}
+inline void SkillInfo::_internal_set_collision_type(::Protocol::CollisionType value) {
+  
+  _impl_.collision_type_ = value;
+}
+inline void SkillInfo::set_collision_type(::Protocol::CollisionType value) {
+  _internal_set_collision_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.collision_type)
+}
+
+// .Protocol.CCType cc_type = 4;
+inline void SkillInfo::clear_cc_type() {
+  _impl_.cc_type_ = 0;
+}
+inline ::Protocol::CCType SkillInfo::_internal_cc_type() const {
+  return static_cast< ::Protocol::CCType >(_impl_.cc_type_);
+}
+inline ::Protocol::CCType SkillInfo::cc_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.cc_type)
+  return _internal_cc_type();
+}
+inline void SkillInfo::_internal_set_cc_type(::Protocol::CCType value) {
+  
+  _impl_.cc_type_ = value;
+}
+inline void SkillInfo::set_cc_type(::Protocol::CCType value) {
+  _internal_set_cc_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.cc_type)
+}
+
+// float damage = 5;
+inline void SkillInfo::clear_damage() {
+  _impl_.damage_ = 0;
+}
+inline float SkillInfo::_internal_damage() const {
+  return _impl_.damage_;
+}
+inline float SkillInfo::damage() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.damage)
+  return _internal_damage();
+}
+inline void SkillInfo::_internal_set_damage(float value) {
+  
+  _impl_.damage_ = value;
+}
+inline void SkillInfo::set_damage(float value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.damage)
+}
+
+// float cooldown = 6;
+inline void SkillInfo::clear_cooldown() {
+  _impl_.cooldown_ = 0;
+}
+inline float SkillInfo::_internal_cooldown() const {
+  return _impl_.cooldown_;
+}
+inline float SkillInfo::cooldown() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.cooldown)
+  return _internal_cooldown();
+}
+inline void SkillInfo::_internal_set_cooldown(float value) {
+  
+  _impl_.cooldown_ = value;
+}
+inline void SkillInfo::set_cooldown(float value) {
+  _internal_set_cooldown(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.cooldown)
+}
+
+// float size_x = 7;
+inline void SkillInfo::clear_size_x() {
+  _impl_.size_x_ = 0;
+}
+inline float SkillInfo::_internal_size_x() const {
+  return _impl_.size_x_;
+}
+inline float SkillInfo::size_x() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.size_x)
+  return _internal_size_x();
+}
+inline void SkillInfo::_internal_set_size_x(float value) {
+  
+  _impl_.size_x_ = value;
+}
+inline void SkillInfo::set_size_x(float value) {
+  _internal_set_size_x(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.size_x)
+}
+
+// float size_y = 8;
+inline void SkillInfo::clear_size_y() {
+  _impl_.size_y_ = 0;
+}
+inline float SkillInfo::_internal_size_y() const {
+  return _impl_.size_y_;
+}
+inline float SkillInfo::size_y() const {
+  // @@protoc_insertion_point(field_get:Protocol.SkillInfo.size_y)
+  return _internal_size_y();
+}
+inline void SkillInfo::_internal_set_size_y(float value) {
+  
+  _impl_.size_y_ = value;
+}
+inline void SkillInfo::set_size_y(float value) {
+  _internal_set_size_y(value);
+  // @@protoc_insertion_point(field_set:Protocol.SkillInfo.size_y)
 }
 
 #ifdef __GNUC__

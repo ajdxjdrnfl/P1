@@ -12,11 +12,22 @@ message ObjectInfo
 	float yaw = 5;
 	MoveState state = 6;
 	float hp = 7;
-	CasterType castertype = 8;
+	float max_hp=8;
+	float stamina = 9;
+	float max_stamina = 10;
+	CasterType castertype = 11;
 
 }
 
 message SkillInfo
 {
 	uint64 skill_id = 1;
+	DamageType damage_type=2;
+	CollisionType collision_type=3;
+	CCType cc_type = 4;
+
+	float damage = 5;
+	float cooldown = 6;
+	float size_x = 7;
+	float size_y = 8;
 }

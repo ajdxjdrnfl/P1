@@ -34,6 +34,9 @@
     <Filter Include="Game\Component">
       <UniqueIdentifier>{1859e14d-d6a7-43a7-b7d1-bff0e8eb525b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Resources">
+      <UniqueIdentifier>{9db88fef-034c-4c14-b896-9177835f946a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat">
@@ -107,6 +110,36 @@
     <ClInclude Include="SkillTimer.h">
       <Filter>Game\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Game\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LogUtils.h">
+      <Filter>Game\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceBase.h">
+      <Filter>Game\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Game\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>Game\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Game\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Game\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -165,6 +198,30 @@
     </ClCompile>
     <ClCompile Include="SkillTimer.cpp">
       <Filter>Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="LogUtils.cpp">
+      <Filter>Game\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceBase.cpp">
+      <Filter>Game\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Game\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>Game\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Game\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

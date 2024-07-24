@@ -154,7 +154,8 @@ struct S_SKILLDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SKILLDefaultTypeInternal _S_SKILL_default_instance_;
 PROTOBUF_CONSTEXPR C_ATTACK::C_ATTACK(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.instigator_)*/nullptr
+    /*decltype(_impl_.caster_)*/nullptr
+  , /*decltype(_impl_.skillactor_)*/nullptr
   , /*decltype(_impl_.victim_)*/nullptr
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_ATTACKDefaultTypeInternal {
@@ -168,8 +169,10 @@ struct C_ATTACKDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_ATTACKDefaultTypeInternal _C_ATTACK_default_instance_;
 PROTOBUF_CONSTEXPR S_ATTACK::S_ATTACK(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.instigator_)*/nullptr
+    /*decltype(_impl_.caster_)*/nullptr
+  , /*decltype(_impl_.skillactor_)*/nullptr
   , /*decltype(_impl_.victim_)*/nullptr
+  , /*decltype(_impl_.skillinfo_)*/nullptr
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_ATTACKDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_ATTACKDefaultTypeInternal()
@@ -264,7 +267,8 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.instigator_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.caster_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.skillactor_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.victim_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _internal_metadata_),
@@ -272,8 +276,10 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.instigator_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.caster_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.skillactor_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.victim_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.skillinfo_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::C_LOGIN)},
@@ -287,7 +293,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 55, -1, -1, sizeof(::Protocol::C_SKILL)},
   { 63, -1, -1, sizeof(::Protocol::S_SKILL)},
   { 72, -1, -1, sizeof(::Protocol::C_ATTACK)},
-  { 80, -1, -1, sizeof(::Protocol::S_ATTACK)},
+  { 81, -1, -1, sizeof(::Protocol::S_ATTACK)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -320,12 +326,14 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\n\007S_SKILL\022$\n\006caster\030\001 \001(\0132\024.Protocol.Obj"
   "ectInfo\022(\n\nskillactor\030\002 \001(\0132\024.Protocol.O"
   "bjectInfo\022&\n\tskillinfo\030\003 \001(\0132\023.Protocol."
-  "SkillInfo\"Z\n\010C_ATTACK\022(\n\ninstigator\030\001 \001("
-  "\0132\024.Protocol.ObjectInfo\022$\n\006victim\030\002 \001(\0132"
-  "\024.Protocol.ObjectInfo\"Z\n\010S_ATTACK\022(\n\nins"
-  "tigator\030\001 \001(\0132\024.Protocol.ObjectInfo\022$\n\006v"
-  "ictim\030\002 \001(\0132\024.Protocol.ObjectInfob\006proto"
-  "3"
+  "SkillInfo\"\200\001\n\010C_ATTACK\022$\n\006caster\030\001 \001(\0132\024"
+  ".Protocol.ObjectInfo\022(\n\nskillactor\030\002 \001(\013"
+  "2\024.Protocol.ObjectInfo\022$\n\006victim\030\003 \001(\0132\024"
+  ".Protocol.ObjectInfo\"\250\001\n\010S_ATTACK\022$\n\006cas"
+  "ter\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskill"
+  "actor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n\006vic"
+  "tim\030\003 \001(\0132\024.Protocol.ObjectInfo\022&\n\tskill"
+  "info\030\004 \001(\0132\023.Protocol.SkillInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -333,7 +341,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 761, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 879, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 12,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2168,23 +2176,34 @@ void S_SKILL::InternalSwap(S_SKILL* other) {
 
 class C_ATTACK::_Internal {
  public:
-  static const ::Protocol::ObjectInfo& instigator(const C_ATTACK* msg);
+  static const ::Protocol::ObjectInfo& caster(const C_ATTACK* msg);
+  static const ::Protocol::ObjectInfo& skillactor(const C_ATTACK* msg);
   static const ::Protocol::ObjectInfo& victim(const C_ATTACK* msg);
 };
 
 const ::Protocol::ObjectInfo&
-C_ATTACK::_Internal::instigator(const C_ATTACK* msg) {
-  return *msg->_impl_.instigator_;
+C_ATTACK::_Internal::caster(const C_ATTACK* msg) {
+  return *msg->_impl_.caster_;
+}
+const ::Protocol::ObjectInfo&
+C_ATTACK::_Internal::skillactor(const C_ATTACK* msg) {
+  return *msg->_impl_.skillactor_;
 }
 const ::Protocol::ObjectInfo&
 C_ATTACK::_Internal::victim(const C_ATTACK* msg) {
   return *msg->_impl_.victim_;
 }
-void C_ATTACK::clear_instigator() {
-  if (GetArenaForAllocation() == nullptr && _impl_.instigator_ != nullptr) {
-    delete _impl_.instigator_;
+void C_ATTACK::clear_caster() {
+  if (GetArenaForAllocation() == nullptr && _impl_.caster_ != nullptr) {
+    delete _impl_.caster_;
   }
-  _impl_.instigator_ = nullptr;
+  _impl_.caster_ = nullptr;
+}
+void C_ATTACK::clear_skillactor() {
+  if (GetArenaForAllocation() == nullptr && _impl_.skillactor_ != nullptr) {
+    delete _impl_.skillactor_;
+  }
+  _impl_.skillactor_ = nullptr;
 }
 void C_ATTACK::clear_victim() {
   if (GetArenaForAllocation() == nullptr && _impl_.victim_ != nullptr) {
@@ -2202,13 +2221,17 @@ C_ATTACK::C_ATTACK(const C_ATTACK& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   C_ATTACK* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.instigator_){nullptr}
+      decltype(_impl_.caster_){nullptr}
+    , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_instigator()) {
-    _this->_impl_.instigator_ = new ::Protocol::ObjectInfo(*from._impl_.instigator_);
+  if (from._internal_has_caster()) {
+    _this->_impl_.caster_ = new ::Protocol::ObjectInfo(*from._impl_.caster_);
+  }
+  if (from._internal_has_skillactor()) {
+    _this->_impl_.skillactor_ = new ::Protocol::ObjectInfo(*from._impl_.skillactor_);
   }
   if (from._internal_has_victim()) {
     _this->_impl_.victim_ = new ::Protocol::ObjectInfo(*from._impl_.victim_);
@@ -2221,7 +2244,8 @@ inline void C_ATTACK::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.instigator_){nullptr}
+      decltype(_impl_.caster_){nullptr}
+    , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2238,7 +2262,8 @@ C_ATTACK::~C_ATTACK() {
 
 inline void C_ATTACK::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.instigator_;
+  if (this != internal_default_instance()) delete _impl_.caster_;
+  if (this != internal_default_instance()) delete _impl_.skillactor_;
   if (this != internal_default_instance()) delete _impl_.victim_;
 }
 
@@ -2252,10 +2277,14 @@ void C_ATTACK::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && _impl_.instigator_ != nullptr) {
-    delete _impl_.instigator_;
+  if (GetArenaForAllocation() == nullptr && _impl_.caster_ != nullptr) {
+    delete _impl_.caster_;
   }
-  _impl_.instigator_ = nullptr;
+  _impl_.caster_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.skillactor_ != nullptr) {
+    delete _impl_.skillactor_;
+  }
+  _impl_.skillactor_ = nullptr;
   if (GetArenaForAllocation() == nullptr && _impl_.victim_ != nullptr) {
     delete _impl_.victim_;
   }
@@ -2269,17 +2298,25 @@ const char* C_ATTACK::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .Protocol.ObjectInfo instigator = 1;
+      // .Protocol.ObjectInfo caster = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_instigator(), ptr);
+          ptr = ctx->ParseMessage(_internal_mutable_caster(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ObjectInfo victim = 2;
+      // .Protocol.ObjectInfo skillactor = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_skillactor(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.ObjectInfo victim = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_victim(), ptr);
           CHK_(ptr);
         } else
@@ -2314,17 +2351,24 @@ uint8_t* C_ATTACK::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .Protocol.ObjectInfo instigator = 1;
-  if (this->_internal_has_instigator()) {
+  // .Protocol.ObjectInfo caster = 1;
+  if (this->_internal_has_caster()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::instigator(this),
-        _Internal::instigator(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(1, _Internal::caster(this),
+        _Internal::caster(this).GetCachedSize(), target, stream);
   }
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  if (this->_internal_has_skillactor()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, _Internal::skillactor(this),
+        _Internal::skillactor(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.ObjectInfo victim = 3;
   if (this->_internal_has_victim()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::victim(this),
+      InternalWriteMessage(3, _Internal::victim(this),
         _Internal::victim(this).GetCachedSize(), target, stream);
   }
 
@@ -2344,14 +2388,21 @@ size_t C_ATTACK::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.ObjectInfo instigator = 1;
-  if (this->_internal_has_instigator()) {
+  // .Protocol.ObjectInfo caster = 1;
+  if (this->_internal_has_caster()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.instigator_);
+        *_impl_.caster_);
   }
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  if (this->_internal_has_skillactor()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.skillactor_);
+  }
+
+  // .Protocol.ObjectInfo victim = 3;
   if (this->_internal_has_victim()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
@@ -2376,9 +2427,13 @@ void C_ATTACK::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_instigator()) {
-    _this->_internal_mutable_instigator()->::Protocol::ObjectInfo::MergeFrom(
-        from._internal_instigator());
+  if (from._internal_has_caster()) {
+    _this->_internal_mutable_caster()->::Protocol::ObjectInfo::MergeFrom(
+        from._internal_caster());
+  }
+  if (from._internal_has_skillactor()) {
+    _this->_internal_mutable_skillactor()->::Protocol::ObjectInfo::MergeFrom(
+        from._internal_skillactor());
   }
   if (from._internal_has_victim()) {
     _this->_internal_mutable_victim()->::Protocol::ObjectInfo::MergeFrom(
@@ -2404,9 +2459,9 @@ void C_ATTACK::InternalSwap(C_ATTACK* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.victim_)
       + sizeof(C_ATTACK::_impl_.victim_)
-      - PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.instigator_)>(
-          reinterpret_cast<char*>(&_impl_.instigator_),
-          reinterpret_cast<char*>(&other->_impl_.instigator_));
+      - PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.caster_)>(
+          reinterpret_cast<char*>(&_impl_.caster_),
+          reinterpret_cast<char*>(&other->_impl_.caster_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C_ATTACK::GetMetadata() const {
@@ -2419,29 +2474,51 @@ void C_ATTACK::InternalSwap(C_ATTACK* other) {
 
 class S_ATTACK::_Internal {
  public:
-  static const ::Protocol::ObjectInfo& instigator(const S_ATTACK* msg);
+  static const ::Protocol::ObjectInfo& caster(const S_ATTACK* msg);
+  static const ::Protocol::ObjectInfo& skillactor(const S_ATTACK* msg);
   static const ::Protocol::ObjectInfo& victim(const S_ATTACK* msg);
+  static const ::Protocol::SkillInfo& skillinfo(const S_ATTACK* msg);
 };
 
 const ::Protocol::ObjectInfo&
-S_ATTACK::_Internal::instigator(const S_ATTACK* msg) {
-  return *msg->_impl_.instigator_;
+S_ATTACK::_Internal::caster(const S_ATTACK* msg) {
+  return *msg->_impl_.caster_;
+}
+const ::Protocol::ObjectInfo&
+S_ATTACK::_Internal::skillactor(const S_ATTACK* msg) {
+  return *msg->_impl_.skillactor_;
 }
 const ::Protocol::ObjectInfo&
 S_ATTACK::_Internal::victim(const S_ATTACK* msg) {
   return *msg->_impl_.victim_;
 }
-void S_ATTACK::clear_instigator() {
-  if (GetArenaForAllocation() == nullptr && _impl_.instigator_ != nullptr) {
-    delete _impl_.instigator_;
+const ::Protocol::SkillInfo&
+S_ATTACK::_Internal::skillinfo(const S_ATTACK* msg) {
+  return *msg->_impl_.skillinfo_;
+}
+void S_ATTACK::clear_caster() {
+  if (GetArenaForAllocation() == nullptr && _impl_.caster_ != nullptr) {
+    delete _impl_.caster_;
   }
-  _impl_.instigator_ = nullptr;
+  _impl_.caster_ = nullptr;
+}
+void S_ATTACK::clear_skillactor() {
+  if (GetArenaForAllocation() == nullptr && _impl_.skillactor_ != nullptr) {
+    delete _impl_.skillactor_;
+  }
+  _impl_.skillactor_ = nullptr;
 }
 void S_ATTACK::clear_victim() {
   if (GetArenaForAllocation() == nullptr && _impl_.victim_ != nullptr) {
     delete _impl_.victim_;
   }
   _impl_.victim_ = nullptr;
+}
+void S_ATTACK::clear_skillinfo() {
+  if (GetArenaForAllocation() == nullptr && _impl_.skillinfo_ != nullptr) {
+    delete _impl_.skillinfo_;
+  }
+  _impl_.skillinfo_ = nullptr;
 }
 S_ATTACK::S_ATTACK(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -2453,16 +2530,24 @@ S_ATTACK::S_ATTACK(const S_ATTACK& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_ATTACK* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.instigator_){nullptr}
+      decltype(_impl_.caster_){nullptr}
+    , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
+    , decltype(_impl_.skillinfo_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_instigator()) {
-    _this->_impl_.instigator_ = new ::Protocol::ObjectInfo(*from._impl_.instigator_);
+  if (from._internal_has_caster()) {
+    _this->_impl_.caster_ = new ::Protocol::ObjectInfo(*from._impl_.caster_);
+  }
+  if (from._internal_has_skillactor()) {
+    _this->_impl_.skillactor_ = new ::Protocol::ObjectInfo(*from._impl_.skillactor_);
   }
   if (from._internal_has_victim()) {
     _this->_impl_.victim_ = new ::Protocol::ObjectInfo(*from._impl_.victim_);
+  }
+  if (from._internal_has_skillinfo()) {
+    _this->_impl_.skillinfo_ = new ::Protocol::SkillInfo(*from._impl_.skillinfo_);
   }
   // @@protoc_insertion_point(copy_constructor:Protocol.S_ATTACK)
 }
@@ -2472,8 +2557,10 @@ inline void S_ATTACK::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.instigator_){nullptr}
+      decltype(_impl_.caster_){nullptr}
+    , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
+    , decltype(_impl_.skillinfo_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2489,8 +2576,10 @@ S_ATTACK::~S_ATTACK() {
 
 inline void S_ATTACK::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.instigator_;
+  if (this != internal_default_instance()) delete _impl_.caster_;
+  if (this != internal_default_instance()) delete _impl_.skillactor_;
   if (this != internal_default_instance()) delete _impl_.victim_;
+  if (this != internal_default_instance()) delete _impl_.skillinfo_;
 }
 
 void S_ATTACK::SetCachedSize(int size) const {
@@ -2503,14 +2592,22 @@ void S_ATTACK::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && _impl_.instigator_ != nullptr) {
-    delete _impl_.instigator_;
+  if (GetArenaForAllocation() == nullptr && _impl_.caster_ != nullptr) {
+    delete _impl_.caster_;
   }
-  _impl_.instigator_ = nullptr;
+  _impl_.caster_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.skillactor_ != nullptr) {
+    delete _impl_.skillactor_;
+  }
+  _impl_.skillactor_ = nullptr;
   if (GetArenaForAllocation() == nullptr && _impl_.victim_ != nullptr) {
     delete _impl_.victim_;
   }
   _impl_.victim_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && _impl_.skillinfo_ != nullptr) {
+    delete _impl_.skillinfo_;
+  }
+  _impl_.skillinfo_ = nullptr;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2520,18 +2617,34 @@ const char* S_ATTACK::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .Protocol.ObjectInfo instigator = 1;
+      // .Protocol.ObjectInfo caster = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ctx->ParseMessage(_internal_mutable_instigator(), ptr);
+          ptr = ctx->ParseMessage(_internal_mutable_caster(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ObjectInfo victim = 2;
+      // .Protocol.ObjectInfo skillactor = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_skillactor(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.ObjectInfo victim = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_victim(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.SkillInfo skillinfo = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_skillinfo(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2565,18 +2678,32 @@ uint8_t* S_ATTACK::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .Protocol.ObjectInfo instigator = 1;
-  if (this->_internal_has_instigator()) {
+  // .Protocol.ObjectInfo caster = 1;
+  if (this->_internal_has_caster()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(1, _Internal::instigator(this),
-        _Internal::instigator(this).GetCachedSize(), target, stream);
+      InternalWriteMessage(1, _Internal::caster(this),
+        _Internal::caster(this).GetCachedSize(), target, stream);
   }
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  if (this->_internal_has_skillactor()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, _Internal::skillactor(this),
+        _Internal::skillactor(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.ObjectInfo victim = 3;
   if (this->_internal_has_victim()) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::victim(this),
+      InternalWriteMessage(3, _Internal::victim(this),
         _Internal::victim(this).GetCachedSize(), target, stream);
+  }
+
+  // .Protocol.SkillInfo skillinfo = 4;
+  if (this->_internal_has_skillinfo()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, _Internal::skillinfo(this),
+        _Internal::skillinfo(this).GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2595,18 +2722,32 @@ size_t S_ATTACK::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.ObjectInfo instigator = 1;
-  if (this->_internal_has_instigator()) {
+  // .Protocol.ObjectInfo caster = 1;
+  if (this->_internal_has_caster()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.instigator_);
+        *_impl_.caster_);
   }
 
-  // .Protocol.ObjectInfo victim = 2;
+  // .Protocol.ObjectInfo skillactor = 2;
+  if (this->_internal_has_skillactor()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.skillactor_);
+  }
+
+  // .Protocol.ObjectInfo victim = 3;
   if (this->_internal_has_victim()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *_impl_.victim_);
+  }
+
+  // .Protocol.SkillInfo skillinfo = 4;
+  if (this->_internal_has_skillinfo()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.skillinfo_);
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2627,13 +2768,21 @@ void S_ATTACK::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_instigator()) {
-    _this->_internal_mutable_instigator()->::Protocol::ObjectInfo::MergeFrom(
-        from._internal_instigator());
+  if (from._internal_has_caster()) {
+    _this->_internal_mutable_caster()->::Protocol::ObjectInfo::MergeFrom(
+        from._internal_caster());
+  }
+  if (from._internal_has_skillactor()) {
+    _this->_internal_mutable_skillactor()->::Protocol::ObjectInfo::MergeFrom(
+        from._internal_skillactor());
   }
   if (from._internal_has_victim()) {
     _this->_internal_mutable_victim()->::Protocol::ObjectInfo::MergeFrom(
         from._internal_victim());
+  }
+  if (from._internal_has_skillinfo()) {
+    _this->_internal_mutable_skillinfo()->::Protocol::SkillInfo::MergeFrom(
+        from._internal_skillinfo());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2653,11 +2802,11 @@ void S_ATTACK::InternalSwap(S_ATTACK* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.victim_)
-      + sizeof(S_ATTACK::_impl_.victim_)
-      - PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.instigator_)>(
-          reinterpret_cast<char*>(&_impl_.instigator_),
-          reinterpret_cast<char*>(&other->_impl_.instigator_));
+      PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.skillinfo_)
+      + sizeof(S_ATTACK::_impl_.skillinfo_)
+      - PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.caster_)>(
+          reinterpret_cast<char*>(&_impl_.caster_),
+          reinterpret_cast<char*>(&other->_impl_.caster_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_ATTACK::GetMetadata() const {

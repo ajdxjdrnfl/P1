@@ -19,3 +19,25 @@ enum CasterType
 	CASTER_TYPE_BOSS = 3;
 	CASTER_TYPE_MOB = 4;
 }
+
+enum CollisionType
+{
+	COLLISION_TYPE_NONE = 0;
+	COLLISION_TYPE_CIRCLE = 1;
+	COLLISION_TYPE_BOX = 2;
+}
+
+enum DamageType
+{
+	DAMAGE_TYPE_NORMAL = 0;
+	DAMAGE_TYPE_DOT = 1;
+	DAMAGE_TYPE_BUFF = 2;
+}
+
+enum CCType
+{
+	CC_TYPE_NORMAL = 0;
+	CC_TYPE_STUN = 1;
+	CC_TYPE_SLOW = 2;
+	CC_TYPE_AIRBORNE = 3;
+}

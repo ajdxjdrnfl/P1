@@ -15,9 +15,11 @@ public:
 	bool		HandleLeaveGame(GameSessionRef session);
 	bool		HandleMove(Protocol::C_MOVE pkt);
 	bool		HandleSkill(Protocol::C_SKILL pkt);
+	bool		HandleAttack(Protocol::C_ATTACK pkt);
 	
 private:
 	void		EnterGame(PlayerRef player);
+	void		SpawnSkill(SkillActorRef skillActor);
 	void		LeaveGame(PlayerRef player);
 	void		SetObjectToRandomPos(GameObjectRef player);
 

@@ -5,6 +5,8 @@
 #include "SkillActor.h"
 #include "GameSession.h"
 #include "ObjectUtils.h"
+#include "Collision.h"
+
 
 RoomRef GRoom = make_shared<Room>();
 
@@ -85,6 +87,7 @@ bool Room::HandleEnterGame(GameSessionRef session)
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*player->GetObjectInfo());
 		}
+
 		for (auto& item : _enemies)
 		{
 			EnemyRef enemy = item.second;
@@ -186,6 +189,9 @@ bool Room::HandleSkill(Protocol::C_SKILL pkt)
 	info->set_y(casterInfo->y());
 	info->set_z(casterInfo->z());
 	info->set_yaw(casterInfo->yaw());
+	skillActor->SetCollisionBySkillInfo(pkt.skillinfo());
+
+	SpawnSkill(skillActor);
 
 	// TODO : S_SKILL 구조 수정
 	{
@@ -200,6 +206,32 @@ bool Room::HandleSkill(Protocol::C_SKILL pkt)
 	return true;
 }
 
+bool Room::HandleAttack(Protocol::C_ATTACK pkt)
+{
+	GameObjectRef victim = GetGameObjectRef(pkt.victim().object_id());
+	GameObjectRef skillActor = GetGameObjectRef(pkt.skillactor().object_id());
+	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
+
+	Collision* victimCollision = static_cast<Collision*>(victim->GetComponent(EComponentType::ECT_COLLISION));
+	Collision* skillActorCollision = static_cast<Collision*>(skillActor->GetComponent(EComponentType::ECT_COLLISION));
+
+	if (!victimCollision->CheckCollision(skillActorCollision))
+		return false;
+
+	victim->TakeDamage(skillActor, static_pointer_cast<SkillActor>(skillActor)->GetSkillInfo()->damage());
+	
+	{
+		Protocol::S_ATTACK attackPkt;
+		*attackPkt.mutable_caster() = *caster->GetObjectInfo();
+		*attackPkt.mutable_victim() = *victim->GetObjectInfo();
+		*attackPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
+		*attackPkt.mutable_skillinfo() = *static_pointer_cast<SkillActor>(skillActor)->GetSkillInfo();
+		
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackPkt);
+		Broadcast(sendBuffer);
+	}
+}
+
 void Room::EnterGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();
@@ -209,6 +241,16 @@ void Room::EnterGame(PlayerRef player)
 
 	_players[id] = player;
 	SetObjectToRandomPos(player);
+}
+
+void Room::SpawnSkill(SkillActorRef skillActor)
+{
+	const uint64 id = skillActor->GetObjectInfo()->object_id();
+
+	if (_skillActors.find(id) != _skillActors.end())
+		return;
+
+	_skillActors[id] = skillActor;
 }
 
 void Room::LeaveGame(PlayerRef player)

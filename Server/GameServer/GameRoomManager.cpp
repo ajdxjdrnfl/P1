@@ -24,6 +24,8 @@ void GameRoomManager::Update(float deltaTime)
 		RoomRef room = p.second;
 		room->DoAsync(&Room::Update, deltaTime);
 	}
+
+	GRoom->Update(deltaTime);
 }
 
 void GameRoomManager::Init()
@@ -43,6 +45,8 @@ void GameRoomManager::Init()
 		itr++;
 
 	}*/
+
+	GRoom->Init();
 }
 
 void GameRoomManager::EnterGame(GameSessionRef session)

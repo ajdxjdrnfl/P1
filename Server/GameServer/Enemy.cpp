@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "Enemy.h"
 #include "Room.h"
+#include "Collision.h"
+#include "Collider.h"
+#include "ComponentBase.h"
+
 
 Enemy::Enemy(RoomRef room) : GameObject(room)
 {
-
+	_objectInfo->set_hp(50.f);
+	_objectInfo->set_castertype(Protocol::CASTER_TYPE_MOB);
 }
 
 Enemy::~Enemy()
@@ -18,13 +23,26 @@ void Enemy::Update(float deltaTime)
 	if (room == nullptr)
 		return;
 
-	
+	randomWalkDuration += deltaTime;
 
+	if (randomWalkDuration >= randomWalkCoolDonw)
+	{
+		//RandomWalk();
+		randomWalkDuration = 0.f;
+	}
+	
 	Super::Update(deltaTime);
 }
 
 void Enemy::Init()
 {
+	Collision* collision = new Collision();
+	ColliderCircle* collider = new ColliderCircle();
+	collider->_radius = 38.f;
+	collision->SetCollider(collider);
+
+	AddComponent(collision);
+	Super::Init();
 }
 
 void Enemy::RandomWalk()
@@ -45,8 +63,10 @@ void Enemy::RandomWalk()
 
 	float randomX = Utils::GetRandom(0.f, 50.f);
 	float randomY = Utils::GetRandom(0.f, 50.f);
+	
+	uint8 randomIndex = Utils::GetRandom(0, 8);
 
-	Vector nextPos = Vector(currentPos.x * randomX, currentPos.y * randomY);
+	Vector nextPos = Vector(currentPos.x + randomX * d[randomIndex].x, currentPos.y + randomY * d[randomIndex].y);
 	
 	_objectInfo->set_x(nextPos.x);
 	_objectInfo->set_y(nextPos.y);
@@ -62,6 +82,14 @@ void Enemy::BroadcastUpdate()
 		return;
 
 	Protocol::S_MOVE pkt;
-	pkt.CopyFrom(*GetObjectInfo());
 
+	*pkt.mutable_info() = *GetObjectInfo();
+	
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	GetRoomRef()->Broadcast(sendBuffer);
+}
+
+void Enemy::TakeDamage(GameObjectRef instigator, float damage)
+{
+	Super::TakeDamage(instigator, damage);
 }

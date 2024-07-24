@@ -1,0 +1,16 @@
+#pragma once
+
+enum EComponentType : uint8
+{
+	ECT_SKILLTIMER,
+	ECT_COLLISION,
+	ECT_AIMOVEMENT,
+	ECT_MAX,
+};
+
+enum EColliderType: uint8
+{
+	COLLIDER_BOX = Protocol::COLLISION_TYPE_BOX ,
+	COLLIDER_CIRCLE = Protocol::COLLISION_TYPE_CIRCLE,
+	COLLIDER_RAY = Protocol::COLLISION_TYPE_NONE,
+};
