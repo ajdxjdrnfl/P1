@@ -111,43 +111,33 @@ bool UP1GameInstance::IsMyCharacter(uint64 ID)
 	return MyCharacter->Info->object_id() == ID;
 }
 
-void UP1GameInstance::CharacterSpawn(Protocol::S_SPAWN& Pkt)
+void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 {
+	check(CharacterClass != nullptr);
+	check(EnemyMobClass != nullptr);
+
+	Protocol::ObjectInfo info;
+	FVector Loc;
+
 	for (int32 i = 0; i < Pkt.info_size(); i++)
 	{
-		check(CharacterClass != nullptr);
-
 		if (Characters.Contains(Pkt.info(i).object_id()))
 			continue;
 
-		Protocol::ObjectInfo info = Pkt.info(i);
-		FVector Loc = FVector(info.x(), info.y(), info.z());
+		info = Pkt.info(i);
+		Loc = FVector(info.x(), info.y(), info.z());
 
-		if (info.castertype() == Protocol::CASTER_TYPE_MOB)
+		switch (info.castertype())
 		{
-			AEnemyMob* SpawnedMob = Cast<AEnemyMob>(GetWorld()->SpawnActor(EnemyMobClass, &Loc));
-
-			if (SpawnedMob == nullptr)
-				return;
-
-			SpawnedMob->Info->CopyFrom(info);
-			SpawnedMob->InitOnSpawn(Pkt.info(i).hp());
-			
-			Enemies.Add({ info.object_id(), SpawnedMob });
+		case Protocol::CASTER_TYPE_MOB:
+			Enemies.Add({ info.object_id(), SpawnMob(Pkt.info(i), Loc) });
+			break;
+		case Protocol::CASTER_TYPE_WARRIOR:
+			Characters.Add({ info.object_id(), SpawnCharacter(Pkt.info(i), Loc) });
+			break;
+		default:
+			break;
 		}
-		else if (info.castertype() == Protocol::CASTER_TYPE_WARRIOR)
-		{
-			AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(CharacterClass, &Loc));
-
-			if (SpawnedActor == nullptr)
-				return;
-
-			SpawnedActor->Info->CopyFrom(info);
-			SpawnedActor->InitOnSpawn(Pkt.info(i).hp(), Pkt.info(i).stamina());
-			
-			Characters.Add({ info.object_id(), SpawnedActor });
-		}
-		
 	}
 }
 
@@ -179,39 +169,73 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
 {
 	int32 EnemyID = Pkt.victim().object_id();
+	FDamageInfo DamageInfo = MakeDamageInfo(Pkt);
 
+	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp(), DamageInfo);
+}
+
+AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
+{
+	AEnemyMob* SpawnedMob = Cast<AEnemyMob>(GetWorld()->SpawnActor(EnemyMobClass, &Loc));
+
+	if (SpawnedMob == nullptr)
+		return nullptr;
+
+	SpawnedMob->Info->CopyFrom(ObjInfo);
+	SpawnedMob->InitOnSpawn(ObjInfo.hp());
+	return SpawnedMob;
+}
+
+AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc)
+{
+	AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(CharacterClass, &Loc));
+
+	if (SpawnedActor == nullptr)
+		return nullptr;
+
+	SpawnedActor->Info->CopyFrom(ObjInfo);
+	SpawnedActor->InitOnSpawn(ObjInfo.hp(), ObjInfo.stamina());
+
+	return SpawnedActor;
+}
+
+FDamageInfo UP1GameInstance::MakeDamageInfo(Protocol::S_ATTACK& Pkt)
+{
 	FDamageInfo DamageInfo;
 	DamageInfo.Damage = Pkt.skillinfo().damage();
 
-	if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_NORMAL)
+	switch (Pkt.skillinfo().damage_type())
 	{
+	case Protocol::DAMAGE_TYPE_NORMAL:
 		DamageInfo.DamageType = EDamageType::Normal;
-	}
-	else if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_DOT)
-	{
+		break;
+	case Protocol::DAMAGE_TYPE_DOT:
 		DamageInfo.DamageType = EDamageType::Dot;
-	}
-	else if (Pkt.skillinfo().damage_type() == Protocol::DAMAGE_TYPE_BUFF)
-	{
+		break;
+	case Protocol::DAMAGE_TYPE_BUFF:
 		DamageInfo.DamageType = EDamageType::Buff;
+		break;
+	default:
+		break;
 	}
 
-	if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_NORMAL)
+	switch (Pkt.skillinfo().cc_type())
 	{
+	case Protocol::CC_TYPE_NORMAL:
 		DamageInfo.CCType = ECCType::Normal;
-	}
-	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_SLOW) 
-	{
+		break;
+	case Protocol::CC_TYPE_SLOW:
 		DamageInfo.CCType = ECCType::Slow;
-	}
-	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_STUN)
-	{
+		break;
+	case Protocol::CC_TYPE_STUN:
 		DamageInfo.CCType = ECCType::Stun;
-	}
-	else if (Pkt.skillinfo().cc_type() == Protocol::CC_TYPE_AIRBORNE)
-	{
+		break;
+	case Protocol::CC_TYPE_AIRBORNE:
 		DamageInfo.CCType = ECCType::Airborne;
+		break;
+	default:
+		break;
 	}
 
-	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp(), DamageInfo);
+	return DamageInfo;
 }

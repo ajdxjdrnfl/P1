@@ -60,8 +60,6 @@ struct FGeneralSkillInfo
 {
 public:
 	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SkillNum;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

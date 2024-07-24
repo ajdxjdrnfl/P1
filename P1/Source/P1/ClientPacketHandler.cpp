@@ -40,7 +40,7 @@ bool Handle_S_SPAWN(PacketSessionRef& session, Protocol::S_SPAWN& pkt)
 	if (GameInstance == nullptr)
 		return false;
 
-	GameInstance->CharacterSpawn(pkt);
+	GameInstance->SpawnActorByServer(pkt);
 
 	return true;
 }

@@ -47,12 +47,17 @@ public:
 
 	bool IsMyCharacter(uint64 ID);
 
-	void CharacterSpawn(Protocol::S_SPAWN& Pkt);
+	void SpawnActorByServer(Protocol::S_SPAWN& Pkt);
 	void CharacterMove(Protocol::S_MOVE& Pkt);
 
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
 
 	void AttackEnemy(Protocol::S_ATTACK& Pkt);
+
+	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
+	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
+
+	FDamageInfo MakeDamageInfo(Protocol::S_ATTACK& Pkt);
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;

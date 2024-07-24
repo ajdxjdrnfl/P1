@@ -67,25 +67,27 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 		Protocol::SkillInfo* SkillInfo = Pkt.mutable_skillinfo();
 		Protocol::ObjectInfo* ObjectInfo = Pkt.mutable_caster();
 
-		AP1Character* P1Character = Cast<AP1Character>(GetOwner());
-		if (P1Character == nullptr)
+		AP1Creature* P1Creature = Cast<AP1Character>(GetOwner());
+		if (P1Creature == nullptr)
 			return;
 
 		SkillInfo->set_skill_id(1);
-
-		if (SkillActor->GetSkillInfo().SkillShape == ESkillShapeType::Circle)
-		{
-			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
-		}
-		else if (SkillActor->GetSkillInfo().SkillShape == ESkillShapeType::Box)
-		{
-			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
-		}
-
 		SkillInfo->set_size_x(SkillActor->GetSkillInfo().XScale);
 		SkillInfo->set_size_y(SkillActor->GetSkillInfo().YScale);
-		
-		ObjectInfo->CopyFrom(*P1Character->Info);
+		ObjectInfo->CopyFrom(*P1Creature->Info);
+
+		switch (SkillActor->GetSkillInfo().SkillShape)
+		{
+		case ESkillShapeType::Circle:
+			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
+			break;
+		case ESkillShapeType::Box:
+			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
+			break;
+		default:
+			break;
+		}
+
 		SEND_PACKET(Pkt);
 	}
 
