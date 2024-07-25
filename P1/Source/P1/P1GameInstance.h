@@ -66,7 +66,10 @@ public:
 	TMap<uint64, class AEnemyBase*> Enemies;
 
 	UPROPERTY()
-	TMap<uint64, FGeneralSkillInfo> Skills;
+	TMap<uint64, class ASkillActorBase*> Skills;
+
+	UPROPERTY()
+	TMap<uint64, FGeneralSkillInfo> SkillInfo;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AP1Character> CharacterClass;

@@ -9,7 +9,7 @@ void USkillManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	for (auto Info : Cast<UP1GameInstance>(GetGameInstance())->Skills)
+	for (auto Info : Cast<UP1GameInstance>(GetGameInstance())->SkillInfo)
 	{
 		SkillCanUseMap.Add(Info.Key, true);
 	}

@@ -123,12 +123,11 @@ void AP1Character::MoveByServer(float DeltaTime)
 	if (CharacterState == ECharacterState::Move)
 	{
 		FVector TargetLocation = FVector(Info->x(), Info->y(), GetActorLocation().Z);
-		FVector CurrentLocation = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
 		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Info->yaw(), GetActorRotation().Roll);
 		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
 
 		//SetActorLocation(TargetLocation);
-		AddMovementInput((TargetLocation - CurrentLocation).GetSafeNormal());
+		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
 		SetActorRotation(NextRotation);
 	}
 }

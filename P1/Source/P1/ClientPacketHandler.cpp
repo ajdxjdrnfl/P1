@@ -68,11 +68,11 @@ bool Handle_S_SKILL(PacketSessionRef& session, Protocol::S_SKILL& pkt)
 	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
 	uint64 id = pkt.caster().object_id();
 
-	if (GameInstance == nullptr || GameInstance->IsMyCharacter(id))
+	if (GameInstance == nullptr)
 		return false;
 
 	uint64 SkillID = pkt.skillinfo().skill_id();
-	if (!GameInstance->Skills.Contains(SkillID))
+	if (!GameInstance->SkillInfo.Contains(SkillID))
 		return false;
 
 	GameInstance->SkillSpawn(pkt);

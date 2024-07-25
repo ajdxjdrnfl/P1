@@ -33,9 +33,9 @@ void UP1GameInstance::InitSkillMap()
 	{
 		FString ContextString;
 		FSkillsByClass SkillInfos = *SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
-		for (FGeneralSkillInfo SkillInfo : SkillInfos.SkillInfos)
+		for (FGeneralSkillInfo CurrentSkillInfo : SkillInfos.SkillInfos)
 		{
-			Skills.Add(idx++, SkillInfo);
+			SkillInfo.Add(idx++, CurrentSkillInfo);
 		}
 	}
 }
@@ -153,16 +153,20 @@ void UP1GameInstance::CharacterMove(Protocol::S_MOVE& Pkt)
 
 void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 {
-	if (IsMyCharacter(Pkt.caster().object_id()))
-		return;
-
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
 
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(Skills[Pkt.skillinfo().skill_id()].SkillActor, &SpawnedLocation, &SpawnedRotation));
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = Characters[Pkt.caster().object_id()];
+	SpawnParams.Instigator = Characters[Pkt.caster().object_id()];
+
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillinfo().skill_id()].SkillActor, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
+	Skills.Add(Pkt.skillinfo().skill_id(), SkillActor);
+
+	SkillActor->Info->CopyFrom(Pkt.skillactor());
 	SkillActor->ActivateSkill();
 }
 

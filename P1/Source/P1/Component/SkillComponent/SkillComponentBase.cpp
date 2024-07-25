@@ -52,15 +52,10 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 	//if (SkillInfo.AnimMontage == nullptr) 
 	//	return;
 
-	FVector Loc = GetOwner()->GetActorLocation();
-	FRotator Rot = GetOwner()->GetActorRotation();
+	UP1GameInstance* P1GameInstace = GetWorld()->GetGameInstance<UP1GameInstance>();
+	if (P1GameInstace == nullptr) return;
 
-	FActorSpawnParameters SpawnParam;
-	SpawnParam.Owner = Cast<AP1Creature>(GetOwner());
-	SpawnParam.Instigator = Cast<AP1Creature>(GetOwner());
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GetWorld()->SpawnActor(GeneralSkillInfo.SkillActor, &Loc, &Rot, SpawnParam));
-	if (SkillActor == nullptr)
-		return;
+	FSkillActorInfo SkillActorInfo = Cast<ASkillActorBase>(GeneralSkillInfo.SkillActor->GetDefaultObject())->GetSkillInfo();
 
 	{
 		Protocol::C_SKILL Pkt;
@@ -72,17 +67,51 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 			return;
 
 		SkillInfo->set_skill_id(1);
-		SkillInfo->set_size_x(SkillActor->GetSkillInfo().XScale);
-		SkillInfo->set_size_y(SkillActor->GetSkillInfo().YScale);
+		SkillInfo->set_size_x(SkillActorInfo.XScale);
+		SkillInfo->set_size_y(SkillActorInfo.YScale);
+		SkillInfo->set_damage(SkillActorInfo.DamageInfo.Damage);
 		ObjectInfo->CopyFrom(*P1Creature->Info);
 
-		switch (SkillActor->GetSkillInfo().SkillShape)
+		switch (SkillActorInfo.CollisionType)
 		{
-		case ESkillShapeType::Circle:
+		case ECollisionType::Circle:
 			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
 			break;
-		case ESkillShapeType::Box:
+		case ECollisionType::Box:
 			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
+			break;
+		default:
+			break;
+		}
+
+		switch (SkillActorInfo.DamageInfo.DamageType)
+		{
+		case EDamageType::Normal:
+			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
+			break;
+		case EDamageType::Dot:
+			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_DOT);
+			break;
+		case EDamageType::Buff:
+			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_BUFF);
+			break;
+		default:
+			break;
+		}
+
+		switch (SkillActorInfo.DamageInfo.CCType)
+		{
+		case ECCType::Normal:
+			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
+			break;
+		case ECCType::Slow:
+			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_SLOW);
+			break;
+		case ECCType::Stun:
+			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_STUN);
+			break;
+		case ECCType::Airborne:
+			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_AIRBORNE);
 			break;
 		default:
 			break;
@@ -91,6 +120,6 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 		SEND_PACKET(Pkt);
 	}
 
-	SkillActor->ActivateSkill();
+	//SkillActor->ActivateSkill();
 }
 

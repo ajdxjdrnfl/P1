@@ -49,7 +49,7 @@ enum class ECCType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ESkillShapeType : uint8
+enum class ECollisionType : uint8
 {
 	Circle UMETA(Displayname = "Circle"),
 	Box UMETA(Displayname = "Box"),
@@ -100,10 +100,7 @@ public:
 	float CooldownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StaminaUsage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESkillShapeType SkillShape;
+	ECollisionType CollisionType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float XScale;
