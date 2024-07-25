@@ -201,7 +201,7 @@ bool Room::HandleSkill(Protocol::C_SKILL pkt)
 		*skillPkt.mutable_skillinfo() = pkt.skillinfo();
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
-		Broadcast(sendBuffer, casterInfo->object_id());
+		Broadcast(sendBuffer);
 	}
 	return true;
 }
@@ -211,6 +211,9 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	GameObjectRef victim = GetGameObjectRef(pkt.victim().object_id());
 	GameObjectRef skillActor = GetGameObjectRef(pkt.skillactor().object_id());
 	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
+
+	if (victim == nullptr || skillActor == nullptr || caster == nullptr)
+		return false;
 
 	Collision* victimCollision = static_cast<Collision*>(victim->GetComponent(EComponentType::ECT_COLLISION));
 	Collision* skillActorCollision = static_cast<Collision*>(skillActor->GetComponent(EComponentType::ECT_COLLISION));
@@ -300,7 +303,7 @@ GameObjectRef Room::GetGameObjectRef(uint64 id)
 		return _players[id];
 
 	if (_enemies.find(id) != _enemies.end())
-		return _players[id];
+		return _enemies[id];
 
 	if (_skillActors.find(id) != _skillActors.end())
 		return _skillActors[id];
