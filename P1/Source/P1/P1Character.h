@@ -58,8 +58,11 @@ public:
 	void UseSkill(uint16 SkillIndex);
 	void MoveByServer(float DeltaTime);
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
+	void OpenCastingSkillWidget();
+	void CloseCastingSkillWidget();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
-	
+	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }
+	FORCEINLINE class UCharacterWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
 };
 

@@ -29,7 +29,7 @@ protected:
 	UPROPERTY()
 	class UDataTable* SkillDataTable;
 
-	TArray<FGeneralSkillInfo> Skills;
+	TArray<FSkillInfo> Skills;
 
 public:
 	virtual void SetSkills();

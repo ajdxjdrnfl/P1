@@ -11,7 +11,7 @@ void UEnemyStatComponent::InitStat()
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_hp(Creature->Info->hp());
+	Creature->ObjectInfo->set_hp(Creature->ObjectInfo->hp());
 
 	OnEnemyHealthChangedDelegate.Broadcast();
 }
@@ -27,7 +27,7 @@ void UEnemyStatComponent::InitStat(float InitHealth)
 	OnEnemyHealthChangedDelegate.Broadcast();
 }
 
-void UEnemyStatComponent::TakeDamage(FDamageInfo DamageInfo)
+void UEnemyStatComponent::TakeDamage()
 {
 	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
 	if (Creature == nullptr)
@@ -44,13 +44,13 @@ void UEnemyStatComponent::TakeDamage(FDamageInfo DamageInfo)
 	}*/
 }
 
-void UEnemyStatComponent::SetHealth(float HealthToSet, FDamageInfo DamageInfo)
+void UEnemyStatComponent::SetHealth(float HealthToSet)
 {
 	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_hp(HealthToSet);
+	Creature->ObjectInfo->set_hp(HealthToSet);
 
 	OnEnemyHealthChangedDelegate.Broadcast();
 }

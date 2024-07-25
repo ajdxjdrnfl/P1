@@ -27,6 +27,7 @@ private:
 	class AP1Character* MyCharacter;
 
 	void InitSkillMap();
+	void SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo);
 
 public:
 	virtual void Init() override;
@@ -57,8 +58,6 @@ public:
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
-	FDamageInfo MakeDamageInfo(Protocol::S_ATTACK& Pkt);
-
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
 
@@ -69,7 +68,7 @@ public:
 	TMap<uint64, class ASkillActorBase*> Skills;
 
 	UPROPERTY()
-	TMap<uint64, FGeneralSkillInfo> SkillInfo;
+	TMap<uint64, FSkillInfo> SkillInfo;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AP1Character> CharacterClass;

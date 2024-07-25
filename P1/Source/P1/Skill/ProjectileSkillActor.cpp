@@ -66,7 +66,7 @@ void AProjectileSkillActor::SendCollisionPacketToServer(AEnemyBase* Enemy)
 	if (P1GameInstance == nullptr)
 		return;
 
-	if (!P1GameInstance->IsMyCharacter(InstigatorLocal->Info->object_id()))
+	if (!P1GameInstance->IsMyCharacter(InstigatorLocal->ObjectInfo->object_id()))
 		return;
 
 	if (InstigatorLocal->GetClassType() == 1)
@@ -86,9 +86,9 @@ void AProjectileSkillActor::SendCollisionPacketToServer(AEnemyBase* Enemy)
 	{
 		// TODO:
 	}
-	CasterInfo->set_object_id(InstigatorLocal->Info->object_id());
-	VictimInfo->set_object_id(Enemy->Info->object_id());
-	SkillActorInfoLocal->set_object_id(Info->object_id());
+	CasterInfo->set_object_id(InstigatorLocal->ObjectInfo->object_id());
+	VictimInfo->set_object_id(Enemy->ObjectInfo->object_id());
+	SkillActorInfoLocal->set_object_id(ObjectInfo->object_id());
 
 	SEND_PACKET(Pkt);
 }

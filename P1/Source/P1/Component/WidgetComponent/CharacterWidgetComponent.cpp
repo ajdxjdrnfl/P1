@@ -6,6 +6,7 @@
 #include "P1/Widget/Stat/CharacterStatWidget.h"
 #include "P1/P1Character.h"
 #include "P1/Component/StatComponent/CharacterStatComponent.h"
+#include "P1/Widget/CastingSkillWidget.h"
 
 void UCharacterWidgetComponent::BeginPlay()
 {
@@ -37,6 +38,7 @@ void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
 	if (CharacterOverlayWidget == nullptr)
 		return;
 
+	if (Skills[SkillIndex].SkillType == ESkillType::Casting) return;
 	CharacterOverlayWidget->UseSkill(Skills[SkillIndex]);
 }
 
@@ -62,4 +64,26 @@ void UCharacterWidgetComponent::OnCharacterHealthChanged()
 		return;
 
 	CharacterOverlayWidget->GetStatWidget()->SetHealthBar();
+}
+
+void UCharacterWidgetComponent::OpenCastingSkillWidget()
+{
+	if (CastingSkillWidgetClass == nullptr) 
+		return;
+
+	CastingSkillWidget = Cast<UCastingSkillWidget>(CreateWidget(GetWorld(), CastingSkillWidgetClass));
+
+	if (CastingSkillWidget == nullptr) 
+		return;
+
+	CastingSkillWidget->AddToViewport();
+	// TODO:
+	CastingSkillWidget->StartCasting(1.f);
+}
+
+void UCharacterWidgetComponent::CloseCastingSkillWidget()
+{
+	if (CastingSkillWidget == nullptr) return;
+
+	CastingSkillWidget->RemoveFromParent();
 }

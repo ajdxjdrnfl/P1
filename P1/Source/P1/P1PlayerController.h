@@ -73,6 +73,7 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 	void OnSkillTriggered();
+	void OnSkillReleased();
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))

@@ -7,6 +7,13 @@
 #include "P1/Data/SkillData.h"
 #include "SkillComponentBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ESkillState : uint8
+{
+	Normal UMETA(Displayname = "Normal"),
+	Hold UMETA(Displayname = "Hold"),
+	Casting UMETA(Displayname = "Casting"),
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class P1_API USkillComponentBase : public UActorComponent
@@ -19,7 +26,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	TArray<FGeneralSkillInfo> Skills;
+private:
+	FSkillInfo CurrentSkillInfo;
+	class UCastingSkillManager* CastingSkillManager;
+
+public:
+	TArray<FSkillInfo> Skills;
+
+	ESkillState SkillState;
 
 	UPROPERTY()
 	class UDataTable* SkillDataTable;
@@ -33,4 +47,7 @@ public:
 public:
 	void SetSkills();
 	virtual void UseSkill(uint16 SkillIndex);
+
+	FORCEINLINE ESkillState GetSkillState() const { return SkillState; }
+	FORCEINLINE void SetSkillState(ESkillState SkillStateToSet) { SkillState = SkillStateToSet; }
 };

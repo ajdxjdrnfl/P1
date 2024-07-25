@@ -18,7 +18,7 @@ void UCharacterStatComponent::BeginPlay()
 
 }
 
-void UCharacterStatComponent::TakeDamage(FDamageInfo DamageInfo)
+void UCharacterStatComponent::TakeDamage()
 {
 	//Health -= DamageInfo.Damage;
 	//if (Health < 0) Health = 0;
@@ -50,8 +50,8 @@ void UCharacterStatComponent::InitStat()
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_hp(Creature->Info->max_hp());
-	Creature->Info->set_stamina(Creature->Info->max_stamina());
+	Creature->ObjectInfo->set_hp(Creature->ObjectInfo->max_hp());
+	Creature->ObjectInfo->set_stamina(Creature->ObjectInfo->max_stamina());
 
 	OnCharacterHealthChangedDelegate.Broadcast();
 	OnCharacterStaminaChangedDelegate.Broadcast();
@@ -76,7 +76,7 @@ void UCharacterStatComponent::SetCurrentStamina(float StaminaToSet)
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_stamina(StaminaToSet);
+	Creature->ObjectInfo->set_stamina(StaminaToSet);
 }
 
 float UCharacterStatComponent::GetCurrentStamina()
@@ -85,7 +85,7 @@ float UCharacterStatComponent::GetCurrentStamina()
 	if (Creature == nullptr)
 		return 0;
 
-	return Creature->Info->stamina();
+	return Creature->ObjectInfo->stamina();
 }
 
 void UCharacterStatComponent::SetMaxStamina(float StaminaToSet)
@@ -94,7 +94,7 @@ void UCharacterStatComponent::SetMaxStamina(float StaminaToSet)
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_max_stamina(StaminaToSet);
+	Creature->ObjectInfo->set_max_stamina(StaminaToSet);
 }
 
 float UCharacterStatComponent::GetMaxStamina()
@@ -103,5 +103,5 @@ float UCharacterStatComponent::GetMaxStamina()
 	if (Creature == nullptr)
 		return 0;
 
-	return Creature->Info->max_stamina();
+	return Creature->ObjectInfo->max_stamina();
 }

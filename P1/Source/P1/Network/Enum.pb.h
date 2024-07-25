@@ -183,6 +183,32 @@ inline bool CCType_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CCType>(
     CCType_descriptor(), name, value);
 }
+enum SkillType : int {
+  SKILL_TYPE_NORMAL = 0,
+  SKILL_TYPE_HOLD = 1,
+  SKILL_TYPE_CASTING = 2,
+  SkillType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  SkillType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool SkillType_IsValid(int value);
+constexpr SkillType SkillType_MIN = SKILL_TYPE_NORMAL;
+constexpr SkillType SkillType_MAX = SKILL_TYPE_CASTING;
+constexpr int SkillType_ARRAYSIZE = SkillType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SkillType_descriptor();
+template<typename T>
+inline const std::string& SkillType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, SkillType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function SkillType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    SkillType_descriptor(), enum_t_value);
+}
+inline bool SkillType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, SkillType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<SkillType>(
+    SkillType_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -229,6 +255,11 @@ template <> struct is_proto_enum< ::Protocol::CCType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CCType>() {
   return ::Protocol::CCType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::SkillType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::SkillType>() {
+  return ::Protocol::SkillType_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

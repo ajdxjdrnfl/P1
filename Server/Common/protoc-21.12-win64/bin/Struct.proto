@@ -25,9 +25,10 @@ message SkillInfo
 	DamageType damage_type=2;
 	CollisionType collision_type=3;
 	CCType cc_type = 4;
+	SkillType skill_type = 5;
 
-	float damage = 5;
-	float cooldown = 6;
-	float size_x = 7;
-	float size_y = 8;
+	float damage = 6;
+	float cooldown = 7;
+	float size_x = 8;
+	float size_y = 9;
 }

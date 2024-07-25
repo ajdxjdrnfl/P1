@@ -33,10 +33,95 @@ void UP1GameInstance::InitSkillMap()
 	{
 		FString ContextString;
 		FSkillsByClass SkillInfos = *SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
-		for (FGeneralSkillInfo CurrentSkillInfo : SkillInfos.SkillInfos)
+		for (FSkillInfo CurrentSkillInfo : SkillInfos.SkillInfos)
 		{
-			SkillInfo.Add(idx++, CurrentSkillInfo);
+			SkillInfo.Add(idx, CurrentSkillInfo);
+
+			// Set skillinfo to each skill game default object
+			SetSkillInfo(idx, CurrentSkillInfo);
+
+			idx += 1;
 		}
+	}
+}
+
+void UP1GameInstance::SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo)
+{
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
+
+	if (SkillActor == nullptr) 
+		return;
+
+	Protocol::SkillInfo* SkillInfoRef = SkillActor->SkillInfo;
+
+	SkillInfoRef->set_skill_id(ID);
+	SkillInfoRef->set_size_x(CurrentSkillInfo.XScale);
+	SkillInfoRef->set_size_y(CurrentSkillInfo.YScale);
+	SkillInfoRef->set_damage(CurrentSkillInfo.Damage);
+	SkillInfoRef->set_cooldown(CurrentSkillInfo.CooldownTime);
+
+	switch (CurrentSkillInfo.CollisionType)
+	{
+	case ECollisionType::Circle:
+		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
+		break;
+	case ECollisionType::Box:
+		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
+		break;
+	default:
+		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
+		break;
+	}
+
+	switch (CurrentSkillInfo.DamageType)
+	{
+	case EDamageType::Normal:
+		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
+		break;
+	case EDamageType::Dot:
+		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_DOT);
+		break;
+	case EDamageType::Buff:
+		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_BUFF);
+		break;
+	default:
+		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
+		break;
+	}
+
+	switch (CurrentSkillInfo.CCType)
+	{
+	case ECCType::Normal:
+		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
+		break;
+	case ECCType::Slow:
+		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_SLOW);
+		break;
+	case ECCType::Stun:
+		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_STUN);
+		break;
+	case ECCType::Airborne:
+		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_AIRBORNE);
+		break;
+	default:
+		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
+		break;
+	}
+
+	switch (CurrentSkillInfo.SkillType)
+	{
+	case ESkillType::Normal:
+		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_NORMAL);
+		break;
+	case ESkillType::Hold:
+		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_HOLD);
+		break;
+	case ESkillType::Casting:
+		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_CASTING);
+		break;
+	default:
+		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_NORMAL);
+		break;
 	}
 }
 
@@ -108,7 +193,7 @@ void UP1GameInstance::SendPacket(SendBufferRef SendBuffer)
 
 bool UP1GameInstance::IsMyCharacter(uint64 ID)
 {
-	return MyCharacter->Info->object_id() == ID;
+	return MyCharacter->ObjectInfo->object_id() == ID;
 }
 
 void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
@@ -160,22 +245,21 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SpawnParams.Owner = Characters[Pkt.caster().object_id()];
 	SpawnParams.Instigator = Characters[Pkt.caster().object_id()];
 
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillinfo().skill_id()].SkillActor, &SpawnedLocation, &SpawnedRotation, SpawnParams));
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillinfo().skill_id()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
 	Skills.Add(Pkt.skillinfo().skill_id(), SkillActor);
 
-	SkillActor->Info->CopyFrom(Pkt.skillactor());
+	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
 	SkillActor->ActivateSkill();
 }
 
 void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
 {
 	int32 EnemyID = Pkt.victim().object_id();
-	FDamageInfo DamageInfo = MakeDamageInfo(Pkt);
 
-	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp(), DamageInfo);
+	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp());
 }
 
 AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
@@ -185,7 +269,7 @@ AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
 	if (SpawnedMob == nullptr)
 		return nullptr;
 
-	SpawnedMob->Info->CopyFrom(ObjInfo);
+	SpawnedMob->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedMob->InitOnSpawn(ObjInfo.hp());
 	return SpawnedMob;
 }
@@ -197,49 +281,9 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 	if (SpawnedActor == nullptr)
 		return nullptr;
 
-	SpawnedActor->Info->CopyFrom(ObjInfo);
+	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo.hp(), ObjInfo.stamina());
 
 	return SpawnedActor;
 }
 
-FDamageInfo UP1GameInstance::MakeDamageInfo(Protocol::S_ATTACK& Pkt)
-{
-	FDamageInfo DamageInfo;
-	DamageInfo.Damage = Pkt.skillinfo().damage();
-
-	switch (Pkt.skillinfo().damage_type())
-	{
-	case Protocol::DAMAGE_TYPE_NORMAL:
-		DamageInfo.DamageType = EDamageType::Normal;
-		break;
-	case Protocol::DAMAGE_TYPE_DOT:
-		DamageInfo.DamageType = EDamageType::Dot;
-		break;
-	case Protocol::DAMAGE_TYPE_BUFF:
-		DamageInfo.DamageType = EDamageType::Buff;
-		break;
-	default:
-		break;
-	}
-
-	switch (Pkt.skillinfo().cc_type())
-	{
-	case Protocol::CC_TYPE_NORMAL:
-		DamageInfo.CCType = ECCType::Normal;
-		break;
-	case Protocol::CC_TYPE_SLOW:
-		DamageInfo.CCType = ECCType::Slow;
-		break;
-	case Protocol::CC_TYPE_STUN:
-		DamageInfo.CCType = ECCType::Stun;
-		break;
-	case Protocol::CC_TYPE_AIRBORNE:
-		DamageInfo.CCType = ECCType::Airborne;
-		break;
-	default:
-		break;
-	}
-
-	return DamageInfo;
-}

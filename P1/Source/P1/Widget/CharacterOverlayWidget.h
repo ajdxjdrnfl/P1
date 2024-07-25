@@ -23,7 +23,7 @@ private:
 	class UCharacterStatWidget* StatWidget;
 
 public:
-	void UseSkill(FGeneralSkillInfo SkillInfo);
+	void UseSkill(FSkillInfo SkillInfo);
 	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 
 	FORCEINLINE class UCharacterStatWidget* GetStatWidget() { return StatWidget; }

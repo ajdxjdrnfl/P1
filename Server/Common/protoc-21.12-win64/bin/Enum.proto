@@ -41,3 +41,10 @@ enum CCType
 	CC_TYPE_SLOW = 2;
 	CC_TYPE_AIRBORNE = 3;
 }
+
+enum SkillType
+{
+	SKILL_TYPE_NORMAL = 0;
+	SKILL_TYPE_HOLD = 1;
+	SKILL_TYPE_CASTING = 2;
+}

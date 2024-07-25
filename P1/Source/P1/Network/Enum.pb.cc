@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Protocol {
 }  // namespace Protocol
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[5];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[6];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Enum_2eproto = nullptr;
 const uint32_t TableStruct_Enum_2eproto::offsets[1] = {};
 static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
@@ -42,11 +42,13 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "AMAGE_TYPE_NORMAL\020\000\022\023\n\017DAMAGE_TYPE_DOT\020\001"
   "\022\024\n\020DAMAGE_TYPE_BUFF\020\002*V\n\006CCType\022\022\n\016CC_T"
   "YPE_NORMAL\020\000\022\020\n\014CC_TYPE_STUN\020\001\022\020\n\014CC_TYP"
-  "E_SLOW\020\002\022\024\n\020CC_TYPE_AIRBORNE\020\003b\006proto3"
+  "E_SLOW\020\002\022\024\n\020CC_TYPE_AIRBORNE\020\003*O\n\tSkillT"
+  "ype\022\025\n\021SKILL_TYPE_NORMAL\020\000\022\023\n\017SKILL_TYPE"
+  "_HOLD\020\001\022\026\n\022SKILL_TYPE_CASTING\020\002b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 558, descriptor_table_protodef_Enum_2eproto,
+    false, false, 639, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -135,6 +137,21 @@ bool CCType_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SkillType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[5];
+}
+bool SkillType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
       return true;
     default:
       return false;

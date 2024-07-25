@@ -38,8 +38,8 @@ private:
 public:
 	void InitOnSpawn(float HealthToSet);
 	void OnSpawn(float HealthToSet);
-	void TakeDamage(FDamageInfo DamageInfo);
-	void SetHealthByDamage(float HealthToSet, FDamageInfo DamageInfo);
+	void TakeDamage();
+	void SetHealthByDamage(float HealthToSet);
 
 	UFUNCTION()
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

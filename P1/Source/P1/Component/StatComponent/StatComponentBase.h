@@ -29,7 +29,7 @@ protected:
 	//float MaxHealth;
 
 public:
-	virtual void TakeDamage(FDamageInfo DamageInfo);
+	virtual void TakeDamage();
 		
 	float GetCurrentHealth();
 	float GetMaxHealth();

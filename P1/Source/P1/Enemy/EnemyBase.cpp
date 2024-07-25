@@ -83,19 +83,19 @@ void AEnemyBase::OnSpawn(float HealthToSet)
 	InitOnSpawn(HealthToSet);
 }
 
-void AEnemyBase::TakeDamage(FDamageInfo DamageInfo)
+void AEnemyBase::TakeDamage()
 {
 	if (StatComponent)
 	{
-		StatComponent->TakeDamage(DamageInfo);
+		StatComponent->TakeDamage();
 	}
 }
 
-void AEnemyBase::SetHealthByDamage(float HealthToSet, FDamageInfo DamageInfo)
+void AEnemyBase::SetHealthByDamage(float HealthToSet)
 {
 	if (StatComponent)
 	{
-		StatComponent->SetHealth(HealthToSet, DamageInfo);
+		StatComponent->SetHealth(HealthToSet);
 	}
 }
 

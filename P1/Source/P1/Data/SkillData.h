@@ -6,30 +6,12 @@
 #include "Engine/DataTable.h"
 #include "SkillData.generated.h"
 
-enum class EPreSkillType : uint8;
-struct FGeneralSkillInfo;
-enum class ERangePreSkillType : uint8;
 enum class EDamageType : uint8;
 enum class ECCType : uint8;
+enum class ESkillType : uint8;
 struct FDamageInfo;
-struct FSkillActorInfo;
+struct FSkillInfo;
 struct FSkillsByClass;
-
-UENUM(BlueprintType)
-enum class EPreSkillType : uint8
-{
-	Immediate UMETA(Displayname = "Normal"),
-	Charge UMETA(Displayname = "Dot"),
-	Range UMETA(Displayname = "TimeLag"),
-};
-
-UENUM(BlueprintType)
-enum class ERangePreSkillType : uint8
-{
-	Circle UMETA(Displayname = "Normal"),
-	Charge UMETA(Displayname = "Dot"),
-	Range UMETA(Displayname = "TimeLag"),
-};
 
 UENUM(BlueprintType)
 enum class EDamageType : uint8
@@ -55,52 +37,29 @@ enum class ECollisionType : uint8
 	Box UMETA(Displayname = "Box"),
 };
 
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	Normal UMETA(Displayname = "Normal"),
+	Hold UMETA(Displayname = "Hold"),
+	Casting UMETA(Displayname = "Casting"),
+};
+
 USTRUCT(BlueprintType)
-struct FGeneralSkillInfo
+struct FSkillInfo
 {
 public:
 	GENERATED_USTRUCT_BODY()
 	int32 SkillNum;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UAnimMontage* AnimMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class ASkillActorBase> SkillActor;
-}; 
-
-USTRUCT(BlueprintType)
-struct FDamageInfo
-{
-public:
-	GENERATED_USTRUCT_BODY()
-
-	// TODO:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECCType CCType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EDamageType DamageType;
-};
-
-
-USTRUCT(BlueprintType)
-struct FSkillActorInfo
-{
-public:
-	GENERATED_USTRUCT_BODY()
-
-	// 타겟팅인지 아닌지
-	// 즉발인지 차징인지
+	int32 HitNum = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CooldownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECollisionType CollisionType;
+	float Damage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float XScale;
@@ -109,12 +68,22 @@ public:
 	float YScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// if HitNum == -1, infinite penetrate
-	int32 HitNum = -1;
+	class UAnimMontage* AnimMontage;
 
-	// TODO:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDamageInfo DamageInfo;
+	ECollisionType CollisionType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ECCType CCType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EDamageType DamageType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ESkillType SkillType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ASkillActorBase> SkillActorClass;
 };
 
 USTRUCT(BlueprintType)
@@ -124,7 +93,7 @@ public:
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FGeneralSkillInfo> SkillInfos;
+	TArray<FSkillInfo> SkillInfos;
 };
 
 

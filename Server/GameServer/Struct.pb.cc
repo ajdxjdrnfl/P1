@@ -50,6 +50,7 @@ PROTOBUF_CONSTEXPR SkillInfo::SkillInfo(
   , /*decltype(_impl_.damage_type_)*/0
   , /*decltype(_impl_.collision_type_)*/0
   , /*decltype(_impl_.cc_type_)*/0
+  , /*decltype(_impl_.skill_type_)*/0
   , /*decltype(_impl_.damage_)*/0
   , /*decltype(_impl_.cooldown_)*/0
   , /*decltype(_impl_.size_x_)*/0
@@ -97,6 +98,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.damage_type_),
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.collision_type_),
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.cc_type_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.skill_type_),
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.damage_),
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.cooldown_),
   PROTOBUF_FIELD_OFFSET(::Protocol::SkillInfo, _impl_.size_x_),
@@ -119,20 +121,21 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "state\030\006 \001(\0162\023.Protocol.MoveState\022\n\n\002hp\030\007"
   " \001(\002\022\016\n\006max_hp\030\010 \001(\002\022\017\n\007stamina\030\t \001(\002\022\023\n"
   "\013max_stamina\030\n \001(\002\022(\n\ncastertype\030\013 \001(\0162\024"
-  ".Protocol.CasterType\"\336\001\n\tSkillInfo\022\020\n\010sk"
+  ".Protocol.CasterType\"\207\002\n\tSkillInfo\022\020\n\010sk"
   "ill_id\030\001 \001(\004\022)\n\013damage_type\030\002 \001(\0162\024.Prot"
   "ocol.DamageType\022/\n\016collision_type\030\003 \001(\0162"
   "\027.Protocol.CollisionType\022!\n\007cc_type\030\004 \001("
-  "\0162\020.Protocol.CCType\022\016\n\006damage\030\005 \001(\002\022\020\n\010c"
-  "ooldown\030\006 \001(\002\022\016\n\006size_x\030\007 \001(\002\022\016\n\006size_y\030"
-  "\010 \001(\002b\006proto3"
+  "\0162\020.Protocol.CCType\022\'\n\nskill_type\030\005 \001(\0162"
+  "\023.Protocol.SkillType\022\016\n\006damage\030\006 \001(\002\022\020\n\010"
+  "cooldown\030\007 \001(\002\022\016\n\006size_x\030\010 \001(\002\022\016\n\006size_y"
+  "\030\t \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 493, descriptor_table_protodef_Struct_2eproto,
+    false, false, 534, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 2,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -696,6 +699,7 @@ SkillInfo::SkillInfo(const SkillInfo& from)
     , decltype(_impl_.damage_type_){}
     , decltype(_impl_.collision_type_){}
     , decltype(_impl_.cc_type_){}
+    , decltype(_impl_.skill_type_){}
     , decltype(_impl_.damage_){}
     , decltype(_impl_.cooldown_){}
     , decltype(_impl_.size_x_){}
@@ -718,6 +722,7 @@ inline void SkillInfo::SharedCtor(
     , decltype(_impl_.damage_type_){0}
     , decltype(_impl_.collision_type_){0}
     , decltype(_impl_.cc_type_){0}
+    , decltype(_impl_.skill_type_){0}
     , decltype(_impl_.damage_){0}
     , decltype(_impl_.cooldown_){0}
     , decltype(_impl_.size_x_){0}
@@ -796,33 +801,42 @@ const char* SkillInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // float damage = 5;
+      // .Protocol.SkillType skill_type = 5;
       case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_skill_type(static_cast<::Protocol::SkillType>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // float damage = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
           _impl_.damage_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
-      // float cooldown = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+      // float cooldown = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
           _impl_.cooldown_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
-      // float size_x = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 61)) {
+      // float size_x = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
           _impl_.size_x_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
-      // float size_y = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 69)) {
+      // float size_y = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 77)) {
           _impl_.size_y_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
@@ -884,44 +898,51 @@ uint8_t* SkillInfo::_InternalSerialize(
       4, this->_internal_cc_type(), target);
   }
 
-  // float damage = 5;
+  // .Protocol.SkillType skill_type = 5;
+  if (this->_internal_skill_type() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      5, this->_internal_skill_type(), target);
+  }
+
+  // float damage = 6;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_damage = this->_internal_damage();
   uint32_t raw_damage;
   memcpy(&raw_damage, &tmp_damage, sizeof(tmp_damage));
   if (raw_damage != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_damage(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_damage(), target);
   }
 
-  // float cooldown = 6;
+  // float cooldown = 7;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_cooldown = this->_internal_cooldown();
   uint32_t raw_cooldown;
   memcpy(&raw_cooldown, &tmp_cooldown, sizeof(tmp_cooldown));
   if (raw_cooldown != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_cooldown(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_cooldown(), target);
   }
 
-  // float size_x = 7;
+  // float size_x = 8;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_size_x = this->_internal_size_x();
   uint32_t raw_size_x;
   memcpy(&raw_size_x, &tmp_size_x, sizeof(tmp_size_x));
   if (raw_size_x != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(7, this->_internal_size_x(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_size_x(), target);
   }
 
-  // float size_y = 8;
+  // float size_y = 9;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_size_y = this->_internal_size_y();
   uint32_t raw_size_y;
   memcpy(&raw_size_y, &tmp_size_y, sizeof(tmp_size_y));
   if (raw_size_y != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(8, this->_internal_size_y(), target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_size_y(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -963,7 +984,13 @@ size_t SkillInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_cc_type());
   }
 
-  // float damage = 5;
+  // .Protocol.SkillType skill_type = 5;
+  if (this->_internal_skill_type() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_skill_type());
+  }
+
+  // float damage = 6;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_damage = this->_internal_damage();
   uint32_t raw_damage;
@@ -972,7 +999,7 @@ size_t SkillInfo::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
-  // float cooldown = 6;
+  // float cooldown = 7;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_cooldown = this->_internal_cooldown();
   uint32_t raw_cooldown;
@@ -981,7 +1008,7 @@ size_t SkillInfo::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
-  // float size_x = 7;
+  // float size_x = 8;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_size_x = this->_internal_size_x();
   uint32_t raw_size_x;
@@ -990,7 +1017,7 @@ size_t SkillInfo::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
-  // float size_y = 8;
+  // float size_y = 9;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_size_y = this->_internal_size_y();
   uint32_t raw_size_y;
@@ -1028,6 +1055,9 @@ void SkillInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   }
   if (from._internal_cc_type() != 0) {
     _this->_internal_set_cc_type(from._internal_cc_type());
+  }
+  if (from._internal_skill_type() != 0) {
+    _this->_internal_set_skill_type(from._internal_skill_type());
   }
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_damage = from._internal_damage();

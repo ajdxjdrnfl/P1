@@ -6,9 +6,8 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SkillManagerSubSystem.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCastingSkillEnd);
+
 UCLASS()
 class P1_API USkillManagerSubSystem : public UGameInstanceSubsystem
 {
@@ -16,6 +15,7 @@ class P1_API USkillManagerSubSystem : public UGameInstanceSubsystem
 	
 public:
 	TMap<uint16, bool> SkillCanUseMap;
+	FOnCastingSkillEnd OnCastingSkillEnd;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 

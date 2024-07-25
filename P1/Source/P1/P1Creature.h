@@ -35,10 +35,10 @@ private:
 	int32 ClassType;
 
 public:
-	Protocol::ObjectInfo* Info;
+	Protocol::ObjectInfo* ObjectInfo;
 
 
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE int32 GetClassType() const { return ClassType; }
-	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { Info->CopyFrom(InfoToSet); }
+	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { ObjectInfo->CopyFrom(InfoToSet); }
 };

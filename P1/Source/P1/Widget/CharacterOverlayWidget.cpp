@@ -5,7 +5,7 @@
 #include "SkillButtonWidget.h"
 #include "Stat/CharacterStatWidget.h"
 
-void UCharacterOverlayWidget::UseSkill(FGeneralSkillInfo SkillInfo)
+void UCharacterOverlayWidget::UseSkill(FSkillInfo SkillInfo)
 {
 	if (SkillWidget == nullptr)
 		return;

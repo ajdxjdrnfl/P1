@@ -25,6 +25,12 @@ private:
 	UPROPERTY()
 	class UCharacterOverlayWidget* CharacterOverlayWidget;
 
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> CastingSkillWidgetClass;
+
+	UPROPERTY()
+	class UCastingSkillWidget* CastingSkillWidget;
+
 	void OpenOverlayWidget();
 
 public:
@@ -35,6 +41,9 @@ public:
 	void OnCharacterStaminaChanged();
 	UFUNCTION()
 	void OnCharacterHealthChanged();
+
+	void OpenCastingSkillWidget();
+	void CloseCastingSkillWidget();
 	
 	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() { return CharacterOverlayWidget; }
 

@@ -33,7 +33,7 @@ private:
 	class AP1Character* OwnerCharacter;
 
 public:
-	virtual void TakeDamage(FDamageInfo DamageInfo) override;
+	virtual void TakeDamage() override;
 
 	void UseStamina(float Amount);
 

@@ -5,6 +5,8 @@
 #include "P1/P1GameInstance.h"
 #include "P1/P1Character.h"
 #include "P1/Skill/SkillActorBase.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "P1/Skill/Manager/CastingSkillManager.h"
 
 USkillComponentBase::USkillComponentBase()
 {
@@ -22,7 +24,7 @@ void USkillComponentBase::BeginPlay()
 	{
 		SkillDataTable = GameInstance->SkillDataTable;
 	}
-	
+
 }
 
 
@@ -43,83 +45,37 @@ void USkillComponentBase::SetSkills()
 
 void USkillComponentBase::UseSkill(uint16 SkillIndex)
 {
-	// TODO: Skills[SkillIndex];
-	FGeneralSkillInfo GeneralSkillInfo = Skills[SkillIndex];
+	CurrentSkillInfo = Skills[SkillIndex];
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
+	AP1Creature* P1Creature = Cast<AP1Creature>(GetOwner());
 
-	if (OwnerAnimInstance == nullptr)
+	if (SkillActor == nullptr || OwnerAnimInstance == nullptr || P1Creature == nullptr)
 		return;
-
 	//if (SkillInfo.AnimMontage == nullptr) 
 	//	return;
 
-	UP1GameInstance* P1GameInstace = GetWorld()->GetGameInstance<UP1GameInstance>();
-	if (P1GameInstace == nullptr) return;
-
-	FSkillActorInfo SkillActorInfo = Cast<ASkillActorBase>(GeneralSkillInfo.SkillActor->GetDefaultObject())->GetSkillInfo();
-
+	// Normal Skill && Projectile Skill
+	if (SkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_NORMAL)
 	{
 		Protocol::C_SKILL Pkt;
-		Protocol::SkillInfo* SkillInfo = Pkt.mutable_skillinfo();
-		Protocol::ObjectInfo* ObjectInfo = Pkt.mutable_caster();
+		Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-		AP1Creature* P1Creature = Cast<AP1Character>(GetOwner());
-		if (P1Creature == nullptr)
-			return;
+		SkillInfoRef->CopyFrom(*SkillActor->SkillInfo);
+		ObjectInfoRef->CopyFrom(*P1Creature->ObjectInfo);
 
-		SkillInfo->set_skill_id(1);
-		SkillInfo->set_size_x(SkillActorInfo.XScale);
-		SkillInfo->set_size_y(SkillActorInfo.YScale);
-		SkillInfo->set_damage(SkillActorInfo.DamageInfo.Damage);
-		ObjectInfo->CopyFrom(*P1Creature->Info);
-
-		switch (SkillActorInfo.CollisionType)
-		{
-		case ECollisionType::Circle:
-			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
-			break;
-		case ECollisionType::Box:
-			SkillInfo->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
-			break;
-		default:
-			break;
-		}
-
-		switch (SkillActorInfo.DamageInfo.DamageType)
-		{
-		case EDamageType::Normal:
-			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
-			break;
-		case EDamageType::Dot:
-			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_DOT);
-			break;
-		case EDamageType::Buff:
-			SkillInfo->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_BUFF);
-			break;
-		default:
-			break;
-		}
-
-		switch (SkillActorInfo.DamageInfo.CCType)
-		{
-		case ECCType::Normal:
-			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
-			break;
-		case ECCType::Slow:
-			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_SLOW);
-			break;
-		case ECCType::Stun:
-			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_STUN);
-			break;
-		case ECCType::Airborne:
-			SkillInfo->set_cc_type(Protocol::CCType::CC_TYPE_AIRBORNE);
-			break;
-		default:
-			break;
-		}
-
+		SkillState = ESkillState::Normal;
+		
 		SEND_PACKET(Pkt);
 	}
-
-	//SkillActor->ActivateSkill();
+	else if (SkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CASTING)
+	{
+		if (CastingSkillManager == nullptr)
+		{
+			CastingSkillManager = NewObject<UCastingSkillManager>();
+			CastingSkillManager->Init(Cast<AP1Character>(GetOwner()), CurrentSkillInfo);
+		}
+		CastingSkillManager->UseSkill();
+	}
 }
 

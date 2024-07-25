@@ -29,7 +29,7 @@ void UStatComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	// ...
 }
 
-void UStatComponentBase::TakeDamage(FDamageInfo DamageInfo)
+void UStatComponentBase::TakeDamage()
 {
 
 }
@@ -40,7 +40,7 @@ float UStatComponentBase::GetCurrentHealth()
 	if (Creature == nullptr)
 		return 0;
 
-	return Creature->Info->hp();
+	return Creature->ObjectInfo->hp();
 }
 
 float UStatComponentBase::GetMaxHealth()
@@ -49,7 +49,7 @@ float UStatComponentBase::GetMaxHealth()
 	if (Creature == nullptr)
 		return 0;
 
-	return Creature->Info->max_hp();
+	return Creature->ObjectInfo->max_hp();
 }
 
 void UStatComponentBase::SetCurrentHealth(float HealthToSet)
@@ -58,7 +58,7 @@ void UStatComponentBase::SetCurrentHealth(float HealthToSet)
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_hp(HealthToSet);
+	Creature->ObjectInfo->set_hp(HealthToSet);
 }
 
 void UStatComponentBase::SetMaxHealth(float HealthToSet)
@@ -67,6 +67,6 @@ void UStatComponentBase::SetMaxHealth(float HealthToSet)
 	if (Creature == nullptr)
 		return;
 
-	Creature->Info->set_max_hp(HealthToSet);
+	Creature->ObjectInfo->set_max_hp(HealthToSet);
 }
 

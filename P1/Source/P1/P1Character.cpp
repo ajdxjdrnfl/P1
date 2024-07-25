@@ -122,11 +122,10 @@ void AP1Character::MoveByServer(float DeltaTime)
 {
 	if (CharacterState == ECharacterState::Move)
 	{
-		FVector TargetLocation = FVector(Info->x(), Info->y(), GetActorLocation().Z);
-		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Info->yaw(), GetActorRotation().Roll);
+		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
 		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
 
-		//SetActorLocation(TargetLocation);
 		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
 		SetActorRotation(NextRotation);
 	}
@@ -141,7 +140,10 @@ void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	TargetTransform.SetLocation(TargetLocation);
 	TargetTransform.SetRotation(TargetRotation.Quaternion());
 	
-	bool bIsNear = UKismetMathLibrary::NearlyEqual_TransformTransform(TargetTransform, GetActorTransform(), 100);
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 15);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 15);
+	bool NearZ = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Z, GetActorLocation().Z, 15);
+	bool bIsNear = NearX && NearY && NearZ;
 
 	if (bIsNear)
 	{
@@ -150,9 +152,23 @@ void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	else
 	{
 		CharacterState = ECharacterState::Move;
-		Info->set_x(TargetLocation.X);
-		Info->set_y(TargetLocation.Y);
-		Info->set_z(TargetLocation.Z);
-		Info->set_yaw(TargetRotation.Yaw);
+		ObjectInfo->set_x(TargetLocation.X);
+		ObjectInfo->set_y(TargetLocation.Y);
+		ObjectInfo->set_z(TargetLocation.Z);
+		ObjectInfo->set_yaw(TargetRotation.Yaw);
 	}
+}
+
+void AP1Character::OpenCastingSkillWidget()
+{
+	if (WidgetComponent == nullptr) return;
+
+	WidgetComponent->OpenCastingSkillWidget();
+}
+
+void AP1Character::CloseCastingSkillWidget()
+{
+	if (WidgetComponent == nullptr) return;
+
+	WidgetComponent->CloseCastingSkillWidget();
 }

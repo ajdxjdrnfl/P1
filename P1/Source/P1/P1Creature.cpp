@@ -13,7 +13,7 @@ AP1Creature::AP1Creature()
 
 	GetCharacterMovement()->bRunPhysicsWithNoController = true;
 
-	Info = new Protocol::ObjectInfo();
+	ObjectInfo = new Protocol::ObjectInfo();
 }
 
 // Called when the game starts or when spawned

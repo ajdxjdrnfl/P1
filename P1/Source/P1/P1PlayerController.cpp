@@ -66,10 +66,15 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP1PlayerController::OnTouchReleased);
 
-		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
+
+		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
+		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
+		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
+		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
 	}
 	else
 	{
@@ -148,6 +153,13 @@ void AP1PlayerController::OnSkillTriggered()
 	OwnerCharacter->UseSkill(0);
 }
 
+void AP1PlayerController::OnSkillReleased()
+{
+	if (OwnerCharacter == nullptr) return;
+
+	// OwnerCharacter->Cancel
+}
+
 void AP1PlayerController::SendMovePacketToServer()
 {
 	if (OwnerCharacter == nullptr) return;
@@ -155,7 +167,7 @@ void AP1PlayerController::SendMovePacketToServer()
 	Protocol::C_MOVE Pkt;
 	Protocol::ObjectInfo* info = Pkt.mutable_info();
 	// TODO: State
-	info->set_object_id(OwnerCharacter->Info->object_id());
+	info->set_object_id(OwnerCharacter->ObjectInfo->object_id());
 	info->set_x(OwnerCharacter->GetActorLocation().X);
 	info->set_y(OwnerCharacter->GetActorLocation().Y);
 	info->set_z(OwnerCharacter->GetActorLocation().Z);

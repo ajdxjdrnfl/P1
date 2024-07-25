@@ -8,7 +8,8 @@ ASkillActorBase::ASkillActorBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Info = new Protocol::ObjectInfo();
+	ObjectInfo = new Protocol::ObjectInfo();
+	SkillInfo = new Protocol::SkillInfo();
 }
 
 void ASkillActorBase::BeginPlay()

@@ -29,6 +29,6 @@ public:
 	void InitStat();
 	void InitStat(float InitHealth);
 
-	virtual void TakeDamage(FDamageInfo DamageInfo) override;
-	void SetHealth(float HealthToSet, FDamageInfo DamageInfo);
+	virtual void TakeDamage() override;
+	void SetHealth(float HealthToSet);
 };
