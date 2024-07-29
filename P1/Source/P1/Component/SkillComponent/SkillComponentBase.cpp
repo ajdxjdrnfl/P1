@@ -6,8 +6,8 @@
 #include "P1/P1Character.h"
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
-#include "P1/Skill/Manager/CastingSkillManager.h"
-#include "P1/Skill/Manager/ChargingSkillManager.h"
+//#include "P1/Skill/Manager/CastingSkillManager.h"
+//#include "P1/Skill/Manager/ChargingSkillManager.h"
 #include "P1/Skill/Warrior/WarriorSkillInstance.h"
 #include "P1/P1GameMode.h"
 
@@ -34,14 +34,14 @@ void USkillComponentBase::BeginPlay()
 		SkillInstances.SetNum(4);
 		if (P1Creature->GetClassType() == FName("Warrior"))
 		{
-			//AP1GameMode* GameMode = Cast<AP1GameMode>(P1Creature->GetWorld()->GetAuthGameMode());
-			//if (GameMode)
-			//{
-			//	GameMode->InitWarriorSkillInstance(SkillInstances);
-			//}
-			SkillInstances[0] = Cast<ASkillInstanceBase>(NewObject<AWarriorQSkillInstance>());
-			SkillInstances[1] = Cast<ASkillInstanceBase>(NewObject<AWarriorWSkillInstance>());
+			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorQSkillInstance::StaticClass()));
+			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorWSkillInstance::StaticClass()));
+			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
 			SkillInstances[2] = Cast<ASkillInstanceBase>(NewObject<AWarriorESkillInstance>());
+
 			SkillInstances[3] = Cast<ASkillInstanceBase>(NewObject<AWarriorRSkillInstance>());
 		}
 	}
@@ -84,6 +84,7 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 	if (CurrentSkillInfo.AnimMontage == nullptr) 
 		return;
 
+	SkillInstances[SkillIndex]->SetSkillInfo(Skills[SkillIndex]);
 	SkillInstances[SkillIndex]->UseSkill();
 	
 

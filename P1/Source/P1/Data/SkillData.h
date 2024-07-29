@@ -99,4 +99,14 @@ public:
 	TArray<FSkillInfo> SkillInfos;
 };
 
+UENUM(BlueprintType)
+enum class ESkillState : uint8
+{
+	Normal UMETA(Displayname = "Normal"),
+	Hold UMETA(Displayname = "Hold"),
+	Casting UMETA(Displayname = "Casting"),
+	Charging UMETA(Displayname = "Charging"),
+};
+
+
 

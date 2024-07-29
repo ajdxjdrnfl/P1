@@ -8,20 +8,22 @@
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/Component/WidgetComponent/CharacterWidgetComponent.h"
 #include "P1/Widget/CharacterOverlayWidget.h"
+#include "P1/Skill/SkillInstanceBase.h"
 
-void UChargingSkillManager::Init(AP1Character* OwnerChar, FSkillInfo SkillInfo)
+void AChargingSkillManager::Init(AP1Character* _OwnerCharacter, ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo)
 {
-	OwnerCharacter = OwnerChar;
-	CurrentSkillInfo = SkillInfo;
+	OwnerCharacter = _OwnerCharacter;
+	SkillInstance = _SkillInstance;
+	SkillInfo = _SkillInfo;
 }
 
-void UChargingSkillManager::UseSkill()
+void AChargingSkillManager::StartCasting()
 {
-	if (OwnerCharacter->GetSkillComponent()->GetSkillState() != ESkillState::Normal && OwnerCharacter->GetSkillComponent()->GetSkillState() != ESkillState::Charging)
+	if (GetSkillState() != ESkillState::Normal && GetSkillState() != ESkillState::Charging)
 		return;
 
 	// TODO: Do not use Enemy
-	if (OwnerCharacter->GetSkillComponent()->GetSkillState() == ESkillState::Charging)
+	if (GetSkillState() == ESkillState::Charging)
 	{
 		FireSkill(OwnerCharacter->GetGaugeRate());
 		return;
@@ -29,42 +31,33 @@ void UChargingSkillManager::UseSkill()
 
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &UChargingSkillManager::OnCastingEnd);
+		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &AChargingSkillManager::OnCastingEnd);
 	}
 
-	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Charging);
+	SetSkillState(ESkillState::Charging);
 	OwnerCharacter->OpenSkillGaugeWidget();
 }
 
-void UChargingSkillManager::FireSkill(float rate = 1.f)
+void AChargingSkillManager::FireSkill(float rate = 1.f)
 {
-	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
+	SetSkillState(ESkillState::Normal);
 	OwnerCharacter->CloseSkillGaugeWidget();
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = OwnerCharacter;
-	SpawnParams.Instigator = OwnerCharacter;
-
-	FVector Loc = OwnerCharacter->GetActorLocation();
-	FRotator Rot = OwnerCharacter->GetActorRotation();
-
-	// TODO: SendPacket
-	ASkillActorBase* SpawnedSkillActor = Cast<ASkillActorBase>(OwnerCharacter->GetWorld()->SpawnActor(CurrentSkillInfo.SkillActorClass, &Loc, &Rot, SpawnParams));
-	if (SpawnedSkillActor == nullptr)
-		return;
-
-	SpawnedSkillActor->SkillInfo->set_damage(SpawnedSkillActor->SkillInfo->damage() * rate);
-
-	SpawnedSkillActor->ActivateSkill();
-
-	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(CurrentSkillInfo);
+	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(SkillInfo);
 
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
 		SubSystem->OnSkillGaugeEnd.Clear();
+		SubSystem->CastingSkillGaugeRate = rate;
+	}
+
+	if (SkillInstance)
+	{
+		SkillInstance->SpawnSkill();
+	}
 
 }
 
-void UChargingSkillManager::OnCastingEnd()
+void AChargingSkillManager::OnCastingEnd()
 {
 	FireSkill();
 }

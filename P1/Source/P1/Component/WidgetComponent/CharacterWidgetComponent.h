@@ -52,6 +52,7 @@ public:
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	
-	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() { return CharacterOverlayWidget; }
+	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() const { return CharacterOverlayWidget; }
+	FORCEINLINE FSkillInfo GetSkillInfoBySkillIndex(int32 SkillIndex) const { return Skills[SkillIndex]; }
 
 };

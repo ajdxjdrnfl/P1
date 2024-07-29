@@ -122,21 +122,9 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 {
 	if (SkillComponent == nullptr || WidgetComponent == nullptr) return;
 
-	FSkillInfo CurrentSkillInfo;
-	if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
-	{
-		FString ContextString;
-		FSkillsByClass SkillInfos = *GameInstance->SkillDataTable->FindRow<FSkillsByClass>(GetClassType(), ContextString);
-
-		if (SkillInfos.SkillInfos.Num() <= SkillIndex)
-			return;
-
-		CurrentSkillInfo = SkillInfos.SkillInfos[SkillIndex];
-	}
-
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (SkillSubSystem->SkillCanUseMap[CurrentSkillInfo.SkillNum])
+		if (SkillSubSystem->SkillCanUseMap[SkillIndex])
 		{
 			SkillComponent->UseSkill(SkillIndex);
 			WidgetComponent->UseSkill(SkillIndex);

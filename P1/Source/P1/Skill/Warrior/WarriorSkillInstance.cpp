@@ -6,6 +6,10 @@
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/P1PlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "P1/Skill/Manager/CastingSkillManager.h"
+#include "P1/Skill/Manager/ChargingSkillManager.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "P1/Component/SkillComponent/CharacterSkillComponent.h"
 
 AWarriorQSkillInstance::AWarriorQSkillInstance()
 {
@@ -26,6 +30,7 @@ void AWarriorQSkillInstance::Tick(float DeltaTime)
 		FVector MouseLoc = Cast<AP1PlayerController>(OwnerCharacter->GetController())->GetMouseLocation();
 		FVector CharacterLoc = FVector(OwnerCharacter->GetActorLocation().X, OwnerCharacter->GetActorLocation().Y, MouseLoc.Z);
 		FVector CharacterToMouseVector = MouseLoc - CharacterLoc;
+		CharacterToMouseVector.Normalize();
 
 		FRotator TargetRot = FRotator(CharacterToMouseVector.Rotation());
 		OwnerCharacter->SetActorRotation(UKismetMathLibrary::RInterpTo(OwnerCharacter->GetActorRotation(), TargetRot, DeltaTime, 100));
@@ -73,4 +78,110 @@ void AWarriorQSkillInstance::UseSkill()
 		AnimInstance->Montage_JumpToSection(AttackSectionIndex);
 		bIsComboTiming = false;
 	}
+}
+
+void AWarriorWSkillInstance::UseSkill()
+{
+	if (CastingSkillManager == nullptr)
+	{
+		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCharacter->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
+		CastingSkillManager->AttachToActor(OwnerCharacter, FAttachmentTransformRules::KeepWorldTransform);
+	}
+
+	CastingSkillManager->Init(Cast<AP1Character>(OwnerCharacter), this, SkillInfo);
+	CastingSkillManager->StartCasting();
+}
+
+void AWarriorWSkillInstance::SpawnSkill()
+{
+	// TODO: SendPacket
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
+
+	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
+	ObjectInfoRef->CopyFrom(*OwnerCharacter->ObjectInfo);
+
+	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
+
+	SEND_PACKET(Pkt);
+
+
+	/*FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = OwnerCharacter;
+	SpawnParams.Instigator = OwnerCharacter;
+
+	FVector Loc = OwnerCharacter->GetActorLocation();
+	FRotator Rot = OwnerCharacter->GetActorRotation();
+
+
+	SpawnedSkillActor = Cast<ASkillActorBase>(OwnerCharacter->GetWorld()->SpawnActor(SkillActorClass, &Loc, &Rot, SpawnParams));
+	if (SpawnedSkillActor == nullptr)
+		return;
+
+	SpawnedSkillActor->InitOnSpawn(OwnerCharacter);
+	SpawnedSkillActor->ActivateSkill();*/
+}
+
+void AWarriorESkillInstance::UseSkill()
+{
+	if (ChargingSkillManager == nullptr)
+	{
+		ChargingSkillManager = Cast<AChargingSkillManager>(OwnerCharacter->GetWorld()->SpawnActor(AChargingSkillManager::StaticClass()));
+		ChargingSkillManager->AttachToActor(OwnerCharacter, FAttachmentTransformRules::KeepWorldTransform);
+	}
+
+	ChargingSkillManager->Init(Cast<AP1Character>(OwnerCharacter), this, SkillInfo);
+	ChargingSkillManager->StartCasting();
+}
+
+void AWarriorESkillInstance::SpawnSkill()
+{
+	float GaugeRate = 0.f;
+	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		GaugeRate = SubSystem->CastingSkillGaugeRate;
+	}
+
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
+
+	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
+	SkillInfoRef->set_damage(SkillInfoRef->damage() * GaugeRate);
+
+	ObjectInfoRef->CopyFrom(*OwnerCharacter->ObjectInfo);
+
+	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
+
+	SEND_PACKET(Pkt);
+
+	/*FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = OwnerCharacter;
+	SpawnParams.Instigator = OwnerCharacter;
+
+	FVector Loc = OwnerCharacter->GetActorLocation();
+	FRotator Rot = OwnerCharacter->GetActorRotation();
+
+	SpawnedSkillActor = Cast<ASkillActorBase>(OwnerCharacter->GetWorld()->SpawnActor(SkillInfo.SkillActorClass, &Loc, &Rot, SpawnParams));
+	if (SpawnedSkillActor == nullptr)
+		return;
+
+	float GaugeRate = 0.f;
+	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		GaugeRate = SubSystem->CastingSkillGaugeRate;
+	}
+
+	SpawnedSkillActor->SkillInfo->set_damage(SpawnedSkillActor->SkillInfo->damage() * GaugeRate);
+	SpawnedSkillActor->InitOnSpawn(OwnerCharacter);
+	SpawnedSkillActor->ActivateSkill();*/
 }

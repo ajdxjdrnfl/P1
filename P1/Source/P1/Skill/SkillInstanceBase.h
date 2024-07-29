@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "P1/Data/SkillData.h"
 #include "SkillInstanceBase.generated.h"
 
 UCLASS()
@@ -22,10 +23,13 @@ protected:
 	TSubclassOf<class ASkillActorBase> SkillActorClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	class AP1Character* OwnerCharacter;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	class ASkillActorBase* SpawnedSkillActor;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	class AP1Character* OwnerCharacter;
+	FSkillInfo SkillInfo;
 
 public:
 	void Init(class AP1Character* _OwnerCharacter);
@@ -39,6 +43,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill() {};
 
+	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
 	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
 	FORCEINLINE void SetSkillActorClass(TSubclassOf<class ASkillActorBase> _SkillActorClass) { SkillActorClass = _SkillActorClass; }
 

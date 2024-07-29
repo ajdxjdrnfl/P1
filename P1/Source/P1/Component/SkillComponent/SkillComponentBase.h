@@ -7,15 +7,6 @@
 #include "P1/Data/SkillData.h"
 #include "SkillComponentBase.generated.h"
 
-UENUM(BlueprintType)
-enum class ESkillState : uint8
-{
-	Normal UMETA(Displayname = "Normal"),
-	Hold UMETA(Displayname = "Hold"),
-	Casting UMETA(Displayname = "Casting"),
-	Charging UMETA(Displayname = "Charging"),
-};
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class P1_API USkillComponentBase : public UActorComponent
 {
@@ -34,11 +25,11 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	ASkillActorBase* CurrentSkillActor;
 
-	UPROPERTY()
+	/*UPROPERTY()
 	class UCastingSkillManager* CastingSkillManager;
 
 	UPROPERTY()
-	class UChargingSkillManager* ChargingSkillManager;
+	class UChargingSkillManager* ChargingSkillManager;*/
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TArray<class ASkillInstanceBase*> SkillInstances;

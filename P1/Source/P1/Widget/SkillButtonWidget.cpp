@@ -39,6 +39,6 @@ void USkillButtonWidget::UseSkill(FSkillInfo SkillInfo)
 	if (CurrentSkillSlotWidget == nullptr) 
 		return;
 
-	//CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNum);
+	CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNumLocal);
 	CurrentSkillSlotWidget->ActivateSlot(SkillInfo.CooldownTime);
 }

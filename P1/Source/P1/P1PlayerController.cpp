@@ -54,7 +54,7 @@ void AP1PlayerController::Tick(float DeltaTime)
 	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
 	if (bHitSuccessful)
 	{
-
+		MouseLocation = Hit.Location;
 	}
 }
 

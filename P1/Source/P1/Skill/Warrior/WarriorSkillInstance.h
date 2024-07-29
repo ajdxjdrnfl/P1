@@ -47,6 +47,13 @@ class P1_API AWarriorWSkillInstance : public ASkillInstanceBase
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY()
+	class ACastingSkillManager* CastingSkillManager;
+
+public:
+	virtual void UseSkill() override;
+	virtual void SpawnSkill() override;
 
 };
 
@@ -55,6 +62,13 @@ class P1_API AWarriorESkillInstance : public ASkillInstanceBase
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY()
+	class AChargingSkillManager* ChargingSkillManager;
+
+public:
+	virtual void UseSkill() override;
+	virtual void SpawnSkill() override;
 
 };
 

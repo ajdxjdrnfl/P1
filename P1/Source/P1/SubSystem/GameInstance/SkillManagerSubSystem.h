@@ -17,6 +17,8 @@ public:
 	TMap<uint16, bool> SkillCanUseMap;
 	FOnSkillGaugeEnd OnSkillGaugeEnd;
 
+	float CastingSkillGaugeRate;
+
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 };

@@ -33,8 +33,9 @@ void UP1GameInstance::InitSkillMap()
 	{
 		FString ContextString;
 		FSkillsByClass SkillInfos = *SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
-		for (FSkillInfo CurrentSkillInfo : SkillInfos.SkillInfos)
+		for (FSkillInfo& CurrentSkillInfo : SkillInfos.SkillInfos)
 		{
+			CurrentSkillInfo.SkillNum = idx;
 			SkillInfo.Add(idx, CurrentSkillInfo);
 
 			// Set skillinfo to each skill game default object
