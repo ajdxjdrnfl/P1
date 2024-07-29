@@ -26,8 +26,8 @@ private:
 	class UProgressBar* CastingBar;
 
 public:
-	void StartCasting(float MaxValueToSet);
-	void SetCastingBar(float ValueToAdd);
-	bool IsCastingEnd();
-
+	void StartGauge(float MaxValueToSet);
+	void SetGaugeBar(float ValueToAdd);
+	bool IsGaugeEnd();
+	float GetGaugeRate() { return CurrentValue / MaxValue; }
 };

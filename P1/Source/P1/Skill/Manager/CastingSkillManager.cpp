@@ -17,29 +17,35 @@ void UCastingSkillManager::Init(class AP1Character* OwnerChar, FSkillInfo SkillI
 
 void UCastingSkillManager::UseSkill()
 {
+	if (OwnerCharacter->GetSkillComponent()->GetSkillState() != ESkillState::Normal && OwnerCharacter->GetSkillComponent()->GetSkillState() != ESkillState::Casting)
+		return;
+
 	// TODO: Do not use Enemy
 	if (OwnerCharacter->GetSkillComponent()->GetSkillState() == ESkillState::Casting)
 	{
-		// À§Á¬ »èÁ¦
 		OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
-		OwnerCharacter->CloseCastingSkillWidget();
+		OwnerCharacter->CloseSkillGaugeWidget();
+		
+		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+			SubSystem->OnSkillGaugeEnd.Clear();
+
 		return;
 	}
 
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		SubSystem->OnCastingSkillEnd.AddDynamic(this, &UCastingSkillManager::OnCastingEnd);
+		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &UCastingSkillManager::OnCastingEnd);
 	}
 
 	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Casting);
-	OwnerCharacter->OpenCastingSkillWidget();
+	OwnerCharacter->OpenSkillGaugeWidget();
 
 }
 
 void UCastingSkillManager::OnCastingEnd()
 {
 	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
-	OwnerCharacter->CloseCastingSkillWidget();
+	OwnerCharacter->CloseSkillGaugeWidget();
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = OwnerCharacter;
@@ -56,4 +62,8 @@ void UCastingSkillManager::OnCastingEnd()
 	SpawnedSkillActor->ActivateSkill();
 
 	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(CurrentSkillInfo);
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		SubSystem->OnSkillGaugeEnd.Clear();
+
 }

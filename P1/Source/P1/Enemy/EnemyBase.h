@@ -35,11 +35,15 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UEnemyWidgetComponent* WidgetComponent;
 
+	UPROPERTY(EditAnywhere)
+	class UEnemySkillComponent* SkillComponent;
+
 public:
 	void InitOnSpawn(float HealthToSet);
 	void OnSpawn(float HealthToSet);
 	void TakeDamage();
 	void SetHealthByDamage(float HealthToSet);
+	void Die();
 
 	UFUNCTION()
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

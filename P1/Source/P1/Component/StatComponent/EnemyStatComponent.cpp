@@ -3,6 +3,7 @@
 
 #include "EnemyStatComponent.h"
 #include "P1/P1.h"
+#include "P1/Enemy/EnemyBase.h"
 #include "P1/P1Creature.h"
 
 void UEnemyStatComponent::InitStat()
@@ -18,8 +19,7 @@ void UEnemyStatComponent::InitStat()
 
 void UEnemyStatComponent::InitStat(float InitHealth)
 {
-	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
-	if (Creature == nullptr)
+	if (OwnerEnemy == nullptr)
 		return;
 
 	//Creature->Info->set_hp(InitHealth);
@@ -29,8 +29,7 @@ void UEnemyStatComponent::InitStat(float InitHealth)
 
 void UEnemyStatComponent::TakeDamage()
 {
-	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
-	if (Creature == nullptr)
+	if (OwnerEnemy == nullptr)
 		return;
 
 	//Health -= DamageInfo.Damage;
@@ -46,11 +45,20 @@ void UEnemyStatComponent::TakeDamage()
 
 void UEnemyStatComponent::SetHealth(float HealthToSet)
 {
-	AP1Creature* Creature = Cast<AP1Creature>(GetOwner());
-	if (Creature == nullptr)
+	if (OwnerEnemy == nullptr)
 		return;
 
-	Creature->ObjectInfo->set_hp(HealthToSet);
+	OwnerEnemy->ObjectInfo->set_hp(HealthToSet);
 
 	OnEnemyHealthChangedDelegate.Broadcast();
+
+	if (OwnerEnemy->ObjectInfo->hp() <= 0)
+	{
+		OwnerEnemy->Die();
+	}
+}
+
+void UEnemyStatComponent::AllStop()
+{
+
 }

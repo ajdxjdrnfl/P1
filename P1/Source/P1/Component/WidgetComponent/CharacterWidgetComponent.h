@@ -15,6 +15,9 @@ class P1_API UCharacterWidgetComponent : public UWidgetComponentBase
 {
 	GENERATED_BODY()
 
+public:
+	friend class AP1Character;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -26,10 +29,13 @@ private:
 	class UCharacterOverlayWidget* CharacterOverlayWidget;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<UUserWidget> CastingSkillWidgetClass;
+	TSubclassOf<UUserWidget> SkillGaugeWidgetClass;
 
 	UPROPERTY()
-	class UCastingSkillWidget* CastingSkillWidget;
+	class UCastingSkillWidget* SkillGaugeWidget;
+
+	UPROPERTY()
+	class AP1Character* OwnerCharacter;
 
 	void OpenOverlayWidget();
 
@@ -42,8 +48,9 @@ public:
 	UFUNCTION()
 	void OnCharacterHealthChanged();
 
-	void OpenCastingSkillWidget();
-	void CloseCastingSkillWidget();
+	void OpenSkillGaugeWidget();
+	void CloseSkillGaugeWidget();
+	float GetGaugeRate();
 	
 	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() { return CharacterOverlayWidget; }
 

@@ -7,6 +7,16 @@
 #include "P1.h"
 #include "P1Creature.generated.h"
 
+UENUM(BlueprintType)
+enum class ECreatureState : uint8
+{
+	Idle UMETA(Displayname = "Idle"),
+	Stun UMETA(Displayname = "Stun"),
+	Move UMETA(Displayname = "Move"),
+	Skill UMETA(Displayname = "Skill"),
+	Max UMETA(Displayname = "Max"),
+};
+
 UCLASS()
 class P1_API AP1Creature : public ACharacter
 {
@@ -32,13 +42,14 @@ private:
 	class UP1ObjectBase* ObjectBase;
 
 	UPROPERTY(EditAnywhere)
-	int32 ClassType;
+	FName ClassType;
 
 public:
+	ECreatureState CreatureState;
 	Protocol::ObjectInfo* ObjectInfo;
 
 
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
-	FORCEINLINE int32 GetClassType() const { return ClassType; }
+	FORCEINLINE FName GetClassType() const { return ClassType; }
 	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { ObjectInfo->CopyFrom(InfoToSet); }
 };

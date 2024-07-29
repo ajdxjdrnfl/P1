@@ -21,13 +21,6 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-protected:
-	//UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	//float Health;
-
-	//UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	//float MaxHealth;
-
 public:
 	virtual void TakeDamage();
 		

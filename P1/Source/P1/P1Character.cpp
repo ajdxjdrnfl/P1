@@ -78,7 +78,21 @@ void AP1Character::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	if (SkillComponent)
+	{
 		SkillComponent->OwnerAnimInstance = GetMesh()->GetAnimInstance();
+		SkillComponent->OwnerCharacter = this;
+	}
+		
+
+	if (WidgetComponent)
+	{
+		WidgetComponent->OwnerCharacter = this;
+	}
+
+	if (StatComponent)
+	{
+		StatComponent->OwnerCharacter = this;
+	}
 }
 
 void AP1Character::Init()
@@ -108,9 +122,21 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 {
 	if (SkillComponent == nullptr || WidgetComponent == nullptr) return;
 
+	FSkillInfo CurrentSkillInfo;
+	if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
+	{
+		FString ContextString;
+		FSkillsByClass SkillInfos = *GameInstance->SkillDataTable->FindRow<FSkillsByClass>(GetClassType(), ContextString);
+
+		if (SkillInfos.SkillInfos.Num() <= SkillIndex)
+			return;
+
+		CurrentSkillInfo = SkillInfos.SkillInfos[SkillIndex];
+	}
+
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (SkillSubSystem->SkillCanUseMap[SkillIndex])
+		if (SkillSubSystem->SkillCanUseMap[CurrentSkillInfo.SkillNum])
 		{
 			SkillComponent->UseSkill(SkillIndex);
 			WidgetComponent->UseSkill(SkillIndex);
@@ -120,7 +146,7 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 
 void AP1Character::MoveByServer(float DeltaTime)
 {
-	if (CharacterState == ECharacterState::Move)
+	if (CreatureState == ECreatureState::Move)
 	{
 		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
 		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
@@ -147,11 +173,11 @@ void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 
 	if (bIsNear)
 	{
-		CharacterState = ECharacterState::Idle;
+		CreatureState = ECreatureState::Idle;
 	}
 	else
 	{
-		CharacterState = ECharacterState::Move;
+		CreatureState = ECreatureState::Move;
 		ObjectInfo->set_x(TargetLocation.X);
 		ObjectInfo->set_y(TargetLocation.Y);
 		ObjectInfo->set_z(TargetLocation.Z);
@@ -159,16 +185,23 @@ void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	}
 }
 
-void AP1Character::OpenCastingSkillWidget()
+void AP1Character::OpenSkillGaugeWidget()
 {
 	if (WidgetComponent == nullptr) return;
 
-	WidgetComponent->OpenCastingSkillWidget();
+	WidgetComponent->OpenSkillGaugeWidget();
 }
 
-void AP1Character::CloseCastingSkillWidget()
+void AP1Character::CloseSkillGaugeWidget()
 {
 	if (WidgetComponent == nullptr) return;
 
-	WidgetComponent->CloseCastingSkillWidget();
+	WidgetComponent->CloseSkillGaugeWidget();
+}
+
+float AP1Character::GetGaugeRate()
+{
+	if (WidgetComponent == nullptr) return 0;
+
+	return WidgetComponent->GetGaugeRate();
 }

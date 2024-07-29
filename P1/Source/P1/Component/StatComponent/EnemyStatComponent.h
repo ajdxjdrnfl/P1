@@ -31,4 +31,5 @@ public:
 
 	virtual void TakeDamage() override;
 	void SetHealth(float HealthToSet);
+	void AllStop();
 };

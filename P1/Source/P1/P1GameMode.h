@@ -15,6 +15,8 @@ class AP1GameMode : public AGameModeBase
 public:
 	AP1GameMode();
 
+	void InitWarriorSkillInstance(TArray<class ASkillInstanceBase*> SkillInstances);
+
 };
 
 

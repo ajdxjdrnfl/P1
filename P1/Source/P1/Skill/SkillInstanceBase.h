@@ -1,0 +1,45 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "SkillInstanceBase.generated.h"
+
+UCLASS()
+class P1_API ASkillInstanceBase : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ASkillInstanceBase();
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	class UAnimMontage* M_Skill;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TSubclassOf<class ASkillActorBase> SkillActorClass;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	class ASkillActorBase* SpawnedSkillActor;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	class AP1Character* OwnerCharacter;
+
+public:
+	void Init(class AP1Character* _OwnerCharacter);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SpawnSkill() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DespawnSkill();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UseSkill() {};
+
+	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
+	FORCEINLINE void SetSkillActorClass(TSubclassOf<class ASkillActorBase> _SkillActorClass) { SkillActorClass = _SkillActorClass; }
+
+};

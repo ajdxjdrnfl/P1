@@ -7,6 +7,7 @@
 #include "P1/P1.h"
 #include "P1/Component/StatComponent/EnemyStatComponent.h"
 #include "P1/Component/WidgetComponent/EnemyWidgetComponent.h"
+#include "P1/Component/SkillComponent/EnemySkillComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -15,6 +16,8 @@ AEnemyBase::AEnemyBase()
 	StatComponent = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("StatComponent"));
 
 	WidgetComponent = CreateDefaultSubobject<UEnemyWidgetComponent>(TEXT("WidgetComponent"));
+
+	SkillComponent = CreateDefaultSubobject<UEnemySkillComponent>(TEXT("SkillComponent"));
 }
 
 void AEnemyBase::BeginPlay()
@@ -32,10 +35,13 @@ void AEnemyBase::Init()
 	if (StatComponent)
 	{
 		StatComponent->InitStat();
+		StatComponent->OwnerEnemy = this;
 	}
 	if (WidgetComponent && StatComponent)
 	{
 		WidgetComponent->SetEnemyStat(StatComponent);
+		WidgetComponent->OwnerEnemy = this;
+		StatComponent->OwnerEnemy = this;
 	}
 }
 
@@ -97,6 +103,12 @@ void AEnemyBase::SetHealthByDamage(float HealthToSet)
 	{
 		StatComponent->SetHealth(HealthToSet);
 	}
+}
+
+void AEnemyBase::Die()
+{
+	WidgetComponent->AllStop();
+	StatComponent->AllStop();
 }
 
 void AEnemyBase::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -41,7 +41,7 @@ UENUM(BlueprintType)
 enum class ESkillType : uint8
 {
 	Normal UMETA(Displayname = "Normal"),
-	Hold UMETA(Displayname = "Hold"),
+	Charging UMETA(Displayname = "Charging"),
 	Casting UMETA(Displayname = "Casting"),
 };
 
@@ -51,6 +51,9 @@ struct FSkillInfo
 public:
 	GENERATED_USTRUCT_BODY()
 	int32 SkillNum;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillNumLocal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 HitNum = -1;

@@ -43,8 +43,9 @@ void UWidgetComponentBase::SetSkills()
 {
 	if (SkillDataTable == nullptr) return;
 	FString ContextString;
-	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
-	Skills = SkillsByClass.SkillInfos;
+	FSkillsByClass* SkillsByClass = SkillDataTable->FindRow<FSkillsByClass>(Cast<AP1Creature>(GetOwner())->GetClassType(), ContextString);
+	if (SkillsByClass == nullptr) return;
+	Skills = SkillsByClass->SkillInfos;
 }
 
 void UWidgetComponentBase::UseSkill(uint32 SkillIndex)

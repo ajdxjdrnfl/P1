@@ -34,6 +34,8 @@ public:
 
 	void SetEnemyStat(class UEnemyStatComponent* StatComponent);
 
+	void AllStop();
+
 	FORCEINLINE void SetStatWidget(class UEnemyStatWidget* StatWidgetToSet) { StatWidget = StatWidgetToSet; }
 
 };

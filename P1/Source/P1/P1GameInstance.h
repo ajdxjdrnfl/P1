@@ -71,7 +71,7 @@ public:
 	TMap<uint64, FSkillInfo> SkillInfo;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class AP1Character> CharacterClass;
+	TSubclassOf<class AP1Character> WarriorClass;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyMob> EnemyMobClass;

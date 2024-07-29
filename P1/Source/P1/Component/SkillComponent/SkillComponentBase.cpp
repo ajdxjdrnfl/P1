@@ -7,6 +7,9 @@
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Skill/Manager/CastingSkillManager.h"
+#include "P1/Skill/Manager/ChargingSkillManager.h"
+#include "P1/Skill/Warrior/WarriorSkillInstance.h"
+#include "P1/P1GameMode.h"
 
 USkillComponentBase::USkillComponentBase()
 {
@@ -25,6 +28,23 @@ void USkillComponentBase::BeginPlay()
 		SkillDataTable = GameInstance->SkillDataTable;
 	}
 
+	AP1Creature* P1Creature = Cast<AP1Creature>(GetOwner());
+	if (P1Creature)
+	{
+		SkillInstances.SetNum(4);
+		if (P1Creature->GetClassType() == FName("Warrior"))
+		{
+			//AP1GameMode* GameMode = Cast<AP1GameMode>(P1Creature->GetWorld()->GetAuthGameMode());
+			//if (GameMode)
+			//{
+			//	GameMode->InitWarriorSkillInstance(SkillInstances);
+			//}
+			SkillInstances[0] = Cast<ASkillInstanceBase>(NewObject<AWarriorQSkillInstance>());
+			SkillInstances[1] = Cast<ASkillInstanceBase>(NewObject<AWarriorWSkillInstance>());
+			SkillInstances[2] = Cast<ASkillInstanceBase>(NewObject<AWarriorESkillInstance>());
+			SkillInstances[3] = Cast<ASkillInstanceBase>(NewObject<AWarriorRSkillInstance>());
+		}
+	}
 }
 
 
@@ -41,41 +61,71 @@ void USkillComponentBase::SetSkills()
 	FString ContextString;
 	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
 	Skills = SkillsByClass.SkillInfos;
+
+	for (int i = 0; i < Skills.Num(); i++)
+	{
+		SkillInstances[i]->SetSkillActorClass(Skills[i].SkillActorClass);
+		SkillInstances[i]->SetSkillAnim(Skills[i].AnimMontage);
+		SkillInstances[i]->Init(Cast<AP1Character>(GetOwner()));
+	}
 }
 
 void USkillComponentBase::UseSkill(uint16 SkillIndex)
 {
+	if (Skills.Num() <= SkillIndex || SkillInstances.Num() <= SkillIndex) return;
+
 	CurrentSkillInfo = Skills[SkillIndex];
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
+	CurrentSkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
 	AP1Creature* P1Creature = Cast<AP1Creature>(GetOwner());
 
-	if (SkillActor == nullptr || OwnerAnimInstance == nullptr || P1Creature == nullptr)
+	if (CurrentSkillActor == nullptr || OwnerAnimInstance == nullptr || P1Creature == nullptr)
 		return;
-	//if (SkillInfo.AnimMontage == nullptr) 
-	//	return;
+
+	if (CurrentSkillInfo.AnimMontage == nullptr) 
+		return;
+
+	SkillInstances[SkillIndex]->UseSkill();
+	
 
 	// Normal Skill && Projectile Skill
-	if (SkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_NORMAL)
+	/*if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_NORMAL)
 	{
 		Protocol::C_SKILL Pkt;
 		Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
 		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-		SkillInfoRef->CopyFrom(*SkillActor->SkillInfo);
+		SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
 		ObjectInfoRef->CopyFrom(*P1Creature->ObjectInfo);
 
 		SkillState = ESkillState::Normal;
 		
 		SEND_PACKET(Pkt);
 	}
-	else if (SkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CASTING)
+	else if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CASTING)
 	{
 		if (CastingSkillManager == nullptr)
-		{
 			CastingSkillManager = NewObject<UCastingSkillManager>();
+
+		if (CurrentSkillActor != CastingSkillManager->GetSkillActor())
+		{
+			CastingSkillManager->SetSkillActor(CurrentSkillActor);
 			CastingSkillManager->Init(Cast<AP1Character>(GetOwner()), CurrentSkillInfo);
 		}
+		
 		CastingSkillManager->UseSkill();
 	}
+	else if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CHARGING)
+	{
+		if (ChargingSkillManager == nullptr)
+			ChargingSkillManager = NewObject<UChargingSkillManager>();
+
+		if (CurrentSkillActor != ChargingSkillManager->GetSkillActor())
+		{
+			ChargingSkillManager->SetSkillActor(CurrentSkillActor);
+			ChargingSkillManager->Init(Cast<AP1Character>(GetOwner()), CurrentSkillInfo);
+		}
+		
+		ChargingSkillManager->UseSkill();
+	}*/
 }
 

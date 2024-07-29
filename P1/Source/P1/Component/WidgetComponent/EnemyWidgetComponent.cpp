@@ -11,6 +11,7 @@ void UEnemyWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// TODO: later move to OnSpawn function
 	Cast<AEnemyBase>(GetOwner())->GetStatComponent()->OnEnemyHealthChangedDelegate.AddDynamic(this, &UEnemyWidgetComponent::OnEnemyHealthChanged);
 }
 
@@ -28,4 +29,10 @@ void UEnemyWidgetComponent::SetEnemyStat(UEnemyStatComponent* StatComponent)
 		return;
 
 	StatWidget->SetEnemyStat(StatComponent);
+}
+
+void UEnemyWidgetComponent::AllStop()
+{
+	StatWidget->RemoveFromParent();
+	StatWidget = nullptr;
 }

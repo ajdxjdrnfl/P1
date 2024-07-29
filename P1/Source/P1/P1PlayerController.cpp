@@ -48,6 +48,14 @@ void AP1PlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	MoveByServer(DeltaTime);
+
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	if (bHitSuccessful)
+	{
+
+	}
 }
 
 void AP1PlayerController::SetupInputComponent()
@@ -66,15 +74,15 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP1PlayerController::OnTouchReleased);
 
-		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
-		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Started, this, &AP1PlayerController::OnSkillTriggered);
+		EnhancedInputComponent->BindAction(QSkillAction, ETriggerEvent::Started, this, &AP1PlayerController::OnQSkillTriggered);
+		EnhancedInputComponent->BindAction(WSkillAction, ETriggerEvent::Started, this, &AP1PlayerController::OnWSkillTriggered);
+		EnhancedInputComponent->BindAction(ESkillAction, ETriggerEvent::Started, this, &AP1PlayerController::OnESkillTriggered);
+		EnhancedInputComponent->BindAction(RSkillAction, ETriggerEvent::Started, this, &AP1PlayerController::OnRSkillTriggered);
 
-		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
-		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
-		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
-		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Completed, this, &AP1PlayerController::OnSkillReleased);
+		EnhancedInputComponent->BindAction(QSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnQSkillReleased);
+		EnhancedInputComponent->BindAction(WSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnWSkillReleased);
+		EnhancedInputComponent->BindAction(ESkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnESkillReleased);
+		EnhancedInputComponent->BindAction(RSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnRSkillReleased);
 	}
 	else
 	{
@@ -145,19 +153,51 @@ void AP1PlayerController::OnTouchReleased()
 	OnSetDestinationReleased();
 }
 
-void AP1PlayerController::OnSkillTriggered()
+void AP1PlayerController::OnQSkillTriggered()
 {
 	if (OwnerCharacter == nullptr) return;
 
-	// TODO:
 	OwnerCharacter->UseSkill(0);
 }
 
-void AP1PlayerController::OnSkillReleased()
+void AP1PlayerController::OnQSkillReleased()
 {
 	if (OwnerCharacter == nullptr) return;
 
 	// OwnerCharacter->Cancel
+}
+
+void AP1PlayerController::OnWSkillTriggered()
+{
+	if (OwnerCharacter == nullptr) return;
+
+	OwnerCharacter->UseSkill(1);
+}
+
+void AP1PlayerController::OnWSkillReleased()
+{
+}
+
+void AP1PlayerController::OnESkillTriggered()
+{
+	if (OwnerCharacter == nullptr) return;
+
+	OwnerCharacter->UseSkill(2);
+}
+
+void AP1PlayerController::OnESkillReleased()
+{
+}
+
+void AP1PlayerController::OnRSkillTriggered()
+{
+	if (OwnerCharacter == nullptr) return;
+
+	OwnerCharacter->UseSkill(3);
+}
+
+void AP1PlayerController::OnRSkillReleased()
+{
 }
 
 void AP1PlayerController::SendMovePacketToServer()

@@ -34,11 +34,11 @@ void USkillButtonWidget::NativePreConstruct()
 
 void USkillButtonWidget::UseSkill(FSkillInfo SkillInfo)
 {
-	USkillSlotWidget* CurrentSkillSlotWidget = Cast<USkillSlotWidget>(SkillButtons->GetChildAt(SkillInfo.SkillNum));
+	USkillSlotWidget* CurrentSkillSlotWidget = Cast<USkillSlotWidget>(SkillButtons->GetChildAt(SkillInfo.SkillNumLocal));
 
 	if (CurrentSkillSlotWidget == nullptr) 
 		return;
 
-	CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNum);
+	//CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNum);
 	CurrentSkillSlotWidget->ActivateSlot(SkillInfo.CooldownTime);
 }

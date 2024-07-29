@@ -11,36 +11,36 @@ void UCastingSkillWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 
 	if (bIsActivated)
 	{
-		SetCastingBar(InDeltaTime);
+		SetGaugeBar(InDeltaTime);
 	}
 }
 
-void UCastingSkillWidget::StartCasting(float MaxValueToSet)
+void UCastingSkillWidget::StartGauge(float MaxValueToSet)
 {
 	MaxValue = MaxValueToSet;
 	CurrentValue = 0;
 	bIsActivated = true;
 }
 
-void UCastingSkillWidget::SetCastingBar(float ValueToAdd)
+void UCastingSkillWidget::SetGaugeBar(float ValueToAdd)
 {
 	CurrentValue += ValueToAdd;
 	CastingBar->SetPercent(CurrentValue / MaxValue);
 
-	if (IsCastingEnd())
+	if (IsGaugeEnd())
 	{
 		bIsActivated = false;
 
 		if (USkillManagerSubSystem* SubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
-			SubSystem->OnCastingSkillEnd.Broadcast();
+			SubSystem->OnSkillGaugeEnd.Broadcast();
 		}
 
 		RemoveFromParent();
 	}
 }
 
-bool UCastingSkillWidget::IsCastingEnd()
+bool UCastingSkillWidget::IsGaugeEnd()
 {
 	return CurrentValue >= MaxValue;
 }

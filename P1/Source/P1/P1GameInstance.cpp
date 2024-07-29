@@ -47,6 +47,7 @@ void UP1GameInstance::InitSkillMap()
 
 void UP1GameInstance::SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo)
 {
+	if (CurrentSkillInfo.SkillActorClass == nullptr) return;
 	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
 
 	if (SkillActor == nullptr) 
@@ -113,8 +114,8 @@ void UP1GameInstance::SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo)
 	case ESkillType::Normal:
 		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_NORMAL);
 		break;
-	case ESkillType::Hold:
-		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_HOLD);
+	case ESkillType::Charging:
+		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_CHARGING);
 		break;
 	case ESkillType::Casting:
 		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_CASTING);
@@ -198,7 +199,7 @@ bool UP1GameInstance::IsMyCharacter(uint64 ID)
 
 void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 {
-	check(CharacterClass != nullptr);
+	check(WarriorClass != nullptr);
 	check(EnemyMobClass != nullptr);
 
 	Protocol::ObjectInfo info;
@@ -276,7 +277,7 @@ AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
 
 AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc)
 {
-	AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(CharacterClass, &Loc));
+	AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(WarriorClass, &Loc));
 
 	if (SpawnedActor == nullptr)
 		return nullptr;

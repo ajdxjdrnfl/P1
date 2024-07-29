@@ -59,6 +59,11 @@ void UStatComponentBase::SetCurrentHealth(float HealthToSet)
 		return;
 
 	Creature->ObjectInfo->set_hp(HealthToSet);
+
+	if (Creature->ObjectInfo->hp() <= 0)
+	{
+		//OwnerCreature->
+	}
 }
 
 void UStatComponentBase::SetMaxHealth(float HealthToSet)

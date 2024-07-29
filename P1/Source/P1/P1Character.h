@@ -8,16 +8,6 @@
 #include "P1.h"
 #include "P1Character.generated.h"
 
-UENUM(BlueprintType)
-enum class ECharacterState : uint8
-{
-	Idle UMETA(Displayname = "Idle"),
-	Stun UMETA(Displayname = "Stun"),
-	Move UMETA(Displayname = "Move"),
-	Skill UMETA(Displayname = "Skill"),
-	Max UMETA(Displayname = "Max"),
-};
-
 UCLASS(Blueprintable)
 class AP1Character : public AP1Creature
 {
@@ -34,8 +24,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 private:
-	ECharacterState CharacterState;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
@@ -58,8 +46,9 @@ public:
 	void UseSkill(uint16 SkillIndex);
 	void MoveByServer(float DeltaTime);
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
-	void OpenCastingSkillWidget();
-	void CloseCastingSkillWidget();
+	void OpenSkillGaugeWidget();
+	void CloseSkillGaugeWidget();
+	float GetGaugeRate();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

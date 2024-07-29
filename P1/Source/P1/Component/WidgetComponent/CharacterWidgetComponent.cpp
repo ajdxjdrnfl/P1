@@ -38,7 +38,7 @@ void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
 	if (CharacterOverlayWidget == nullptr)
 		return;
 
-	if (Skills[SkillIndex].SkillType == ESkillType::Casting) return;
+	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging) return;
 	CharacterOverlayWidget->UseSkill(Skills[SkillIndex]);
 }
 
@@ -66,24 +66,31 @@ void UCharacterWidgetComponent::OnCharacterHealthChanged()
 	CharacterOverlayWidget->GetStatWidget()->SetHealthBar();
 }
 
-void UCharacterWidgetComponent::OpenCastingSkillWidget()
+void UCharacterWidgetComponent::OpenSkillGaugeWidget()
 {
-	if (CastingSkillWidgetClass == nullptr) 
+	if (SkillGaugeWidgetClass == nullptr)
 		return;
 
-	CastingSkillWidget = Cast<UCastingSkillWidget>(CreateWidget(GetWorld(), CastingSkillWidgetClass));
+	SkillGaugeWidget = Cast<UCastingSkillWidget>(CreateWidget(GetWorld(), SkillGaugeWidgetClass));
 
-	if (CastingSkillWidget == nullptr) 
+	if (SkillGaugeWidget == nullptr)
 		return;
 
-	CastingSkillWidget->AddToViewport();
+	SkillGaugeWidget->AddToViewport();
 	// TODO:
-	CastingSkillWidget->StartCasting(1.f);
+	SkillGaugeWidget->StartGauge(1.f);
 }
 
-void UCharacterWidgetComponent::CloseCastingSkillWidget()
+void UCharacterWidgetComponent::CloseSkillGaugeWidget()
 {
-	if (CastingSkillWidget == nullptr) return;
+	if (SkillGaugeWidget == nullptr) return;
 
-	CastingSkillWidget->RemoveFromParent();
+	SkillGaugeWidget->RemoveFromParent();
+}
+
+float UCharacterWidgetComponent::GetGaugeRate()
+{
+	if (SkillGaugeWidget == nullptr) return 0;
+
+	return SkillGaugeWidget->GetGaugeRate();
 }

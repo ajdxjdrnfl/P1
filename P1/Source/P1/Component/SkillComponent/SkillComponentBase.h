@@ -13,6 +13,7 @@ enum class ESkillState : uint8
 	Normal UMETA(Displayname = "Normal"),
 	Hold UMETA(Displayname = "Hold"),
 	Casting UMETA(Displayname = "Casting"),
+	Charging UMETA(Displayname = "Charging"),
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -27,8 +28,20 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	FSkillInfo CurrentSkillInfo;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	ASkillActorBase* CurrentSkillActor;
+
+	UPROPERTY()
 	class UCastingSkillManager* CastingSkillManager;
+
+	UPROPERTY()
+	class UChargingSkillManager* ChargingSkillManager;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TArray<class ASkillInstanceBase*> SkillInstances;
 
 public:
 	TArray<FSkillInfo> Skills;

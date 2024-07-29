@@ -24,6 +24,11 @@ void ASkillActorBase::Tick(float DeltaTime)
 
 }
 
+void ASkillActorBase::InitOnSpawn(class AP1Creature* _OwnerCreature)
+{
+	OwnerCreature = _OwnerCreature;
+}
+
 void ASkillActorBase::ActivateSkill()
 {
 

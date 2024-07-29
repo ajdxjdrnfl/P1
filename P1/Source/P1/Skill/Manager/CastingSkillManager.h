@@ -21,11 +21,17 @@ private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
+	UPROPERTY()
+	class ASkillActorBase* SkillActor;
+
 public:
 	void Init(class AP1Character* OwnerChar, FSkillInfo SkillInfo);
 	void UseSkill();
 
 	UFUNCTION()
 	void OnCastingEnd();
+
+	FORCEINLINE class ASkillActorBase* GetSkillActor() const { return SkillActor; }
+	FORCEINLINE void SetSkillActor(ASkillActorBase* SkillActorToSet) { SkillActor = SkillActorToSet; }
 
 };

@@ -43,16 +43,16 @@ public:
 	UInputAction* SetDestinationTouchAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Skill1Action;
+	UInputAction* QSkillAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Skill2Action;
+	UInputAction* WSkillAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Skill3Action;
+	UInputAction* ESkillAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Skill4Action;
+	UInputAction* RSkillAction;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -72,8 +72,14 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
-	void OnSkillTriggered();
-	void OnSkillReleased();
+	void OnQSkillTriggered();
+	void OnQSkillReleased();
+	void OnWSkillTriggered();
+	void OnWSkillReleased();
+	void OnESkillTriggered();
+	void OnESkillReleased();
+	void OnRSkillTriggered();
+	void OnRSkillReleased();
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
@@ -90,10 +96,15 @@ private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
+	FVector MouseLocation;
+
 	//TMap<EKeys, uint16> KeySkillMap;
 
 	void MoveByServer(float DeltaTime);
 	void SendMovePacketToServer();
+
+public:
+	FORCEINLINE FVector GetMouseLocation() const { return MouseLocation; }
 
 };
 

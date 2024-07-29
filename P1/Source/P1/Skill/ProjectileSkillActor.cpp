@@ -69,7 +69,7 @@ void AProjectileSkillActor::SendCollisionPacketToServer(AEnemyBase* Enemy)
 	if (!P1GameInstance->IsMyCharacter(InstigatorLocal->ObjectInfo->object_id()))
 		return;
 
-	if (InstigatorLocal->GetClassType() == 1)
+	if (InstigatorLocal->GetClassType() == FName("Warrior"))
 	{
 		CasterInfo->set_castertype(Protocol::CASTER_TYPE_WARRIOR);
 	}
@@ -78,7 +78,7 @@ void AProjectileSkillActor::SendCollisionPacketToServer(AEnemyBase* Enemy)
 		// TODO:
 	}
 
-	if (Enemy->GetClassType() == 3)
+	if (Enemy->GetClassType() == FName("Boss"))
 	{
 		VictimInfo->set_castertype(Protocol::CASTER_TYPE_BOSS);
 	}

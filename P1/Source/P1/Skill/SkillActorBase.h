@@ -20,7 +20,12 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	UPROPERTY()
+	class AP1Creature* OwnerCreature;
+
 public:
+	virtual void InitOnSpawn(class AP1Creature* _OwnerCreature);
 	virtual void ActivateSkill();
 	Protocol::ObjectInfo* ObjectInfo;
 	Protocol::SkillInfo* SkillInfo;

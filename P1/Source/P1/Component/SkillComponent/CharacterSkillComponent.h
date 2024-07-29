@@ -20,7 +20,8 @@ public:
 	friend class AP1Character;
 
 private:
-	
+	UPROPERTY()
+	class AP1Character* OwnerCharacter;
 
 public:
 	virtual void UseSkill(uint16 SkillIndex) override;
