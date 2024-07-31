@@ -28,7 +28,7 @@ public:
 
 	virtual void PostInitializeComponents() override;
 
-private:
+protected:
 	UPROPERTY(EditAnywhere)
 	class UEnemyStatComponent* StatComponent;
 

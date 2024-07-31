@@ -36,6 +36,6 @@ public:
 
 	void AllStop();
 
-	FORCEINLINE void SetStatWidget(class UEnemyStatWidget* StatWidgetToSet) { StatWidget = StatWidgetToSet; }
-
+	void SetStatWidget(class UEnemyStatWidget* StatWidgetToSet);
+	FORCEINLINE class UEnemyStatWidget* GetStatWidget() const { return StatWidget; }
 };

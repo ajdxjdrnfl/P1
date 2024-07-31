@@ -9,4 +9,5 @@ void UEnemySkillComponent::BeginPlay()
 
 void UEnemySkillComponent::UseSkill(uint16 SkillIndex)
 {
+	Super::UseSkill(SkillIndex);
 }

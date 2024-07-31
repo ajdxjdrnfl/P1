@@ -37,7 +37,7 @@ protected:
 	class ASkillInstanceBase* SkillInstance;
 
 public:
-	ESkillState GetSkillState();
-	void SetSkillState(ESkillState StateToSet);
+	ESkillType GetSkillState();
+	void SetSkillState(ESkillType StateToSet);
 
 };

@@ -37,13 +37,26 @@ enum class ECollisionType : uint8
 	Box UMETA(Displayname = "Box"),
 };
 
+
 UENUM(BlueprintType)
 enum class ESkillType : uint8
 {
 	Normal UMETA(Displayname = "Normal"),
-	Charging UMETA(Displayname = "Charging"),
+	Hold UMETA(Displayname = "Hold"),
 	Casting UMETA(Displayname = "Casting"),
+	Charging UMETA(Displayname = "Charging"),
 };
+
+UENUM(BlueprintType)
+enum class ESkillState : uint8
+{
+	None UMETA(Displayname = "None"),
+	SkillStart UMETA(Displayname = "SkillStart"),
+	Skilling UMETA(Displayname = "Skilling"),
+	SkillEnd UMETA(Displayname = "SkillEnd"),
+};
+
+
 
 USTRUCT(BlueprintType)
 struct FSkillInfo
@@ -98,15 +111,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FSkillInfo> SkillInfos;
 };
-
-UENUM(BlueprintType)
-enum class ESkillState : uint8
-{
-	Normal UMETA(Displayname = "Normal"),
-	Hold UMETA(Displayname = "Hold"),
-	Casting UMETA(Displayname = "Casting"),
-	Charging UMETA(Displayname = "Charging"),
-};
-
-
 

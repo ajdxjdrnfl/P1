@@ -19,11 +19,11 @@ void AChargingSkillManager::Init(AP1Character* _OwnerCharacter, ASkillInstanceBa
 
 void AChargingSkillManager::StartCasting()
 {
-	if (GetSkillState() != ESkillState::Normal && GetSkillState() != ESkillState::Charging)
+	if (GetSkillState() != ESkillType::Normal && GetSkillState() != ESkillType::Charging)
 		return;
 
 	// TODO: Do not use Enemy
-	if (GetSkillState() == ESkillState::Charging)
+	if (GetSkillState() == ESkillType::Charging)
 	{
 		FireSkill(OwnerCharacter->GetGaugeRate());
 		return;
@@ -34,13 +34,13 @@ void AChargingSkillManager::StartCasting()
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &AChargingSkillManager::OnCastingEnd);
 	}
 
-	SetSkillState(ESkillState::Charging);
+	SetSkillState(ESkillType::Charging);
 	OwnerCharacter->OpenSkillGaugeWidget();
 }
 
 void AChargingSkillManager::FireSkill(float rate = 1.f)
 {
-	SetSkillState(ESkillState::Normal);
+	SetSkillState(ESkillType::Normal);
 	OwnerCharacter->CloseSkillGaugeWidget();
 	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(SkillInfo);
 

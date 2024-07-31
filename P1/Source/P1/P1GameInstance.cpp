@@ -264,6 +264,11 @@ void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
 	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp());
 }
 
+void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
+{
+	Characters[Pkt.caster().object_id()]->PlayAnimMontageByServer(Pkt.isstop(), Pkt.id(), Pkt.section_num());
+}
+
 AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
 {
 	AEnemyMob* SpawnedMob = Cast<AEnemyMob>(GetWorld()->SpawnActor(EnemyMobClass, &Loc));

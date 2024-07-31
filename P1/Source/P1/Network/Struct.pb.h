@@ -193,6 +193,7 @@ class ObjectInfo final :
     kStaminaFieldNumber = 9,
     kMaxStaminaFieldNumber = 10,
     kCastertypeFieldNumber = 11,
+    kSkillstateFieldNumber = 12,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -293,6 +294,15 @@ class ObjectInfo final :
   void _internal_set_castertype(::Protocol::CasterType value);
   public:
 
+  // .Protocol.SkillState skillstate = 12;
+  void clear_skillstate();
+  ::Protocol::SkillState skillstate() const;
+  void set_skillstate(::Protocol::SkillState value);
+  private:
+  ::Protocol::SkillState _internal_skillstate() const;
+  void _internal_set_skillstate(::Protocol::SkillState value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -312,6 +322,7 @@ class ObjectInfo final :
     float stamina_;
     float max_stamina_;
     int castertype_;
+    int skillstate_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -782,6 +793,26 @@ inline void ObjectInfo::_internal_set_castertype(::Protocol::CasterType value) {
 inline void ObjectInfo::set_castertype(::Protocol::CasterType value) {
   _internal_set_castertype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.castertype)
+}
+
+// .Protocol.SkillState skillstate = 12;
+inline void ObjectInfo::clear_skillstate() {
+  _impl_.skillstate_ = 0;
+}
+inline ::Protocol::SkillState ObjectInfo::_internal_skillstate() const {
+  return static_cast< ::Protocol::SkillState >(_impl_.skillstate_);
+}
+inline ::Protocol::SkillState ObjectInfo::skillstate() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.skillstate)
+  return _internal_skillstate();
+}
+inline void ObjectInfo::_internal_set_skillstate(::Protocol::SkillState value) {
+  
+  _impl_.skillstate_ = value;
+}
+inline void ObjectInfo::set_skillstate(::Protocol::SkillState value) {
+  _internal_set_skillstate(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.skillstate)
 }
 
 // -------------------------------------------------------------------

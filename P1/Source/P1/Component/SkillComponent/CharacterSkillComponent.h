@@ -25,5 +25,5 @@ private:
 
 public:
 	virtual void UseSkill(uint16 SkillIndex) override;
-	
+	void PlayAnimMontageByServer(bool bIsStop, int SkillIndexLocal, int SectionIndex);
 };
