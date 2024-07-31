@@ -16,7 +16,8 @@ public:
 	bool		HandleMove(Protocol::C_MOVE pkt);
 	bool		HandleSkill(Protocol::C_SKILL pkt);
 	bool		HandleAttack(Protocol::C_ATTACK pkt);
-	
+	bool		HandleMontage(Protocol::C_MONTAGE pkt);
+
 private:
 	void		EnterGame(PlayerRef player);
 	void		SpawnSkill(SkillActorRef skillActor);

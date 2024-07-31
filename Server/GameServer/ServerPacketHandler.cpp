@@ -80,6 +80,7 @@ bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt)
 
 	LOG(pkt);
 	room->DoAsync(&Room::HandleSkill, pkt);
+	return true;
 }
 
 bool Handle_C_ATTACK(PacketSessionRef& session, Protocol::C_ATTACK& pkt)
@@ -99,5 +100,25 @@ bool Handle_C_ATTACK(PacketSessionRef& session, Protocol::C_ATTACK& pkt)
 
 	LOG(pkt);
 	room->DoAsync(&Room::HandleAttack, pkt);
-	return false;
+	return true;
+}
+
+bool Handle_C_MONTAGE(PacketSessionRef& session, Protocol::C_MONTAGE& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession == nullptr)
+		return false;
+
+	PlayerRef player = gameSession->_player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->GetRoomRef();
+	if (room == nullptr)
+		return false;
+
+	LOG(pkt);
+	room->DoAsync(&Room::HandleMontage, pkt);
+	return true;
 }

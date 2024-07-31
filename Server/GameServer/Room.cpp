@@ -235,6 +235,26 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	}
 }
 
+bool Room::HandleMontage(Protocol::C_MONTAGE pkt)
+{
+	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
+
+	if (caster == nullptr)
+		return false;
+
+	{
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *caster->GetObjectInfo();
+		montagePkt.set_isstop(pkt.isstop());
+		montagePkt.set_id(pkt.id());
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(montagePkt);
+		Broadcast(sendBuffer);
+	}
+
+	return true;
+}
+
 void Room::EnterGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();

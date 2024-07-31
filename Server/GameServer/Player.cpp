@@ -22,6 +22,7 @@ void Player::Init()
 {
 	// SkillTimer
 
+
 	// TODO : Collision √ ±‚ 
 	Collision* collision = new Collision();
 	ColliderCircle* collider = new ColliderCircle();

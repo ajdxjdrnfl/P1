@@ -140,6 +140,9 @@
     <ClInclude Include="Collider.h">
       <Filter>Game\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Game\GameObject\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -222,6 +225,9 @@
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>Game\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Game\GameObject\Monster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
