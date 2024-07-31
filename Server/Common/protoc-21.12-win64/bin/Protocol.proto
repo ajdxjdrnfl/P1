@@ -80,6 +80,7 @@ message C_MONTAGE
 	ObjectInfo caster = 1;
 	bool isstop = 2;
 	uint64 id = 3;
+	uint64 section_num = 4;
 }
 
 message S_MONTAGE
@@ -87,4 +88,5 @@ message S_MONTAGE
 	ObjectInfo caster = 1;
 	bool isstop = 2;
 	uint64 id = 3;
+	uint64 section_num = 4;
 }
