@@ -247,6 +247,7 @@ bool Room::HandleMontage(Protocol::C_MONTAGE pkt)
 		*montagePkt.mutable_caster() = *caster->GetObjectInfo();
 		montagePkt.set_isstop(pkt.isstop());
 		montagePkt.set_id(pkt.id());
+		montagePkt.set_section_num(pkt.section_num());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(montagePkt);
 		Broadcast(sendBuffer);
