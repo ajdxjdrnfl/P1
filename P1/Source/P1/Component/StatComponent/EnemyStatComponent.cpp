@@ -22,7 +22,7 @@ void UEnemyStatComponent::InitStat(float InitHealth)
 	if (OwnerEnemy == nullptr)
 		return;
 
-	//Creature->Info->set_hp(InitHealth);
+	OwnerEnemy->ObjectInfo->set_hp(InitHealth);
 
 	OnEnemyHealthChangedDelegate.Broadcast();
 }

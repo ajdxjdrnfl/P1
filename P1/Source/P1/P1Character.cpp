@@ -147,7 +147,6 @@ void AP1Character::MoveByServer(float DeltaTime)
 
 void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 {
-	// TODO: 부들부들
 	FTransform TargetTransform;
 	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
 	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
@@ -192,4 +191,10 @@ float AP1Character::GetGaugeRate()
 	if (WidgetComponent == nullptr) return 0;
 
 	return WidgetComponent->GetGaugeRate();
+}
+
+void AP1Character::PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex)
+{
+	if (SkillComponent == nullptr) return;
+	SkillComponent->PlayAnimMontageByServer(bIsStop, SkillIndexLocal, SectionIndex);
 }

@@ -92,3 +92,15 @@ bool Handle_S_ATTACK(PacketSessionRef& session, Protocol::S_ATTACK& pkt)
 
 	return false;
 }
+
+bool Handle_S_MONTAGE(PacketSessionRef& session, Protocol::S_MONTAGE& pkt)
+{
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->PlayMontage(pkt);
+
+	return false;
+}

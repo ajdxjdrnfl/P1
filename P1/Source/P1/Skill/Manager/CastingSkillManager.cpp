@@ -35,13 +35,13 @@ void ACastingSkillManager::Init(class AP1Character* _OwnerCharacter, class ASkil
 
 void ACastingSkillManager::StartCasting()
 {
-	if (GetSkillState() != ESkillState::Normal && GetSkillState() != ESkillState::Casting)
+	if (GetSkillState() != ESkillType::Normal && GetSkillState() != ESkillType::Casting)
 		return;
 
 	// TODO: Do not use Enemy
-	if (GetSkillState() == ESkillState::Casting)
+	if (GetSkillState() == ESkillType::Casting)
 	{
-		SetSkillState(ESkillState::Normal);
+		SetSkillState(ESkillType::Normal);
 		OwnerCharacter->CloseSkillGaugeWidget();
 
 		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
@@ -55,14 +55,14 @@ void ACastingSkillManager::StartCasting()
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &ACastingSkillManager::OnCastingEnd);
 	}
 
-	SetSkillState(ESkillState::Casting);
+	SetSkillState(ESkillType::Casting);
 	OwnerCharacter->OpenSkillGaugeWidget();
 
 }
 
 void ACastingSkillManager::OnCastingEnd()
 {
-	SetSkillState(ESkillState::Normal);
+	SetSkillState(ESkillType::Normal);
 	OwnerCharacter->CloseSkillGaugeWidget();
 	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(SkillInfo);
 

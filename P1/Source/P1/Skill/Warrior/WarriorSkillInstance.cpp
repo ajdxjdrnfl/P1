@@ -25,7 +25,7 @@ void AWarriorQSkillInstance::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsTurning && OwnerCharacter)
+	if (bIsTurning && OwnerCharacter && Cast<UP1GameInstance>(GetWorld()->GetGameInstance())->IsMyCharacter(OwnerCharacter->ObjectInfo->object_id()))
 	{
 		FVector MouseLoc = Cast<AP1PlayerController>(OwnerCharacter->GetController())->GetMouseLocation();
 		FVector CharacterLoc = FVector(OwnerCharacter->GetActorLocation().X, OwnerCharacter->GetActorLocation().Y, MouseLoc.Z);
@@ -70,13 +70,37 @@ void AWarriorQSkillInstance::UseSkill()
 	if (!bIsMontagePlaying)
 	{
 		AttackIndex = 1;
-		AnimInstance->Montage_Play(M_Skill);
+		//AnimInstance->Montage_Play(M_Skill);
+
+		// Send Packet
+		{
+			Protocol::C_MONTAGE Pkt;
+			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+			CasterInfo->set_object_id(OwnerCharacter->ObjectInfo->object_id());
+			Pkt.set_isstop(false);
+			Pkt.set_id(0);
+
+			SEND_PACKET(Pkt);
+		}
 	}
 	else if (bIsComboTiming)
 	{
 		AttackIndex++;
-		AnimInstance->Montage_JumpToSection(AttackSectionIndex);
+		// AnimInstance->Montage_JumpToSection(AttackSectionIndex);
 		bIsComboTiming = false;
+
+		// Send Packet
+		{
+			Protocol::C_MONTAGE Pkt;
+			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+			CasterInfo->set_object_id(OwnerCharacter->ObjectInfo->object_id());
+			Pkt.set_isstop(false);
+			Pkt.set_id(0);
+			
+			Pkt.set_section_num(FCString::Atoi(*AttackSectionIndex.ToString()));
+
+			SEND_PACKET(Pkt);
+		}
 	}
 }
 
@@ -106,7 +130,7 @@ void AWarriorWSkillInstance::SpawnSkill()
 	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
 	ObjectInfoRef->CopyFrom(*OwnerCharacter->ObjectInfo);
 
-	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
+	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillType::Normal);
 
 	SEND_PACKET(Pkt);
 
@@ -160,7 +184,7 @@ void AWarriorESkillInstance::SpawnSkill()
 
 	ObjectInfoRef->CopyFrom(*OwnerCharacter->ObjectInfo);
 
-	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillState::Normal);
+	OwnerCharacter->GetSkillComponent()->SetSkillState(ESkillType::Normal);
 
 	SEND_PACKET(Pkt);
 

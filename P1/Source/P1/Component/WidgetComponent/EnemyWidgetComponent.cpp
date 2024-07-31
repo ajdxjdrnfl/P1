@@ -36,3 +36,8 @@ void UEnemyWidgetComponent::AllStop()
 	StatWidget->RemoveFromParent();
 	StatWidget = nullptr;
 }
+
+void UEnemyWidgetComponent::SetStatWidget(UEnemyStatWidget* StatWidgetToSet)
+{
+	StatWidget = StatWidgetToSet;
+}

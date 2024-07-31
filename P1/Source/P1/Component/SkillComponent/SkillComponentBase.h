@@ -37,7 +37,7 @@ private:
 public:
 	TArray<FSkillInfo> Skills;
 
-	ESkillState SkillState;
+	ESkillType SkillState;
 
 	UPROPERTY()
 	class UDataTable* SkillDataTable;
@@ -52,6 +52,6 @@ public:
 	void SetSkills();
 	virtual void UseSkill(uint16 SkillIndex);
 
-	FORCEINLINE ESkillState GetSkillState() const { return SkillState; }
-	FORCEINLINE void SetSkillState(ESkillState SkillStateToSet) { SkillState = SkillStateToSet; }
+	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
+	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }
 };

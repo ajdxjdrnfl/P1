@@ -55,6 +55,8 @@ public:
 
 	void AttackEnemy(Protocol::S_ATTACK& Pkt);
 
+	void PlayMontage(Protocol::S_MONTAGE& Pkt);
+
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 

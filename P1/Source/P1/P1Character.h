@@ -49,6 +49,7 @@ public:
 	void OpenSkillGaugeWidget();
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
+	void PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex);
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

@@ -44,6 +44,10 @@ void USkillComponentBase::BeginPlay()
 
 			SkillInstances[3] = Cast<ASkillInstanceBase>(NewObject<AWarriorRSkillInstance>());
 		}
+		else if (P1Creature->GetClassType() == FName("Boss"))
+		{
+
+		}
 	}
 }
 
@@ -58,8 +62,10 @@ void USkillComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void USkillComponentBase::SetSkills()
 {
 	if (SkillDataTable == nullptr) return;
+
+	FName ClassTypeName = Cast<AP1Creature>(GetOwner())->GetClassType();
 	FString ContextString;
-	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(/* TODO: */ FName("Warrior"), ContextString);
+	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(ClassTypeName, ContextString);
 	Skills = SkillsByClass.SkillInfos;
 
 	for (int i = 0; i < Skills.Num(); i++)
@@ -86,47 +92,5 @@ void USkillComponentBase::UseSkill(uint16 SkillIndex)
 
 	SkillInstances[SkillIndex]->SetSkillInfo(Skills[SkillIndex]);
 	SkillInstances[SkillIndex]->UseSkill();
-	
-
-	// Normal Skill && Projectile Skill
-	/*if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_NORMAL)
-	{
-		Protocol::C_SKILL Pkt;
-		Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
-		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
-
-		SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
-		ObjectInfoRef->CopyFrom(*P1Creature->ObjectInfo);
-
-		SkillState = ESkillState::Normal;
-		
-		SEND_PACKET(Pkt);
-	}
-	else if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CASTING)
-	{
-		if (CastingSkillManager == nullptr)
-			CastingSkillManager = NewObject<UCastingSkillManager>();
-
-		if (CurrentSkillActor != CastingSkillManager->GetSkillActor())
-		{
-			CastingSkillManager->SetSkillActor(CurrentSkillActor);
-			CastingSkillManager->Init(Cast<AP1Character>(GetOwner()), CurrentSkillInfo);
-		}
-		
-		CastingSkillManager->UseSkill();
-	}
-	else if (CurrentSkillActor->SkillInfo->skill_type() == Protocol::SKILL_TYPE_CHARGING)
-	{
-		if (ChargingSkillManager == nullptr)
-			ChargingSkillManager = NewObject<UChargingSkillManager>();
-
-		if (CurrentSkillActor != ChargingSkillManager->GetSkillActor())
-		{
-			ChargingSkillManager->SetSkillActor(CurrentSkillActor);
-			ChargingSkillManager->Init(Cast<AP1Character>(GetOwner()), CurrentSkillInfo);
-		}
-		
-		ChargingSkillManager->UseSkill();
-	}*/
 }
 

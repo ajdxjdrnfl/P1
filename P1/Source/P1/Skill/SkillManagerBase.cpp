@@ -27,12 +27,12 @@ void ASkillManagerBase::Tick(float DeltaTime)
 
 }
 
-ESkillState ASkillManagerBase::GetSkillState()
+ESkillType ASkillManagerBase::GetSkillState()
 {
 	return OwnerCharacter->GetSkillComponent()->GetSkillState();
 }
 
-void ASkillManagerBase::SetSkillState(ESkillState StateToSet)
+void ASkillManagerBase::SetSkillState(ESkillType StateToSet)
 {
 	OwnerCharacter->GetSkillComponent()->SetSkillState(StateToSet);
 }
