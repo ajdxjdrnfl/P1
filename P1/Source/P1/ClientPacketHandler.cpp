@@ -4,6 +4,7 @@
 #include "P1GameInstance.h"
 #include "P1GameMode.h"
 #include "P1Character.h"
+#include "P1/Enemy/EnemyBoss.h"
 #include "Kismet/GameplayStatics.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -58,7 +59,18 @@ bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 	if (GameInstance == nullptr || GameInstance->IsMyCharacter(id))
 		return false;
 
-	GameInstance->Characters[id]->SetMoveValueByServer(pkt);
+	if (pkt.info().castertype() == Protocol::CASTER_TYPE_BOSS)
+	{
+		GameInstance->Boss->SetMoveValueByServer(pkt);
+	}
+	else if (pkt.info().castertype() == Protocol::CASTER_TYPE_MOB)
+	{
+		GameInstance->Enemies[id]->SetMoveValueByServer(pkt);
+	}
+	else
+	{
+		GameInstance->Characters[id]->SetMoveValueByServer(pkt);
+	}
 
 	return true;
 }

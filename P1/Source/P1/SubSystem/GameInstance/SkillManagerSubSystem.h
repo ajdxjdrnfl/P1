@@ -16,6 +16,9 @@ class P1_API USkillManagerSubSystem : public UGameInstanceSubsystem
 public:
 	TMap<uint16, bool> SkillCanUseMap;
 	FOnSkillGaugeEnd OnSkillGaugeEnd;
+	
+	UPROPERTY()
+	class ASkillManagerBase* CurrentSkillManager;
 
 	float CastingSkillGaugeRate;
 

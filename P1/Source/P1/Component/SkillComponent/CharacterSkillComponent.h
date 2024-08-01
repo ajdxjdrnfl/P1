@@ -24,6 +24,6 @@ private:
 	class AP1Character* OwnerCharacter;
 
 public:
-	virtual void UseSkill(uint16 SkillIndex) override;
+	virtual void UseSkill(int32 SkillIndex) override;
 	void PlayAnimMontageByServer(bool bIsStop, int SkillIndexLocal, int SectionIndex);
 };

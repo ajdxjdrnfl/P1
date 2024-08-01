@@ -48,7 +48,7 @@ public:
 	UFUNCTION()
 	void OnCharacterHealthChanged();
 
-	void OpenSkillGaugeWidget();
+	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	

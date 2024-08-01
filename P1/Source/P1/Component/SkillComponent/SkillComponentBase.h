@@ -50,7 +50,9 @@ public:
 
 public:
 	void SetSkills();
-	virtual void UseSkill(uint16 SkillIndex);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UseSkill(int32 SkillIndex);
 
 	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
 	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }

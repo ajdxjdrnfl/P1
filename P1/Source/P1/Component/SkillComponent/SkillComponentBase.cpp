@@ -6,9 +6,8 @@
 #include "P1/P1Character.h"
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
-//#include "P1/Skill/Manager/CastingSkillManager.h"
-//#include "P1/Skill/Manager/ChargingSkillManager.h"
 #include "P1/Skill/Warrior/WarriorSkillInstance.h"
+#include "P1/Skill/Boss/BossSkillInstance.h"
 #include "P1/P1GameMode.h"
 
 USkillComponentBase::USkillComponentBase()
@@ -23,6 +22,19 @@ void USkillComponentBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+}
+
+
+void USkillComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// ...
+}
+
+void USkillComponentBase::SetSkills()
+{
 	if (UP1GameInstance* GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance()))
 	{
 		SkillDataTable = GameInstance->SkillDataTable;
@@ -40,30 +52,30 @@ void USkillComponentBase::BeginPlay()
 			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorWSkillInstance::StaticClass()));
 			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			SkillInstances[2] = Cast<ASkillInstanceBase>(NewObject<AWarriorESkillInstance>());
+			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorESkillInstance::StaticClass()));
+			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			SkillInstances[3] = Cast<ASkillInstanceBase>(NewObject<AWarriorRSkillInstance>());
+			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorRSkillInstance::StaticClass()));
+			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 		}
 		else if (P1Creature->GetClassType() == FName("Boss"))
 		{
+			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossQSkillInstance::StaticClass()));
+			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
+			/*SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
+			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
+			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
+			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);*/
 		}
 	}
-}
-
-
-void USkillComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void USkillComponentBase::SetSkills()
-{
-	if (SkillDataTable == nullptr) return;
 
 	FName ClassTypeName = Cast<AP1Creature>(GetOwner())->GetClassType();
+	if (ClassTypeName == NAME_None) return;
 	FString ContextString;
 	FSkillsByClass SkillsByClass = *SkillDataTable->FindRow<FSkillsByClass>(ClassTypeName, ContextString);
 	Skills = SkillsByClass.SkillInfos;
@@ -72,20 +84,15 @@ void USkillComponentBase::SetSkills()
 	{
 		SkillInstances[i]->SetSkillActorClass(Skills[i].SkillActorClass);
 		SkillInstances[i]->SetSkillAnim(Skills[i].AnimMontage);
-		SkillInstances[i]->Init(Cast<AP1Character>(GetOwner()));
+		SkillInstances[i]->Init(Cast<AP1Creature>(GetOwner()));
 	}
 }
 
-void USkillComponentBase::UseSkill(uint16 SkillIndex)
+void USkillComponentBase::UseSkill(int32 SkillIndex)
 {
 	if (Skills.Num() <= SkillIndex || SkillInstances.Num() <= SkillIndex) return;
 
 	CurrentSkillInfo = Skills[SkillIndex];
-	CurrentSkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
-	AP1Creature* P1Creature = Cast<AP1Creature>(GetOwner());
-
-	if (CurrentSkillActor == nullptr || OwnerAnimInstance == nullptr || P1Creature == nullptr)
-		return;
 
 	if (CurrentSkillInfo.AnimMontage == nullptr) 
 		return;

@@ -7,7 +7,7 @@ void UEnemySkillComponent::BeginPlay()
 {
 }
 
-void UEnemySkillComponent::UseSkill(uint16 SkillIndex)
+void UEnemySkillComponent::UseSkill(int32 SkillIndex)
 {
 	Super::UseSkill(SkillIndex);
 }

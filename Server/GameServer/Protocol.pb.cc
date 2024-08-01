@@ -187,6 +187,7 @@ PROTOBUF_CONSTEXPR C_MONTAGE::C_MONTAGE(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.caster_)*/nullptr
   , /*decltype(_impl_.id_)*/uint64_t{0u}
+  , /*decltype(_impl_.section_num_)*/uint64_t{0u}
   , /*decltype(_impl_.isstop_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_MONTAGEDefaultTypeInternal {
@@ -202,6 +203,7 @@ PROTOBUF_CONSTEXPR S_MONTAGE::S_MONTAGE(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.caster_)*/nullptr
   , /*decltype(_impl_.id_)*/uint64_t{0u}
+  , /*decltype(_impl_.section_num_)*/uint64_t{0u}
   , /*decltype(_impl_.isstop_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_MONTAGEDefaultTypeInternal {
@@ -319,6 +321,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::C_MONTAGE, _impl_.caster_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_MONTAGE, _impl_.isstop_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_MONTAGE, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_MONTAGE, _impl_.section_num_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MONTAGE, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -328,6 +331,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MONTAGE, _impl_.caster_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MONTAGE, _impl_.isstop_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MONTAGE, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MONTAGE, _impl_.section_num_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::C_LOGIN)},
@@ -343,7 +347,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 72, -1, -1, sizeof(::Protocol::C_ATTACK)},
   { 81, -1, -1, sizeof(::Protocol::S_ATTACK)},
   { 91, -1, -1, sizeof(::Protocol::C_MONTAGE)},
-  { 100, -1, -1, sizeof(::Protocol::S_MONTAGE)},
+  { 101, -1, -1, sizeof(::Protocol::S_MONTAGE)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -385,11 +389,12 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ter\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskill"
   "actor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n\006vic"
   "tim\030\003 \001(\0132\024.Protocol.ObjectInfo\022&\n\tskill"
-  "info\030\004 \001(\0132\023.Protocol.SkillInfo\"M\n\tC_MON"
+  "info\030\004 \001(\0132\023.Protocol.SkillInfo\"b\n\tC_MON"
   "TAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectIn"
-  "fo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\"M\n\tS_MONT"
-  "AGE\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectInf"
-  "o\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004b\006proto3"
+  "fo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013sectio"
+  "n_num\030\004 \001(\004\"b\n\tS_MONTAGE\022$\n\006caster\030\001 \001(\013"
+  "2\024.Protocol.ObjectInfo\022\016\n\006isstop\030\002 \001(\010\022\n"
+  "\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -397,7 +402,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1037, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1079, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2900,6 +2905,7 @@ C_MONTAGE::C_MONTAGE(const C_MONTAGE& from)
   new (&_impl_) Impl_{
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.id_){}
+    , decltype(_impl_.section_num_){}
     , decltype(_impl_.isstop_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -2920,6 +2926,7 @@ inline void C_MONTAGE::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.id_){uint64_t{0u}}
+    , decltype(_impl_.section_num_){uint64_t{0u}}
     , decltype(_impl_.isstop_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2989,6 +2996,14 @@ const char* C_MONTAGE::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
+      // uint64 section_num = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.section_num_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -3037,6 +3052,12 @@ uint8_t* C_MONTAGE::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_id(), target);
   }
 
+  // uint64 section_num = 4;
+  if (this->_internal_section_num() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_section_num(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3063,6 +3084,11 @@ size_t C_MONTAGE::ByteSizeLong() const {
   // uint64 id = 3;
   if (this->_internal_id() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
+  }
+
+  // uint64 section_num = 4;
+  if (this->_internal_section_num() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_section_num());
   }
 
   // bool isstop = 2;
@@ -3094,6 +3120,9 @@ void C_MONTAGE::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   }
   if (from._internal_id() != 0) {
     _this->_internal_set_id(from._internal_id());
+  }
+  if (from._internal_section_num() != 0) {
+    _this->_internal_set_section_num(from._internal_section_num());
   }
   if (from._internal_isstop() != 0) {
     _this->_internal_set_isstop(from._internal_isstop());
@@ -3158,6 +3187,7 @@ S_MONTAGE::S_MONTAGE(const S_MONTAGE& from)
   new (&_impl_) Impl_{
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.id_){}
+    , decltype(_impl_.section_num_){}
     , decltype(_impl_.isstop_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -3178,6 +3208,7 @@ inline void S_MONTAGE::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.id_){uint64_t{0u}}
+    , decltype(_impl_.section_num_){uint64_t{0u}}
     , decltype(_impl_.isstop_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -3247,6 +3278,14 @@ const char* S_MONTAGE::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
+      // uint64 section_num = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.section_num_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -3295,6 +3334,12 @@ uint8_t* S_MONTAGE::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_id(), target);
   }
 
+  // uint64 section_num = 4;
+  if (this->_internal_section_num() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(4, this->_internal_section_num(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3321,6 +3366,11 @@ size_t S_MONTAGE::ByteSizeLong() const {
   // uint64 id = 3;
   if (this->_internal_id() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
+  }
+
+  // uint64 section_num = 4;
+  if (this->_internal_section_num() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_section_num());
   }
 
   // bool isstop = 2;
@@ -3352,6 +3402,9 @@ void S_MONTAGE::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   }
   if (from._internal_id() != 0) {
     _this->_internal_set_id(from._internal_id());
+  }
+  if (from._internal_section_num() != 0) {
+    _this->_internal_set_section_num(from._internal_section_num());
   }
   if (from._internal_isstop() != 0) {
     _this->_internal_set_isstop(from._internal_isstop());

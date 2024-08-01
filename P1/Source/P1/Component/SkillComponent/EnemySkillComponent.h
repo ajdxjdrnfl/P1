@@ -23,6 +23,6 @@ private:
 	class AEnemyBase* OwnerEnemy;
 
 public:
-	virtual void UseSkill(uint16 SkillIndex) override;
+	virtual void UseSkill(int32 SkillIndex) override;
 
 };

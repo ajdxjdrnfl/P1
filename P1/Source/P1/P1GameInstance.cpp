@@ -18,6 +18,13 @@
 
 void UP1GameInstance::Init()
 {
+	ClassCasterMap =
+	{
+		{ FName("Warrior"), Protocol::CasterType::CASTER_TYPE_WARRIOR },
+		{ FName("Mob"), Protocol::CasterType::CASTER_TYPE_MOB },
+		{ FName("Boss"), Protocol::CasterType::CASTER_TYPE_BOSS },
+	};
+		
 	InitSkillMap();
 	Super::Init();
 }
@@ -32,10 +39,9 @@ void UP1GameInstance::InitSkillMap()
 	for (FName Row : RowNames)
 	{
 		FString ContextString;
-		FSkillsByClass SkillInfos = *SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
-		for (FSkillInfo& CurrentSkillInfo : SkillInfos.SkillInfos)
+		FSkillsByClass* SkillInfos = SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
+		for (FSkillInfo& CurrentSkillInfo : SkillInfos->SkillInfos)
 		{
-			CurrentSkillInfo.SkillNum = idx;
 			SkillInfo.Add(idx, CurrentSkillInfo);
 
 			// Set skillinfo to each skill game default object
@@ -254,7 +260,18 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	Skills.Add(Pkt.skillinfo().skill_id(), SkillActor);
 
 	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
+	SkillActor->InitOnSpawn(Characters[Pkt.caster().object_id()]);
 	SkillActor->ActivateSkill();
+}
+
+void UP1GameInstance::DespawnSkill(int32 SkillIndex)
+{
+	if (Skills.Contains(SkillIndex))
+	{
+		ASkillActorBase* CurrentSkillActor = *Skills.Find(SkillIndex);
+		CurrentSkillActor->Destroy();
+		Skills.Remove(SkillIndex);
+	}
 }
 
 void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)

@@ -66,7 +66,7 @@ void UCharacterWidgetComponent::OnCharacterHealthChanged()
 	CharacterOverlayWidget->GetStatWidget()->SetHealthBar();
 }
 
-void UCharacterWidgetComponent::OpenSkillGaugeWidget()
+void UCharacterWidgetComponent::OpenSkillGaugeWidget(float CastingTime)
 {
 	if (SkillGaugeWidgetClass == nullptr)
 		return;
@@ -78,7 +78,7 @@ void UCharacterWidgetComponent::OpenSkillGaugeWidget()
 
 	SkillGaugeWidget->AddToViewport();
 	// TODO:
-	SkillGaugeWidget->StartGauge(1.f);
+	SkillGaugeWidget->StartGauge(CastingTime);
 }
 
 void UCharacterWidgetComponent::CloseSkillGaugeWidget()

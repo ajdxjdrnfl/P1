@@ -8,6 +8,7 @@
 #include "P1/Component/StatComponent/EnemyStatComponent.h"
 #include "P1/Component/WidgetComponent/EnemyWidgetComponent.h"
 #include "P1/Component/SkillComponent/EnemySkillComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -23,11 +24,8 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnCollisionOverlapBegin);
 
-	// TODO: to on spawn
-	//Init();
+	Init();
 }
 
 void AEnemyBase::Init()
@@ -42,6 +40,10 @@ void AEnemyBase::Init()
 		WidgetComponent->SetEnemyStat(StatComponent);
 		WidgetComponent->OwnerEnemy = this;
 		StatComponent->OwnerEnemy = this;
+	}
+	if (SkillComponent)
+	{
+		SkillComponent->SetSkills();
 	}
 }
 
@@ -61,6 +63,7 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	MoveByServer(DeltaTime);
 }
 
 void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -111,11 +114,42 @@ void AEnemyBase::Die()
 	StatComponent->AllStop();
 }
 
-void AEnemyBase::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyBase::MoveByServer(float DeltaTime)
 {
-	if (ASkillActorBase* SkillActor = Cast<ASkillActorBase>(OtherActor))
+	if (CreatureState == ECreatureState::Move)
 	{
-		
+		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
+		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
+
+		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
+		SetActorRotation(NextRotation);
 	}
 }
 
+void AEnemyBase::SetMoveValueByServer(Protocol::S_MOVE Pkt)
+{
+	FTransform TargetTransform;
+	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
+	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
+	TargetTransform.SetLocation(TargetLocation);
+	TargetTransform.SetRotation(TargetRotation.Quaternion());
+
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 15);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 15);
+	bool NearZ = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Z, GetActorLocation().Z, 15);
+	bool bIsNear = NearX && NearY && NearZ;
+
+	if (bIsNear)
+	{
+		CreatureState = ECreatureState::Idle;
+	}
+	else
+	{
+		CreatureState = ECreatureState::Move;
+		ObjectInfo->set_x(TargetLocation.X);
+		ObjectInfo->set_y(TargetLocation.Y);
+		ObjectInfo->set_z(TargetLocation.Z);
+		ObjectInfo->set_yaw(TargetRotation.Yaw);
+	}
+}

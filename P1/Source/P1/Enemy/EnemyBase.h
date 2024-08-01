@@ -29,13 +29,13 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UEnemyStatComponent* StatComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UEnemyWidgetComponent* WidgetComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UEnemySkillComponent* SkillComponent;
 
 public:
@@ -44,9 +44,8 @@ public:
 	void TakeDamage();
 	void SetHealthByDamage(float HealthToSet);
 	void Die();
-
-	UFUNCTION()
-	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void MoveByServer(float DeltaTime);
+	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }
 	FORCEINLINE class UEnemyWidgetComponent* GetWidgetComponent() { return WidgetComponent; }

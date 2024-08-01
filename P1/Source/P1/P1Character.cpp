@@ -172,11 +172,11 @@ void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	}
 }
 
-void AP1Character::OpenSkillGaugeWidget()
+void AP1Character::OpenSkillGaugeWidget(float CastingTime)
 {
 	if (WidgetComponent == nullptr) return;
 
-	WidgetComponent->OpenSkillGaugeWidget();
+	WidgetComponent->OpenSkillGaugeWidget(CastingTime);
 }
 
 void AP1Character::CloseSkillGaugeWidget()

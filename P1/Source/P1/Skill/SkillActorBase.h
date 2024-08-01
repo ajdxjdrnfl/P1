@@ -27,6 +27,7 @@ private:
 public:
 	virtual void InitOnSpawn(class AP1Creature* _OwnerCreature);
 	virtual void ActivateSkill();
+	virtual void SendCollisionPacketToServer(class AP1Creature* Creature);
 	Protocol::ObjectInfo* ObjectInfo;
 	Protocol::SkillInfo* SkillInfo;
 

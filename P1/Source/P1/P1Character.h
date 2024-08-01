@@ -46,7 +46,7 @@ public:
 	void UseSkill(uint16 SkillIndex);
 	void MoveByServer(float DeltaTime);
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
-	void OpenSkillGaugeWidget();
+	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	void PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex);

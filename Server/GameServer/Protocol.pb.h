@@ -2207,6 +2207,7 @@ class C_MONTAGE final :
   enum : int {
     kCasterFieldNumber = 1,
     kIdFieldNumber = 3,
+    kSectionNumFieldNumber = 4,
     kIsstopFieldNumber = 2,
   };
   // .Protocol.ObjectInfo caster = 1;
@@ -2236,6 +2237,15 @@ class C_MONTAGE final :
   void _internal_set_id(uint64_t value);
   public:
 
+  // uint64 section_num = 4;
+  void clear_section_num();
+  uint64_t section_num() const;
+  void set_section_num(uint64_t value);
+  private:
+  uint64_t _internal_section_num() const;
+  void _internal_set_section_num(uint64_t value);
+  public:
+
   // bool isstop = 2;
   void clear_isstop();
   bool isstop() const;
@@ -2255,6 +2265,7 @@ class C_MONTAGE final :
   struct Impl_ {
     ::Protocol::ObjectInfo* caster_;
     uint64_t id_;
+    uint64_t section_num_;
     bool isstop_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -2386,6 +2397,7 @@ class S_MONTAGE final :
   enum : int {
     kCasterFieldNumber = 1,
     kIdFieldNumber = 3,
+    kSectionNumFieldNumber = 4,
     kIsstopFieldNumber = 2,
   };
   // .Protocol.ObjectInfo caster = 1;
@@ -2415,6 +2427,15 @@ class S_MONTAGE final :
   void _internal_set_id(uint64_t value);
   public:
 
+  // uint64 section_num = 4;
+  void clear_section_num();
+  uint64_t section_num() const;
+  void set_section_num(uint64_t value);
+  private:
+  uint64_t _internal_section_num() const;
+  void _internal_set_section_num(uint64_t value);
+  public:
+
   // bool isstop = 2;
   void clear_isstop();
   bool isstop() const;
@@ -2434,6 +2455,7 @@ class S_MONTAGE final :
   struct Impl_ {
     ::Protocol::ObjectInfo* caster_;
     uint64_t id_;
+    uint64_t section_num_;
     bool isstop_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4023,6 +4045,26 @@ inline void C_MONTAGE::set_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.C_MONTAGE.id)
 }
 
+// uint64 section_num = 4;
+inline void C_MONTAGE::clear_section_num() {
+  _impl_.section_num_ = uint64_t{0u};
+}
+inline uint64_t C_MONTAGE::_internal_section_num() const {
+  return _impl_.section_num_;
+}
+inline uint64_t C_MONTAGE::section_num() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MONTAGE.section_num)
+  return _internal_section_num();
+}
+inline void C_MONTAGE::_internal_set_section_num(uint64_t value) {
+  
+  _impl_.section_num_ = value;
+}
+inline void C_MONTAGE::set_section_num(uint64_t value) {
+  _internal_set_section_num(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_MONTAGE.section_num)
+}
+
 // -------------------------------------------------------------------
 
 // S_MONTAGE
@@ -4150,6 +4192,26 @@ inline void S_MONTAGE::_internal_set_id(uint64_t value) {
 inline void S_MONTAGE::set_id(uint64_t value) {
   _internal_set_id(value);
   // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.id)
+}
+
+// uint64 section_num = 4;
+inline void S_MONTAGE::clear_section_num() {
+  _impl_.section_num_ = uint64_t{0u};
+}
+inline uint64_t S_MONTAGE::_internal_section_num() const {
+  return _impl_.section_num_;
+}
+inline uint64_t S_MONTAGE::section_num() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MONTAGE.section_num)
+  return _internal_section_num();
+}
+inline void S_MONTAGE::_internal_set_section_num(uint64_t value) {
+  
+  _impl_.section_num_ = value;
+}
+inline void S_MONTAGE::set_section_num(uint64_t value) {
+  _internal_set_section_num(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.section_num)
 }
 
 #ifdef __GNUC__

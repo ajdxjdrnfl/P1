@@ -17,14 +17,6 @@ public:
 	ASkillManagerBase();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-protected:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
@@ -39,5 +31,11 @@ protected:
 public:
 	ESkillType GetSkillState();
 	void SetSkillState(ESkillType StateToSet);
+
+	virtual void Init(class AP1Character* _OwnerCharacter, class ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo);
+	virtual void StartCasting(float CastingTime) {};
+
+	UFUNCTION()
+	virtual void OnCastingEnd() {};
 
 };

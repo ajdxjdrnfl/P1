@@ -10,15 +10,9 @@
 #include "P1/Widget/CharacterOverlayWidget.h"
 #include "P1/Skill/SkillInstanceBase.h"
 
-void AChargingSkillManager::Init(AP1Character* _OwnerCharacter, ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo)
+void AChargingSkillManager::StartCasting(float CastingTime)
 {
-	OwnerCharacter = _OwnerCharacter;
-	SkillInstance = _SkillInstance;
-	SkillInfo = _SkillInfo;
-}
 
-void AChargingSkillManager::StartCasting()
-{
 	if (GetSkillState() != ESkillType::Normal && GetSkillState() != ESkillType::Charging)
 		return;
 
@@ -32,10 +26,11 @@ void AChargingSkillManager::StartCasting()
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &AChargingSkillManager::OnCastingEnd);
+		SubSystem->CurrentSkillManager = this;
 	}
 
 	SetSkillState(ESkillType::Charging);
-	OwnerCharacter->OpenSkillGaugeWidget();
+	OwnerCharacter->OpenSkillGaugeWidget(CastingTime);
 }
 
 void AChargingSkillManager::FireSkill(float rate = 1.f)
@@ -48,6 +43,7 @@ void AChargingSkillManager::FireSkill(float rate = 1.f)
 	{
 		SubSystem->OnSkillGaugeEnd.Clear();
 		SubSystem->CastingSkillGaugeRate = rate;
+		SubSystem->CurrentSkillManager = nullptr;
 	}
 
 	if (SkillInstance)

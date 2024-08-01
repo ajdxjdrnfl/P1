@@ -16,12 +16,10 @@ class P1_API AChargingSkillManager : public ASkillManagerBase
 	GENERATED_BODY()
 
 public:
-	void Init(class AP1Character* _OwnerCharacter, class ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo);
-	void StartCasting();
+	virtual void StartCasting(float CastingTime) override;
 	void FireSkill(float rate);
 
-	UFUNCTION()
-	void OnCastingEnd();
+	virtual void OnCastingEnd() override;
 
 	FORCEINLINE class ASkillActorBase* GetSkillActor() const { return SkillActor; }
 	FORCEINLINE void SetSkillActor(ASkillActorBase* SkillActorToSet) { SkillActor = SkillActorToSet; }

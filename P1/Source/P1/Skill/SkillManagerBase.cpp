@@ -9,21 +9,7 @@
 ASkillManagerBase::ASkillManagerBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
-// Called when the game starts or when spawned
-void ASkillManagerBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ASkillManagerBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -35,6 +21,13 @@ ESkillType ASkillManagerBase::GetSkillState()
 void ASkillManagerBase::SetSkillState(ESkillType StateToSet)
 {
 	OwnerCharacter->GetSkillComponent()->SetSkillState(StateToSet);
+}
+
+void ASkillManagerBase::Init(AP1Character* _OwnerCharacter, ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo)
+{
+	OwnerCharacter = _OwnerCharacter;
+	SkillInstance = _SkillInstance;
+	SkillInfo = _SkillInfo;
 }
 
 

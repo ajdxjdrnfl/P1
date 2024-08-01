@@ -17,10 +17,8 @@ class P1_API ACastingSkillManager : public ASkillManagerBase
 
 public:
 	virtual void Tick(float DeltaTime) override;
-	void Init(class AP1Character* _OwnerCharacter, class ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo);
-	void StartCasting();
+	virtual void StartCasting(float CastingTime) override;
 
-	UFUNCTION()
-	void OnCastingEnd();
+	virtual void OnCastingEnd() override;
 
 };

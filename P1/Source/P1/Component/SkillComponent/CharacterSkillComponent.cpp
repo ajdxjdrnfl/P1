@@ -12,7 +12,7 @@ void UCharacterSkillComponent::BeginPlay()
 	SetSkills();
 }
 
-void UCharacterSkillComponent::UseSkill(uint16 SkillIndex)
+void UCharacterSkillComponent::UseSkill(int32 SkillIndex)
 {
 	Super::UseSkill(SkillIndex);
 }

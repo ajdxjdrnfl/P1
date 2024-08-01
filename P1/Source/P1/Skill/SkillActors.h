@@ -3,18 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SkillActorBase.h"
-#include "ProjectileSkillActor.generated.h"
+#include "P1/Skill/SkillActorBase.h"
+#include "P1/P1.h"
+#include "SkillActors.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class P1_API AProjectileSkillActor : public ASkillActorBase
+class P1_API AProjectileSkill : public ASkillActorBase
 {
 	GENERATED_BODY()
 	
-	AProjectileSkillActor();
+public:
+	AProjectileSkill();
+
+private:
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* M_Skill;
 
 public:
 	virtual void BeginPlay() override;
@@ -42,9 +45,27 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ActivateSkill() override;
 
-	void SendCollisionPacketToServer(class AEnemyBase* Enemy);
-
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-	virtual void OnCollisionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
+};
+
+UCLASS()
+class P1_API AOnLocationSkill : public ASkillActorBase
+{
+	GENERATED_BODY()
+
+public:
+	AOnLocationSkill();
+
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY()
+	class AP1Character* OwnerCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	class UBoxComponent* BoxCollision;
+
+public:
+	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 };

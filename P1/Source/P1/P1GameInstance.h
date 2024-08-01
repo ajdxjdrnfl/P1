@@ -52,6 +52,7 @@ public:
 	void CharacterMove(Protocol::S_MOVE& Pkt);
 
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
+	void DespawnSkill(int32 SkillIndex);
 
 	void AttackEnemy(Protocol::S_ATTACK& Pkt);
 
@@ -67,6 +68,9 @@ public:
 	TMap<uint64, class AEnemyBase*> Enemies;
 
 	UPROPERTY()
+	class AEnemyBoss* Boss;
+
+	UPROPERTY()
 	TMap<uint64, class ASkillActorBase*> Skills;
 
 	UPROPERTY()
@@ -77,6 +81,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyMob> EnemyMobClass;
+
+	TMap<FName, Protocol::CasterType> ClassCasterMap;
 
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 

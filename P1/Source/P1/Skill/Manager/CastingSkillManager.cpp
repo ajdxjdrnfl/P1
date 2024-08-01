@@ -26,15 +26,9 @@ void ACastingSkillManager::Tick(float DeltaTime)
 	}
 }
 
-void ACastingSkillManager::Init(class AP1Character* _OwnerCharacter, class ASkillInstanceBase* _SkillInstance, FSkillInfo _SkillInfo)
+void ACastingSkillManager::StartCasting(float CastingTime)
 {
-	OwnerCharacter = _OwnerCharacter;
-	SkillInstance = _SkillInstance;
-	SkillInfo = _SkillInfo;
-}
 
-void ACastingSkillManager::StartCasting()
-{
 	if (GetSkillState() != ESkillType::Normal && GetSkillState() != ESkillType::Casting)
 		return;
 
@@ -53,10 +47,11 @@ void ACastingSkillManager::StartCasting()
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &ACastingSkillManager::OnCastingEnd);
+		SubSystem->CurrentSkillManager = this;
 	}
 
 	SetSkillState(ESkillType::Casting);
-	OwnerCharacter->OpenSkillGaugeWidget();
+	OwnerCharacter->OpenSkillGaugeWidget(CastingTime);
 
 }
 
@@ -67,8 +62,11 @@ void ACastingSkillManager::OnCastingEnd()
 	OwnerCharacter->GetWidgetComponent()->GetCharacterOverlayWidget()->UseSkill(SkillInfo);
 
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
 		SubSystem->OnSkillGaugeEnd.Clear();
-
+		SubSystem->CurrentSkillManager = nullptr;
+	}
+		
 	if (SkillInstance)
 	{
 		SkillInstance->SpawnSkill();

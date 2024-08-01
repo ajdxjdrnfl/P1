@@ -23,7 +23,7 @@ protected:
 	TSubclassOf<class ASkillActorBase> SkillActorClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	class AP1Character* OwnerCharacter;
+	class AP1Creature* OwnerCreature;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	class ASkillActorBase* SpawnedSkillActor;
@@ -32,7 +32,7 @@ protected:
 	FSkillInfo SkillInfo;
 
 public:
-	void Init(class AP1Character* _OwnerCharacter);
+	void Init(class AP1Creature* _OwnerCreature);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SpawnSkill() {};
@@ -42,6 +42,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void StartMontage(int32 SkillIndexLocal);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void StopMontage(int32 SkillIndexLocal);
 
 	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
 	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
