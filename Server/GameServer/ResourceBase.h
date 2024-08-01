@@ -6,7 +6,7 @@ public:
 	ResourceBase() { };
 	virtual ~ResourceBase() { };
 
-	virtual void Load(const string& path) = 0;
+	virtual void Load(const string& path) { }
 	virtual void Save(const string& path) { }
 
 };

@@ -3,17 +3,16 @@
 #include "Collision.h"
 #include "Collider.h"
 #include "ComponentBase.h"
+#include "ResourceManager.h"
 
 SkillActor::SkillActor(GameObjectRef caster, RoomRef room) : GameObject(room), _caster(caster)
 {
-	_skillinfo = new Protocol::SkillInfo();
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_NONE);
 }
 
 SkillActor::~SkillActor()
 {
-	delete _skillinfo;
-	_skillinfo = nullptr;
+
 }
 
 void SkillActor::Init()
@@ -26,25 +25,28 @@ void SkillActor::Update(float deltaTime)
 	Super::Update(deltaTime);
 }
 
-void SkillActor::SetCollisionBySkillInfo(const Protocol::SkillInfo& skillinfo)
+void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId)
 {
-	_skillinfo->CopyFrom(skillinfo);
+	_skill = GResourceManager.GetSkill(casterType, skillId);
+
+	assert(_skill != nullptr);
+	
+	SkillInfo skillInfo = _skill->GetSkillInfo();
 
 	Collision* collision = new Collision();
-	if (skillinfo.collision_type() == EColliderType::COLLIDER_BOX)
+	if (skillInfo.collisionType == EColliderType::COLLIDER_BOX)
 	{
 		ColliderBox* box = new ColliderBox();
-		box->extent.x = skillinfo.size_x();
-		box->extent.y = skillinfo.size_y();
+		box->extent.x = skillInfo.xscale;
+		box->extent.y = skillInfo.yscale;
 		collision->SetCollider(box);
 	}
-	else if (skillinfo.collision_type() == EColliderType::COLLIDER_CIRCLE)
+	else if (skillInfo.collisionType == EColliderType::COLLIDER_CIRCLE)
 	{
 		ColliderCircle* circle = new ColliderCircle();
-		circle->_radius = skillinfo.size_x();
+		circle->_radius = skillInfo.xscale;
 		collision->SetCollider(circle);
 	}
 
 	AddComponent(collision);
-
 }

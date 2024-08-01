@@ -5,6 +5,7 @@
 #include "SkillActor.h"
 #include "Room.h"
 #include "GameSession.h"
+#include "Boss.h"
 
 atomic<int64> ObjectUtils::s_idGenerator = 1;
 
@@ -44,4 +45,16 @@ SkillActorRef ObjectUtils::CreateSkillActor(GameObjectRef caster, RoomRef room)
 	skillActor->Init();
 	
 	return skillActor;
+}
+
+BossRef ObjectUtils::CreateBoss(RoomRef room)
+{
+	const int64 newId = s_idGenerator.fetch_add(1);
+
+	BossRef boss = make_shared<Boss>(room);
+	boss->GetObjectInfo()->set_object_id(newId);
+
+	boss->Init();
+
+	return boss;
 }

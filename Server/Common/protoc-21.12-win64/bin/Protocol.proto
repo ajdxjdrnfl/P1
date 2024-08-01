@@ -50,14 +50,14 @@ message C_MOVE
 message C_SKILL
 {
 	ObjectInfo caster =1;
-	SkillInfo skillinfo =2;
+	uint64 skillid = 2;
 }
 
 message S_SKILL
 {
 	ObjectInfo caster = 1;
 	ObjectInfo skillactor = 2;
-	SkillInfo skillinfo = 3;
+	uint64 skillid = 3;
 }
 
 message C_ATTACK
@@ -72,7 +72,7 @@ message S_ATTACK
 	ObjectInfo caster = 1;
 	ObjectInfo skillactor = 2;
 	ObjectInfo victim = 3;
-	SkillInfo skillinfo = 4;
+	uint64 skillid = 4;
 }
 
 message C_MONTAGE
@@ -89,4 +89,9 @@ message S_MONTAGE
 	bool isstop = 2;
 	uint64 id = 3;
 	uint64 section_num = 4;
+}
+
+message S_BOSS_MONTAGE
+{
+	uint64 skillid = 1;
 }

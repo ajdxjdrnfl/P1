@@ -8,10 +8,14 @@ public:
 	virtual void Init();
 	virtual void Update(float deltaTime);
 
-	virtual void TakeDamage(GameObjectRef instigator, float damage);
+	virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage);
 
 public:
 	void SetObjectInfo(Protocol::ObjectInfo objectInfo, bool dirtyFlag = false);
+
+	Protocol::MoveState GetState() { return _objectInfo->state(); }
+	void SetState(Protocol::MoveState state, bool dirtyFlag = false);
+
 	Protocol::ObjectInfo* GetObjectInfo() { return _objectInfo; }
 
 	RoomRef GetRoomRef() { return _room.lock(); }
@@ -20,6 +24,14 @@ public:
 
 protected:
 	virtual void BroadcastUpdate();
+
+protected:
+	virtual void TickIdle() { }
+	virtual void TickRun() { }
+	virtual void TickSkill() { }
+	virtual void TickStun() { }
+
+	void TickDot(float deltaTime);
 
 protected:
 	Protocol::ObjectInfo* _objectInfo;
@@ -33,5 +45,6 @@ public:
 
 private:
 	array<ComponentBase*, EComponentType::ECT_MAX> _components;
+	queue<vector<float>> _dotDamages; // 총 시간 - 지속시간 - 데미지
 };
 

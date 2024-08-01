@@ -13,7 +13,7 @@ public:
 
 protected:
     virtual void BroadcastUpdate() override;
-    virtual void TakeDamage(GameObjectRef instigator, float damage) override;
+    virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage) override;
 
 private:
     void RandomWalk();

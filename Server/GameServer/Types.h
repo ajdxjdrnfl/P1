@@ -108,7 +108,7 @@ struct Vector
 	{
 		return { x * cos(degree) - y * sin(degree), x * sin(degree) + y * cos(degree) };
 	}
-};
+}typedef Vector;
 
 struct Bound
 {
