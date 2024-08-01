@@ -79,7 +79,7 @@ bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt)
 		return false;
 
 	LOG(pkt);
-	room->DoAsync(&Room::HandleSkill, pkt);
+	room->DoAsync(&Room::HandleSkillPkt, pkt);
 	return true;
 }
 

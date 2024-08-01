@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+#include "Skill.h"
+
 class SkillActor :
     public GameObject
 {
@@ -12,16 +14,15 @@ public:
     virtual void Update(float deltaTime) override;
 
 public:
-    Protocol::SkillInfo* GetSkillInfo() { return _skillinfo; }
+    SkillInfo& GetSkillInfo() { return _skill->GetSkillInfo(); }
 public:
     // TEST Collider
-    void SetCollisionBySkillInfo(const Protocol::SkillInfo& skillinfo);
+    void SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& id);
 
 private:
     weak_ptr<GameObject> _caster;
-    // TEST
-    Protocol::SkillInfo* _skillinfo;
-    // SKill 府家胶
     
+    // SKill 府家胶
+    Skill* _skill = nullptr;
 };
 

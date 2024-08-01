@@ -1,6 +1,6 @@
 #pragma once
 #include <random>
-
+#include "Types.h"
 class Utils
 {
 public:
@@ -23,5 +23,7 @@ public:
 			return distribution(generator);
 		}
 	}
+
+	static float GetYawByVector(struct Vector vec);
 };
 

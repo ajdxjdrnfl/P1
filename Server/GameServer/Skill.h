@@ -3,6 +3,20 @@
 
 struct SkillInfo
 {
+	uint64 skillNum;
+	int32 hitNum;
+
+	float coolDown;
+	float damage;
+	float xscale;
+	float yscale;
+	
+	Protocol::CollisionType collisionType;
+	Protocol::CCType ccType;
+	Protocol::DamageType damageType;
+	Protocol::SkillType skillType;
+
+	float castingTime;
 
 }typedef SkillInfo;
 
@@ -13,9 +27,10 @@ public:
 	Skill() { };
 	virtual ~Skill() { };
 
-	virtual void Load(const string& path);
+	SkillInfo& GetSkillInfo() { return _skillInfo; }
+	void SetSkillInfo(SkillInfo skillInfo) { _skillInfo = skillInfo; }
 
 private:
-	SkillInfo skillInfo;
+	SkillInfo _skillInfo;
 };
 

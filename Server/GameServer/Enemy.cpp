@@ -79,18 +79,10 @@ void Enemy::RandomWalk()
 
 void Enemy::BroadcastUpdate()
 {
-	if (!_dirtyFlag)
-		return;
-
-	Protocol::S_MOVE pkt;
-
-	*pkt.mutable_info() = *GetObjectInfo();
-	
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-	GetRoomRef()->Broadcast(sendBuffer);
+	Super::BroadcastUpdate();
 }
 
-void Enemy::TakeDamage(GameObjectRef instigator, float damage)
+void Enemy::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
 {
-	Super::TakeDamage(instigator, damage);
+	Super::TakeDamage(instigator, damageType, damage);
 }

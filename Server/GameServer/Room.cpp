@@ -6,7 +6,7 @@
 #include "GameSession.h"
 #include "ObjectUtils.h"
 #include "Collision.h"
-
+#include "Boss.h"
 
 RoomRef GRoom = make_shared<Room>();
 
@@ -27,6 +27,8 @@ void Room::Init()
 		_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
 		SetObjectToRandomPos(enemy);
 	}
+
+	_boss = ObjectUtils::CreateBoss(GetRoomRef());
 }
 
 void Room::Update(float deltaTime)
@@ -46,6 +48,8 @@ void Room::Update(float deltaTime)
 		SkillActorRef skillActor = item.second;
 		skillActor->Update(deltaTime);
 	}
+
+	_boss->Update(deltaTime);
 }
 
 bool Room::HandleEnterGame(GameSessionRef session)
@@ -175,35 +179,11 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 
 }
 
-bool Room::HandleSkill(Protocol::C_SKILL pkt)
+bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 {
 	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
 
-	if (caster == nullptr)
-		return false;
-
-	SkillActorRef skillActor = ObjectUtils::CreateSkillActor(caster, GetRoomRef());
-	Protocol::ObjectInfo* info = skillActor->GetObjectInfo();
-	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
-	info->set_x(casterInfo->x());
-	info->set_y(casterInfo->y());
-	info->set_z(casterInfo->z());
-	info->set_yaw(casterInfo->yaw());
-	skillActor->SetCollisionBySkillInfo(pkt.skillinfo());
-
-	SpawnSkill(skillActor);
-
-	// TODO : S_SKILL 구조 수정
-	{
-		Protocol::S_SKILL skillPkt;
-		*skillPkt.mutable_caster() = *caster->GetObjectInfo();
-		*skillPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
-		*skillPkt.mutable_skillinfo() = pkt.skillinfo();
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
-		Broadcast(sendBuffer);
-	}
-	return true;
+	return HandleSkill(caster, pkt.skillid());
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -221,14 +201,16 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	if (!victimCollision->CheckCollision(skillActorCollision))
 		return false;
 
-	victim->TakeDamage(skillActor, static_pointer_cast<SkillActor>(skillActor)->GetSkillInfo()->damage());
+	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
+
+	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo().damageType, skillActorCast->GetSkillInfo().damage);
 	
 	{
 		Protocol::S_ATTACK attackPkt;
 		*attackPkt.mutable_caster() = *caster->GetObjectInfo();
 		*attackPkt.mutable_victim() = *victim->GetObjectInfo();
 		*attackPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
-		*attackPkt.mutable_skillinfo() = *static_pointer_cast<SkillActor>(skillActor)->GetSkillInfo();
+		attackPkt.set_skillid(skillActorCast->GetSkillInfo().skillNum);
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackPkt);
 		Broadcast(sendBuffer);
@@ -253,6 +235,49 @@ bool Room::HandleMontage(Protocol::C_MONTAGE pkt)
 		Broadcast(sendBuffer);
 	}
 
+	return true;
+}
+
+void Room::HandleDead(GameObjectRef gameObject)
+{
+	if (RemoveObject(gameObject))
+	{
+		Protocol::S_DESPAWN despawnPkt;
+
+		despawnPkt.add_object_ids(gameObject->GetObjectInfo()->object_id());
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
+		Broadcast(sendBuffer);
+	}
+	
+}
+
+bool Room::HandleSkill(GameObjectRef caster, uint64 skillid)
+{
+	if (caster == nullptr)
+		return false;
+
+	SkillActorRef skillActor = ObjectUtils::CreateSkillActor(caster, GetRoomRef());
+	Protocol::ObjectInfo* info = skillActor->GetObjectInfo();
+	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
+	info->set_x(casterInfo->x());
+	info->set_y(casterInfo->y());
+	info->set_z(casterInfo->z());
+	info->set_yaw(casterInfo->yaw());
+	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid);
+
+	SpawnSkill(skillActor);
+
+	// TODO : S_SKILL 구조 수정
+	{
+		Protocol::S_SKILL skillPkt;
+		*skillPkt.mutable_caster() = *caster->GetObjectInfo();
+		*skillPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
+		skillPkt.set_skillid(skillid);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
+		Broadcast(sendBuffer);
+	}
 	return true;
 }
 
@@ -288,6 +313,22 @@ void Room::LeaveGame(PlayerRef player)
 
 }
 
+bool Room::RemoveObject(GameObjectRef gameObject)
+{
+	const uint64 id = gameObject->GetObjectInfo()->object_id();
+
+	if (_players.find(id) != _players.end())
+		return true;
+
+	if (_enemies.find(id) != _enemies.end())
+		return true;
+
+	if (_skillActors.find(id) != _skillActors.end())
+		return true;
+
+	return false;
+}
+
 void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	player->GetObjectInfo()->set_x(Utils::GetRandom(-500.f, 500.f));
@@ -311,6 +352,27 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 			gameSession->Send(sendBuffer);
 		}
 	}
+}
+
+PlayerRef Room::FindClosestPlayer(Vector pos)
+{
+	PlayerRef result = nullptr;
+	
+	for (auto& item : _players)
+	{
+		if (result == nullptr)
+			result = item.second;
+		else
+		{
+			float dist1 = pos.Distance(result->GetPos());
+			float dist2 = pos.Distance(item.second->GetPos());
+
+			if (dist1 > dist2)
+				result = item.second;
+		}
+	}
+
+	return result;
 }
 
 RoomRef Room::GetRoomRef()

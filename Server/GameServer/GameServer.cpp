@@ -5,7 +5,7 @@
 #include "Room.h"
 #include "GameRoomManager.h"
 #include "GameTickManager.h"
-
+#include "ResourceManager.h"
 enum
 {
 	WORKER_TICK = 64
@@ -40,6 +40,9 @@ int main()
 	ServerPacketHandler::Init();
 	GRoomManager.Init();
 	GTickManager.Init();
+
+
+	GResourceManager.Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
