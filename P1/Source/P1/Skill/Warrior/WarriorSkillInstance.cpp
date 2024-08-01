@@ -20,6 +20,7 @@ AWarriorQSkillInstance::AWarriorQSkillInstance()
 void AWarriorQSkillInstance::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void AWarriorQSkillInstance::Tick(float DeltaTime)
@@ -83,6 +84,10 @@ void AWarriorQSkillInstance::UseSkill()
 		}
 
 		OwnerCreature->CreatureState = ECreatureState::Skill;
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
+		}
 	}
 	else if (bIsComboTiming)
 	{
@@ -200,6 +205,11 @@ void AWarriorRSkillInstance::UseSkill()
 
 			SEND_PACKET(Pkt);
 		}
+
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMove = false;
+		}
 	}
 	else
 	{
@@ -211,6 +221,10 @@ void AWarriorRSkillInstance::UseSkill()
 			Pkt.set_id(3);
 
 			SEND_PACKET(Pkt);
+		}
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMove = true;
 		}
 	}
 
@@ -237,6 +251,11 @@ void AWarriorRSkillInstance::SpawnSkill()
 			Pkt.set_section_num(2);
 
 			SEND_PACKET(Pkt);
+		}
+
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMove = true;
 		}
 	}
 }

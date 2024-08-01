@@ -14,14 +14,15 @@ class P1_API USkillManagerSubSystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	TMap<uint16, bool> SkillCanUseMap;
+	TMap<uint16, bool> SkillCanUseMapByCooldownTime;
+	TMap<uint16, bool> SkillCanUseMapByCasting;
 	FOnSkillGaugeEnd OnSkillGaugeEnd;
-	
-	UPROPERTY()
-	class ASkillManagerBase* CurrentSkillManager;
 
 	float CastingSkillGaugeRate;
 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	bool bCanMove = true;
 
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	void SetKeyCanUse(int32 SkillIndex);
+	bool CanUseSkill(int32 SkillIndex);
 };

@@ -72,6 +72,10 @@ void USkillComponentBase::SetSkills()
 			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
 			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);*/
 		}
+		else if (P1Creature->GetClassType() == FName("Mob"))
+		{
+			return;
+		}
 	}
 
 	FName ClassTypeName = Cast<AP1Creature>(GetOwner())->GetClassType();

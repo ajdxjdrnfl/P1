@@ -28,7 +28,7 @@ void USkillSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 	{
 		if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
-			SkillSubSystem->SkillCanUseMap[SkillNum] = true;
+			SkillSubSystem->SkillCanUseMapByCooldownTime[SkillNum] = true;
 			bIsActivated = false;
 		}
 		SetCooldownVisibility(false);
@@ -58,7 +58,7 @@ void USkillSlotWidget::ActivateSlot(float time)
 
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		SkillSubSystem->SkillCanUseMap[SkillNum] = false;
+		SkillSubSystem->SkillCanUseMapByCooldownTime[SkillNum] = false;
 		bIsActivated = true;
 	}
 	

@@ -15,6 +15,7 @@
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/Enemy/EnemyBase.h"
 #include "P1/Enemy/EnemyMob.h"
+#include "P1/Enemy/EnemyBoss.h"
 
 void UP1GameInstance::Init()
 {
@@ -228,6 +229,9 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 		case Protocol::CASTER_TYPE_WARRIOR:
 			Characters.Add({ info.object_id(), SpawnCharacter(Pkt.info(i), Loc) });
 			break;
+		case Protocol::CASTER_TYPE_BOSS:
+			Boss = SpawnBoss(Pkt.info(i), Loc);
+			break;
 		default:
 			break;
 		}
@@ -307,6 +311,20 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo.hp(), ObjInfo.stamina());
+
+	return SpawnedActor;
+}
+
+AEnemyBoss* UP1GameInstance::SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc)
+{
+	AEnemyBoss* SpawnedActor = Cast<AEnemyBoss>(GetWorld()->SpawnActor(EnemyBossClass, &Loc));
+
+	if (SpawnedActor == nullptr)
+		return nullptr;
+
+	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
+	// TODO: Boss hp
+	SpawnedActor->InitOnSpawn(100);
 
 	return SpawnedActor;
 }

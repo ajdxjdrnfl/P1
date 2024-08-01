@@ -39,7 +39,10 @@ void ACastingSkillManager::StartCasting(float CastingTime)
 		OwnerCharacter->CloseSkillGaugeWidget();
 
 		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
 			SubSystem->OnSkillGaugeEnd.Clear();
+			SubSystem->SetKeyCanUse(-1);
+		}
 
 		return;
 	}
@@ -47,7 +50,7 @@ void ACastingSkillManager::StartCasting(float CastingTime)
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &ACastingSkillManager::OnCastingEnd);
-		SubSystem->CurrentSkillManager = this;
+		SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
 	}
 
 	SetSkillState(ESkillType::Casting);
@@ -64,7 +67,7 @@ void ACastingSkillManager::OnCastingEnd()
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.Clear();
-		SubSystem->CurrentSkillManager = nullptr;
+		SubSystem->SetKeyCanUse(-1);
 	}
 		
 	if (SkillInstance)
