@@ -98,6 +98,10 @@ bool Room::HandleEnterGame(GameSessionRef session)
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*enemy->GetObjectInfo());
 		}
+		{
+			Protocol::ObjectInfo* info = pkt.add_info();
+			info->CopyFrom(*_boss->GetObjectInfo());
+		}
 
 		// TODO : 새로 접속한 유저에게 스킬 액터들도 같이 스폰할지?
 

@@ -82,7 +82,7 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 
 		string collisionTypeString = json[collisionTypeKey].get<string>();
 		string ccTypeString = json[ccTypeKey].get<string>();
-		string damageTypeString = json[damageTypeString].get<string>();
+		string damageTypeString = json[damageTypeKey].get<string>();
 		string skillTypeString = json[skillTypeKey].get<string>();
 		
 		Protocol::CollisionType collisionType = ConvertStringToCollisionType(collisionTypeString);
