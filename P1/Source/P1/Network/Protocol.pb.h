@@ -69,6 +69,9 @@ extern C_SKILLDefaultTypeInternal _C_SKILL_default_instance_;
 class S_ATTACK;
 struct S_ATTACKDefaultTypeInternal;
 extern S_ATTACKDefaultTypeInternal _S_ATTACK_default_instance_;
+class S_BOSS_MONTAGE;
+struct S_BOSS_MONTAGEDefaultTypeInternal;
+extern S_BOSS_MONTAGEDefaultTypeInternal _S_BOSS_MONTAGE_default_instance_;
 class S_DESPAWN;
 struct S_DESPAWNDefaultTypeInternal;
 extern S_DESPAWNDefaultTypeInternal _S_DESPAWN_default_instance_;
@@ -99,6 +102,7 @@ template<> ::Protocol::C_MONTAGE* Arena::CreateMaybeMessage<::Protocol::C_MONTAG
 template<> ::Protocol::C_MOVE* Arena::CreateMaybeMessage<::Protocol::C_MOVE>(Arena*);
 template<> ::Protocol::C_SKILL* Arena::CreateMaybeMessage<::Protocol::C_SKILL>(Arena*);
 template<> ::Protocol::S_ATTACK* Arena::CreateMaybeMessage<::Protocol::S_ATTACK>(Arena*);
+template<> ::Protocol::S_BOSS_MONTAGE* Arena::CreateMaybeMessage<::Protocol::S_BOSS_MONTAGE>(Arena*);
 template<> ::Protocol::S_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S_DESPAWN>(Arena*);
 template<> ::Protocol::S_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S_ENTER_GAME>(Arena*);
 template<> ::Protocol::S_LOGIN* Arena::CreateMaybeMessage<::Protocol::S_LOGIN>(Arena*);
@@ -1418,7 +1422,7 @@ class C_SKILL final :
 
   enum : int {
     kCasterFieldNumber = 1,
-    kSkillinfoFieldNumber = 2,
+    kSkillidFieldNumber = 2,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -1438,23 +1442,14 @@ class C_SKILL final :
       ::Protocol::ObjectInfo* caster);
   ::Protocol::ObjectInfo* unsafe_arena_release_caster();
 
-  // .Protocol.SkillInfo skillinfo = 2;
-  bool has_skillinfo() const;
+  // uint64 skillid = 2;
+  void clear_skillid();
+  uint64_t skillid() const;
+  void set_skillid(uint64_t value);
   private:
-  bool _internal_has_skillinfo() const;
+  uint64_t _internal_skillid() const;
+  void _internal_set_skillid(uint64_t value);
   public:
-  void clear_skillinfo();
-  const ::Protocol::SkillInfo& skillinfo() const;
-  PROTOBUF_NODISCARD ::Protocol::SkillInfo* release_skillinfo();
-  ::Protocol::SkillInfo* mutable_skillinfo();
-  void set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo);
-  private:
-  const ::Protocol::SkillInfo& _internal_skillinfo() const;
-  ::Protocol::SkillInfo* _internal_mutable_skillinfo();
-  public:
-  void unsafe_arena_set_allocated_skillinfo(
-      ::Protocol::SkillInfo* skillinfo);
-  ::Protocol::SkillInfo* unsafe_arena_release_skillinfo();
 
   // @@protoc_insertion_point(class_scope:Protocol.C_SKILL)
  private:
@@ -1465,7 +1460,7 @@ class C_SKILL final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::ObjectInfo* caster_;
-    ::Protocol::SkillInfo* skillinfo_;
+    uint64_t skillid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1596,7 +1591,7 @@ class S_SKILL final :
   enum : int {
     kCasterFieldNumber = 1,
     kSkillactorFieldNumber = 2,
-    kSkillinfoFieldNumber = 3,
+    kSkillidFieldNumber = 3,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -1634,23 +1629,14 @@ class S_SKILL final :
       ::Protocol::ObjectInfo* skillactor);
   ::Protocol::ObjectInfo* unsafe_arena_release_skillactor();
 
-  // .Protocol.SkillInfo skillinfo = 3;
-  bool has_skillinfo() const;
+  // uint64 skillid = 3;
+  void clear_skillid();
+  uint64_t skillid() const;
+  void set_skillid(uint64_t value);
   private:
-  bool _internal_has_skillinfo() const;
+  uint64_t _internal_skillid() const;
+  void _internal_set_skillid(uint64_t value);
   public:
-  void clear_skillinfo();
-  const ::Protocol::SkillInfo& skillinfo() const;
-  PROTOBUF_NODISCARD ::Protocol::SkillInfo* release_skillinfo();
-  ::Protocol::SkillInfo* mutable_skillinfo();
-  void set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo);
-  private:
-  const ::Protocol::SkillInfo& _internal_skillinfo() const;
-  ::Protocol::SkillInfo* _internal_mutable_skillinfo();
-  public:
-  void unsafe_arena_set_allocated_skillinfo(
-      ::Protocol::SkillInfo* skillinfo);
-  ::Protocol::SkillInfo* unsafe_arena_release_skillinfo();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_SKILL)
  private:
@@ -1662,7 +1648,7 @@ class S_SKILL final :
   struct Impl_ {
     ::Protocol::ObjectInfo* caster_;
     ::Protocol::ObjectInfo* skillactor_;
-    ::Protocol::SkillInfo* skillinfo_;
+    uint64_t skillid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1991,7 +1977,7 @@ class S_ATTACK final :
     kCasterFieldNumber = 1,
     kSkillactorFieldNumber = 2,
     kVictimFieldNumber = 3,
-    kSkillinfoFieldNumber = 4,
+    kSkillidFieldNumber = 4,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -2047,23 +2033,14 @@ class S_ATTACK final :
       ::Protocol::ObjectInfo* victim);
   ::Protocol::ObjectInfo* unsafe_arena_release_victim();
 
-  // .Protocol.SkillInfo skillinfo = 4;
-  bool has_skillinfo() const;
+  // uint64 skillid = 4;
+  void clear_skillid();
+  uint64_t skillid() const;
+  void set_skillid(uint64_t value);
   private:
-  bool _internal_has_skillinfo() const;
+  uint64_t _internal_skillid() const;
+  void _internal_set_skillid(uint64_t value);
   public:
-  void clear_skillinfo();
-  const ::Protocol::SkillInfo& skillinfo() const;
-  PROTOBUF_NODISCARD ::Protocol::SkillInfo* release_skillinfo();
-  ::Protocol::SkillInfo* mutable_skillinfo();
-  void set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo);
-  private:
-  const ::Protocol::SkillInfo& _internal_skillinfo() const;
-  ::Protocol::SkillInfo* _internal_mutable_skillinfo();
-  public:
-  void unsafe_arena_set_allocated_skillinfo(
-      ::Protocol::SkillInfo* skillinfo);
-  ::Protocol::SkillInfo* unsafe_arena_release_skillinfo();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_ATTACK)
  private:
@@ -2076,7 +2053,7 @@ class S_ATTACK final :
     ::Protocol::ObjectInfo* caster_;
     ::Protocol::ObjectInfo* skillactor_;
     ::Protocol::ObjectInfo* victim_;
-    ::Protocol::SkillInfo* skillinfo_;
+    uint64_t skillid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2457,6 +2434,154 @@ class S_MONTAGE final :
     uint64_t id_;
     uint64_t section_num_;
     bool isstop_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_BOSS_MONTAGE final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_BOSS_MONTAGE) */ {
+ public:
+  inline S_BOSS_MONTAGE() : S_BOSS_MONTAGE(nullptr) {}
+  ~S_BOSS_MONTAGE() override;
+  explicit PROTOBUF_CONSTEXPR S_BOSS_MONTAGE(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_BOSS_MONTAGE(const S_BOSS_MONTAGE& from);
+  S_BOSS_MONTAGE(S_BOSS_MONTAGE&& from) noexcept
+    : S_BOSS_MONTAGE() {
+    *this = ::std::move(from);
+  }
+
+  inline S_BOSS_MONTAGE& operator=(const S_BOSS_MONTAGE& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_BOSS_MONTAGE& operator=(S_BOSS_MONTAGE&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_BOSS_MONTAGE& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_BOSS_MONTAGE* internal_default_instance() {
+    return reinterpret_cast<const S_BOSS_MONTAGE*>(
+               &_S_BOSS_MONTAGE_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(S_BOSS_MONTAGE& a, S_BOSS_MONTAGE& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_BOSS_MONTAGE* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_BOSS_MONTAGE* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_BOSS_MONTAGE* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_BOSS_MONTAGE>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_BOSS_MONTAGE& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_BOSS_MONTAGE& from) {
+    S_BOSS_MONTAGE::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_BOSS_MONTAGE* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_BOSS_MONTAGE";
+  }
+  protected:
+  explicit S_BOSS_MONTAGE(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSkillidFieldNumber = 1,
+  };
+  // uint64 skillid = 1;
+  void clear_skillid();
+  uint64_t skillid() const;
+  void set_skillid(uint64_t value);
+  private:
+  uint64_t _internal_skillid() const;
+  void _internal_set_skillid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_BOSS_MONTAGE)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t skillid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2969,89 +3094,24 @@ inline void C_SKILL::set_allocated_caster(::Protocol::ObjectInfo* caster) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.C_SKILL.caster)
 }
 
-// .Protocol.SkillInfo skillinfo = 2;
-inline bool C_SKILL::_internal_has_skillinfo() const {
-  return this != internal_default_instance() && _impl_.skillinfo_ != nullptr;
+// uint64 skillid = 2;
+inline void C_SKILL::clear_skillid() {
+  _impl_.skillid_ = uint64_t{0u};
 }
-inline bool C_SKILL::has_skillinfo() const {
-  return _internal_has_skillinfo();
+inline uint64_t C_SKILL::_internal_skillid() const {
+  return _impl_.skillid_;
 }
-inline const ::Protocol::SkillInfo& C_SKILL::_internal_skillinfo() const {
-  const ::Protocol::SkillInfo* p = _impl_.skillinfo_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::SkillInfo&>(
-      ::Protocol::_SkillInfo_default_instance_);
+inline uint64_t C_SKILL::skillid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.skillid)
+  return _internal_skillid();
 }
-inline const ::Protocol::SkillInfo& C_SKILL::skillinfo() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.skillinfo)
-  return _internal_skillinfo();
-}
-inline void C_SKILL::unsafe_arena_set_allocated_skillinfo(
-    ::Protocol::SkillInfo* skillinfo) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  _impl_.skillinfo_ = skillinfo;
-  if (skillinfo) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_SKILL.skillinfo)
-}
-inline ::Protocol::SkillInfo* C_SKILL::release_skillinfo() {
+inline void C_SKILL::_internal_set_skillid(uint64_t value) {
   
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.skillid_ = value;
 }
-inline ::Protocol::SkillInfo* C_SKILL::unsafe_arena_release_skillinfo() {
-  // @@protoc_insertion_point(field_release:Protocol.C_SKILL.skillinfo)
-  
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-  return temp;
-}
-inline ::Protocol::SkillInfo* C_SKILL::_internal_mutable_skillinfo() {
-  
-  if (_impl_.skillinfo_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::SkillInfo>(GetArenaForAllocation());
-    _impl_.skillinfo_ = p;
-  }
-  return _impl_.skillinfo_;
-}
-inline ::Protocol::SkillInfo* C_SKILL::mutable_skillinfo() {
-  ::Protocol::SkillInfo* _msg = _internal_mutable_skillinfo();
-  // @@protoc_insertion_point(field_mutable:Protocol.C_SKILL.skillinfo)
-  return _msg;
-}
-inline void C_SKILL::set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  if (skillinfo) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillinfo));
-    if (message_arena != submessage_arena) {
-      skillinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, skillinfo, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.skillinfo_ = skillinfo;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.C_SKILL.skillinfo)
+inline void C_SKILL::set_skillid(uint64_t value) {
+  _internal_set_skillid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_SKILL.skillid)
 }
 
 // -------------------------------------------------------------------
@@ -3228,89 +3288,24 @@ inline void S_SKILL::set_allocated_skillactor(::Protocol::ObjectInfo* skillactor
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_SKILL.skillactor)
 }
 
-// .Protocol.SkillInfo skillinfo = 3;
-inline bool S_SKILL::_internal_has_skillinfo() const {
-  return this != internal_default_instance() && _impl_.skillinfo_ != nullptr;
+// uint64 skillid = 3;
+inline void S_SKILL::clear_skillid() {
+  _impl_.skillid_ = uint64_t{0u};
 }
-inline bool S_SKILL::has_skillinfo() const {
-  return _internal_has_skillinfo();
+inline uint64_t S_SKILL::_internal_skillid() const {
+  return _impl_.skillid_;
 }
-inline const ::Protocol::SkillInfo& S_SKILL::_internal_skillinfo() const {
-  const ::Protocol::SkillInfo* p = _impl_.skillinfo_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::SkillInfo&>(
-      ::Protocol::_SkillInfo_default_instance_);
+inline uint64_t S_SKILL::skillid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_SKILL.skillid)
+  return _internal_skillid();
 }
-inline const ::Protocol::SkillInfo& S_SKILL::skillinfo() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_SKILL.skillinfo)
-  return _internal_skillinfo();
-}
-inline void S_SKILL::unsafe_arena_set_allocated_skillinfo(
-    ::Protocol::SkillInfo* skillinfo) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  _impl_.skillinfo_ = skillinfo;
-  if (skillinfo) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_SKILL.skillinfo)
-}
-inline ::Protocol::SkillInfo* S_SKILL::release_skillinfo() {
+inline void S_SKILL::_internal_set_skillid(uint64_t value) {
   
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.skillid_ = value;
 }
-inline ::Protocol::SkillInfo* S_SKILL::unsafe_arena_release_skillinfo() {
-  // @@protoc_insertion_point(field_release:Protocol.S_SKILL.skillinfo)
-  
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-  return temp;
-}
-inline ::Protocol::SkillInfo* S_SKILL::_internal_mutable_skillinfo() {
-  
-  if (_impl_.skillinfo_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::SkillInfo>(GetArenaForAllocation());
-    _impl_.skillinfo_ = p;
-  }
-  return _impl_.skillinfo_;
-}
-inline ::Protocol::SkillInfo* S_SKILL::mutable_skillinfo() {
-  ::Protocol::SkillInfo* _msg = _internal_mutable_skillinfo();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_SKILL.skillinfo)
-  return _msg;
-}
-inline void S_SKILL::set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  if (skillinfo) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillinfo));
-    if (message_arena != submessage_arena) {
-      skillinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, skillinfo, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.skillinfo_ = skillinfo;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_SKILL.skillinfo)
+inline void S_SKILL::set_skillid(uint64_t value) {
+  _internal_set_skillid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_SKILL.skillid)
 }
 
 // -------------------------------------------------------------------
@@ -3831,89 +3826,24 @@ inline void S_ATTACK::set_allocated_victim(::Protocol::ObjectInfo* victim) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.victim)
 }
 
-// .Protocol.SkillInfo skillinfo = 4;
-inline bool S_ATTACK::_internal_has_skillinfo() const {
-  return this != internal_default_instance() && _impl_.skillinfo_ != nullptr;
+// uint64 skillid = 4;
+inline void S_ATTACK::clear_skillid() {
+  _impl_.skillid_ = uint64_t{0u};
 }
-inline bool S_ATTACK::has_skillinfo() const {
-  return _internal_has_skillinfo();
+inline uint64_t S_ATTACK::_internal_skillid() const {
+  return _impl_.skillid_;
 }
-inline const ::Protocol::SkillInfo& S_ATTACK::_internal_skillinfo() const {
-  const ::Protocol::SkillInfo* p = _impl_.skillinfo_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::SkillInfo&>(
-      ::Protocol::_SkillInfo_default_instance_);
+inline uint64_t S_ATTACK::skillid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.skillid)
+  return _internal_skillid();
 }
-inline const ::Protocol::SkillInfo& S_ATTACK::skillinfo() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.skillinfo)
-  return _internal_skillinfo();
-}
-inline void S_ATTACK::unsafe_arena_set_allocated_skillinfo(
-    ::Protocol::SkillInfo* skillinfo) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  _impl_.skillinfo_ = skillinfo;
-  if (skillinfo) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ATTACK.skillinfo)
-}
-inline ::Protocol::SkillInfo* S_ATTACK::release_skillinfo() {
+inline void S_ATTACK::_internal_set_skillid(uint64_t value) {
   
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.skillid_ = value;
 }
-inline ::Protocol::SkillInfo* S_ATTACK::unsafe_arena_release_skillinfo() {
-  // @@protoc_insertion_point(field_release:Protocol.S_ATTACK.skillinfo)
-  
-  ::Protocol::SkillInfo* temp = _impl_.skillinfo_;
-  _impl_.skillinfo_ = nullptr;
-  return temp;
-}
-inline ::Protocol::SkillInfo* S_ATTACK::_internal_mutable_skillinfo() {
-  
-  if (_impl_.skillinfo_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::SkillInfo>(GetArenaForAllocation());
-    _impl_.skillinfo_ = p;
-  }
-  return _impl_.skillinfo_;
-}
-inline ::Protocol::SkillInfo* S_ATTACK::mutable_skillinfo() {
-  ::Protocol::SkillInfo* _msg = _internal_mutable_skillinfo();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_ATTACK.skillinfo)
-  return _msg;
-}
-inline void S_ATTACK::set_allocated_skillinfo(::Protocol::SkillInfo* skillinfo) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.skillinfo_);
-  }
-  if (skillinfo) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(skillinfo));
-    if (message_arena != submessage_arena) {
-      skillinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, skillinfo, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.skillinfo_ = skillinfo;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ATTACK.skillinfo)
+inline void S_ATTACK::set_skillid(uint64_t value) {
+  _internal_set_skillid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.skillid)
 }
 
 // -------------------------------------------------------------------
@@ -4214,9 +4144,35 @@ inline void S_MONTAGE::set_section_num(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.section_num)
 }
 
+// -------------------------------------------------------------------
+
+// S_BOSS_MONTAGE
+
+// uint64 skillid = 1;
+inline void S_BOSS_MONTAGE::clear_skillid() {
+  _impl_.skillid_ = uint64_t{0u};
+}
+inline uint64_t S_BOSS_MONTAGE::_internal_skillid() const {
+  return _impl_.skillid_;
+}
+inline uint64_t S_BOSS_MONTAGE::skillid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_BOSS_MONTAGE.skillid)
+  return _internal_skillid();
+}
+inline void S_BOSS_MONTAGE::_internal_set_skillid(uint64_t value) {
+  
+  _impl_.skillid_ = value;
+}
+inline void S_BOSS_MONTAGE::set_skillid(uint64_t value) {
+  _internal_set_skillid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_BOSS_MONTAGE.skillid)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

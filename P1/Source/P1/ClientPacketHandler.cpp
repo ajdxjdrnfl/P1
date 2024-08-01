@@ -83,7 +83,7 @@ bool Handle_S_SKILL(PacketSessionRef& session, Protocol::S_SKILL& pkt)
 	if (GameInstance == nullptr)
 		return false;
 
-	uint64 SkillID = pkt.skillinfo().skill_id();
+	uint64 SkillID = pkt.skillid();
 	if (!GameInstance->SkillInfo.Contains(SkillID))
 		return false;
 
@@ -114,5 +114,10 @@ bool Handle_S_MONTAGE(PacketSessionRef& session, Protocol::S_MONTAGE& pkt)
 
 	GameInstance->PlayMontage(pkt);
 
+	return false;
+}
+
+bool Handle_S_BOSS_MONTAGE(PacketSessionRef& session, Protocol::S_BOSS_MONTAGE& pkt)
+{
 	return false;
 }

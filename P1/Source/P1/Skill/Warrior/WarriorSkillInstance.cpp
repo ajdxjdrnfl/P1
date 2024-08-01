@@ -48,12 +48,11 @@ void AWarriorQSkillInstance::SpawnSkill()
 	bDoOnceActivated = true; // set false at skill end
 
 	Protocol::C_SKILL Pkt;
-	Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+	Pkt.set_skillid(0);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
 	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillActorClass->GetDefaultObject());
 
-	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
@@ -130,12 +129,11 @@ void AWarriorWSkillInstance::SpawnSkill()
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
-	Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+	Pkt.set_skillid(1);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
 	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
 
-	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
@@ -164,13 +162,10 @@ void AWarriorESkillInstance::SpawnSkill()
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
-	Protocol::SkillInfo* SkillInfoRef = Pkt.mutable_skillinfo();
+	Pkt.set_skillid(2);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
 	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
-
-	SkillInfoRef->CopyFrom(*CurrentSkillActor->SkillInfo);
-	SkillInfoRef->set_damage(SkillInfoRef->damage() * GaugeRate);
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 

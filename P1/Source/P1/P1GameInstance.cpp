@@ -257,11 +257,11 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SpawnParams.Owner = Characters[Pkt.caster().object_id()];
 	SpawnParams.Instigator = Characters[Pkt.caster().object_id()];
 
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillinfo().skill_id()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillid()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
-	Skills.Add(Pkt.skillinfo().skill_id(), SkillActor);
+	Skills.Add(Pkt.skillid(), SkillActor);
 
 	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
 	SkillActor->InitOnSpawn(Characters[Pkt.caster().object_id()]);
