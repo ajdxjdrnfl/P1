@@ -58,8 +58,12 @@ public:
 	AOnLocationSkill();
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	float LivingTime = 1;
+
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 

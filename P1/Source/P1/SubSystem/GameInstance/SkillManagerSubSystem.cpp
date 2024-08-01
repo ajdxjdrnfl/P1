@@ -9,8 +9,32 @@ void USkillManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	SkillCanUseMap.Add(0, true);
-	SkillCanUseMap.Add(1, true);
-	SkillCanUseMap.Add(2, true);
-	SkillCanUseMap.Add(3, true);
+	for (int i = 0; i < 4; i++)
+	{
+		SkillCanUseMapByCooldownTime.Add(i, true);
+		SkillCanUseMapByCasting.Add(i, true);
+	}
+}
+
+void USkillManagerSubSystem::SetKeyCanUse(int32 SkillIndex = -1)
+{
+	if (SkillIndex == -1)
+	{
+		for (TPair<uint16, bool>& itr : SkillCanUseMapByCasting)
+		{
+			itr.Value = true;
+		}
+		return;
+	}
+
+	for (TPair<uint16, bool>& itr : SkillCanUseMapByCasting)
+	{
+		if (itr.Key == SkillIndex) continue;
+		itr.Value = false;
+	}
+}
+
+bool USkillManagerSubSystem::CanUseSkill(int32 SkillIndex)
+{
+	return SkillCanUseMapByCooldownTime[SkillIndex] && SkillCanUseMapByCasting[SkillIndex];
 }

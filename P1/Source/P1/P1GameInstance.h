@@ -60,6 +60,7 @@ public:
 
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
+	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
@@ -81,6 +82,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyMob> EnemyMobClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AEnemyBoss> EnemyBossClass;
 
 	TMap<FName, Protocol::CasterType> ClassCasterMap;
 

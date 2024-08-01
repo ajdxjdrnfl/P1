@@ -26,7 +26,7 @@ void AChargingSkillManager::StartCasting(float CastingTime)
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &AChargingSkillManager::OnCastingEnd);
-		SubSystem->CurrentSkillManager = this;
+		SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
 	}
 
 	SetSkillState(ESkillType::Charging);
@@ -43,7 +43,7 @@ void AChargingSkillManager::FireSkill(float rate = 1.f)
 	{
 		SubSystem->OnSkillGaugeEnd.Clear();
 		SubSystem->CastingSkillGaugeRate = rate;
-		SubSystem->CurrentSkillManager = nullptr;
+		SubSystem->SetKeyCanUse(-1);
 	}
 
 	if (SkillInstance)

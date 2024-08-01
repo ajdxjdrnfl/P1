@@ -5,6 +5,7 @@
 #include "P1/P1Character.h"
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/P1GameInstance.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 
 ASkillInstanceBase::ASkillInstanceBase()
 {
@@ -18,6 +19,14 @@ void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
 	OwnerCreature = _OwnerCreature;
 
 	check(OwnerCreature != nullptr);
+
+
+	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr)
+		return;
+
+	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
 }
 
 void ASkillInstanceBase::DespawnSkill()
@@ -74,3 +83,15 @@ void ASkillInstanceBase::StopMontage(int32 SkillIndexLocal)
 		}
 	}
 }
+
+void ASkillInstanceBase::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (AnimMontage == M_Skill)
+	{
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->SetKeyCanUse(-1);
+		}
+	}
+}
+

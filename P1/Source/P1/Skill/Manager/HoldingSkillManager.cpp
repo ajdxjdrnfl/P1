@@ -31,7 +31,6 @@ void AHoldingSkillManager::Tick(float DeltaTime)
 
 void AHoldingSkillManager::StartCasting(float CastingTime)
 {
-
 	if (GetSkillState() != ESkillType::Normal && GetSkillState() != ESkillType::Hold)
 		return;
 
@@ -45,13 +44,13 @@ void AHoldingSkillManager::StartCasting(float CastingTime)
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.AddUniqueDynamic(this, &AHoldingSkillManager::OnCastingEnd);
-		SubSystem->CurrentSkillManager = this;
+		SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
 	}
 
 	SetSkillState(ESkillType::Hold);
 	OwnerCharacter->OpenSkillGaugeWidget(CastingTime);
 	SkillInstance->StartMontage(SkillInfo.SkillNumLocal);
-	OwnerCharacter->CreatureState = ECreatureState::Skill;
+	
 }
 
 void AHoldingSkillManager::EndSkill()
@@ -63,11 +62,11 @@ void AHoldingSkillManager::EndSkill()
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->OnSkillGaugeEnd.Clear();
-		SubSystem->CurrentSkillManager = nullptr;
+		SubSystem->SetKeyCanUse(-1);
 	}
 
 	SkillInstance->StopMontage(SkillInfo.SkillNumLocal);
-	OwnerCharacter->CreatureState = ECreatureState::Idle;
+	
 }
 
 void AHoldingSkillManager::OnCastingEnd()

@@ -33,6 +33,9 @@ void UEnemyWidgetComponent::SetEnemyStat(UEnemyStatComponent* StatComponent)
 
 void UEnemyWidgetComponent::AllStop()
 {
+	if (StatWidget == nullptr)
+		return;
+
 	StatWidget->RemoveFromParent();
 	StatWidget = nullptr;
 }

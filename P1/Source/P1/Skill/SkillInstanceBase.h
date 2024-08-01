@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void StopMontage(int32 SkillIndexLocal);
 
+	UFUNCTION()
+	void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted);
+
 	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
 	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
 	FORCEINLINE void SetSkillActorClass(TSubclassOf<class ASkillActorBase> _SkillActorClass) { SkillActorClass = _SkillActorClass; }

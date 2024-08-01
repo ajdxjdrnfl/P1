@@ -16,6 +16,7 @@
 #include "P1ObjectBase.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -104,6 +105,14 @@ void AP1PlayerController::OnInputStarted()
 
 void AP1PlayerController::OnSetDestinationTriggered()
 {
+	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		if (!SubSystem->bCanMove)
+		{
+			return;
+		}
+	}
+
 	FollowTime += GetWorld()->GetDeltaSeconds();
 	
 	FHitResult Hit;
@@ -132,6 +141,14 @@ void AP1PlayerController::OnSetDestinationTriggered()
 
 void AP1PlayerController::OnSetDestinationReleased()
 {
+	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		if (!SubSystem->bCanMove)
+		{
+			return;
+		}
+	}
+
 	if (FollowTime <= ShortPressThreshold)
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);

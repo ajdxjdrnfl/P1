@@ -124,7 +124,7 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (SkillSubSystem->SkillCanUseMap[SkillIndex])
+		if (SkillSubSystem->CanUseSkill(SkillIndex))
 		{
 			SkillComponent->UseSkill(SkillIndex);
 			WidgetComponent->UseSkill(SkillIndex);

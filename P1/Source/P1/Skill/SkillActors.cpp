@@ -24,7 +24,7 @@ void AProjectileSkill::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectileSkill::OnCollisionOverlapBegin);
+	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileSkill::OnCollisionOverlapBegin);
 }
 
 void AProjectileSkill::Tick(float DeltaTime)
@@ -68,7 +68,21 @@ AOnLocationSkill::AOnLocationSkill()
 
 void AOnLocationSkill::BeginPlay()
 {
-	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+}
+
+void AOnLocationSkill::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (LivingTime <= 0)
+	{
+		Destroy();
+	}
+	else
+	{
+		LivingTime -= DeltaTime;
+	}
 }
 
 void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
