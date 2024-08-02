@@ -171,6 +171,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="Raid.h" />
     <ClInclude Include="ResourceBase.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Room.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="SkillActor.h" />
     <ClInclude Include="SkillTimer.h" />
     <ClInclude Include="Struct.pb.h" />
+    <ClInclude Include="Town.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -208,6 +210,7 @@
     <ClCompile Include="Protocol.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Raid.cpp" />
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -218,6 +221,7 @@
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Town.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
