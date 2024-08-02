@@ -28,6 +28,7 @@ private:
     void DotSkill();
 
     // Gimmick
+
 private:
     
 
@@ -37,14 +38,18 @@ private:
     
 private:
     weak_ptr<class Player> _target;
-    float _attackRange = 100.f;
+    float _attackRange = 300.f;
 
     bool _isGimmik = false;
     
-    float _moveSpeed = 100.f;
-    float _rushSpeed = 200.f;
+    float _moveSpeed = 300.f;
+    float _rushSpeed = 400.f;
 
+    float _nextStepCooldown = 1.f;
+    float _prevStepElapsedTime = 0.f;
     float _attackCooldown = 2.f;
+
+    // update time
     float _updatePacketCooldown = 1.f;
     float _elapsedPacket = 0.f;
 

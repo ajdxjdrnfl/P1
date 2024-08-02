@@ -143,6 +143,12 @@
     <ClInclude Include="Boss.h">
       <Filter>Game\GameObject\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="Raid.h">
+      <Filter>Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Town.h">
+      <Filter>Game\Room</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -228,6 +234,12 @@
     </ClCompile>
     <ClCompile Include="Boss.cpp">
       <Filter>Game\GameObject\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Raid.cpp">
+      <Filter>Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Town.cpp">
+      <Filter>Game\Room</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

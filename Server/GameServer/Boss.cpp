@@ -18,10 +18,10 @@ Boss::~Boss()
 
 void Boss::Update(float deltaTime)
 {
-
-	_attackCooldown += deltaTime;
 	_target = FindClosestTarget();
 	_elapsedPacket += deltaTime;
+	_prevStepElapsedTime += deltaTime;
+
 	PlayerRef target = _target.lock();
 
 	if (target == nullptr)
@@ -33,7 +33,11 @@ void Boss::Update(float deltaTime)
 		_dirtyFlag = true;
 	}
 
-	Super::Update(deltaTime);
+	if (_prevStepElapsedTime > _nextStepCooldown)
+	{
+		Super::Update(deltaTime);
+	}
+
 }
 
 void Boss::Init()
@@ -99,6 +103,7 @@ void Boss::TickRun(float deltaTime)
 	
 		SetObjectInfo(newInfo);
 		SetState(Protocol::MOVE_STATE_IDLE, true);
+		_prevStepElapsedTime = 0.f;
 	}
 	else
 	{
@@ -117,10 +122,13 @@ void Boss::TickRun(float deltaTime)
 
 }
 
+// 스킬 딜레이로 재조정
 void Boss::TickSkill(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_SKILL)
 		return;
+
+	_attackCooldown += deltaTime;
 
 	GameObjectRef target = _target.lock();
 	if (target == nullptr)
@@ -134,7 +142,9 @@ void Boss::TickSkill(float deltaTime)
 	if (distance <= _attackRange && _attackCooldown >= 2.f)
 	{
 		DefaultAttack();
+		_attackCooldown = 0.f;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
+		_prevStepElapsedTime = 0.f;
 	}
 	// 공격 범위 밖
 	else
@@ -205,7 +215,11 @@ void Boss::MoveToTarget(GameObjectRef target)
 		return;
 
 	// TODO : 맵 데이터에 맞는 이동방식 필요 
-	_targetPos = target->GetPos();
+	Vector targetPos = target->GetPos();
+	
+	Vector targetVector = (targetPos - GetPos());
+	
+	_targetPos = targetVector * 0.75 + GetPos();
 
 	SetState(Protocol::MOVE_STATE_RUN, true);
 }
