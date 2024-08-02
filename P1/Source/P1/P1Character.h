@@ -30,26 +30,30 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterSkillComponent* SkillComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterStatComponent* StatComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterWidgetComponent* WidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Editable, meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* M_Die;
 
 public:
 	void OnSpawn(float HealthToSet, float StaminaToSet);
 	void InitOnSpawn(float HealthToSet, float StaminaToSet);
 	void Init();
 	void UseSkill(uint16 SkillIndex);
-	void MoveByServer(float DeltaTime);
-	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	void PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex);
+	FSkillInfo GetSkillInfoByIndex(int32 SkillIndex);
+	virtual void Die() override;
+	virtual void MoveByServer(float DeltaTime) override;
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

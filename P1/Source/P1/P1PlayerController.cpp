@@ -224,11 +224,14 @@ void AP1PlayerController::SendMovePacketToServer()
 	Protocol::C_MOVE Pkt;
 	Protocol::ObjectInfo* info = Pkt.mutable_info();
 	// TODO: State
-	info->set_object_id(OwnerCharacter->ObjectInfo->object_id());
-	info->set_x(OwnerCharacter->GetActorLocation().X);
-	info->set_y(OwnerCharacter->GetActorLocation().Y);
-	info->set_z(OwnerCharacter->GetActorLocation().Z);
-	info->set_yaw(OwnerCharacter->GetActorRotation().Yaw);
+
+	OwnerCharacter->ObjectInfo->set_x(OwnerCharacter->GetActorLocation().X);
+	OwnerCharacter->ObjectInfo->set_y(OwnerCharacter->GetActorLocation().Y);
+	OwnerCharacter->ObjectInfo->set_z(OwnerCharacter->GetActorLocation().Z);
+	OwnerCharacter->ObjectInfo->set_yaw(OwnerCharacter->GetActorRotation().Yaw);
+
+	info->CopyFrom(*OwnerCharacter->ObjectInfo);
+
 	SEND_PACKET(Pkt);
 }
 

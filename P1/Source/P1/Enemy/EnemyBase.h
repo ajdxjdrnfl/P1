@@ -29,23 +29,26 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UEnemyStatComponent* StatComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UEnemyWidgetComponent* WidgetComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UEnemySkillComponent* SkillComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Editable, meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* M_Die;
 
 public:
 	void InitOnSpawn(float HealthToSet);
 	void OnSpawn(float HealthToSet);
 	void TakeDamage();
 	void SetHealthByDamage(float HealthToSet);
-	void Die();
-	void MoveByServer(float DeltaTime);
-	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
+	virtual void Die() override;
+	FSkillInfo GetSkillInfoByIndex(int32 SkillIndex);
+	virtual void MoveByServer(float DeltaTime) override;
 
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }
 	FORCEINLINE class UEnemyWidgetComponent* GetWidgetComponent() { return WidgetComponent; }

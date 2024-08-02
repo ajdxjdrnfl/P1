@@ -41,13 +41,30 @@ private:
 	UPROPERTY()
 	class UP1ObjectBase* ObjectBase;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	FName ClassType;
 
 public:
+	UPROPERTY(BlueprintReadWrite)
 	ECreatureState CreatureState;
+
 	Protocol::ObjectInfo* ObjectInfo;
 
+	float CCTime;
+
+	virtual void Die();
+
+	UFUNCTION(BlueprintCallable)
+	void SetCreatureStateByServer(FSkillInfo SkillInfo);
+
+	UFUNCTION(BlueprintCallable)
+	void GetStun(float _CCTime);
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetClassTypeInt();
+
+	virtual void MoveByServer(float DeltaTime) {}
+	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }

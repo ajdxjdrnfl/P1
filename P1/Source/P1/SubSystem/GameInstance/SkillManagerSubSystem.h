@@ -21,6 +21,7 @@ public:
 	float CastingSkillGaugeRate;
 
 	bool bCanMove = true;
+	bool bCanUseSkill = true;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	void SetKeyCanUse(int32 SkillIndex);

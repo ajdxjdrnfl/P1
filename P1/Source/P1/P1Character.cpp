@@ -69,8 +69,6 @@ void AP1Character::BeginPlay()
 void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	MoveByServer(DeltaSeconds);
 }
 
 void AP1Character::PostInitializeComponents()
@@ -132,46 +130,6 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 	}
 }
 
-void AP1Character::MoveByServer(float DeltaTime)
-{
-	if (CreatureState == ECreatureState::Move)
-	{
-		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
-		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
-		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
-
-		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
-		SetActorRotation(NextRotation);
-	}
-}
-
-void AP1Character::SetMoveValueByServer(Protocol::S_MOVE Pkt)
-{
-	FTransform TargetTransform;
-	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
-	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
-	TargetTransform.SetLocation(TargetLocation);
-	TargetTransform.SetRotation(TargetRotation.Quaternion());
-	
-	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 15);
-	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 15);
-	bool NearZ = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Z, GetActorLocation().Z, 15);
-	bool bIsNear = NearX && NearY && NearZ;
-
-	if (bIsNear)
-	{
-		CreatureState = ECreatureState::Idle;
-	}
-	else
-	{
-		CreatureState = ECreatureState::Move;
-		ObjectInfo->set_x(TargetLocation.X);
-		ObjectInfo->set_y(TargetLocation.Y);
-		ObjectInfo->set_z(TargetLocation.Z);
-		ObjectInfo->set_yaw(TargetRotation.Yaw);
-	}
-}
-
 void AP1Character::OpenSkillGaugeWidget(float CastingTime)
 {
 	if (WidgetComponent == nullptr) return;
@@ -197,4 +155,31 @@ void AP1Character::PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, 
 {
 	if (SkillComponent == nullptr) return;
 	SkillComponent->PlayAnimMontageByServer(bIsStop, SkillIndexLocal, SectionIndex);
+}
+
+FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
+{
+	return SkillComponent->GetSkillInfoByIndex(SkillIndex);
+}
+
+void AP1Character::Die()
+{
+	if (M_Die == nullptr) return;
+
+	GetMesh()->GetAnimInstance()->Montage_Play(M_Die);
+
+	Super::Die();
+}
+
+void AP1Character::MoveByServer(float DeltaTime)
+{
+	if (CreatureState == ECreatureState::Move)
+	{
+		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
+		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
+
+		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
+		SetActorRotation(NextRotation);
+	}
 }

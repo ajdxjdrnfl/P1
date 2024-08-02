@@ -50,6 +50,7 @@ public:
 
 public:
 	void SetSkills();
+	FSkillInfo GetSkillInfoByIndex(int32 SkillIndex);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill(int32 SkillIndex);

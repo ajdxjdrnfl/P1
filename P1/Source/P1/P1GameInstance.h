@@ -62,6 +62,8 @@ public:
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
+	class AP1Creature* GetCreature(Protocol::S_SKILL& Pkt);
+
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
 
@@ -74,8 +76,7 @@ public:
 	UPROPERTY()
 	TMap<uint64, class ASkillActorBase*> Skills;
 
-	UPROPERTY()
-	TMap<uint64, FSkillInfo> SkillInfo;
+	TArray<TArray<FSkillInfo>> SkillInfo;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AP1Character> WarriorClass;

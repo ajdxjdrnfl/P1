@@ -84,8 +84,6 @@ bool Handle_S_SKILL(PacketSessionRef& session, Protocol::S_SKILL& pkt)
 		return false;
 
 	uint64 SkillID = pkt.skillid();
-	if (!GameInstance->SkillInfo.Contains(SkillID))
-		return false;
 
 	GameInstance->SkillSpawn(pkt);
 

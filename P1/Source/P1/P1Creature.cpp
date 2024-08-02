@@ -4,6 +4,8 @@
 #include "P1Creature.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "P1/P1.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AP1Creature::AP1Creature()
@@ -27,7 +29,25 @@ void AP1Creature::BeginPlay()
 void AP1Creature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	MoveByServer(DeltaTime);
 
+	if (CreatureState == ECreatureState::Stun)
+	{
+		if (CCTime <= 0)
+		{
+			CreatureState = ECreatureState::Idle;
+			if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+			{
+				SkillSubSystem->bCanUseSkill = true;
+				SkillSubSystem->bCanMove = true;
+			}
+		}
+		else
+		{
+			CCTime -= DeltaTime;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -37,3 +57,88 @@ void AP1Creature::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+void AP1Creature::Die()
+{
+	// TODO: Via Server
+	TArray<AActor*> Actors;
+	GetAttachedActors(Actors);
+	for (AActor* Actor : Actors)
+	{
+		Actor->Destroy();
+	}
+	Destroy();
+}
+
+void AP1Creature::SetCreatureStateByServer(FSkillInfo SkillInfo)
+{
+	switch (SkillInfo.CCType)
+	{
+	case ECCType::Stun:
+		GetStun(SkillInfo.CCTime);
+		break;
+	default:
+		break;
+	}
+}
+
+void AP1Creature::GetStun(float _CCTime)
+{
+	CreatureState = ECreatureState::Stun;
+	CCTime = _CCTime;
+
+	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SkillSubSystem->bCanUseSkill = false;
+		SkillSubSystem->bCanMove = false;
+	}
+}
+
+int32 AP1Creature::GetClassTypeInt()
+{
+	if (ClassType == FName("Warrior"))
+	{
+		return 0;
+	}
+	else if (ClassType == FName("Archer"))
+	{
+		return 1;
+	}
+	else if (ClassType == FName("Boss"))
+	{
+		return 2;
+	}
+	else if (ClassType == FName("Mob"))
+	{
+		return 3;
+	}
+	return -1;
+}
+
+void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
+{
+	if (this == nullptr) return;
+
+	FTransform TargetTransform;
+	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
+	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
+	TargetTransform.SetLocation(TargetLocation);
+	TargetTransform.SetRotation(TargetRotation.Quaternion());
+
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 15);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 15);
+	bool NearZ = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Z, GetActorLocation().Z, 15);
+	bool bIsNear = NearX && NearY && NearZ;
+
+	if (bIsNear)
+	{
+		CreatureState = ECreatureState::Idle;
+	}
+	else
+	{
+		CreatureState = ECreatureState::Move;
+		ObjectInfo->set_x(TargetLocation.X);
+		ObjectInfo->set_y(TargetLocation.Y);
+		ObjectInfo->set_z(TargetLocation.Z);
+		ObjectInfo->set_yaw(TargetRotation.Yaw);
+	}
+}

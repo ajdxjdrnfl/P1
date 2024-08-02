@@ -4,23 +4,21 @@
 #include "BossSkillInstance.h"
 #include "P1/P1Creature.h"
 #include "P1/Skill/SkillActorBase.h"
+#include "Kismet/GameplayStatics.h"
 
 void ABossQSkillInstance::SpawnSkill()
 {
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = OwnerCreature;
-	SpawnParams.Instigator = OwnerCreature;
-
-	FVector Loc = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 200.f;
-	FRotator Rot = OwnerCreature->GetActorRotation();
-
 	if (SkillActorClass == nullptr) return;
 
-	// TODO: SendPacket
-	SpawnedSkillActor = Cast<ASkillActorBase>(OwnerCreature->GetWorld()->SpawnActor(SkillActorClass, &Loc, &Rot, SpawnParams));
-	if (SpawnedSkillActor == nullptr) return;
+	Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(0);
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	SpawnedSkillActor->InitOnSpawn(OwnerCreature);
+	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+	SEND_PACKET(Pkt);
 }
 
 void ABossQSkillInstance::UseSkill()
@@ -40,4 +38,24 @@ void ABossQSkillInstance::UseSkill()
 
 		SEND_PACKET(Pkt);
 	}
+}
+
+void ABossWSkillInstance::SpawnSkill()
+{
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(1);
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+	SEND_PACKET(Pkt);
+}
+
+void ABossWSkillInstance::UseSkill()
+{
+	
 }

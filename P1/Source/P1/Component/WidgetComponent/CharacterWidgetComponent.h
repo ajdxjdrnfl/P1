@@ -22,13 +22,13 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = true))
 	TSubclassOf<UUserWidget> CharacterOverlayWidgetClass;
 
 	UPROPERTY()
 	class UCharacterOverlayWidget* CharacterOverlayWidget;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = true))
 	TSubclassOf<UUserWidget> SkillGaugeWidgetClass;
 
 	UPROPERTY()

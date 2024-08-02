@@ -63,10 +63,10 @@ void USkillComponentBase::SetSkills()
 			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossQSkillInstance::StaticClass()));
 			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			/*SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
+			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
 			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
+			/*SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
 			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
 			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
@@ -90,6 +90,11 @@ void USkillComponentBase::SetSkills()
 		SkillInstances[i]->SetSkillAnim(Skills[i].AnimMontage);
 		SkillInstances[i]->Init(Cast<AP1Creature>(GetOwner()));
 	}
+}
+
+FSkillInfo USkillComponentBase::GetSkillInfoByIndex(int32 SkillIndex)
+{
+	return Skills[SkillIndex];
 }
 
 void USkillComponentBase::UseSkill(int32 SkillIndex)

@@ -101,6 +101,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "SkillType == ESkillType::Hold || SkillType == ESkillType::Casting || SkillType == ESkillType::Charging"))
 	float CastingTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "CCType != ECCType::Normal"))
+	float CCTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ASkillActorBase> SkillActorClass;
 };

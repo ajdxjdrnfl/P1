@@ -11,7 +11,7 @@ void AEnemyBoss::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnemyController = Cast<AAIControllerEnemy>(AIControllerClass);
+	EnemyController = Cast<AAIControllerEnemy>(GetController());
 
 	if (HealthBarWidgetClass)
 	{

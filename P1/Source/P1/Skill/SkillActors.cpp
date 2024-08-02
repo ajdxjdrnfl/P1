@@ -74,15 +74,6 @@ void AOnLocationSkill::BeginPlay()
 void AOnLocationSkill::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (LivingTime <= 0)
-	{
-		Destroy();
-	}
-	else
-	{
-		LivingTime -= DeltaTime;
-	}
 }
 
 void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

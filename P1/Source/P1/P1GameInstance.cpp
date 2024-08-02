@@ -35,7 +35,7 @@ void UP1GameInstance::InitSkillMap()
 	if (SkillDataTable == nullptr)
 		return;
 
-	int idx = 0;
+	SkillInfo.SetNum(Protocol::CasterType_ARRAYSIZE);
 	TArray<FName> RowNames = SkillDataTable->GetRowNames();
 	for (FName Row : RowNames)
 	{
@@ -43,12 +43,21 @@ void UP1GameInstance::InitSkillMap()
 		FSkillsByClass* SkillInfos = SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
 		for (FSkillInfo& CurrentSkillInfo : SkillInfos->SkillInfos)
 		{
-			SkillInfo.Add(idx, CurrentSkillInfo);
+			if (Row == FName("Warrior"))
+			{
+				SkillInfo[Protocol::CASTER_TYPE_WARRIOR].Add(CurrentSkillInfo);
+			}
+			else if (Row == FName("Boss"))
+			{
+				SkillInfo[Protocol::CASTER_TYPE_BOSS].Add(CurrentSkillInfo);
+			}
+			else if (Row == FName("Mob"))
+			{
+				SkillInfo[Protocol::CASTER_TYPE_MOB].Add(CurrentSkillInfo);
+			}
 
 			// Set skillinfo to each skill game default object
-			SetSkillInfo(idx, CurrentSkillInfo);
-
-			idx += 1;
+			//SetSkillInfo(idx, CurrentSkillInfo);
 		}
 	}
 }
@@ -254,17 +263,18 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
 
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = Characters[Pkt.caster().object_id()];
-	SpawnParams.Instigator = Characters[Pkt.caster().object_id()];
+	SpawnParams.Owner = GetCreature(Pkt);
+	SpawnParams.Instigator = GetCreature(Pkt);
 
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.skillid()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.caster().castertype()][Pkt.skillid()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
 	Skills.Add(Pkt.skillid(), SkillActor);
 
 	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
-	SkillActor->InitOnSpawn(Characters[Pkt.caster().object_id()]);
+
+	SkillActor->InitOnSpawn(GetCreature(Pkt));
 	SkillActor->ActivateSkill();
 }
 
@@ -282,6 +292,8 @@ void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
 {
 	int32 EnemyID = Pkt.victim().object_id();
 
+	FSkillInfo CurrentSkillInfo = Characters[Pkt.caster().object_id()]->GetSkillInfoByIndex(Pkt.skillid());
+	Enemies[EnemyID]->SetCreatureStateByServer(CurrentSkillInfo);
 	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp());
 }
 
@@ -324,8 +336,28 @@ AEnemyBoss* UP1GameInstance::SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	// TODO: Boss hp
-	SpawnedActor->InitOnSpawn(100);
+	SpawnedActor->InitOnSpawn(ObjInfo.hp());
 
 	return SpawnedActor;
+}
+
+AP1Creature* UP1GameInstance::GetCreature(Protocol::S_SKILL& Pkt)
+{
+	switch (Pkt.caster().castertype())
+	{
+	case Protocol::CASTER_TYPE_BOSS:
+		return Boss;
+		break;
+	case Protocol::CASTER_TYPE_MAGE:
+	case Protocol::CASTER_TYPE_WARRIOR:
+		return Characters[Pkt.caster().object_id()];
+		break;
+	case Protocol::CASTER_TYPE_MOB:
+		return Enemies[Pkt.caster().object_id()];
+		break;
+	default:
+		break;
+	}
+	return nullptr;
 }
 
