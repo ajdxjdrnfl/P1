@@ -21,12 +21,17 @@ void Boss::Update(float deltaTime)
 
 	_attackCooldown += deltaTime;
 	_target = FindClosestTarget();
-
+	_elapsedPacket += deltaTime;
 	PlayerRef target = _target.lock();
 
 	if (target == nullptr)
 		return;
 
+	if (_elapsedPacket >= _updatePacketCooldown)
+	{
+		_elapsedPacket = 0.f;
+		_dirtyFlag = true;
+	}
 
 	Super::Update(deltaTime);
 }
@@ -47,7 +52,7 @@ void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType,
 	Super::TakeDamage(instigator, damageType, damage);
 }
 
-void Boss::TickIdle()
+void Boss::TickIdle(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
@@ -65,6 +70,8 @@ void Boss::TickIdle()
 		if (target == nullptr)
 			return;
 
+		_targetPos = target->GetPos();
+
 		if (GetPos().DistanceSquared(_targetPos) <= _attackRange)
 		{
 			SetState(Protocol::MOVE_STATE_SKILL, true);
@@ -77,38 +84,40 @@ void Boss::TickIdle()
 	}
 }
 
-void Boss::TickRun()
+void Boss::TickRun(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
 
+	float dist = GetPos().DistanceSquared(_targetPos);
 	// 충분히 가까울 때
-	if (GetPos().DistanceSquared(_targetPos) <= 10.f)
+	if ( dist <= 10.f)
 	{
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
 		newInfo.set_x(_targetPos.x);
 		newInfo.set_y(_targetPos.y);
 	
-		SetObjectInfo(newInfo, true);
+		SetObjectInfo(newInfo);
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 	}
 	else
 	{
 		Vector moveVector = (_targetPos - GetPos()).Normalize();
-		moveVector = moveVector * _moveSpeed;
+		
+		moveVector = moveVector * _moveSpeed * deltaTime;
 
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
 		newInfo.set_x(GetPos().x + moveVector.x);
 		newInfo.set_y(GetPos().y + moveVector.y);
 		
 
-		SetObjectInfo(newInfo, true);
+		SetObjectInfo(newInfo);
 	}
 
 
 }
 
-void Boss::TickSkill()
+void Boss::TickSkill(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_SKILL)
 		return;
@@ -136,7 +145,7 @@ void Boss::TickSkill()
 
 }
 
-void Boss::TickStun()
+void Boss::TickStun(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_STUN)
 		return;

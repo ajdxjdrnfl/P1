@@ -29,6 +29,7 @@ void Room::Init()
 	}
 
 	_boss = ObjectUtils::CreateBoss(GetRoomRef());
+	SetObjectToRandomPos(_boss);
 }
 
 void Room::Update(float deltaTime)
@@ -310,7 +311,7 @@ void Room::LeaveGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();
 
-	if (_players.find(id) != _players.end())
+	if (_players.find(id) == _players.end())
 		return;
 
 	_players.erase(id);

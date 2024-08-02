@@ -26,10 +26,10 @@ protected:
 	virtual void BroadcastUpdate();
 
 protected:
-	virtual void TickIdle() { }
-	virtual void TickRun() { }
-	virtual void TickSkill() { }
-	virtual void TickStun() { }
+	virtual void TickIdle(float deltaTime) { }
+	virtual void TickRun(float deltaTime) { }
+	virtual void TickSkill(float deltaTime) { }
+	virtual void TickStun(float deltaTime) { }
 
 	void TickDot(float deltaTime);
 

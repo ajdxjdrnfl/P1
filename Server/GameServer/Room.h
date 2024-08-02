@@ -43,7 +43,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 10;
+	const int32 _maxEnemyCount = 1;
 
 protected:
 	unordered_map<uint64, PlayerRef> _players;

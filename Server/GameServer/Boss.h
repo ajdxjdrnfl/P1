@@ -14,10 +14,10 @@ public:
     virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage) override;
 
 protected:
-    virtual void TickIdle() override;
-    virtual void TickRun() override;
-    virtual void TickSkill() override;
-    virtual void TickStun() override;
+    virtual void TickIdle(float deltaTime) override;
+    virtual void TickRun(float deltaTime) override;
+    virtual void TickSkill(float deltaTime) override;
+    virtual void TickStun(float deltaTime) override;
 private:
     PlayerRef FindClosestTarget();
 
@@ -37,7 +37,7 @@ private:
     
 private:
     weak_ptr<class Player> _target;
-    float _attackRange = 1000.f;
+    float _attackRange = 100.f;
 
     bool _isGimmik = false;
     
@@ -45,6 +45,8 @@ private:
     float _rushSpeed = 200.f;
 
     float _attackCooldown = 2.f;
+    float _updatePacketCooldown = 1.f;
+    float _elapsedPacket = 0.f;
 
     Vector _targetPos;
 };

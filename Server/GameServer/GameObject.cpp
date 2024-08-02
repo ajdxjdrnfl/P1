@@ -6,6 +6,7 @@
 GameObject::GameObject(RoomRef room)
 {
 	_objectInfo = new Protocol::ObjectInfo();
+	_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	_room = room;
 
 	for (auto& item : _components)
@@ -44,19 +45,19 @@ void GameObject::Update(float deltaTime)
 	switch (GetState())
 	{
 	case Protocol::MOVE_STATE_IDLE:
-		TickIdle();
+		TickIdle(deltaTime);
 		break;
 
 	case Protocol::MOVE_STATE_SKILL:
-		TickSkill();
+		TickSkill(deltaTime);
 		break;
 
 	case Protocol::MOVE_STATE_RUN:
-		TickRun();
+		TickRun(deltaTime);
 		break;
 	
 	case Protocol::MOVE_STATE_STUN:
-		TickStun();
+		TickStun(deltaTime);
 		break;
 
 	case Protocol::MOVE_STATE_DEAD:
@@ -65,13 +66,6 @@ void GameObject::Update(float deltaTime)
 	}
 
 	TickDot(deltaTime);
-
-	float currentHp = _objectInfo->hp();
-
-	if (currentHp <= 0)
-	{
-		SetState(Protocol::MOVE_STATE_IDLE, true);
-	}
 	
 	BroadcastUpdate();
 	_dirtyFlag = false;
