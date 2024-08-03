@@ -22,3 +22,11 @@ enum EBossMontageType : uint8
 	MONTAGE_TYPE_ING = 2,
 	MONTAGE_TYPE_END = 3,
 };
+
+enum EBossSkillType : uint8
+{
+	EBST_NONE,
+	EBST_DEFAULT,
+	EBST_RUSH,
+	EBST_MAX
+};

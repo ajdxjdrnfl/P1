@@ -76,7 +76,7 @@ void Boss::TickIdle(float deltaTime)
 
 		_targetPos = target->GetPos();
 
-		if (GetPos().DistanceSquared(_targetPos) <= _attackRange)
+		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
@@ -93,7 +93,7 @@ void Boss::TickRun(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
 
-	float dist = GetPos().DistanceSquared(_targetPos);
+	float dist = GetPos().Distance(_targetPos);
 	// 충분히 가까울 때
 	if ( dist <= 10.f)
 	{
@@ -115,7 +115,6 @@ void Boss::TickRun(float deltaTime)
 		newInfo.set_x(GetPos().x + moveVector.x);
 		newInfo.set_y(GetPos().y + moveVector.y);
 		
-
 		SetObjectInfo(newInfo);
 	}
 
@@ -128,6 +127,7 @@ void Boss::TickSkill(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_SKILL)
 		return;
 
+	_attackDelay -= deltaTime;
 	_attackCooldown += deltaTime;
 
 	GameObjectRef target = _target.lock();
@@ -136,12 +136,20 @@ void Boss::TickSkill(float deltaTime)
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 	}
 
-	float distance = target->GetPos().DistanceSquared(GetPos());
+	float distance = target->GetPos().Distance(GetPos());
 
 	// 공격 범위 안
 	if (distance <= _attackRange && _attackCooldown >= 2.f)
 	{
-		DefaultAttack();
+		switch (_skillType)
+		{
+		case EBST_DEFAULT:
+			DefaultAttack(target);
+			break;
+		case EBST_RUSH:
+			Rush(target);
+			break;
+		}
 		_attackCooldown = 0.f;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 		_prevStepElapsedTime = 0.f;
@@ -149,6 +157,13 @@ void Boss::TickSkill(float deltaTime)
 	// 공격 범위 밖
 	else
 	{
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+	}
+
+	if (_attackDelay <= 0.f)
+	{
+		_skillType = EBST_NONE;
+		_montageType = MONTAGE_TYPE_NONE;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 	}
 	// TODO : 스킬 구현 - 기본 스킬을 먼저
@@ -171,36 +186,22 @@ PlayerRef Boss::FindClosestTarget()
 	return room->FindClosestPlayer(GetPos());
 }
 
-void Boss::DefaultAttack()
+void Boss::SelectSkill()
 {
-	
-	RoomRef room = GetRoomRef();
-	
-	GameObjectRef target = _target.lock();
+	_skillType = EBST_DEFAULT;
 
-	// TODO : 수정
-	_objectInfo->set_yaw(Utils::GetYawByVector(target->GetPos() - GetPos()));
-	
-	{
-		Protocol::S_MONTAGE pkt;
-		*pkt.mutable_caster() = *GetObjectInfo();
-		pkt.set_isstop(false);
-		pkt.set_id(0);
-		pkt.set_scalable(true);
-		pkt.set_duration(1.5f);
+}
 
-		room->DoAsync(&Room::HandleMontage, pkt);
-	}
-	
-	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0);
-	
+void Boss::DefaultAttack(GameObjectRef target)
+{
+	if(_)
 }
 
 void Boss::Rush(GameObjectRef target)
 {
 	if (target == nullptr)
 		return;
-
+	
 	Vector targetPos = target->GetPos();
 	Vector rushVector = (targetPos - GetPos()).Normalize();
 
@@ -214,9 +215,27 @@ void Boss::Rush(GameObjectRef target)
 	{
 		Protocol::S_MONTAGE montagePkt;
 	}
+
+	switch (_montageType)
+	{
+	case MONTAGE_TYPE_START:
+
+		break;
+
+	case MONTAGE_TYPE_ING:
+
+		break;
+
+	case MONTAGE_TYPE_END:
+
+		break;
+	default:
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+		break;
+	}
 }
 
-void Boss::DotSkill()
+void Boss::DotSkill(GameObjectRef target)
 {
 
 }

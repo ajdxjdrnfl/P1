@@ -23,9 +23,12 @@ private:
 
     // Default Skill
 private:
-    void DefaultAttack();
+    void SelectSkill();
+
+    // Skill Tick
+    void DefaultAttack(GameObjectRef target);
     void Rush(GameObjectRef target);
-    void DotSkill();
+    void DotSkill(GameObjectRef target);
 
     // Gimmick
 
@@ -48,11 +51,17 @@ private:
     float _nextStepCooldown = 1.f;
     float _prevStepElapsedTime = 0.f;
     float _attackCooldown = 2.f;
+    float _attackDelay = 0.f;
 
     // update time
     float _updatePacketCooldown = 1.f;
     float _elapsedPacket = 0.f;
 
     Vector _targetPos;
+
+    // Boss Skill
+private:
+    EBossSkillType _skillType = EBST_NONE;
+    EBossMontageType _montageType = MONTAGE_TYPE_NONE;
 };
 
