@@ -45,10 +45,12 @@ public:
 	void InitOnSpawn(float HealthToSet);
 	void OnSpawn(float HealthToSet);
 	void TakeDamage();
-	void SetHealthByDamage(float HealthToSet);
+	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void Die() override;
-	FSkillInfo GetSkillInfoByIndex(int32 SkillIndex);
 	virtual void MoveByServer(float DeltaTime) override;
+	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
+	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
+
 
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }
 	FORCEINLINE class UEnemyWidgetComponent* GetWidgetComponent() { return WidgetComponent; }

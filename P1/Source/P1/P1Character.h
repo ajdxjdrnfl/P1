@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "P1Creature.h"
-#include "P1.h"
 #include "P1Character.generated.h"
 
 UCLASS(Blueprintable)
@@ -50,10 +49,11 @@ public:
 	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
-	void PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex);
-	FSkillInfo GetSkillInfoByIndex(int32 SkillIndex);
+	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
+	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
 	virtual void Die() override;
 	virtual void MoveByServer(float DeltaTime) override;
+	virtual void SetHealthByDamage(float HealthToSet) override;
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

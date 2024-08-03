@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "P1/Data/SkillData.h"
+#include "P1/P1.h"
 #include "SkillComponentBase.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -54,6 +55,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill(int32 SkillIndex);
+	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt);
+	void PlayAnimMontageByDuration(class UAnimInstance* AnimInstance, class UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt);
 
 	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
 	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }

@@ -27,10 +27,14 @@ private:
 	class AP1Character* MyCharacter;
 
 	void InitSkillMap();
-	void SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo);
+	void SetSkillInfo(const FSkillInfo& CurrentSkillInfo);
+
+	FTSTicker::FDelegateHandle TickDelegateHandle;
 
 public:
 	virtual void Init() override;
+	virtual void Shutdown() override;
+	bool Tick(float DeltaTime);
 
 	UPROPERTY(EditAnywhere)
 	UDataTable* SkillDataTable;
@@ -54,7 +58,7 @@ public:
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
 	void DespawnSkill(int32 SkillIndex);
 
-	void AttackEnemy(Protocol::S_ATTACK& Pkt);
+	void AttackTarget(Protocol::S_ATTACK& Pkt);
 
 	void PlayMontage(Protocol::S_MONTAGE& Pkt);
 
@@ -63,6 +67,8 @@ public:
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
 	class AP1Creature* GetCreature(Protocol::S_SKILL& Pkt);
+	class AP1Creature* GetCreature(Protocol::S_MONTAGE& Pkt);
+	class AP1Creature* GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster);
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;

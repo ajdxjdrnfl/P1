@@ -110,3 +110,45 @@ void USkillComponentBase::UseSkill(int32 SkillIndex)
 	SkillInstances[SkillIndex]->UseSkill();
 }
 
+void USkillComponentBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
+{
+	UAnimInstance* AnimInstance = Cast<ACharacter>(GetOwner())->GetMesh()->GetAnimInstance();
+	UAnimMontage* AnimMontage = Skills[pkt.id()].AnimMontage;
+	if (AnimInstance == nullptr || AnimMontage == nullptr) return;
+
+	if (pkt.section_num() > 0)
+	{
+		if (!AnimInstance->Montage_IsPlaying(AnimMontage))
+		{
+			PlayAnimMontageByDuration(AnimInstance, AnimMontage, pkt);
+		}
+
+		FString Str = FString::FromInt(pkt.section_num());
+		FName SectionIndexName = FName(*Str);
+		AnimInstance->Montage_JumpToSection(SectionIndexName);
+		return;
+	}
+
+	
+
+	if (!pkt.isstop())
+	{
+		PlayAnimMontageByDuration(AnimInstance, AnimMontage, pkt);
+	}
+	else
+	{
+		AnimInstance->Montage_Stop(0.3f, AnimMontage);
+	}
+}
+
+void USkillComponentBase::PlayAnimMontageByDuration(UAnimInstance* AnimInstance, UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt)
+{
+	float PlayRate = 1;
+	if (pkt.scalable())
+	{
+		PlayRate = AnimMontage->GetSectionLength(pkt.section_num()) / pkt.duration();
+
+	}
+	AnimInstance->Montage_Play(AnimMontage, PlayRate);
+}
+

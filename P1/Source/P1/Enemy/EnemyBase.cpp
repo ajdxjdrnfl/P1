@@ -10,6 +10,7 @@
 #include "P1/Component/SkillComponent/EnemySkillComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "P1/Enemy/AIControllerEnemy.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -128,15 +129,23 @@ void AEnemyBase::MoveByServer(float DeltaTime)
 {
 	if (CreatureState == ECreatureState::Move)
 	{
-		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
-		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
+		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
 		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
 
-		AAIControllerEnemy* AIControllerEnemy = Cast<AAIControllerEnemy>(GetController());
-		if (AIControllerEnemy == nullptr) return;
+		AAIController* AIEnemyController = Cast<AAIController>(GetController());
 
-		AIControllerEnemy->MoveToLocation(TargetLocation);
+		if (AIEnemyController == nullptr) return;
+
+		AIEnemyController->MoveToLocation(TargetLocation);
+		SetObjectInfo();
 		SetActorRotation(NextRotation);
 	}
+}
+
+void AEnemyBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
+{
+	if (SkillComponent == nullptr) return;
+	SkillComponent->PlayAnimMontageByServer(pkt);
 }
 

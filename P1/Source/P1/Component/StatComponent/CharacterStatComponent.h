@@ -44,4 +44,5 @@ public:
 	float GetCurrentStamina();
 	void SetMaxStamina(float StaminaToSet);
 	float GetMaxStamina();
+	void SetHealth(float HealthToSet);
 };

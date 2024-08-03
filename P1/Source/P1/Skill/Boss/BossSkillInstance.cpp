@@ -14,8 +14,6 @@ void ABossQSkillInstance::SpawnSkill()
 	Pkt.set_skillid(0);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
-
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);

@@ -151,10 +151,10 @@ float AP1Character::GetGaugeRate()
 	return WidgetComponent->GetGaugeRate();
 }
 
-void AP1Character::PlayAnimMontageByServer(bool bIsStop, int32 SkillIndexLocal, int32 SectionIndex)
+void AP1Character::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 {
 	if (SkillComponent == nullptr) return;
-	SkillComponent->PlayAnimMontageByServer(bIsStop, SkillIndexLocal, SectionIndex);
+	SkillComponent->PlayAnimMontageByServer(pkt);
 }
 
 FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
@@ -175,11 +175,20 @@ void AP1Character::MoveByServer(float DeltaTime)
 {
 	if (CreatureState == ECreatureState::Move)
 	{
-		FVector TargetLocation = FVector(ObjectInfo->x(), ObjectInfo->y(), GetActorLocation().Z);
-		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, ObjectInfo->yaw(), GetActorRotation().Roll);
+		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
 		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
 
 		AddMovementInput((TargetLocation - GetActorLocation()).GetSafeNormal());
+		SetObjectInfo();
 		SetActorRotation(NextRotation);
+	}
+}
+
+void AP1Character::SetHealthByDamage(float HealthToSet)
+{
+	if (StatComponent)
+	{
+		StatComponent->SetHealth(HealthToSet);
 	}
 }

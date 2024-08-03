@@ -15,6 +15,8 @@
 				"DamageType": "Normal",
 				"SkillType": "Normal",
 				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 0,
 				"SkillActorClass": "None"
 			},
 			{
@@ -30,6 +32,8 @@
 				"DamageType": "Normal",
 				"SkillType": "Casting",
 				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 0.1,
 				"SkillActorClass": "None"
 			},
 			{
@@ -45,6 +49,8 @@
 				"DamageType": "Normal",
 				"SkillType": "Charging",
 				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 0,
 				"SkillActorClass": "None"
 			}
 		]
@@ -65,6 +71,8 @@
 				"DamageType": "Normal",
 				"SkillType": "Normal",
 				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 10,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Warrior/BP_WarriorQSkill.BP_WarriorQSkill_C'"
 			},
 			{
@@ -79,7 +87,9 @@
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Casting",
-				"CastingTime": 0,
+				"CastingTime": 3,
+				"CCTime": 0,
+				"LifeTime": 0.1,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Warrior/BP_WarriorWSkill.BP_WarriorWSkill_C'"
 			},
 			{
@@ -94,7 +104,9 @@
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Charging",
-				"CastingTime": 0,
+				"CastingTime": 3,
+				"CCTime": 0,
+				"LifeTime": 3,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Warrior/BP_WarriorESkill.BP_WarriorESkill_C'"
 			},
 			{
@@ -109,7 +121,9 @@
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Casting",
-				"CastingTime": 0,
+				"CastingTime": 3,
+				"CCTime": 0,
+				"LifeTime": 0.2,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Warrior/BP_WarriorRSkill.BP_WarriorRSkill_C'"
 			}
 		]
@@ -122,14 +136,16 @@
 				"HitNum": -1,
 				"CooldownTime": 5,
 				"Damage": 100,
-				"XScale": 5,
-				"YScale": 5,
-				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Lich/Montage_LichAttack.Montage_LichAttack'",
+				"XScale": 40,
+				"YScale": 40,
+				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Lich/Montage_Lich_Q.Montage_Lich_Q'",
 				"CollisionType": "Box",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Normal",
 				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 1,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Warrior/BP_BossQSkill.BP_BossQSkill_C'"
 			}
 		]

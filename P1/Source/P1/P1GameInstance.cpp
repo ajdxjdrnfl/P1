@@ -16,6 +16,7 @@
 #include "P1/Enemy/EnemyBase.h"
 #include "P1/Enemy/EnemyMob.h"
 #include "P1/Enemy/EnemyBoss.h"
+#include "Containers/Ticker.h"
 
 void UP1GameInstance::Init()
 {
@@ -27,7 +28,27 @@ void UP1GameInstance::Init()
 	};
 		
 	InitSkillMap();
+
+	TickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UP1GameInstance::Tick));
+
 	Super::Init();
+}
+
+void UP1GameInstance::Shutdown()
+{
+	FTSTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
+
+	Super::Shutdown();
+}
+
+bool UP1GameInstance::Tick(float DeltaTime)
+{
+	for (TMap<uint64, class ASkillActorBase*>::TIterator Iter = Skills.CreateIterator(); Iter; ++Iter)
+	{
+		Iter.RemoveCurrent();
+	}
+
+	return false;
 }
 
 void UP1GameInstance::InitSkillMap()
@@ -57,12 +78,12 @@ void UP1GameInstance::InitSkillMap()
 			}
 
 			// Set skillinfo to each skill game default object
-			//SetSkillInfo(idx, CurrentSkillInfo);
+			SetSkillInfo(CurrentSkillInfo);
 		}
 	}
 }
 
-void UP1GameInstance::SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo)
+void UP1GameInstance::SetSkillInfo(const FSkillInfo& CurrentSkillInfo)
 {
 	if (CurrentSkillInfo.SkillActorClass == nullptr) return;
 	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
@@ -70,77 +91,7 @@ void UP1GameInstance::SetSkillInfo(int32 ID, const FSkillInfo& CurrentSkillInfo)
 	if (SkillActor == nullptr) 
 		return;
 
-	Protocol::SkillInfo* SkillInfoRef = SkillActor->SkillInfo;
-
-	SkillInfoRef->set_skill_id(ID);
-	SkillInfoRef->set_size_x(CurrentSkillInfo.XScale);
-	SkillInfoRef->set_size_y(CurrentSkillInfo.YScale);
-	SkillInfoRef->set_damage(CurrentSkillInfo.Damage);
-	SkillInfoRef->set_cooldown(CurrentSkillInfo.CooldownTime);
-
-	switch (CurrentSkillInfo.CollisionType)
-	{
-	case ECollisionType::Circle:
-		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
-		break;
-	case ECollisionType::Box:
-		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_BOX);
-		break;
-	default:
-		SkillInfoRef->set_collision_type(Protocol::CollisionType::COLLISION_TYPE_CIRCLE);
-		break;
-	}
-
-	switch (CurrentSkillInfo.DamageType)
-	{
-	case EDamageType::Normal:
-		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
-		break;
-	case EDamageType::Dot:
-		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_DOT);
-		break;
-	case EDamageType::Buff:
-		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_BUFF);
-		break;
-	default:
-		SkillInfoRef->set_damage_type(Protocol::DamageType::DAMAGE_TYPE_NORMAL);
-		break;
-	}
-
-	switch (CurrentSkillInfo.CCType)
-	{
-	case ECCType::Normal:
-		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
-		break;
-	case ECCType::Slow:
-		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_SLOW);
-		break;
-	case ECCType::Stun:
-		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_STUN);
-		break;
-	case ECCType::Airborne:
-		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_AIRBORNE);
-		break;
-	default:
-		SkillInfoRef->set_cc_type(Protocol::CCType::CC_TYPE_NORMAL);
-		break;
-	}
-
-	switch (CurrentSkillInfo.SkillType)
-	{
-	case ESkillType::Normal:
-		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_NORMAL);
-		break;
-	case ESkillType::Charging:
-		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_CHARGING);
-		break;
-	case ESkillType::Casting:
-		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_CASTING);
-		break;
-	default:
-		SkillInfoRef->set_skill_type(Protocol::SkillType::SKILL_TYPE_NORMAL);
-		break;
-	}
+	SkillActor->SkillInfo = CurrentSkillInfo;
 }
 
 void UP1GameInstance::ConnectToGameServer()
@@ -266,11 +217,15 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SpawnParams.Owner = GetCreature(Pkt);
 	SpawnParams.Instigator = GetCreature(Pkt);
 
-	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(SkillInfo[Pkt.caster().castertype()][Pkt.skillid()].SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
+	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
+
+	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(CurrentSkillInfo.SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
-	Skills.Add(Pkt.skillid(), SkillActor);
+	SkillActor->SkillInfo = CurrentSkillInfo;
+
+	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
 
 	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
 
@@ -288,18 +243,19 @@ void UP1GameInstance::DespawnSkill(int32 SkillIndex)
 	}
 }
 
-void UP1GameInstance::AttackEnemy(Protocol::S_ATTACK& Pkt)
+void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
 {
-	int32 EnemyID = Pkt.victim().object_id();
+	int32 TargetID = Pkt.victim().object_id();
+	int32 InstigatorID = Pkt.caster().object_id();
 
-	FSkillInfo CurrentSkillInfo = Characters[Pkt.caster().object_id()]->GetSkillInfoByIndex(Pkt.skillid());
-	Enemies[EnemyID]->SetCreatureStateByServer(CurrentSkillInfo);
-	Enemies[EnemyID]->SetHealthByDamage(Pkt.victim().hp());
+	FSkillInfo CurrentSkillInfo = GetCreature(Pkt, true)->GetSkillInfoByIndex(Pkt.skillid());
+	GetCreature(Pkt, false)->SetCreatureStateByServer(CurrentSkillInfo);
+	GetCreature(Pkt, false)->SetHealthByDamage(Pkt.victim().hp());
 }
 
 void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
 {
-	Characters[Pkt.caster().object_id()]->PlayAnimMontageByServer(Pkt.isstop(), Pkt.id(), Pkt.section_num());
+	GetCreature(Pkt)->PlayAnimMontageByServer(Pkt);
 }
 
 AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
@@ -360,4 +316,45 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_SKILL& Pkt)
 	}
 	return nullptr;
 }
+
+AP1Creature* UP1GameInstance::GetCreature(Protocol::S_MONTAGE& Pkt)
+{
+	switch (Pkt.caster().castertype())
+	{
+	case Protocol::CASTER_TYPE_BOSS:
+		return Boss;
+		break;
+	case Protocol::CASTER_TYPE_MAGE:
+	case Protocol::CASTER_TYPE_WARRIOR:
+		return Characters[Pkt.caster().object_id()];
+		break;
+	case Protocol::CASTER_TYPE_MOB:
+		return Enemies[Pkt.caster().object_id()];
+		break;
+	default:
+		break;
+	}
+	return nullptr;
+}
+
+AP1Creature* UP1GameInstance::GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster)
+{
+	switch (isCaster ? Pkt.caster().castertype() : Pkt.victim().castertype())
+	{
+	case Protocol::CASTER_TYPE_BOSS:
+		return Boss;
+		break;
+	case Protocol::CASTER_TYPE_MAGE:
+	case Protocol::CASTER_TYPE_WARRIOR:
+		return Characters[Pkt.caster().object_id()];
+		break;
+	case Protocol::CASTER_TYPE_MOB:
+		return Enemies[Pkt.caster().object_id()];
+		break;
+	default:
+		break;
+	}
+	return nullptr;
+}
+
 

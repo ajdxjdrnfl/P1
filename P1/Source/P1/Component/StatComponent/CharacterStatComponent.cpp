@@ -98,3 +98,18 @@ float UCharacterStatComponent::GetMaxStamina()
 
 	return OwnerCharacter->ObjectInfo->max_stamina();
 }
+
+void UCharacterStatComponent::SetHealth(float HealthToSet)
+{
+	if (OwnerCharacter == nullptr)
+		return;
+
+	OwnerCharacter->ObjectInfo->set_hp(HealthToSet);
+
+	OnCharacterHealthChangedDelegate.Broadcast();
+
+	if (OwnerCharacter->ObjectInfo->hp() <= 0)
+	{
+		OwnerCharacter->Die();
+	}
+}

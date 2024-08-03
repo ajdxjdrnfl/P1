@@ -12,12 +12,13 @@ ASkillActorBase::ASkillActorBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ObjectInfo = new Protocol::ObjectInfo();
-	SkillInfo = new Protocol::SkillInfo();
+	//SkillInfo = new Protocol::SkillInfo();
 }
 
 void ASkillActorBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	
 }
 
@@ -25,11 +26,23 @@ void ASkillActorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CurrentLifeTime > 0)
+	{
+		CurrentLifeTime -= DeltaTime;
+	}
+	else
+	{
+		if (this != nullptr)
+			Destroy();
+	}
+
 }
 
 void ASkillActorBase::InitOnSpawn(class AP1Creature* _OwnerCreature)
 {
 	OwnerCreature = _OwnerCreature;
+	CurrentLifeTime = SkillInfo.LifeTime;
+	if (CurrentLifeTime == -1) CurrentLifeTime = 100000;
 }
 
 void ASkillActorBase::ActivateSkill()
@@ -72,9 +85,9 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 		VictimInfo->set_castertype(P1GameInstance->ClassCasterMap[Creature->GetClassType()]);
 	}
 
-	CasterInfo->set_object_id(InstigatorLocal->ObjectInfo->object_id());
-	VictimInfo->set_object_id(Creature->ObjectInfo->object_id());
-	SkillActorInfoLocal->set_object_id(ObjectInfo->object_id());
+	CasterInfo->CopyFrom(*InstigatorLocal->ObjectInfo);
+	VictimInfo->CopyFrom(*Creature->ObjectInfo);
+	SkillActorInfoLocal->CopyFrom(*ObjectInfo);
 
 	SEND_PACKET(Pkt);
 }

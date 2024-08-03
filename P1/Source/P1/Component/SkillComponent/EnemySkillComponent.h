@@ -24,5 +24,4 @@ private:
 
 public:
 	virtual void UseSkill(int32 SkillIndex) override;
-
 };

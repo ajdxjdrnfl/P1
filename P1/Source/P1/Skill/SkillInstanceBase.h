@@ -38,9 +38,6 @@ public:
 	virtual void SpawnSkill() {};
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DespawnSkill();
-
-	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill() {};
 
 	UFUNCTION(BlueprintCallable)
