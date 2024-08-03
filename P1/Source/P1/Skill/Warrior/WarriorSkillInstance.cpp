@@ -51,8 +51,6 @@ void AWarriorQSkillInstance::SpawnSkill()
 	Pkt.set_skillid(0);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillActorClass->GetDefaultObject());
-
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);

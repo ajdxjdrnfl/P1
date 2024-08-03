@@ -16,6 +16,7 @@ AP1Creature::AP1Creature()
 	GetCharacterMovement()->bRunPhysicsWithNoController = true;
 
 	ObjectInfo = new Protocol::ObjectInfo();
+	TargetInfo = new Protocol::ObjectInfo();
 }
 
 // Called when the game starts or when spawned
@@ -136,9 +137,17 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	else
 	{
 		CreatureState = ECreatureState::Move;
-		ObjectInfo->set_x(TargetLocation.X);
-		ObjectInfo->set_y(TargetLocation.Y);
-		ObjectInfo->set_z(TargetLocation.Z);
-		ObjectInfo->set_yaw(TargetRotation.Yaw);
+		TargetInfo->set_x(TargetLocation.X);
+		TargetInfo->set_y(TargetLocation.Y);
+		TargetInfo->set_z(TargetLocation.Z);
+		TargetInfo->set_yaw(TargetRotation.Yaw);
 	}
+}
+
+void AP1Creature::SetObjectInfo()
+{
+	ObjectInfo->set_x(GetActorLocation().X);
+	ObjectInfo->set_y(GetActorLocation().Y);
+	ObjectInfo->set_z(GetActorLocation().Z);
+	ObjectInfo->set_yaw(GetActorRotation().Yaw);
 }

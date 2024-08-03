@@ -97,8 +97,7 @@ bool Handle_S_ATTACK(PacketSessionRef& session, Protocol::S_ATTACK& pkt)
 	if (GameInstance == nullptr)
 		return false;
 
-	GameInstance->AttackEnemy(pkt);
-
+	GameInstance->AttackTarget(pkt);
 
 	return false;
 }
@@ -112,10 +111,5 @@ bool Handle_S_MONTAGE(PacketSessionRef& session, Protocol::S_MONTAGE& pkt)
 
 	GameInstance->PlayMontage(pkt);
 
-	return false;
-}
-
-bool Handle_S_BOSS_MONTAGE(PacketSessionRef& session, Protocol::S_BOSS_MONTAGE& pkt)
-{
 	return false;
 }

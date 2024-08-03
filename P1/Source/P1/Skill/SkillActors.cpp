@@ -59,6 +59,8 @@ void AProjectileSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedCo
 
 AOnLocationSkill::AOnLocationSkill()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
@@ -68,6 +70,7 @@ AOnLocationSkill::AOnLocationSkill()
 
 void AOnLocationSkill::BeginPlay()
 {
+	Super::BeginPlay();
 	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
 }
 

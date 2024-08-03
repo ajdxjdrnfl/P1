@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "P1.h"
+#include "P1/Data/SkillData.h"
 #include "P1Creature.generated.h"
 
 UENUM(BlueprintType)
@@ -49,6 +50,7 @@ public:
 	ECreatureState CreatureState;
 
 	Protocol::ObjectInfo* ObjectInfo;
+	Protocol::ObjectInfo* TargetInfo;
 
 	float CCTime;
 
@@ -65,6 +67,12 @@ public:
 
 	virtual void MoveByServer(float DeltaTime) {}
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
+
+	void SetObjectInfo();
+
+	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) {}
+	virtual void SetHealthByDamage(float HealthToSet) {}
+	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) { return FSkillInfo(); }
 
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }

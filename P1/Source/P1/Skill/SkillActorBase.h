@@ -29,7 +29,12 @@ public:
 	virtual void ActivateSkill();
 	virtual void SendCollisionPacketToServer(class AP1Creature* Creature);
 	Protocol::ObjectInfo* ObjectInfo;
-	Protocol::SkillInfo* SkillInfo;
+	//Protocol::SkillInfo* SkillInfo;
+
+	UPROPERTY(EditAnywhere)
+	FSkillInfo SkillInfo;
+
+	float CurrentLifeTime;
 
 	UFUNCTION()
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {};

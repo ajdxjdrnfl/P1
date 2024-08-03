@@ -29,17 +29,6 @@ void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
 	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
 }
 
-void ASkillInstanceBase::DespawnSkill()
-{
-	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance());
-	if (GameInstance == nullptr) return;
-
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillActorClass->GetDefaultObject());
-	if (CurrentSkillActor == nullptr) return;
-	
-	GameInstance->DespawnSkill(CurrentSkillActor->SkillInfo->skill_id());
-}
-
 void ASkillInstanceBase::StartMontage(int32 SkillIndexLocal)
 {
 	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();

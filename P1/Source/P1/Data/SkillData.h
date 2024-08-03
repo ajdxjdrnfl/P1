@@ -105,6 +105,9 @@ public:
 	float CCTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LifeTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ASkillActorBase> SkillActorClass;
 };
 
