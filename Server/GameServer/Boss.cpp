@@ -78,6 +78,7 @@ void Boss::TickIdle(float deltaTime)
 
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
+			SelectSkill();
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
 		else
@@ -155,13 +156,10 @@ void Boss::TickSkill(float deltaTime)
 		_prevStepElapsedTime = 0.f;
 	}
 	// 공격 범위 밖
-	else
-	{
-		SetState(Protocol::MOVE_STATE_IDLE, true);
-	}
 
 	if (_attackDelay <= 0.f)
 	{
+		_attackDelay = 0.f;
 		_skillType = EBST_NONE;
 		_montageType = MONTAGE_TYPE_NONE;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
@@ -189,12 +187,37 @@ PlayerRef Boss::FindClosestTarget()
 void Boss::SelectSkill()
 {
 	_skillType = EBST_DEFAULT;
+	_attackDelay = 2.f;
 
 }
 
 void Boss::DefaultAttack(GameObjectRef target)
 {
-	if(_)
+	RoomRef room = GetRoomRef();
+
+	switch(_montageType)
+	{
+	case MONTAGE_TYPE_NONE:
+	{
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *GetObjectInfo();
+		montagePkt.set_id(0);
+		montagePkt.set_isstop(false);
+		montagePkt.set_section_num(1);
+		montagePkt.set_scalable(true);
+		montagePkt.set_duration(1.f);
+		
+		_attackDelay = 1.f;
+		room->DoAsync(&Room::HandleMontage, montagePkt);
+		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0);
+		
+		_montageType = MONTAGE_TYPE_START;
+	}
+	break;
+
+	default:
+		break;
+	}
 }
 
 void Boss::Rush(GameObjectRef target)

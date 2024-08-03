@@ -41,7 +41,7 @@ private:
     
 private:
     weak_ptr<class Player> _target;
-    float _attackRange = 10000.f;
+    float _attackRange = 200.f;
 
     bool _isGimmik = false;
     
