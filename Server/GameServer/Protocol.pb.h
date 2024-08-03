@@ -69,9 +69,6 @@ extern C_SKILLDefaultTypeInternal _C_SKILL_default_instance_;
 class S_ATTACK;
 struct S_ATTACKDefaultTypeInternal;
 extern S_ATTACKDefaultTypeInternal _S_ATTACK_default_instance_;
-class S_BOSS_MONTAGE;
-struct S_BOSS_MONTAGEDefaultTypeInternal;
-extern S_BOSS_MONTAGEDefaultTypeInternal _S_BOSS_MONTAGE_default_instance_;
 class S_DESPAWN;
 struct S_DESPAWNDefaultTypeInternal;
 extern S_DESPAWNDefaultTypeInternal _S_DESPAWN_default_instance_;
@@ -102,7 +99,6 @@ template<> ::Protocol::C_MONTAGE* Arena::CreateMaybeMessage<::Protocol::C_MONTAG
 template<> ::Protocol::C_MOVE* Arena::CreateMaybeMessage<::Protocol::C_MOVE>(Arena*);
 template<> ::Protocol::C_SKILL* Arena::CreateMaybeMessage<::Protocol::C_SKILL>(Arena*);
 template<> ::Protocol::S_ATTACK* Arena::CreateMaybeMessage<::Protocol::S_ATTACK>(Arena*);
-template<> ::Protocol::S_BOSS_MONTAGE* Arena::CreateMaybeMessage<::Protocol::S_BOSS_MONTAGE>(Arena*);
 template<> ::Protocol::S_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S_DESPAWN>(Arena*);
 template<> ::Protocol::S_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S_ENTER_GAME>(Arena*);
 template<> ::Protocol::S_LOGIN* Arena::CreateMaybeMessage<::Protocol::S_LOGIN>(Arena*);
@@ -1423,6 +1419,7 @@ class C_SKILL final :
   enum : int {
     kCasterFieldNumber = 1,
     kSkillidFieldNumber = 2,
+    kDamageFieldNumber = 3,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -1451,6 +1448,15 @@ class C_SKILL final :
   void _internal_set_skillid(uint64_t value);
   public:
 
+  // float damage = 3;
+  void clear_damage();
+  float damage() const;
+  void set_damage(float value);
+  private:
+  float _internal_damage() const;
+  void _internal_set_damage(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_SKILL)
  private:
   class _Internal;
@@ -1461,6 +1467,7 @@ class C_SKILL final :
   struct Impl_ {
     ::Protocol::ObjectInfo* caster_;
     uint64_t skillid_;
+    float damage_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2376,6 +2383,8 @@ class S_MONTAGE final :
     kIdFieldNumber = 3,
     kSectionNumFieldNumber = 4,
     kIsstopFieldNumber = 2,
+    kScalableFieldNumber = 5,
+    kDurationFieldNumber = 6,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -2422,6 +2431,24 @@ class S_MONTAGE final :
   void _internal_set_isstop(bool value);
   public:
 
+  // bool scalable = 5;
+  void clear_scalable();
+  bool scalable() const;
+  void set_scalable(bool value);
+  private:
+  bool _internal_scalable() const;
+  void _internal_set_scalable(bool value);
+  public:
+
+  // float duration = 6;
+  void clear_duration();
+  float duration() const;
+  void set_duration(float value);
+  private:
+  float _internal_duration() const;
+  void _internal_set_duration(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_MONTAGE)
  private:
   class _Internal;
@@ -2434,154 +2461,8 @@ class S_MONTAGE final :
     uint64_t id_;
     uint64_t section_num_;
     bool isstop_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Protocol_2eproto;
-};
-// -------------------------------------------------------------------
-
-class S_BOSS_MONTAGE final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_BOSS_MONTAGE) */ {
- public:
-  inline S_BOSS_MONTAGE() : S_BOSS_MONTAGE(nullptr) {}
-  ~S_BOSS_MONTAGE() override;
-  explicit PROTOBUF_CONSTEXPR S_BOSS_MONTAGE(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  S_BOSS_MONTAGE(const S_BOSS_MONTAGE& from);
-  S_BOSS_MONTAGE(S_BOSS_MONTAGE&& from) noexcept
-    : S_BOSS_MONTAGE() {
-    *this = ::std::move(from);
-  }
-
-  inline S_BOSS_MONTAGE& operator=(const S_BOSS_MONTAGE& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline S_BOSS_MONTAGE& operator=(S_BOSS_MONTAGE&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const S_BOSS_MONTAGE& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const S_BOSS_MONTAGE* internal_default_instance() {
-    return reinterpret_cast<const S_BOSS_MONTAGE*>(
-               &_S_BOSS_MONTAGE_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    14;
-
-  friend void swap(S_BOSS_MONTAGE& a, S_BOSS_MONTAGE& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(S_BOSS_MONTAGE* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(S_BOSS_MONTAGE* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  S_BOSS_MONTAGE* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_BOSS_MONTAGE>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_BOSS_MONTAGE& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_BOSS_MONTAGE& from) {
-    S_BOSS_MONTAGE::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(S_BOSS_MONTAGE* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_BOSS_MONTAGE";
-  }
-  protected:
-  explicit S_BOSS_MONTAGE(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kSkillidFieldNumber = 1,
-  };
-  // uint64 skillid = 1;
-  void clear_skillid();
-  uint64_t skillid() const;
-  void set_skillid(uint64_t value);
-  private:
-  uint64_t _internal_skillid() const;
-  void _internal_set_skillid(uint64_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.S_BOSS_MONTAGE)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    uint64_t skillid_;
+    bool scalable_;
+    float duration_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3112,6 +2993,26 @@ inline void C_SKILL::_internal_set_skillid(uint64_t value) {
 inline void C_SKILL::set_skillid(uint64_t value) {
   _internal_set_skillid(value);
   // @@protoc_insertion_point(field_set:Protocol.C_SKILL.skillid)
+}
+
+// float damage = 3;
+inline void C_SKILL::clear_damage() {
+  _impl_.damage_ = 0;
+}
+inline float C_SKILL::_internal_damage() const {
+  return _impl_.damage_;
+}
+inline float C_SKILL::damage() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.damage)
+  return _internal_damage();
+}
+inline void C_SKILL::_internal_set_damage(float value) {
+  
+  _impl_.damage_ = value;
+}
+inline void C_SKILL::set_damage(float value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_SKILL.damage)
 }
 
 // -------------------------------------------------------------------
@@ -4144,35 +4045,49 @@ inline void S_MONTAGE::set_section_num(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.section_num)
 }
 
-// -------------------------------------------------------------------
-
-// S_BOSS_MONTAGE
-
-// uint64 skillid = 1;
-inline void S_BOSS_MONTAGE::clear_skillid() {
-  _impl_.skillid_ = uint64_t{0u};
+// bool scalable = 5;
+inline void S_MONTAGE::clear_scalable() {
+  _impl_.scalable_ = false;
 }
-inline uint64_t S_BOSS_MONTAGE::_internal_skillid() const {
-  return _impl_.skillid_;
+inline bool S_MONTAGE::_internal_scalable() const {
+  return _impl_.scalable_;
 }
-inline uint64_t S_BOSS_MONTAGE::skillid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_BOSS_MONTAGE.skillid)
-  return _internal_skillid();
+inline bool S_MONTAGE::scalable() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MONTAGE.scalable)
+  return _internal_scalable();
 }
-inline void S_BOSS_MONTAGE::_internal_set_skillid(uint64_t value) {
+inline void S_MONTAGE::_internal_set_scalable(bool value) {
   
-  _impl_.skillid_ = value;
+  _impl_.scalable_ = value;
 }
-inline void S_BOSS_MONTAGE::set_skillid(uint64_t value) {
-  _internal_set_skillid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_BOSS_MONTAGE.skillid)
+inline void S_MONTAGE::set_scalable(bool value) {
+  _internal_set_scalable(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.scalable)
+}
+
+// float duration = 6;
+inline void S_MONTAGE::clear_duration() {
+  _impl_.duration_ = 0;
+}
+inline float S_MONTAGE::_internal_duration() const {
+  return _impl_.duration_;
+}
+inline float S_MONTAGE::duration() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MONTAGE.duration)
+  return _internal_duration();
+}
+inline void S_MONTAGE::_internal_set_duration(float value) {
+  
+  _impl_.duration_ = value;
+}
+inline void S_MONTAGE::set_duration(float value) {
+  _internal_set_duration(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MONTAGE.duration)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

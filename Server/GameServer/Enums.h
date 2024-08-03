@@ -14,3 +14,11 @@ enum EColliderType: uint8
 	COLLIDER_CIRCLE = Protocol::COLLISION_TYPE_CIRCLE,
 	COLLIDER_RAY = Protocol::COLLISION_TYPE_NONE,
 };
+
+enum EBossMontageType : uint8
+{
+	MONTAGE_TYPE_NONE = 0,
+	MONTAGE_TYPE_START = 1,
+	MONTAGE_TYPE_ING = 2,
+	MONTAGE_TYPE_END = 3,
+};

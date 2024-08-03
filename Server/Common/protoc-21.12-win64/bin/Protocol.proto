@@ -51,6 +51,7 @@ message C_SKILL
 {
 	ObjectInfo caster =1;
 	uint64 skillid = 2;
+	float damage = 3; // 차징 스킬 용
 }
 
 message S_SKILL
@@ -89,9 +90,6 @@ message S_MONTAGE
 	bool isstop = 2;
 	uint64 id = 3;
 	uint64 section_num = 4;
-}
-
-message S_BOSS_MONTAGE
-{
-	uint64 skillid = 1;
+	bool scalable = 5; // 애니메이션 실행 시간 조정 - false : 클라 속도대로 실행, true : duration동안 재생
+	float duration = 6; 
 }

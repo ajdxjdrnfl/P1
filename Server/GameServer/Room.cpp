@@ -203,8 +203,15 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	Collision* victimCollision = static_cast<Collision*>(victim->GetComponent(EComponentType::ECT_COLLISION));
 	Collision* skillActorCollision = static_cast<Collision*>(skillActor->GetComponent(EComponentType::ECT_COLLISION));
 
+	victimCollision->SetPos({pkt.victim().x(), pkt.victim().y()});
+	skillActorCollision->SetPos({pkt.skillactor().x(), pkt.skillactor().y()});
+
 	if (!victimCollision->CheckCollision(skillActorCollision))
+	{
+		victimCollision->SetPos(victim->GetPos());
+		skillActorCollision->SetPos(skillActor->GetPos());
 		return false;
+	}
 
 	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
 
@@ -220,9 +227,14 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackPkt);
 		Broadcast(sendBuffer);
 	}
+
+	victimCollision->SetPos(victim->GetPos());
+	skillActorCollision->SetPos(skillActor->GetPos());
+	
+	return true;
 }
 
-bool Room::HandleMontage(Protocol::C_MONTAGE pkt)
+bool Room::HandleMontagePkt(Protocol::C_MONTAGE pkt)
 {
 	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
 
@@ -235,12 +247,10 @@ bool Room::HandleMontage(Protocol::C_MONTAGE pkt)
 		montagePkt.set_isstop(pkt.isstop());
 		montagePkt.set_id(pkt.id());
 		montagePkt.set_section_num(pkt.section_num());
+		montagePkt.set_scalable(false);
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(montagePkt);
-		Broadcast(sendBuffer);
+		return HandleMontage(montagePkt);
 	}
-
-	return true;
 }
 
 void Room::HandleDead(GameObjectRef gameObject)
@@ -284,6 +294,13 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid)
 		Broadcast(sendBuffer);
 	}
 	return true;
+}
+
+bool Room::HandleMontage(Protocol::S_MONTAGE pkt)
+{
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	Broadcast(sendBuffer);
+	return false;
 }
 
 void Room::EnterGame(PlayerRef player)
@@ -395,6 +412,9 @@ GameObjectRef Room::GetGameObjectRef(uint64 id)
 
 	if (_skillActors.find(id) != _skillActors.end())
 		return _skillActors[id];
+
+	if (_boss->GetObjectInfo()->object_id() == id)
+		return _boss;
 
 	return nullptr;
 }

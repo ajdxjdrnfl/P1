@@ -16,11 +16,12 @@ public:
 	bool			HandleMove(Protocol::C_MOVE pkt);
 	bool			HandleSkillPkt(Protocol::C_SKILL pkt);
 	bool			HandleAttack(Protocol::C_ATTACK pkt);
-	bool			HandleMontage(Protocol::C_MONTAGE pkt);
+	bool			HandleMontagePkt(Protocol::C_MONTAGE pkt);
 
 public:
 	void			HandleDead(GameObjectRef gameObject);
 	bool			HandleSkill(GameObjectRef caster, uint64 skillid);
+	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 
 private:
 	void			EnterGame(PlayerRef player);

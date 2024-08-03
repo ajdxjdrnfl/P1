@@ -180,6 +180,18 @@ void Boss::DefaultAttack()
 
 	// TODO : ¼öÁ¤
 	_objectInfo->set_yaw(Utils::GetYawByVector(target->GetPos() - GetPos()));
+	
+	{
+		Protocol::S_MONTAGE pkt;
+		*pkt.mutable_caster() = *GetObjectInfo();
+		pkt.set_isstop(false);
+		pkt.set_id(0);
+		pkt.set_scalable(true);
+		pkt.set_duration(1.5f);
+
+		room->DoAsync(&Room::HandleMontage, pkt);
+	}
+	
 	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0);
 	
 }
@@ -221,5 +233,7 @@ void Boss::MoveToTarget(GameObjectRef target)
 	
 	_targetPos = targetVector * 0.75 + GetPos();
 
+	float yaw = Utils::GetYawByVector(targetPos - GetPos());
+	_objectInfo->set_yaw(yaw);
 	SetState(Protocol::MOVE_STATE_RUN, true);
 }

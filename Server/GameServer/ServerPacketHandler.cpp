@@ -119,6 +119,6 @@ bool Handle_C_MONTAGE(PacketSessionRef& session, Protocol::C_MONTAGE& pkt)
 		return false;
 
 	LOG(pkt);
-	room->DoAsync(&Room::HandleMontage, pkt);
+	room->DoAsync(&Room::HandleMontagePkt, pkt);
 	return true;
 }
