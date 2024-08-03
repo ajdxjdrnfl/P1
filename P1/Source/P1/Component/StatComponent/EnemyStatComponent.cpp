@@ -45,8 +45,8 @@ void UEnemyStatComponent::TakeDamage()
 
 void UEnemyStatComponent::SetHealth(float HealthToSet)
 {
-	if (OwnerEnemy == nullptr)
-		return;
+	//if (OwnerEnemy == nullptr)
+	//	return;
 
 	OwnerEnemy->ObjectInfo->set_hp(HealthToSet);
 

@@ -15,10 +15,12 @@ class P1_API AHoldingSkillManager : public ASkillManagerBase
 	GENERATED_BODY()
 
 private:
+	bool bIsActivated;
 	float AttackTime = 0.5f;
 	float CurrentTime;
 
 public:
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void StartCasting(float CastingTime) override;
 	void EndSkill();

@@ -5,6 +5,7 @@
 
 void UEnemySkillComponent::BeginPlay()
 {
+	Super::BeginPlay();
 }
 
 void UEnemySkillComponent::UseSkill(int32 SkillIndex)

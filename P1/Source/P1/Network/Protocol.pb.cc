@@ -128,6 +128,9 @@ PROTOBUF_CONSTEXPR C_SKILL::C_SKILL(
     /*decltype(_impl_.caster_)*/nullptr
   , /*decltype(_impl_.skillid_)*/uint64_t{0u}
   , /*decltype(_impl_.damage_)*/0
+  , /*decltype(_impl_.x_)*/0
+  , /*decltype(_impl_.y_)*/0
+  , /*decltype(_impl_.yaw_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_SKILLDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C_SKILLDefaultTypeInternal()
@@ -288,6 +291,9 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.caster_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.skillid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.damage_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.x_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.y_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_SKILL, _impl_.yaw_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_SKILL, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -349,11 +355,11 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 41, -1, -1, sizeof(::Protocol::S_MOVE)},
   { 48, -1, -1, sizeof(::Protocol::C_MOVE)},
   { 55, -1, -1, sizeof(::Protocol::C_SKILL)},
-  { 64, -1, -1, sizeof(::Protocol::S_SKILL)},
-  { 73, -1, -1, sizeof(::Protocol::C_ATTACK)},
-  { 82, -1, -1, sizeof(::Protocol::S_ATTACK)},
-  { 92, -1, -1, sizeof(::Protocol::C_MONTAGE)},
-  { 102, -1, -1, sizeof(::Protocol::S_MONTAGE)},
+  { 67, -1, -1, sizeof(::Protocol::S_SKILL)},
+  { 76, -1, -1, sizeof(::Protocol::C_ATTACK)},
+  { 85, -1, -1, sizeof(::Protocol::S_ATTACK)},
+  { 95, -1, -1, sizeof(::Protocol::C_MONTAGE)},
+  { 105, -1, -1, sizeof(::Protocol::S_MONTAGE)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -382,25 +388,26 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\0132\024.Protocol.ObjectInfo\"\037\n\tS_DESPAWN\022\022\n\n"
   "object_ids\030\001 \003(\004\",\n\006S_MOVE\022\"\n\004info\030\001 \001(\013"
   "2\024.Protocol.ObjectInfo\",\n\006C_MOVE\022\"\n\004info"
-  "\030\001 \001(\0132\024.Protocol.ObjectInfo\"P\n\007C_SKILL\022"
+  "\030\001 \001(\0132\024.Protocol.ObjectInfo\"s\n\007C_SKILL\022"
   "$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectInfo\022\017\n"
-  "\007skillid\030\002 \001(\004\022\016\n\006damage\030\003 \001(\002\"j\n\007S_SKIL"
-  "L\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectInfo\022"
-  "(\n\nskillactor\030\002 \001(\0132\024.Protocol.ObjectInf"
-  "o\022\017\n\007skillid\030\003 \001(\004\"\200\001\n\010C_ATTACK\022$\n\006caste"
-  "r\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskillac"
-  "tor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n\006victi"
-  "m\030\003 \001(\0132\024.Protocol.ObjectInfo\"\221\001\n\010S_ATTA"
-  "CK\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectInfo"
-  "\022(\n\nskillactor\030\002 \001(\0132\024.Protocol.ObjectIn"
-  "fo\022$\n\006victim\030\003 \001(\0132\024.Protocol.ObjectInfo"
-  "\022\017\n\007skillid\030\004 \001(\004\"b\n\tC_MONTAGE\022$\n\006caster"
-  "\030\001 \001(\0132\024.Protocol.ObjectInfo\022\016\n\006isstop\030\002"
-  " \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001(\004\"\206\001"
-  "\n\tS_MONTAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol.O"
-  "bjectInfo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n"
-  "\013section_num\030\004 \001(\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010"
-  "duration\030\006 \001(\002b\006proto3"
+  "\007skillid\030\002 \001(\004\022\016\n\006damage\030\003 \001(\002\022\t\n\001x\030\004 \001("
+  "\002\022\t\n\001y\030\005 \001(\002\022\013\n\003yaw\030\006 \001(\002\"j\n\007S_SKILL\022$\n\006"
+  "caster\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nsk"
+  "illactor\030\002 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007"
+  "skillid\030\003 \001(\004\"\200\001\n\010C_ATTACK\022$\n\006caster\030\001 \001"
+  "(\0132\024.Protocol.ObjectInfo\022(\n\nskillactor\030\002"
+  " \001(\0132\024.Protocol.ObjectInfo\022$\n\006victim\030\003 \001"
+  "(\0132\024.Protocol.ObjectInfo\"\221\001\n\010S_ATTACK\022$\n"
+  "\006caster\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\ns"
+  "killactor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n"
+  "\006victim\030\003 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007s"
+  "killid\030\004 \001(\004\"b\n\tC_MONTAGE\022$\n\006caster\030\001 \001("
+  "\0132\024.Protocol.ObjectInfo\022\016\n\006isstop\030\002 \001(\010\022"
+  "\n\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001(\004\"\206\001\n\tS_M"
+  "ONTAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol.Object"
+  "Info\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013sect"
+  "ion_num\030\004 \001(\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010durat"
+  "ion\030\006 \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -408,7 +415,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1062, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1097, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -1720,6 +1727,9 @@ C_SKILL::C_SKILL(const C_SKILL& from)
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.skillid_){}
     , decltype(_impl_.damage_){}
+    , decltype(_impl_.x_){}
+    , decltype(_impl_.y_){}
+    , decltype(_impl_.yaw_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1727,8 +1737,8 @@ C_SKILL::C_SKILL(const C_SKILL& from)
     _this->_impl_.caster_ = new ::Protocol::ObjectInfo(*from._impl_.caster_);
   }
   ::memcpy(&_impl_.skillid_, &from._impl_.skillid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.damage_) -
-    reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.damage_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.yaw_) -
+    reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.yaw_));
   // @@protoc_insertion_point(copy_constructor:Protocol.C_SKILL)
 }
 
@@ -1740,6 +1750,9 @@ inline void C_SKILL::SharedCtor(
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.skillid_){uint64_t{0u}}
     , decltype(_impl_.damage_){0}
+    , decltype(_impl_.x_){0}
+    , decltype(_impl_.y_){0}
+    , decltype(_impl_.yaw_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1773,8 +1786,8 @@ void C_SKILL::Clear() {
   }
   _impl_.caster_ = nullptr;
   ::memset(&_impl_.skillid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.damage_) -
-      reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.damage_));
+      reinterpret_cast<char*>(&_impl_.yaw_) -
+      reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.yaw_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1804,6 +1817,30 @@ const char* C_SKILL::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) 
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
           _impl_.damage_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float x = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
+          _impl_.x_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float y = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _impl_.y_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float yaw = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          _impl_.yaw_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
         } else
           goto handle_unusual;
@@ -1860,6 +1897,36 @@ uint8_t* C_SKILL::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(3, this->_internal_damage(), target);
   }
 
+  // float x = 4;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_x = this->_internal_x();
+  uint32_t raw_x;
+  memcpy(&raw_x, &tmp_x, sizeof(tmp_x));
+  if (raw_x != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_x(), target);
+  }
+
+  // float y = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_y = this->_internal_y();
+  uint32_t raw_y;
+  memcpy(&raw_y, &tmp_y, sizeof(tmp_y));
+  if (raw_y != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_y(), target);
+  }
+
+  // float yaw = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = this->_internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(6, this->_internal_yaw(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1897,6 +1964,33 @@ size_t C_SKILL::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
+  // float x = 4;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_x = this->_internal_x();
+  uint32_t raw_x;
+  memcpy(&raw_x, &tmp_x, sizeof(tmp_x));
+  if (raw_x != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float y = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_y = this->_internal_y();
+  uint32_t raw_y;
+  memcpy(&raw_y, &tmp_y, sizeof(tmp_y));
+  if (raw_y != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float yaw = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = this->_internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    total_size += 1 + 4;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1929,6 +2023,27 @@ void C_SKILL::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOB
   if (raw_damage != 0) {
     _this->_internal_set_damage(from._internal_damage());
   }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_x = from._internal_x();
+  uint32_t raw_x;
+  memcpy(&raw_x, &tmp_x, sizeof(tmp_x));
+  if (raw_x != 0) {
+    _this->_internal_set_x(from._internal_x());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_y = from._internal_y();
+  uint32_t raw_y;
+  memcpy(&raw_y, &tmp_y, sizeof(tmp_y));
+  if (raw_y != 0) {
+    _this->_internal_set_y(from._internal_y());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_yaw = from._internal_yaw();
+  uint32_t raw_yaw;
+  memcpy(&raw_yaw, &tmp_yaw, sizeof(tmp_yaw));
+  if (raw_yaw != 0) {
+    _this->_internal_set_yaw(from._internal_yaw());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1947,8 +2062,8 @@ void C_SKILL::InternalSwap(C_SKILL* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(C_SKILL, _impl_.damage_)
-      + sizeof(C_SKILL::_impl_.damage_)
+      PROTOBUF_FIELD_OFFSET(C_SKILL, _impl_.yaw_)
+      + sizeof(C_SKILL::_impl_.yaw_)
       - PROTOBUF_FIELD_OFFSET(C_SKILL, _impl_.caster_)>(
           reinterpret_cast<char*>(&_impl_.caster_),
           reinterpret_cast<char*>(&other->_impl_.caster_));

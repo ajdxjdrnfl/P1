@@ -25,6 +25,7 @@ void AProjectileSkill::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileSkill::OnCollisionOverlapBegin);
+	
 }
 
 void AProjectileSkill::Tick(float DeltaTime)
@@ -51,6 +52,7 @@ void AProjectileSkill::ActivateSkill()
 
 void AProjectileSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	SphereComponent->UpdateOverlaps();
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);
@@ -71,6 +73,7 @@ AOnLocationSkill::AOnLocationSkill()
 void AOnLocationSkill::BeginPlay()
 {
 	Super::BeginPlay();
+
 	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
 }
 
@@ -81,6 +84,7 @@ void AOnLocationSkill::Tick(float DeltaTime)
 
 void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	BoxCollision->UpdateOverlaps();
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);

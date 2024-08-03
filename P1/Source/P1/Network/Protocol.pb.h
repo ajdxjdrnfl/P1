@@ -1420,6 +1420,9 @@ class C_SKILL final :
     kCasterFieldNumber = 1,
     kSkillidFieldNumber = 2,
     kDamageFieldNumber = 3,
+    kXFieldNumber = 4,
+    kYFieldNumber = 5,
+    kYawFieldNumber = 6,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -1457,6 +1460,33 @@ class C_SKILL final :
   void _internal_set_damage(float value);
   public:
 
+  // float x = 4;
+  void clear_x();
+  float x() const;
+  void set_x(float value);
+  private:
+  float _internal_x() const;
+  void _internal_set_x(float value);
+  public:
+
+  // float y = 5;
+  void clear_y();
+  float y() const;
+  void set_y(float value);
+  private:
+  float _internal_y() const;
+  void _internal_set_y(float value);
+  public:
+
+  // float yaw = 6;
+  void clear_yaw();
+  float yaw() const;
+  void set_yaw(float value);
+  private:
+  float _internal_yaw() const;
+  void _internal_set_yaw(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_SKILL)
  private:
   class _Internal;
@@ -1468,6 +1498,9 @@ class C_SKILL final :
     ::Protocol::ObjectInfo* caster_;
     uint64_t skillid_;
     float damage_;
+    float x_;
+    float y_;
+    float yaw_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3013,6 +3046,66 @@ inline void C_SKILL::_internal_set_damage(float value) {
 inline void C_SKILL::set_damage(float value) {
   _internal_set_damage(value);
   // @@protoc_insertion_point(field_set:Protocol.C_SKILL.damage)
+}
+
+// float x = 4;
+inline void C_SKILL::clear_x() {
+  _impl_.x_ = 0;
+}
+inline float C_SKILL::_internal_x() const {
+  return _impl_.x_;
+}
+inline float C_SKILL::x() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.x)
+  return _internal_x();
+}
+inline void C_SKILL::_internal_set_x(float value) {
+  
+  _impl_.x_ = value;
+}
+inline void C_SKILL::set_x(float value) {
+  _internal_set_x(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_SKILL.x)
+}
+
+// float y = 5;
+inline void C_SKILL::clear_y() {
+  _impl_.y_ = 0;
+}
+inline float C_SKILL::_internal_y() const {
+  return _impl_.y_;
+}
+inline float C_SKILL::y() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.y)
+  return _internal_y();
+}
+inline void C_SKILL::_internal_set_y(float value) {
+  
+  _impl_.y_ = value;
+}
+inline void C_SKILL::set_y(float value) {
+  _internal_set_y(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_SKILL.y)
+}
+
+// float yaw = 6;
+inline void C_SKILL::clear_yaw() {
+  _impl_.yaw_ = 0;
+}
+inline float C_SKILL::_internal_yaw() const {
+  return _impl_.yaw_;
+}
+inline float C_SKILL::yaw() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_SKILL.yaw)
+  return _internal_yaw();
+}
+inline void C_SKILL::_internal_set_yaw(float value) {
+  
+  _impl_.yaw_ = value;
+}
+inline void C_SKILL::set_yaw(float value) {
+  _internal_set_yaw(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_SKILL.yaw)
 }
 
 // -------------------------------------------------------------------

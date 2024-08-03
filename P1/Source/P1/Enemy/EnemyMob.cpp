@@ -15,6 +15,7 @@ AEnemyMob::AEnemyMob()
 
 void AEnemyMob::BeginPlay()
 {
+	Super::BeginPlay();
 	if (HealthBarWidgetClass)
 	{
 		HealthBarWidgetComponent->SetStatWidgetClass(HealthBarWidgetClass);
@@ -23,7 +24,4 @@ void AEnemyMob::BeginPlay()
 		UEnemyStatWidget* EnemyStatWidget = Cast<UEnemyStatWidget>(UserWidget);
 		GetWidgetComponent()->SetStatWidget(EnemyStatWidget);
 	}
-
-	// Set statcomponent, before setting enemy stat: statcomponent setting (this::BeginPlay()) -> stat setting (Super::BeginPlay())
-	Super::BeginPlay();
 }

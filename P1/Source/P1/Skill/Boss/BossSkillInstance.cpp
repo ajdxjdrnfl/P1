@@ -30,7 +30,7 @@ void ABossQSkillInstance::UseSkill()
 	{
 		Protocol::C_MONTAGE Pkt;
 		Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-		CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+		CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 		Pkt.set_isstop(false);
 		Pkt.set_id(0);
 
@@ -45,8 +45,6 @@ void ABossWSkillInstance::SpawnSkill()
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(1);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
-
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 

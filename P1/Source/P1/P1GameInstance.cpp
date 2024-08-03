@@ -248,9 +248,14 @@ void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
 	int32 TargetID = Pkt.victim().object_id();
 	int32 InstigatorID = Pkt.caster().object_id();
 
-	FSkillInfo CurrentSkillInfo = GetCreature(Pkt, true)->GetSkillInfoByIndex(Pkt.skillid());
-	GetCreature(Pkt, false)->SetCreatureStateByServer(CurrentSkillInfo);
-	GetCreature(Pkt, false)->SetHealthByDamage(Pkt.victim().hp());
+	AP1Creature* InstigatorCreature = GetCreature(Pkt, true);
+	AP1Creature* VictimCreature = GetCreature(Pkt, false);
+	if (InstigatorCreature == nullptr || VictimCreature == nullptr)
+		return;
+
+	FSkillInfo InstigatorSkillInfo = InstigatorCreature->GetSkillInfoByIndex(Pkt.skillid());
+	VictimCreature->SetCreatureStateByServer(InstigatorSkillInfo);
+	VictimCreature->SetHealthByDamage(Pkt.victim().hp());
 }
 
 void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
@@ -339,17 +344,18 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_MONTAGE& Pkt)
 
 AP1Creature* UP1GameInstance::GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster)
 {
-	switch (isCaster ? Pkt.caster().castertype() : Pkt.victim().castertype())
+	Protocol::ObjectInfo ObjInfo = isCaster ? Pkt.caster() : Pkt.victim();
+	switch (ObjInfo.castertype())
 	{
 	case Protocol::CASTER_TYPE_BOSS:
 		return Boss;
 		break;
 	case Protocol::CASTER_TYPE_MAGE:
 	case Protocol::CASTER_TYPE_WARRIOR:
-		return Characters[Pkt.caster().object_id()];
+		return Characters[ObjInfo.object_id()];
 		break;
 	case Protocol::CASTER_TYPE_MOB:
-		return Enemies[Pkt.caster().object_id()];
+		return Enemies[ObjInfo.object_id()];
 		break;
 	default:
 		break;

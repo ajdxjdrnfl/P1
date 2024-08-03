@@ -8,6 +8,7 @@
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Skill/Warrior/WarriorSkillInstance.h"
 #include "P1/Skill/Boss/BossSkillInstance.h"
+#include "P1/Skill/Mob/MobSkillInstance.h"
 #include "P1/P1GameMode.h"
 
 USkillComponentBase::USkillComponentBase()
@@ -74,7 +75,8 @@ void USkillComponentBase::SetSkills()
 		}
 		else if (P1Creature->GetClassType() == FName("Mob"))
 		{
-			return;
+			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AMobQSkillInstance::StaticClass()));
+			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
 

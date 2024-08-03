@@ -11,9 +11,16 @@
 #include "P1/Widget/CharacterOverlayWidget.h"
 #include "P1/Skill/SkillInstanceBase.h"
 
+void AHoldingSkillManager::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AHoldingSkillManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bIsActivated) return;
 
 	if (AttackTime >= CurrentTime)
 	{
@@ -21,11 +28,11 @@ void AHoldingSkillManager::Tick(float DeltaTime)
 		{
 			SkillInstance->SpawnSkill();
 		}
-		AttackTime = 0.f;
+		CurrentTime = 0.f;
 	}
 	else
 	{
-		AttackTime += DeltaTime;
+		CurrentTime += DeltaTime;
 	}
 }
 
@@ -50,6 +57,7 @@ void AHoldingSkillManager::StartCasting(float CastingTime)
 	SetSkillState(ESkillType::Hold);
 	OwnerCharacter->OpenSkillGaugeWidget(CastingTime);
 	SkillInstance->StartMontage(SkillInfo.SkillNumLocal);
+	bIsActivated = true;
 	
 }
 
@@ -66,7 +74,7 @@ void AHoldingSkillManager::EndSkill()
 	}
 
 	SkillInstance->StopMontage(SkillInfo.SkillNumLocal);
-	
+	bIsActivated = false;
 }
 
 void AHoldingSkillManager::OnCastingEnd()

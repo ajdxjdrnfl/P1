@@ -53,6 +53,11 @@ void AWarriorQSkillInstance::SpawnSkill()
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
+	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 300.f;
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
 	SEND_PACKET(Pkt);
 }
 
@@ -96,7 +101,7 @@ void AWarriorQSkillInstance::UseSkill()
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-			CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
 			Pkt.set_id(0);
 			
@@ -118,7 +123,7 @@ void AWarriorWSkillInstance::UseSkill()
 	}
 
 	HoldingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	HoldingSkillManager->StartCasting(5);
+	HoldingSkillManager->StartCasting(SkillInfo.CastingTime);
 }
 
 void AWarriorWSkillInstance::SpawnSkill()
@@ -129,8 +134,6 @@ void AWarriorWSkillInstance::SpawnSkill()
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(1);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
-
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
@@ -146,7 +149,7 @@ void AWarriorESkillInstance::UseSkill()
 	}
 
 	ChargingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	ChargingSkillManager->StartCasting(2);
+	ChargingSkillManager->StartCasting(SkillInfo.CastingTime);
 }
 
 void AWarriorESkillInstance::SpawnSkill()
@@ -161,9 +164,9 @@ void AWarriorESkillInstance::SpawnSkill()
 
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(2);
-	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	ASkillActorBase* CurrentSkillActor = Cast<ASkillActorBase>(SkillInfo.SkillActorClass->GetDefaultObject());
+	Pkt.set_damage(GaugeRate * SkillInfo.Damage);
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
@@ -179,7 +182,7 @@ void AWarriorRSkillInstance::UseSkill()
 	}
 
 	CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	CastingSkillManager->StartCasting(2);
+	CastingSkillManager->StartCasting(SkillInfo.CastingTime);
 
 	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
 
@@ -192,7 +195,7 @@ void AWarriorRSkillInstance::UseSkill()
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-			CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
 			Pkt.set_id(3);
 
@@ -209,7 +212,7 @@ void AWarriorRSkillInstance::UseSkill()
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-			CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(true);
 			Pkt.set_id(3);
 
@@ -237,7 +240,7 @@ void AWarriorRSkillInstance::SpawnSkill()
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-			CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
 			Pkt.set_id(0);
 

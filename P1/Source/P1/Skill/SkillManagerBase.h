@@ -16,6 +16,10 @@ public:
 	// Sets default values for this actor's properties
 	ASkillManagerBase();
 
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
