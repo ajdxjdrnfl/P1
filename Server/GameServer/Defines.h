@@ -8,3 +8,5 @@
 	using name##Ref = shared_ptr<class name>;
 
 #define LOG(pkt) LogUtils::LogPacket(__FUNCTION__, pkt);
+
+#define PI 3.141592

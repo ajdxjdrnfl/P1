@@ -52,6 +52,9 @@ message C_SKILL
 	ObjectInfo caster =1;
 	uint64 skillid = 2;
 	float damage = 3; // Â÷Â¡ ½ºÅ³ ¿ë
+	float x = 4;
+	float y = 5;
+	float yaw = 6;
 }
 
 message S_SKILL

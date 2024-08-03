@@ -209,7 +209,7 @@ void Boss::DefaultAttack(GameObjectRef target)
 		
 		_attackDelay = 1.f;
 		room->DoAsync(&Room::HandleMontage, montagePkt);
-		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0);
+		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, {target->GetPos().x, target->GetPos().y}, target->GetObjectInfo()->yaw());
 		
 		_montageType = MONTAGE_TYPE_START;
 	}

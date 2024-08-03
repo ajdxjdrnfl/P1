@@ -188,7 +188,7 @@ bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 {
 	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
 
-	return HandleSkill(caster, pkt.skillid());
+	return HandleSkill(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw());
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -267,7 +267,7 @@ void Room::HandleDead(GameObjectRef gameObject)
 	
 }
 
-bool Room::HandleSkill(GameObjectRef caster, uint64 skillid)
+bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw)
 {
 	if (caster == nullptr)
 		return false;
@@ -275,10 +275,10 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid)
 	SkillActorRef skillActor = ObjectUtils::CreateSkillActor(caster, GetRoomRef());
 	Protocol::ObjectInfo* info = skillActor->GetObjectInfo();
 	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
-	info->set_x(casterInfo->x());
-	info->set_y(casterInfo->y());
+	info->set_x(skillActorPos.x);
+	info->set_y(skillActorPos.y);
 	info->set_z(casterInfo->z());
-	info->set_yaw(casterInfo->yaw());
+	info->set_yaw(yaw);
 	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid);
 
 	SpawnSkill(skillActor);

@@ -106,7 +106,12 @@ struct Vector
 
 	Vector Rotate(float degree)
 	{
-		return { x * cos(degree) - y * sin(degree), x * sin(degree) + y * cos(degree) };
+		float PI = 3.141592;
+		float radian = PI * degree / 180.f;
+
+		float cosTheta = cos(radian);
+		float sinTheta = sin(radian);
+		return { x * cosTheta - y * sinTheta, x * sinTheta + y * cosTheta };
 	}
 }typedef Vector;
 
@@ -163,7 +168,10 @@ struct OBB
 		oX = { oX.x * extent.x , oX.y * extent.x };
 		oY = { oY.x * extent.y , oY.y * extent.y };
 
-		Vector result = pos - oX - oY;
+		Vector result = pos;
+
+		result.x = result.x - abs(oX.x) - abs(oY.x);
+		result.y = result.y - abs(oX.y) - abs(oY.y);
 
 		return result;
 	}
@@ -177,7 +185,10 @@ struct OBB
 		oX = { oX.x * extent.x , oX.y * extent.x };
 		oY = { oY.x * extent.y , oY.y * extent.y };
 
-		Vector result = pos + oX + oY;
+		Vector result = pos;
+
+		result.x = result.x + abs(oX.x) + abs(oY.x);
+		result.y = result.y + abs(oX.y) + abs(oY.y);
 
 		return result;
 	}
@@ -209,10 +220,10 @@ struct OBB
 		if (Y < -extent.y)
 			Y = -extent.y;
 
-		oX = { oX.x * X , oX.y * X };
-		oY = { oY.x * Y , oY.y * Y };
+		oX = oX * X;
+		oY = oY * Y;
 
-		result = oX + oY;
+		result = oX + oY + pos;
 
 		return result;
 	}

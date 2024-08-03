@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "Collider.h"
 #include "ComponentBase.h"
+#include "Player.h"
 
 
 Enemy::Enemy(RoomRef room) : GameObject(room)
@@ -24,6 +25,7 @@ void Enemy::Update(float deltaTime)
 	if (room == nullptr)
 		return;
 
+	_elapsedPacket += deltaTime;
 	randomWalkDuration += deltaTime;
 
 	if (randomWalkDuration >= randomWalkCoolDonw)
@@ -32,6 +34,11 @@ void Enemy::Update(float deltaTime)
 		randomWalkDuration = 0.f;
 	}
 	
+	if (_elapsedPacket >= _updatePacketCooldown)
+	{
+		_elapsedPacket = 0.f;
+		_dirtyFlag = true;
+	}
 	Super::Update(deltaTime);
 }
 
@@ -85,4 +92,137 @@ void Enemy::BroadcastUpdate()
 void Enemy::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
 {
 	Super::TakeDamage(instigator, damageType, damage);
+}
+
+void Enemy::TickIdle(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_IDLE)
+		return;
+
+	_target = FindClosestTarget();
+
+	GameObjectRef target = _target.lock();
+
+	if (target == nullptr)
+		return;
+
+	_targetPos = target->GetPos();
+
+	if (GetPos().Distance(_targetPos) <= _attackRange)
+	{
+		AttackToTarget(target);
+		SetState(Protocol::MOVE_STATE_SKILL, true);
+	}
+	else
+	{
+
+		MoveToTarget(target);
+	}
+}
+
+void Enemy::TickRun(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_RUN)
+		return;
+
+	float dist = GetPos().Distance(_targetPos);
+	// 충분히 가까울 때
+	if (dist <= 10.f)
+	{
+		Protocol::ObjectInfo newInfo = *GetObjectInfo();
+		newInfo.set_x(_targetPos.x);
+		newInfo.set_y(_targetPos.y);
+
+		SetObjectInfo(newInfo);
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+
+	}
+	else
+	{
+		Vector moveVector = (_targetPos - GetPos()).Normalize();
+
+		moveVector = moveVector * _moveSpeed * deltaTime;
+
+		Protocol::ObjectInfo newInfo = *GetObjectInfo();
+		newInfo.set_x(GetPos().x + moveVector.x);
+		newInfo.set_y(GetPos().y + moveVector.y);
+
+		SetObjectInfo(newInfo);
+	}
+}
+
+void Enemy::TickSkill(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_SKILL)
+		return;
+
+	_attackDelay -= deltaTime;
+	_attackCooldown += deltaTime;
+
+	GameObjectRef target = _target.lock();
+	if (target == nullptr)
+	{
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+	}
+
+	float distance = target->GetPos().Distance(GetPos());
+
+	// 공격 범위 안
+	if (_attackDelay <= 0.f && _attackCooldown >= 2.f)
+	{
+		_attackCooldown = 0.f;
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+	}
+}
+
+void Enemy::TickStun(float deltaTime)
+{
+	Super::TickStun(deltaTime);
+}
+
+PlayerRef Enemy::FindClosestTarget()
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return nullptr;
+
+	return room->FindClosestPlayer(GetPos());
+}
+
+void Enemy::MoveToTarget(GameObjectRef target)
+{
+	if (target == nullptr)
+		return;
+
+	// TODO : 맵 데이터에 맞는 이동방식 필요 
+	Vector targetPos = target->GetPos();
+
+	Vector targetVector = (targetPos - GetPos());
+
+	_targetPos = targetVector * 0.75 + GetPos();
+
+	float yaw = Utils::GetYawByVector(targetPos - GetPos());
+	_objectInfo->set_yaw(yaw);
+	SetState(Protocol::MOVE_STATE_RUN, true);
+}
+
+void Enemy::AttackToTarget(GameObjectRef target)
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	Protocol::S_MONTAGE montagePkt;
+	*montagePkt.mutable_caster() = *GetObjectInfo();
+	montagePkt.set_id(0);
+	montagePkt.set_isstop(false);
+	montagePkt.set_section_num(1);
+	montagePkt.set_scalable(true);
+	montagePkt.set_duration(1.f);
+
+	_attackDelay = 1.f;
+	room->DoAsync(&Room::HandleMontage, montagePkt);
+	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw());
 }

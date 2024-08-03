@@ -20,7 +20,7 @@ public:
 
 public:
 	void			HandleDead(GameObjectRef gameObject);
-	bool			HandleSkill(GameObjectRef caster, uint64 skillid);
+	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 
 private:
