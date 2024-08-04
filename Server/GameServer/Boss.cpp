@@ -7,8 +7,8 @@
 
 Boss::Boss(RoomRef room) : GameObject(room)
 {
-	_objectInfo->set_hp(100000.f);
-	_objectInfo->set_max_hp(100000.f);
+	_objectInfo->set_hp(3000.f);
+	_objectInfo->set_max_hp(3000.f);
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_BOSS);
 }
 

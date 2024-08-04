@@ -20,8 +20,6 @@ void AHoldingSkillManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bIsActivated) return;
-
 	if (AttackTime >= CurrentTime)
 	{
 		if (SkillInstance)

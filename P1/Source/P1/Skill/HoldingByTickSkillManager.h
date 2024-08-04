@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "P1/Skill/SkillManagerBase.h"
-#include "HoldingSkillManager.generated.h"
+#include "P1/Skill/Manager/HoldingSkillManager.h"
+#include "HoldingByTickSkillManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class P1_API AHoldingSkillManager : public ASkillManagerBase
+class P1_API AHoldingByTickSkillManager : public AHoldingSkillManager
 {
 	GENERATED_BODY()
 
@@ -20,9 +20,5 @@ private:
 	float CurrentTime;
 
 public:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 	virtual void StartCasting(float CastingTime) override;
-	virtual void EndSkill();
-	virtual void OnCastingEnd() override;
 };

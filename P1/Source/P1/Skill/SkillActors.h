@@ -20,7 +20,6 @@ private:
 	class UAnimMontage* M_Skill;
 
 public:
-	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 private:
@@ -59,10 +58,8 @@ public:
 	AOnLocationSkill();
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 
-private:
-
+protected:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
@@ -73,4 +70,21 @@ public:
 	virtual void BindCollisionDelegate() override;
 	virtual void SetCollisionSize(FVector2D SizeToSet) override;
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+};
+
+UCLASS()
+class P1_API AOnLocationSkillByTick : public AOnLocationSkill
+{
+	GENERATED_BODY()
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY()
+	class AP1Creature* TargetCreature;
+
+public:
+	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual void OnCollisionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 };

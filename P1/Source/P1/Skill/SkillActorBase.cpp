@@ -57,13 +57,13 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 	Protocol::ObjectInfo* SkillActorInfoLocal = Pkt.mutable_skillactor();
 	Protocol::ObjectInfo* VictimInfo = Pkt.mutable_victim();
 
-	AP1Creature* InstigatorLocal = Cast<AP1Creature>(GetOwner());
+	AP1Creature* InstigatorLocal = Cast<AP1Creature>(InstigatorOfSkill);
 
 	if (InstigatorLocal == nullptr)
 		return;
 
-	bool b1 = Cast<AEnemyBase>(Creature) && Cast<AP1Character>(GetOwner());
-	bool b2 = Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(Creature);
+	bool b1 = Cast<AEnemyBase>(Creature) && Cast<AP1Character>(InstigatorOfSkill);
+	bool b2 = Cast<AEnemyBase>(InstigatorOfSkill) && Cast<AP1Character>(Creature);
 	//if (!(Cast<AEnemyBase>(Creature) && Cast<AP1Character>(GetOwner()) || Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(Creature)))
 	//	return;
 	if (!b1 && !b2)
