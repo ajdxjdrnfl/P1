@@ -97,7 +97,7 @@ bool Collision::CheckCollision(Collision* other)
 		}
 		else if (otherColliderType == EColliderType::COLLIDER_CIRCLE)
 		{
-			return CollisionManager::CheckOverlapCollisionBoxToBox(this, other);
+			return CollisionManager::CheckOverlapCollisionBoxToCircle(this, other);
 		}
 		break;
 	case EColliderType::COLLIDER_CIRCLE:

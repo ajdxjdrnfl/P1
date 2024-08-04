@@ -17,12 +17,13 @@ public:
     SkillInfo& GetSkillInfo() { return _skill->GetSkillInfo(); }
 public:
     // TEST Collider
-    void SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& id);
-
+    void SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& id, float damage);
+    float GetDamage() { return _damage; }
 private:
     weak_ptr<GameObject> _caster;
     
     // SKill ¸®¼Ò½º
     Skill* _skill = nullptr;
+    float _damage = 0.f;
 };
 

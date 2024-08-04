@@ -224,5 +224,5 @@ void Enemy::AttackToTarget(GameObjectRef target)
 
 	_attackDelay = 1.f;
 	room->DoAsync(&Room::HandleMontage, montagePkt);
-	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw());
+	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 20.f);
 }

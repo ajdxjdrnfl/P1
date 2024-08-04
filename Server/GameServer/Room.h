@@ -20,7 +20,7 @@ public:
 
 public:
 	void			HandleDead(GameObjectRef gameObject);
-	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw);
+	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 
 private:
@@ -44,7 +44,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 1;
+	const int32 _maxEnemyCount = 0;
 
 protected:
 	unordered_map<uint64, PlayerRef> _players;
