@@ -62,7 +62,7 @@
 				"SkillNumLocal": 0,
 				"HitNum": -1,
 				"CooldownTime": 0,
-				"Damage": 10,
+				"Damage": 20,
 				"XScale": 100,
 				"YScale": 100,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Attack.Montage_Attack'",
@@ -72,7 +72,7 @@
 				"SkillType": "Normal",
 				"CastingTime": 0,
 				"CCTime": 0,
-				"LifeTime": 10,
+				"LifeTime": 0.2,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorQSkill.BP_WarriorQSkill_C'"
 			},
 			{
@@ -80,16 +80,16 @@
 				"HitNum": -1,
 				"CooldownTime": 3,
 				"Damage": 18,
-				"XScale": 5,
-				"YScale": 5,
+				"XScale": 100,
+				"YScale": 100,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Warrior_W.Montage_Warrior_W'",
-				"CollisionType": "Circle",
+				"CollisionType": "Box",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Casting",
 				"CastingTime": 3,
 				"CCTime": 0,
-				"LifeTime": 0.4,
+				"LifeTime": 0.8,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorWSkill.BP_WarriorWSkill_C'"
 			},
 			{

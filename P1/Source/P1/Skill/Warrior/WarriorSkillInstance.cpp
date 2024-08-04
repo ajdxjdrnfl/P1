@@ -9,6 +9,7 @@
 #include "P1/Skill/Manager/CastingSkillManager.h"
 #include "P1/Skill/Manager/ChargingSkillManager.h"
 #include "P1/Skill/Manager/HoldingSkillManager.h"
+#include "P1/Skill/HoldingByTickSkillManager.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Component/SkillComponent/CharacterSkillComponent.h"
 
@@ -53,7 +54,7 @@ void AWarriorQSkillInstance::SpawnSkill()
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 300.f;
+	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 200.f;
 	Pkt.set_x(SpawnLocation.X);
 	Pkt.set_y(SpawnLocation.Y);
 	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);

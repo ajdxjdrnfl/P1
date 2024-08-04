@@ -21,9 +21,6 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	bool bIsOverlapped;
-	bool bTickDamage;
-
 	UPROPERTY()
 	class AP1Creature* OwnerCreature;
 
@@ -48,10 +45,5 @@ public:
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {};
 	UFUNCTION()
 	virtual void OnCollisionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {};
-
-	FORCEINLINE bool IsOverlapped() { return bIsOverlapped; }
-	FORCEINLINE void SetOverlapped(bool bOverlappedToSet) { bIsOverlapped = bOverlappedToSet; }
-	FORCEINLINE bool IsTickDamage() { return bTickDamage; }
-	FORCEINLINE void SetTickDamage(bool bTickDamageToSet) { bTickDamage = bTickDamageToSet; }
 
 };

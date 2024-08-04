@@ -231,6 +231,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SkillActor->BindCollisionDelegate();
 
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
+	SkillActor->ActivateSkill();
 
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
 

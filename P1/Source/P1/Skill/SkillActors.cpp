@@ -20,6 +20,11 @@ AProjectileSkill::AProjectileSkill()
 	SphereComponent->SetupAttachment(RootComponent);
 }
 
+void AProjectileSkill::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AProjectileSkill::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -100,10 +105,11 @@ void AOnLocationSkillByTick::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsTickDamage() && IsOverlapped() && TargetCreature)
+	for (AP1Creature* Creature : TargetCreatures)
 	{
-		SendCollisionPacketToServer(TargetCreature);
+		SendCollisionPacketToServer(Creature);
 	}
+	
 }
 
 void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -112,9 +118,7 @@ void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* Overla
 	bool check2 = Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
-	TargetCreature = Cast<AP1Creature>(OtherActor);
-
-	SetOverlapped(true);
+	TargetCreatures.Add(Cast<AP1Creature>(OtherActor));
 }
 
 void AOnLocationSkillByTick::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -123,7 +127,5 @@ void AOnLocationSkillByTick::OnCollisionOverlapEnd(UPrimitiveComponent* Overlapp
 	bool check2 = Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
-	TargetCreature = nullptr;
-
-	SetOverlapped(false);
+	TargetCreatures.Remove(Cast<AP1Creature>(OtherActor));
 }

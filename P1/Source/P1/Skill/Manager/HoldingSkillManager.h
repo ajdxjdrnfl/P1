@@ -15,8 +15,9 @@ class P1_API AHoldingSkillManager : public ASkillManagerBase
 	GENERATED_BODY()
 
 private:
+	bool bIsTick;
 	bool bIsActivated;
-	float AttackTime = 0.5f;
+	float AttackTime = 1;
 	float CurrentTime;
 
 public:
@@ -25,4 +26,8 @@ public:
 	virtual void StartCasting(float CastingTime) override;
 	virtual void EndSkill();
 	virtual void OnCastingEnd() override;
+
+	FORCEINLINE bool IsTick() const { return bIsTick; }
+	FORCEINLINE void SetTick(bool bIsTickToSet) { bIsTick = bIsTickToSet; }
+
 };

@@ -9,5 +9,6 @@ void AHoldingByTickSkillManager::StartCasting(float CastingTime)
 {
 	Super::StartCasting(CastingTime);
 
+	SetTick(true);
 	SkillInstance->SpawnSkill();
 }
