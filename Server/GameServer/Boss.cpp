@@ -78,8 +78,8 @@ void Boss::TickIdle(float deltaTime)
 
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
-			SelectSkill();
-			SetState(Protocol::MOVE_STATE_SKILL, true);
+			//SelectSkill();
+			//SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
 		else
 		{

@@ -135,6 +135,11 @@ void AWarriorWSkillInstance::SpawnSkill()
 	Pkt.set_skillid(1);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
+	FVector SpawnLocation = OwnerCreature->GetActorLocation();
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
@@ -167,6 +172,11 @@ void AWarriorESkillInstance::SpawnSkill()
 
 	Pkt.set_damage(GaugeRate * SkillInfo.Damage);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	FVector SpawnLocation = OwnerCreature->GetActorLocation();
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
@@ -243,7 +253,6 @@ void AWarriorRSkillInstance::SpawnSkill()
 			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
 			Pkt.set_id(0);
-
 			Pkt.set_section_num(2);
 
 			SEND_PACKET(Pkt);

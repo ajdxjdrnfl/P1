@@ -91,7 +91,10 @@ void UP1GameInstance::SetSkillInfo(const FSkillInfo& CurrentSkillInfo)
 	if (SkillActor == nullptr) 
 		return;
 
+	FVector2D CollisionSize = FVector2D(CurrentSkillInfo.XScale, CurrentSkillInfo.YScale);
+
 	SkillActor->SkillInfo = CurrentSkillInfo;
+	SkillActor->SetCollisionSize(CollisionSize);
 }
 
 void UP1GameInstance::ConnectToGameServer()
@@ -212,25 +215,24 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 {
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
+	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = GetCreature(Pkt);
 	SpawnParams.Instigator = GetCreature(Pkt);
-
-	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 
 	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(GWorld->SpawnActor(CurrentSkillInfo.SkillActorClass, &SpawnedLocation, &SpawnedRotation, SpawnParams));
 	if (SkillActor == nullptr)
 		return;
 
 	SkillActor->SkillInfo = CurrentSkillInfo;
+	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
+	SkillActor->InitOnSpawn(GetCreature(Pkt));
+	SkillActor->ActivateSkill();
 
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
 
-	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
-
-	SkillActor->InitOnSpawn(GetCreature(Pkt));
-	SkillActor->ActivateSkill();
+	SkillActor->BindCollisionDelegate();
 }
 
 void UP1GameInstance::DespawnSkill(int32 SkillIndex)

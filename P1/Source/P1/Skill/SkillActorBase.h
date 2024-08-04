@@ -28,6 +28,8 @@ public:
 	virtual void InitOnSpawn(class AP1Creature* _OwnerCreature);
 	virtual void ActivateSkill();
 	virtual void SendCollisionPacketToServer(class AP1Creature* Creature);
+	virtual void SetCollisionSize(FVector2D SizeToSet) {};
+	virtual void BindCollisionDelegate() {};
 	Protocol::ObjectInfo* ObjectInfo;
 	//Protocol::SkillInfo* SkillInfo;
 

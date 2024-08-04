@@ -110,8 +110,8 @@ void Enemy::TickIdle(float deltaTime)
 
 	if (GetPos().Distance(_targetPos) <= _attackRange)
 	{
-		AttackToTarget(target);
-		SetState(Protocol::MOVE_STATE_SKILL, true);
+		//AttackToTarget(target);
+		//SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
 	else
 	{

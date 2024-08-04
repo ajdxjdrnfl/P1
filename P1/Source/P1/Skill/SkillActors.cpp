@@ -24,7 +24,7 @@ void AProjectileSkill::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileSkill::OnCollisionOverlapBegin);
+	
 	
 }
 
@@ -50,6 +50,16 @@ void AProjectileSkill::ActivateSkill()
 	bIsActivated = true;
 }
 
+void AProjectileSkill::BindCollisionDelegate()
+{
+	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileSkill::OnCollisionOverlapBegin);
+}
+
+void AProjectileSkill::SetCollisionSize(FVector2D SizeToSet)
+{
+	SphereComponent->SetSphereRadius(SizeToSet.X);
+}
+
 void AProjectileSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	SphereComponent->UpdateOverlaps();
@@ -73,8 +83,7 @@ AOnLocationSkill::AOnLocationSkill()
 void AOnLocationSkill::BeginPlay()
 {
 	Super::BeginPlay();
-
-	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+	
 }
 
 void AOnLocationSkill::Tick(float DeltaTime)
@@ -82,9 +91,20 @@ void AOnLocationSkill::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AOnLocationSkill::BindCollisionDelegate()
+{
+	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+}
+
+void AOnLocationSkill::SetCollisionSize(FVector2D SizeToSet)
+{
+	BoxCollision->Bounds.BoxExtent.X = SizeToSet.X;
+	BoxCollision->Bounds.BoxExtent.Y = SizeToSet.Y;
+}
+
 void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	BoxCollision->UpdateOverlaps();
+	
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);
