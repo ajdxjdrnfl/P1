@@ -27,8 +27,17 @@ private:
     void SelectSkill();
 
     // Skill Tick
+    
+    // Default Attack
     void DefaultAttack(GameObjectRef target);
+
+    // Rush
     void Rush(GameObjectRef target);
+    void Rush_START(GameObjectRef target);
+    void Rush_ING(GameObjectRef target);
+    void Rush_END(GameObjectRef target);
+
+    // Dot Spell
     void DotSkill(GameObjectRef target);
 
     // Gimmick

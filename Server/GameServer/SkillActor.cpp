@@ -25,13 +25,14 @@ void SkillActor::Update(float deltaTime)
 	Super::Update(deltaTime);
 }
 
-void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId)
+void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage)
 {
 	_skill = GResourceManager.GetSkill(casterType, skillId);
 
 	assert(_skill != nullptr);
 	
 	SkillInfo skillInfo = _skill->GetSkillInfo();
+	_damage = damage;
 
 	Collision* collision = new Collision();
 	if (skillInfo.collisionType == EColliderType::COLLIDER_BOX)

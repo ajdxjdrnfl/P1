@@ -2018,6 +2018,7 @@ class S_ATTACK final :
     kSkillactorFieldNumber = 2,
     kVictimFieldNumber = 3,
     kSkillidFieldNumber = 4,
+    kDamageFieldNumber = 5,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -2082,6 +2083,15 @@ class S_ATTACK final :
   void _internal_set_skillid(uint64_t value);
   public:
 
+  // float damage = 5;
+  void clear_damage();
+  float damage() const;
+  void set_damage(float value);
+  private:
+  float _internal_damage() const;
+  void _internal_set_damage(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_ATTACK)
  private:
   class _Internal;
@@ -2094,6 +2104,7 @@ class S_ATTACK final :
     ::Protocol::ObjectInfo* skillactor_;
     ::Protocol::ObjectInfo* victim_;
     uint64_t skillid_;
+    float damage_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3838,6 +3849,26 @@ inline void S_ATTACK::_internal_set_skillid(uint64_t value) {
 inline void S_ATTACK::set_skillid(uint64_t value) {
   _internal_set_skillid(value);
   // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.skillid)
+}
+
+// float damage = 5;
+inline void S_ATTACK::clear_damage() {
+  _impl_.damage_ = 0;
+}
+inline float S_ATTACK::_internal_damage() const {
+  return _impl_.damage_;
+}
+inline float S_ATTACK::damage() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.damage)
+  return _internal_damage();
+}
+inline void S_ATTACK::_internal_set_damage(float value) {
+  
+  _impl_.damage_ = value;
+}
+inline void S_ATTACK::set_damage(float value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.damage)
 }
 
 // -------------------------------------------------------------------

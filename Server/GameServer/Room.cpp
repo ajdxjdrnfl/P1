@@ -7,6 +7,7 @@
 #include "ObjectUtils.h"
 #include "Collision.h"
 #include "Boss.h"
+#include "ResourceManager.h"
 
 RoomRef GRoom = make_shared<Room>();
 
@@ -187,8 +188,18 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 {
 	GameObjectRef caster = GetGameObjectRef(pkt.caster().object_id());
+	
+	Skill* skill =  GResourceManager.GetSkill(pkt.caster().castertype(), pkt.skillid());
 
-	return HandleSkill(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw());
+	if (skill == nullptr)
+		return false;
+
+	float damage = skill->GetSkillInfo().damage;
+
+	if (skill->GetSkillInfo().skillType == Protocol::SKILL_TYPE_CHARGING)
+		damage = pkt.damage();
+
+	return HandleSkill(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw(), damage);
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -215,7 +226,7 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 
 	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
 
-	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo().damageType, skillActorCast->GetSkillInfo().damage);
+	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo().damageType, skillActorCast->GetDamage());
 	
 	{
 		Protocol::S_ATTACK attackPkt;
@@ -223,6 +234,7 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 		*attackPkt.mutable_victim() = *victim->GetObjectInfo();
 		*attackPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
 		attackPkt.set_skillid(skillActorCast->GetSkillInfo().skillNum);
+		attackPkt.set_damage(skillActorCast->GetDamage());
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackPkt);
 		Broadcast(sendBuffer);
@@ -267,7 +279,7 @@ void Room::HandleDead(GameObjectRef gameObject)
 	
 }
 
-bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw)
+bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage)
 {
 	if (caster == nullptr)
 		return false;
@@ -279,7 +291,7 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 	info->set_y(skillActorPos.y);
 	info->set_z(casterInfo->z());
 	info->set_yaw(yaw);
-	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid);
+	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid, damage);
 
 	SpawnSkill(skillActor);
 

@@ -7,8 +7,8 @@
 
 Boss::Boss(RoomRef room) : GameObject(room)
 {
-	_objectInfo->set_hp(100000.f);
-	_objectInfo->set_max_hp(100000.f);
+	_objectInfo->set_hp(1000.f);
+	_objectInfo->set_max_hp(1000.f);
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_BOSS);
 }
 
@@ -209,7 +209,7 @@ void Boss::DefaultAttack(GameObjectRef target)
 		
 		_attackDelay = 1.f;
 		room->DoAsync(&Room::HandleMontage, montagePkt);
-		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, {target->GetPos().x, target->GetPos().y}, target->GetObjectInfo()->yaw());
+		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, {target->GetPos().x, target->GetPos().y}, target->GetObjectInfo()->yaw(), 30.f);
 		
 		_montageType = MONTAGE_TYPE_START;
 	}
@@ -224,7 +224,7 @@ void Boss::Rush(GameObjectRef target)
 {
 	if (target == nullptr)
 		return;
-	
+
 	Vector targetPos = target->GetPos();
 	Vector rushVector = (targetPos - GetPos()).Normalize();
 
@@ -237,6 +237,31 @@ void Boss::Rush(GameObjectRef target)
 	// TODO : Play AnimMontage;
 	{
 		Protocol::S_MONTAGE montagePkt;
+	}
+
+	if (_attackDelay < 0.f)
+	{
+		switch (_montageType)
+		{
+		case MONTAGE_TYPE_START:
+			_montageType = MONTAGE_TYPE_ING;
+			{
+
+			}
+			break;
+
+		case MONTAGE_TYPE_ING:
+			_montageType = MONTAGE_TYPE_END;
+			{
+
+			}
+			break;
+
+		case MONTAGE_TYPE_END:
+
+			break;
+		}
+
 	}
 
 	switch (_montageType)
@@ -256,6 +281,21 @@ void Boss::Rush(GameObjectRef target)
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 		break;
 	}
+}
+
+void Boss::Rush_START(GameObjectRef target)
+{
+
+}
+
+void Boss::Rush_ING(GameObjectRef target)
+{
+
+}
+
+void Boss::Rush_END(GameObjectRef target)
+{
+
 }
 
 void Boss::DotSkill(GameObjectRef target)
