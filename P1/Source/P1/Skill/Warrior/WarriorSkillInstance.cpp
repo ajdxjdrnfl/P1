@@ -184,6 +184,18 @@ void AWarriorESkillInstance::SpawnSkill()
 	SEND_PACKET(Pkt);
 }
 
+void AWarriorRSkillInstance::Init(AP1Creature* _OwnerCreature)
+{
+	Super::Init(_OwnerCreature);
+
+	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr)
+		return;
+
+	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &AWarriorRSkillInstance::OnMontageEnded);
+}
+
 void AWarriorRSkillInstance::UseSkill()
 {
 	if (CastingSkillManager == nullptr)
@@ -258,7 +270,13 @@ void AWarriorRSkillInstance::SpawnSkill()
 
 			SEND_PACKET(Pkt);
 		}
+	}
+}
 
+void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte)
+{
+	if (AnimMontage == M_Skill)
+	{
 		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
 			SubSystem->bCanMove = true;

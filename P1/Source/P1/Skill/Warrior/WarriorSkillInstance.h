@@ -80,7 +80,9 @@ private:
 	class ACastingSkillManager* CastingSkillManager;
 
 public:
+	virtual void Init(class AP1Creature* _OwnerCreature);
 	virtual void UseSkill() override;
 	virtual void SpawnSkill() override;
 
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte) override;
 };

@@ -51,6 +51,7 @@ public:
 	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
+	void SetSkillButton();
 	
 	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() const { return CharacterOverlayWidget; }
 	FORCEINLINE FSkillInfo GetSkillInfoBySkillIndex(int32 SkillIndex) const { return Skills[SkillIndex]; }

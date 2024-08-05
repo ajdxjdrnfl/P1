@@ -72,10 +72,9 @@ void USkillSlotWidget::SetCooldownVisibility(bool bIsVisible)
 	CooldownImage->SetVisibility(SlateVisible);
 }
 
-void USkillSlotWidget::SetSkill(/*TODO: SkillInfo*/)
+void USkillSlotWidget::SetSkillImage(UTexture2D* SkillImageToSet)
 {
-	// SkillImage = SkillInfo.Image;
-	// ...
+	SkillImage->SetBrushFromTexture(SkillImageToSet);
 }
 
 void USkillSlotWidget::SetKeyText(FString Key)

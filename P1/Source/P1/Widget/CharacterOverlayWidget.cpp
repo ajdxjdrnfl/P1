@@ -17,3 +17,8 @@ void UCharacterOverlayWidget::SetCharacterStat(UCharacterStatComponent* StatComp
 {
 	StatWidget->SetCharacterStat(StatComponent);
 }
+
+void UCharacterOverlayWidget::SetSkillButton(TArray<FSkillInfo> SkillArray)
+{
+	SkillWidget->SetSkillButton(SkillArray);
+}

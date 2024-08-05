@@ -42,3 +42,12 @@ void USkillButtonWidget::UseSkill(FSkillInfo SkillInfo)
 	CurrentSkillSlotWidget->SetSkillNum(SkillInfo.SkillNumLocal);
 	CurrentSkillSlotWidget->ActivateSlot(SkillInfo.CooldownTime);
 }
+
+void USkillButtonWidget::SetSkillButton(TArray<FSkillInfo> SkillArray)
+{
+	for (int i = 0; i < SkillArray.Num(); i++)
+	{
+		if (SkillArray[i].Thumbnail == nullptr) return;
+		Cast<USkillSlotWidget>(SkillButtons->GetChildAt(i))->SetSkillImage(SkillArray[i].Thumbnail);
+	}
+}

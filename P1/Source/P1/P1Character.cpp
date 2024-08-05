@@ -109,6 +109,7 @@ void AP1Character::InitOnSpawn(float HealthToSet, float StaminaToSet)
 
 	WidgetComponent->SetCharacterStat(StatComponent);
 	StatComponent->InitStat(HealthToSet, StaminaToSet);
+	WidgetComponent->SetSkillButton();
 }
 
 void AP1Character::OnSpawn(float HealthToSet, float StaminaToSet)

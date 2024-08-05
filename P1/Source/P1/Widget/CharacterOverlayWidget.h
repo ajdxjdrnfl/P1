@@ -25,7 +25,7 @@ private:
 public:
 	void UseSkill(FSkillInfo SkillInfo);
 	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
-
+	void SetSkillButton(TArray<FSkillInfo> SkillArray);
 	FORCEINLINE class UCharacterStatWidget* GetStatWidget() { return StatWidget; }
 	FORCEINLINE class USkillButtonWidget* GetSkillWidget() { return SkillWidget; }
 };

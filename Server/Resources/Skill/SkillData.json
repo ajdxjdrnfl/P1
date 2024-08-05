@@ -112,10 +112,10 @@
 			{
 				"SkillNumLocal": 3,
 				"HitNum": -1,
-				"CooldownTime": 10,
+				"CooldownTime": 2,
 				"Damage": 100,
-				"XScale": 5,
-				"YScale": 5,
+				"XScale": 100,
+				"YScale": 30,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Warrior_R.Montage_Warrior_R'",
 				"CollisionType": "Circle",
 				"CCType": "Normal",

@@ -20,7 +20,7 @@ public:
 
 private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true"))
-	uint16 SkillSlotNum = 12;
+	uint16 SkillSlotNum = 4;
 
 	UPROPERTY(meta = (BindWidget), meta = (AllowPrivateAccess = "true"))
 	class UWrapBox* SkillButtons;
@@ -33,5 +33,5 @@ private:
 
 public:
 	void UseSkill(FSkillInfo SkillInfo);
-
+	void SetSkillButton(TArray<FSkillInfo> SkillArray);
 };

@@ -48,7 +48,7 @@ private:
 public:
 	void ActivateSlot(float time);
 	void SetCooldownVisibility(bool bIsVisible);
-	void SetSkill(/*TODO: SkillInfo*/);
+	void SetSkillImage(class UTexture2D* SkillImageToSet);
 	void SetKeyText(FString Key);
 
 	FORCEINLINE void SetSkillNum(int32 Num) { SkillNum = Num; }

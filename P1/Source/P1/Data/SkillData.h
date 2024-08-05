@@ -109,6 +109,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ASkillActorBase> SkillActorClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UTexture2D* Thumbnail;
+
 };
 
 USTRUCT(BlueprintType)

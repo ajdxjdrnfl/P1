@@ -94,3 +94,8 @@ float UCharacterWidgetComponent::GetGaugeRate()
 
 	return SkillGaugeWidget->GetGaugeRate();
 }
+
+void UCharacterWidgetComponent::SetSkillButton()
+{
+	CharacterOverlayWidget->SetSkillButton(Skills);
+}
