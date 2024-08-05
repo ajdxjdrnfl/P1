@@ -180,6 +180,7 @@
     <ClInclude Include="SkillActor.h" />
     <ClInclude Include="SkillTimer.h" />
     <ClInclude Include="Struct.pb.h" />
+    <ClInclude Include="Structure.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Structure.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

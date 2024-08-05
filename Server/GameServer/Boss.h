@@ -22,6 +22,12 @@ protected:
 private:
     PlayerRef FindClosestTarget();
 
+private:
+    // Start Skill ( previously cast skill )
+    void StartDefaultAttack();
+    void StartRush();
+    void StartSpawnPillars();
+
     // Default Skill
 private:
     void SelectSkill();
@@ -32,13 +38,19 @@ private:
     void DefaultAttack(GameObjectRef target);
 
     // Rush
-    void Rush(GameObjectRef target);
-    void Rush_START(GameObjectRef target);
-    void Rush_ING(GameObjectRef target);
-    void Rush_END(GameObjectRef target);
+    void Rush(GameObjectRef target, float deltaTime);
+    void Rush_START(GameObjectRef target, float deltaTime);
+    void Rush_ING(GameObjectRef target, float deltaTime);
+    void Rush_END(GameObjectRef target, float deltaTime);
 
     // Dot Spell
     void DotSkill(GameObjectRef target);
+    
+    // Pillar Spawn 
+    void SpawnPillars(float deltaTime);
+    void SpawnPillars_START();
+    void SpawnPillars_ING();
+    void SpawnPillars_END();
 
     // Gimmick
 
@@ -56,7 +68,7 @@ private:
     bool _isGimmik = false;
     
     float _moveSpeed = 300.f;
-    float _rushSpeed = 400.f;
+    float _rushSpeed = 450.f;
 
     float _nextStepCooldown = 1.f;
     float _prevStepElapsedTime = 0.f;

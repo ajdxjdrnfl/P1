@@ -37,6 +37,9 @@
     <Filter Include="Game\Resources">
       <UniqueIdentifier>{9db88fef-034c-4c14-b896-9177835f946a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObject\Structure">
+      <UniqueIdentifier>{93ef2adf-d8d4-4fff-b724-8738a50b510b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat">
@@ -149,6 +152,9 @@
     <ClInclude Include="Town.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
+    <ClInclude Include="Structure.h">
+      <Filter>Game\GameObject\Structure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -240,6 +246,9 @@
     </ClCompile>
     <ClCompile Include="Town.cpp">
       <Filter>Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Structure.cpp">
+      <Filter>Game\GameObject\Structure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

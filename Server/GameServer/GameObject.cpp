@@ -61,7 +61,7 @@ void GameObject::Update(float deltaTime)
 		break;
 
 	case Protocol::MOVE_STATE_DEAD:
-		
+		TickDead(deltaTime);
 		break;
 	}
 
@@ -69,13 +69,15 @@ void GameObject::Update(float deltaTime)
 	
 	BroadcastUpdate();
 	_dirtyFlag = false;
+	_teleport = false;
 	
 }
 
-void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool dirtyFlag)
+void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport, bool dirtyFlag)
 {
 	SetState(objectInfo.state(), dirtyFlag);
 	_objectInfo->CopyFrom(objectInfo);
+	_teleport = teleport;
 	_dirtyFlag = dirtyFlag;
 }
 
@@ -94,6 +96,7 @@ void GameObject::BroadcastUpdate()
 		Protocol::S_MOVE updatePkt;
 
 		*updatePkt.mutable_info() = *GetObjectInfo();
+		updatePkt.set_teleport(_teleport);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updatePkt);
 		room->Broadcast(sendBuffer);
@@ -156,6 +159,9 @@ void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damag
 	case Protocol::DAMAGE_TYPE_BUFF:
 	{
 		// TODO : 버프 처리
+		float currentHp = _objectInfo->hp();
+		float hp = min(_objectInfo->max_hp(), currentHp + damage);
+		_objectInfo->set_hp(hp);
 	}
 		break;
 	}

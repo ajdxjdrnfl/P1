@@ -11,7 +11,7 @@ public:
 	virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage);
 
 public:
-	void SetObjectInfo(Protocol::ObjectInfo objectInfo, bool dirtyFlag = false);
+	void SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport = false , bool dirtyFlag = false);
 
 	Protocol::MoveState GetState() { return _objectInfo->state(); }
 	void SetState(Protocol::MoveState state, bool dirtyFlag = false);
@@ -30,6 +30,7 @@ protected:
 	virtual void TickRun(float deltaTime) { }
 	virtual void TickSkill(float deltaTime) { }
 	virtual void TickStun(float deltaTime) { }
+	virtual void TickDead(float deltaTime) { }
 
 	void TickDot(float deltaTime);
 
@@ -38,6 +39,7 @@ protected:
 	weak_ptr<Room> _room;
 
 	bool _dirtyFlag = false;
+	bool _teleport = false;
 	
 public:
 	class ComponentBase* GetComponent(EComponentType type);

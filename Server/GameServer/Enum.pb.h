@@ -83,12 +83,13 @@ enum CasterType : int {
   CASTER_TYPE_MAGE = 2,
   CASTER_TYPE_BOSS = 3,
   CASTER_TYPE_MOB = 4,
+  CASTER_TYPE_STRUCTURE = 5,
   CasterType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   CasterType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool CasterType_IsValid(int value);
 constexpr CasterType CasterType_MIN = CASTER_TYPE_NONE;
-constexpr CasterType CasterType_MAX = CASTER_TYPE_MOB;
+constexpr CasterType CasterType_MAX = CASTER_TYPE_STRUCTURE;
 constexpr int CasterType_ARRAYSIZE = CasterType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CasterType_descriptor();
