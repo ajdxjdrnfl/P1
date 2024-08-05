@@ -67,6 +67,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	class UBoxComponent* BoxCollision;
 
+	UPROPERTY(EditAnywhere)
+	class USphereComponent* SphereCollsion;
+
 public:
 	virtual void BindCollisionDelegate() override;
 	virtual void SetCollisionSize(FVector2D SizeToSet) override;

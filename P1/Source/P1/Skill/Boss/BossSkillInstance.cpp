@@ -5,10 +5,11 @@
 #include "P1/P1Creature.h"
 #include "P1/Skill/SkillActorBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "P1/Enemy/EnemyBoss.h"
 
 void ABossQSkillInstance::SpawnSkill()
 {
-	if (SkillActorClass == nullptr) return;
+	/*if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(0);
@@ -16,12 +17,12 @@ void ABossQSkillInstance::SpawnSkill()
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	SEND_PACKET(Pkt);
+	SEND_PACKET(Pkt);*/
 }
 
 void ABossQSkillInstance::UseSkill()
 {
-	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
+	/*UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
 
 	if (AnimInstance == nullptr || M_Skill == nullptr)
 		return;
@@ -35,12 +36,12 @@ void ABossQSkillInstance::UseSkill()
 		Pkt.set_id(0);
 
 		SEND_PACKET(Pkt);
-	}
+	}*/
 }
 
 void ABossWSkillInstance::SpawnSkill()
 {
-	if (SkillActorClass == nullptr) return;
+	/*if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(1);
@@ -48,10 +49,72 @@ void ABossWSkillInstance::SpawnSkill()
 
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	SEND_PACKET(Pkt);
+	SEND_PACKET(Pkt);*/
+}
+
+void ABossWSkillInstance::SpawnSkillAtLocation(FVector2D Location)
+{
+	if (SkillActorClass == nullptr) return;
+
+	/*Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(1);
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+	ObjectInfoRef->set_x(Location.X);
+	ObjectInfoRef->set_y(Location.Y);
+
+	SEND_PACKET(Pkt);*/
+
+	OwnerCreature->SetWalkSpeed(OwnerCreature->DefaultWalkSpeed);
 }
 
 void ABossWSkillInstance::UseSkill()
 {
-	
+	//PlayVanishMontage();
+}
+
+void ABossWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+}
+
+void ABossWSkillInstance::MoveToMiddle()
+{
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* info = Pkt.mutable_info();
+		// TODO: State
+
+		OwnerCreature->ObjectInfo->set_x(0);
+		OwnerCreature->ObjectInfo->set_y(0);
+		OwnerCreature->ObjectInfo->set_z(0);
+		OwnerCreature->ObjectInfo->set_yaw(0);
+
+		info->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		SEND_PACKET(Pkt);
+	}
+}
+
+void ABossWSkillInstance::SpawnPillar()
+{
+	if (SkillActorClass == nullptr) return;
+
+	for (int i = 0; i < 4; i++)
+	{
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(1);
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+		ObjectInfoRef->set_castertype(Protocol::CASTER_TYPE_STRUCTURE);
+
+		SEND_PACKET(Pkt);
+	}
+}
+
+void ABossWSkillInstance::RushToPillar()
+{
+	OwnerCreature->SetWalkSpeed(800);
+	// Cast<AEnemyBoss>(OwnerCreature)->SetAttackMode(true);
 }

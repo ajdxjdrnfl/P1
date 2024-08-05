@@ -24,4 +24,5 @@ private:
 
 public:
 	virtual void UseSkill(int32 SkillIndex) override;
+	void UsePillarSkill(FVector2D Location);
 };

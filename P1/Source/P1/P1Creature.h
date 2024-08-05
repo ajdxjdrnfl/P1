@@ -53,6 +53,7 @@ public:
 	Protocol::ObjectInfo* TargetInfo;
 
 	float CCTime;
+	float DefaultWalkSpeed;
 
 	virtual void Die();
 
@@ -69,10 +70,12 @@ public:
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	void SetObjectInfo();
+	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) {}
 
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) {}
 	virtual void SetHealthByDamage(float HealthToSet) {}
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) { return FSkillInfo(); }
+	void SetWalkSpeed(float WalkSpeed);
 
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }

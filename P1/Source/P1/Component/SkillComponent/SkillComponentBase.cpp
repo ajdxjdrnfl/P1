@@ -9,6 +9,7 @@
 #include "P1/Skill/Warrior/WarriorSkillInstance.h"
 #include "P1/Skill/Boss/BossSkillInstance.h"
 #include "P1/Skill/Mob/MobSkillInstance.h"
+#include "P1/Skill/Archer/ArcherSkillInstance.h"
 #include "P1/P1GameMode.h"
 
 USkillComponentBase::USkillComponentBase()
@@ -58,6 +59,12 @@ void USkillComponentBase::SetSkills()
 
 			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorRSkillInstance::StaticClass()));
 			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+		}
+		else if (P1Creature->GetClassType() == FName("Archer"))
+		{
+			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherQSkillInstance::StaticClass()));
+			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
 		}
 		else if (P1Creature->GetClassType() == FName("Boss"))
 		{
@@ -152,5 +159,11 @@ void USkillComponentBase::PlayAnimMontageByDuration(UAnimInstance* AnimInstance,
 
 	}
 	AnimInstance->Montage_Play(AnimMontage, PlayRate);
+}
+
+void USkillComponentBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
+{
+	if (SkillInstances[SkillID] == nullptr) return;
+	SkillInstances[SkillID]->ActivateSkill(SkillActor);
 }
 

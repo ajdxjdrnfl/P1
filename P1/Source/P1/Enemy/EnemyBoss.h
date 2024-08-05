@@ -18,6 +18,9 @@ public:
 	virtual void BeginPlay() override;
 
 private:
+	bool bIsAttackMode;
+
+	UPROPERTY()
 	class AAIControllerEnemy* EnemyController;
 
 	UPROPERTY(EditAnywhere)
@@ -27,5 +30,9 @@ public:
 	void MoveToTargetLocation(FVector TargetLoc);
 	void MoveToTargetActor(AActor* TargetActor);
 	void UseSkill(int32 SkillIndex);
+	void UsePillarSkill(FVector2D Location);
+	void SetAttackMode(bool bAttackMode);
 
+	UFUNCTION()
+	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

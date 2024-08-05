@@ -20,7 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-private:
+protected:
 	UPROPERTY()
 	class AP1Creature* OwnerCreature;
 

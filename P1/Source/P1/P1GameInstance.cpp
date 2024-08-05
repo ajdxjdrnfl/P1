@@ -17,6 +17,7 @@
 #include "P1/Enemy/EnemyMob.h"
 #include "P1/Enemy/EnemyBoss.h"
 #include "Containers/Ticker.h"
+#include "P1/Skill/Boss/BossPillar.h"
 
 void UP1GameInstance::Init()
 {
@@ -43,9 +44,16 @@ void UP1GameInstance::Shutdown()
 
 bool UP1GameInstance::Tick(float DeltaTime)
 {
-	for (TMap<uint64, class ASkillActorBase*>::TIterator Iter = Skills.CreateIterator(); Iter; ++Iter)
+	for (TMap<uint64, ASkillActorBase*>::TIterator Iter = Skills.CreateIterator(); Iter; ++Iter)
 	{
-		Iter.RemoveCurrent();
+		if (Iter->Value == nullptr)
+			Iter.RemoveCurrent();
+	}
+
+	for (TMap<uint64, ABossPillar*>::TIterator Iter = BossPillars.CreateIterator(); Iter; ++Iter)
+	{
+		if (Iter->Value == nullptr)
+			Iter.RemoveCurrent();
 	}
 
 	return false;
@@ -195,6 +203,9 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 		case Protocol::CASTER_TYPE_BOSS:
 			Boss = SpawnBoss(Pkt.info(i), Loc);
 			break;
+		case Protocol::CASTER_TYPE_STRUCTURE:
+			BossPillars.Add({info.object_id(), SpawnBossPillar(Pkt.info(i), Loc) });
+			break;
 		default:
 			break;
 		}
@@ -229,6 +240,9 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SkillActor->InitOnSpawn(GetCreature(Pkt));
 	SkillActor->InstigatorOfSkill = GetCreature(Pkt);
 	SkillActor->BindCollisionDelegate();
+	
+	AP1Character* Character = Cast<AP1Character>(GetCreature(Pkt));
+	Character->SetSpawnedSkill(Pkt.skillid(), SkillActor);
 
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
 	SkillActor->ActivateSkill();
@@ -236,16 +250,6 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
 
 	
-}
-
-void UP1GameInstance::DespawnSkill(int32 SkillIndex)
-{
-	if (Skills.Contains(SkillIndex))
-	{
-		ASkillActorBase* CurrentSkillActor = *Skills.Find(SkillIndex);
-		CurrentSkillActor->Destroy();
-		Skills.Remove(SkillIndex);
-	}
 }
 
 void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
@@ -303,6 +307,18 @@ AEnemyBoss* UP1GameInstance::SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	// TODO: Boss hp
 	SpawnedActor->InitOnSpawn(ObjInfo.hp());
+
+	return SpawnedActor;
+}
+
+ABossPillar* UP1GameInstance::SpawnBossPillar(Protocol::ObjectInfo ObjInfo, FVector Loc)
+{
+	ABossPillar* SpawnedActor = Cast<ABossPillar>(GetWorld()->SpawnActor(BossPillarClass, &Loc));
+
+	if (SpawnedActor == nullptr)
+		return nullptr;
+
+	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 
 	return SpawnedActor;
 }

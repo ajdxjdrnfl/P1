@@ -23,7 +23,17 @@ class P1_API ABossWSkillInstance : public ASkillInstanceBase
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY()
+	TArray<ASkillActorBase*> SpawnedPillars;
+
 public:
 	virtual void SpawnSkill() override;
+	virtual void SpawnSkillAtLocation(FVector2D Location) override;
 	virtual void UseSkill() override;
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
+
+	void MoveToMiddle();
+	void SpawnPillar();
+	void RushToPillar();
 };

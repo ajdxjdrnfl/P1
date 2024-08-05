@@ -74,7 +74,10 @@ AOnLocationSkill::AOnLocationSkill()
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollision->SetupAttachment(RootComponent);
-	BoxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	SphereCollsion = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollsion->SetupAttachment(RootComponent);
+
 }
 
 void AOnLocationSkill::BeginPlay()
@@ -114,8 +117,9 @@ void AOnLocationSkillByTick::Tick(float DeltaTime)
 
 void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(GetOwner());
-	bool check2 = Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(OtherActor);
+	if (OwnerCreature == nullptr) return;
+	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(OwnerCreature);
+	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
 	TargetCreatures.Add(Cast<AP1Creature>(OtherActor));
@@ -123,8 +127,9 @@ void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* Overla
 
 void AOnLocationSkillByTick::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(GetOwner());
-	bool check2 = Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(OtherActor);
+	if (OwnerCreature == nullptr) return;
+	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(OwnerCreature);
+	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
 	TargetCreatures.Remove(Cast<AP1Creature>(OtherActor));

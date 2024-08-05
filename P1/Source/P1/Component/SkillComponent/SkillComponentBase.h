@@ -57,7 +57,9 @@ public:
 	virtual void UseSkill(int32 SkillIndex);
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt);
 	void PlayAnimMontageByDuration(class UAnimInstance* AnimInstance, class UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt);
+	void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor);
 
 	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
 	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }
+	FORCEINLINE TArray<class ASkillInstanceBase*> GetSkillInstances() { return SkillInstances; }
 };

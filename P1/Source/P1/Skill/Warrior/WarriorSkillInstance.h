@@ -49,11 +49,12 @@ class P1_API AWarriorWSkillInstance : public ASkillInstanceBase
 
 private:
 	UPROPERTY()
-	class AHoldingSkillManager* HoldingSkillManager;
+	class AHoldingByTickSkillManager* HoldingByTickSkillManager;
 
 public:
 	virtual void UseSkill() override;
 	virtual void SpawnSkill() override;
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
 };
 
 UCLASS()

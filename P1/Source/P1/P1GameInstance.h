@@ -56,7 +56,6 @@ public:
 	void CharacterMove(Protocol::S_MOVE& Pkt);
 
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
-	void DespawnSkill(int32 SkillIndex);
 
 	void AttackTarget(Protocol::S_ATTACK& Pkt);
 
@@ -65,6 +64,7 @@ public:
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
+	class ABossPillar* SpawnBossPillar(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
 	class AP1Creature* GetCreature(Protocol::S_SKILL& Pkt);
 	class AP1Creature* GetCreature(Protocol::S_MONTAGE& Pkt);
@@ -92,6 +92,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyBoss> EnemyBossClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ABossPillar> BossPillarClass;
+
+	UPROPERTY()
+	TMap<uint64, class ABossPillar*> BossPillars;
 
 	TMap<FName, Protocol::CasterType> ClassCasterMap;
 

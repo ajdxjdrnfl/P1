@@ -54,6 +54,7 @@ public:
 	virtual void Die() override;
 	virtual void MoveByServer(float DeltaTime) override;
 	virtual void SetHealthByDamage(float HealthToSet) override;
+	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

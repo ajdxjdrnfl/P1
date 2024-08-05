@@ -38,7 +38,13 @@ public:
 	virtual void SpawnSkill() {};
 
 	UFUNCTION(BlueprintCallable)
+	virtual void SpawnSkillAtLocation(FVector2D Location) {};
+
+	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void StartMontage(int32 SkillIndexLocal);

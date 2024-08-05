@@ -117,19 +117,18 @@ void AWarriorQSkillInstance::UseSkill()
 
 void AWarriorWSkillInstance::UseSkill()
 {
-	if (HoldingSkillManager == nullptr)
+	if (HoldingByTickSkillManager == nullptr)
 	{
-		HoldingSkillManager = Cast<AHoldingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingSkillManager::StaticClass()));
-		HoldingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
+		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 	}
 
-	HoldingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	HoldingSkillManager->StartCasting(SkillInfo.CastingTime);
+	HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+	HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 }
 
 void AWarriorWSkillInstance::SpawnSkill()
 {
-	// TODO: SendPacket
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
@@ -144,6 +143,11 @@ void AWarriorWSkillInstance::SpawnSkill()
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
+}
+
+void AWarriorWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 }
 
 void AWarriorESkillInstance::UseSkill()

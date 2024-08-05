@@ -24,6 +24,7 @@ void AP1Creature::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 // Called every frame
@@ -150,4 +151,9 @@ void AP1Creature::SetObjectInfo()
 	ObjectInfo->set_y(GetActorLocation().Y);
 	ObjectInfo->set_z(GetActorLocation().Z);
 	ObjectInfo->set_yaw(GetActorRotation().Yaw);
+}
+
+void AP1Creature::SetWalkSpeed(float WalkSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }

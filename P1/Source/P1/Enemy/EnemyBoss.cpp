@@ -6,6 +6,9 @@
 #include "P1/Component/SkillComponent/EnemySkillComponent.h"
 #include "P1/Widget/Stat/BossStatWidget.h"
 #include "P1/Component/WidgetComponent/EnemyWidgetComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "P1/P1Character.h"
+#include "P1/P1GameInstance.h"
 
 void AEnemyBoss::BeginPlay()
 {
@@ -19,6 +22,8 @@ void AEnemyBoss::BeginPlay()
 		StatWidget->AddToViewport();
 		GetWidgetComponent()->SetStatWidget(StatWidget);
 	}
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBoss::OnCollisionOverlapBegin);
 }
 
 void AEnemyBoss::MoveToTargetLocation(FVector TargetLoc)
@@ -32,7 +37,7 @@ void AEnemyBoss::MoveToTargetActor(AActor* TargetActor)
 {
 	if (EnemyController == nullptr) return;
 
-	EnemyController->MoveToTargetActor(TargetActor );
+	EnemyController->MoveToTargetActor(TargetActor);
 }
 
 void AEnemyBoss::UseSkill(int32 SkillIndex)
@@ -40,4 +45,21 @@ void AEnemyBoss::UseSkill(int32 SkillIndex)
 	if (SkillComponent == nullptr) return;
 
 	SkillComponent->UseSkill(SkillIndex);
+}
+
+void AEnemyBoss::UsePillarSkill(FVector2D Location)
+{
+	if (SkillComponent == nullptr) return;
+
+	SkillComponent->UsePillarSkill(Location);
+}
+
+void AEnemyBoss::SetAttackMode(bool bAttackMode)
+{
+	bIsAttackMode = bAttackMode;
+}
+
+void AEnemyBoss::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bIsAttackMode) return;
 }

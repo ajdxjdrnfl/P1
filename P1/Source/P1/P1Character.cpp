@@ -193,3 +193,11 @@ void AP1Character::SetHealthByDamage(float HealthToSet)
 		StatComponent->SetHealth(HealthToSet);
 	}
 }
+
+void AP1Character::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
+{
+	if (SkillComponent)
+	{
+		SkillComponent->SetSpawnedSkill(SkillID, SkillActor);
+	}
+}

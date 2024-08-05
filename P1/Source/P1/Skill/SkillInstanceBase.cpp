@@ -29,6 +29,13 @@ void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
 	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
 }
 
+void ASkillInstanceBase::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	if (SkillActor == nullptr) return;
+
+	SkillActor->ActivateSkill();
+}
+
 void ASkillInstanceBase::StartMontage(int32 SkillIndexLocal)
 {
 	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
