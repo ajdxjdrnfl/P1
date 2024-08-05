@@ -59,6 +59,10 @@ void AProjectileSkill::SetCollisionSize(FVector2D SizeToSet)
 
 void AProjectileSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(OwnerCreature);
+	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
+	if (!check1 && !check2) return;
+
 	SphereComponent->UpdateOverlaps();
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
@@ -88,6 +92,7 @@ void AOnLocationSkill::BeginPlay()
 void AOnLocationSkill::BindCollisionDelegate()
 {
 	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+	SphereCollsion->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
 }
 
 void AOnLocationSkill::SetCollisionSize(FVector2D SizeToSet)
@@ -98,6 +103,10 @@ void AOnLocationSkill::SetCollisionSize(FVector2D SizeToSet)
 
 void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AP1Character>(OwnerCreature);
+	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
+	if (!check1 && !check2) return;
+
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);
@@ -133,4 +142,15 @@ void AOnLocationSkillByTick::OnCollisionOverlapEnd(UPrimitiveComponent* Overlapp
 	if (!check1 && !check2) return;
 
 	TargetCreatures.Remove(Cast<AP1Creature>(OtherActor));
+}
+
+void AOnLocationBuffSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	bool check1 = Cast<AEnemyBase>(OtherActor) && Cast<AEnemyBase>(OwnerCreature);
+	bool check2 = Cast<AP1Character>(OwnerCreature) && Cast<AP1Character>(OtherActor);
+
+	if (!check1 && !check2) return;
+	
+	AP1Creature* CurrentCreature = Cast<AP1Creature>(OtherActor);
+	SendCollisionPacketToServer(CurrentCreature);
 }

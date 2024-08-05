@@ -152,30 +152,16 @@ void AWarriorWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 
 void AWarriorESkillInstance::UseSkill()
 {
-	if (ChargingSkillManager == nullptr)
-	{
-		ChargingSkillManager = Cast<AChargingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AChargingSkillManager::StaticClass()));
-		ChargingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
-	}
-
-	ChargingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	ChargingSkillManager->StartCasting(SkillInfo.CastingTime);
+	SpawnSkill();
 }
 
 void AWarriorESkillInstance::SpawnSkill()
 {
-	float GaugeRate = 0.f;
-	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
-	{
-		GaugeRate = SubSystem->CastingSkillGaugeRate;
-	}
-
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
 	Pkt.set_skillid(2);
 
-	Pkt.set_damage(GaugeRate * SkillInfo.Damage);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
 	FVector SpawnLocation = OwnerCreature->GetActorLocation();

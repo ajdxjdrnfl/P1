@@ -69,6 +69,8 @@ void AP1Character::BeginPlay()
 void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+	UE_LOG(LogTemp, Log, TEXT("%f"), ObjectInfo->hp());
 }
 
 void AP1Character::PostInitializeComponents()
