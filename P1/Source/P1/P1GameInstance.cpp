@@ -272,6 +272,14 @@ void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
 	GetCreature(Pkt)->PlayAnimMontageByServer(Pkt);
 }
 
+void UP1GameInstance::KillCreature(Protocol::S_DEAD& pkt)
+{
+	AP1Creature* CreatureToDie = GetCreature(pkt);
+	if (CreatureToDie == nullptr) return;
+
+	CreatureToDie->Die();
+}
+
 AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
 {
 	AEnemyMob* SpawnedMob = Cast<AEnemyMob>(GetWorld()->SpawnActor(EnemyMobClass, &Loc));
@@ -377,6 +385,26 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster
 		break;
 	case Protocol::CASTER_TYPE_MOB:
 		return Enemies[ObjInfo.object_id()];
+		break;
+	default:
+		break;
+	}
+	return nullptr;
+}
+
+AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)
+{
+	switch (Pkt.info().castertype())
+	{
+	case Protocol::CASTER_TYPE_BOSS:
+		return Boss;
+		break;
+	case Protocol::CASTER_TYPE_MAGE:
+	case Protocol::CASTER_TYPE_WARRIOR:
+		return Characters[Pkt.info().object_id()];
+		break;
+	case Protocol::CASTER_TYPE_MOB:
+		return Enemies[Pkt.info().object_id()];
 		break;
 	default:
 		break;

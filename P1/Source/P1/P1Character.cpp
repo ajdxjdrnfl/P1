@@ -70,7 +70,6 @@ void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	UE_LOG(LogTemp, Log, TEXT("%f"), ObjectInfo->hp());
 }
 
 void AP1Character::PostInitializeComponents()
@@ -201,5 +200,13 @@ void AP1Character::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 	if (SkillComponent)
 	{
 		SkillComponent->SetSpawnedSkill(SkillID, SkillActor);
+	}
+}
+
+void AP1Character::Dodge(float Dot, float Cross)
+{
+	if (SkillComponent)
+	{
+		SkillComponent->Dodge(Dot, Cross);
 	}
 }
