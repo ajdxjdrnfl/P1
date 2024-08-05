@@ -7,6 +7,7 @@
 #include "ObjectUtils.h"
 #include "Collision.h"
 #include "Boss.h"
+#include "Structure.h"
 #include "ResourceManager.h"
 
 RoomRef GRoom = make_shared<Room>();
@@ -289,7 +290,7 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
 	info->set_x(skillActorPos.x);
 	info->set_y(skillActorPos.y);
-	info->set_z(casterInfo->z());
+	info->set_z(100.f);
 	info->set_yaw(yaw);
 	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid, damage);
 
@@ -313,6 +314,29 @@ bool Room::HandleMontage(Protocol::S_MONTAGE pkt)
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 	Broadcast(sendBuffer);
 	return false;
+}
+
+bool Room::HandleSpawn(Protocol::S_SPAWN pkt)
+{
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	Broadcast(sendBuffer);
+	return false;
+}
+
+StructureRef Room::SpawnStructure(Vector pos)
+{
+	StructureRef structure = ObjectUtils::CreateStructure(GetRoomRef());
+	
+	structure->GetObjectInfo()->set_x(pos.x);
+	structure->GetObjectInfo()->set_y(pos.y);
+	structure->GetObjectInfo()->set_z(100.f);
+	structure->GetObjectInfo()->set_yaw(0.f);
+
+	uint64 id = structure->GetObjectInfo()->object_id();
+	_structures[id] = structure;
+
+
+	return structure;
 }
 
 void Room::EnterGame(PlayerRef player)
@@ -367,7 +391,7 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	player->GetObjectInfo()->set_x(Utils::GetRandom(-500.f, 500.f));
 	player->GetObjectInfo()->set_y(Utils::GetRandom(-500.f, 500.f));
-	player->GetObjectInfo()->set_z(500.f);
+	player->GetObjectInfo()->set_z(100.f);
 
 	player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 }
@@ -427,6 +451,9 @@ GameObjectRef Room::GetGameObjectRef(uint64 id)
 
 	if (_boss->GetObjectInfo()->object_id() == id)
 		return _boss;
+
+	if (_structures.find(id) != _structures.end())
+		return _structures[id];
 
 	return nullptr;
 }

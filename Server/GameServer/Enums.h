@@ -28,5 +28,6 @@ enum EBossSkillType : uint8
 	EBST_NONE,
 	EBST_DEFAULT,
 	EBST_RUSH,
+	EBST_SPAWNPILLAS,
 	EBST_MAX
 };

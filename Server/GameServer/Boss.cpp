@@ -4,6 +4,7 @@
 #include "Collider.h"
 #include "Player.h"
 #include "Room.h"
+#include "Structure.h"
 
 Boss::Boss(RoomRef room) : GameObject(room)
 {
@@ -51,11 +52,6 @@ void Boss::Init()
 	Super::Init();
 }
 
-void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
-{
-	Super::TakeDamage(instigator, damageType, damage);
-}
-
 void Boss::TickIdle(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
@@ -63,7 +59,7 @@ void Boss::TickIdle(float deltaTime)
 	// 1. 체력 체크 후 기믹 발동 여부 확인
 	if(false)
 	{
-
+		
 	}
 	else
 	// 2. Target쪽으로 이동 / 기본공격
@@ -78,8 +74,8 @@ void Boss::TickIdle(float deltaTime)
 
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
-			//SelectSkill();
-			//SetState(Protocol::MOVE_STATE_SKILL, true);
+			SelectSkill();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
 		else
 		{
@@ -148,8 +144,10 @@ void Boss::TickSkill(float deltaTime)
 			DefaultAttack(target);
 			break;
 		case EBST_RUSH:
-			Rush(target);
+			Rush(target, deltaTime);
 			break;
+		case EBST_SPAWNPILLAS:
+			SpawnPillars(deltaTime);
 		}
 		_attackCooldown = 0.f;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
@@ -184,11 +182,70 @@ PlayerRef Boss::FindClosestTarget()
 	return room->FindClosestPlayer(GetPos());
 }
 
-void Boss::SelectSkill()
+void Boss::StartDefaultAttack()
 {
-	_skillType = EBST_DEFAULT;
+	_attackDelay = 2.f;
+}
+
+void Boss::StartRush()
+{
+	{
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *GetObjectInfo();
+		montagePkt.set_id(1);
+		montagePkt.set_isstop(false);
+		montagePkt.set_section_num(1);
+		montagePkt.set_scalable(true);
+		montagePkt.set_duration(2.f);
+	}
+	{
+		Protocol::ObjectInfo info;
+		info.CopyFrom(*GetObjectInfo());
+		info.set_x(0.f);
+		info.set_y(0.f);
+
+		SetObjectInfo(info, true, true);
+	}
 	_attackDelay = 2.f;
 
+	
+}
+
+void Boss::StartSpawnPillars()
+{
+	// 아래로 들어가기
+	RoomRef room = GetRoomRef();
+	
+	if (room == nullptr)
+		return;
+
+	{
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *GetObjectInfo();
+		montagePkt.set_id(1);
+		montagePkt.set_isstop(false);
+		montagePkt.set_section_num(1);
+		montagePkt.set_scalable(true);
+		montagePkt.set_duration(1.f);
+		room->HandleMontage(montagePkt);
+	}
+	_attackDelay = 1.f;
+}
+
+void Boss::SelectSkill()
+{
+	// Default
+	//_skillType = EBST_DEFAULT;
+	//StartDefaultAttack();
+
+	// Rush
+	//_skillType = EBST_RUSH;
+	//StartRush();
+
+	// SpawnPillars
+
+	_skillType = EBST_SPAWNPILLAS;
+	StartSpawnPillars();
 }
 
 void Boss::DefaultAttack(GameObjectRef target)
@@ -220,45 +277,68 @@ void Boss::DefaultAttack(GameObjectRef target)
 	}
 }
 
-void Boss::Rush(GameObjectRef target)
+void Boss::Rush(GameObjectRef target, float deltaTime)
 {
 	if (target == nullptr)
 		return;
 
-	Vector targetPos = target->GetPos();
-	Vector rushVector = (targetPos - GetPos()).Normalize();
+	RoomRef room = GetRoomRef();
 
-	rushVector = rushVector * _rushSpeed;
-
-	// TODO : Spawn SkillActor;
-	{
-		Protocol::S_SKILL skillPkt;
-	}
-	// TODO : Play AnimMontage;
-	{
-		Protocol::S_MONTAGE montagePkt;
-	}
+	if (room == nullptr)
+		return;
 
 	if (_attackDelay < 0.f)
 	{
+		Protocol::S_MONTAGE montagePkt;
+
 		switch (_montageType)
 		{
+		case MONTAGE_TYPE_NONE:
+			_montageType = MONTAGE_TYPE_START;
+			{
+				// 준비자세
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_section_num(4);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
+			break;
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
 			{
-
+				// 달려가기
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_section_num(5);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(10.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 10.f;
 			}
 			break;
 
 		case MONTAGE_TYPE_ING:
 			_montageType = MONTAGE_TYPE_END;
 			{
-
+				// 후딜레이
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_section_num(6);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
 			}
 			break;
 
 		case MONTAGE_TYPE_END:
-
+			
 			break;
 		}
 
@@ -267,38 +347,179 @@ void Boss::Rush(GameObjectRef target)
 	switch (_montageType)
 	{
 	case MONTAGE_TYPE_START:
-
+		Rush_START(target, deltaTime);
 		break;
 
 	case MONTAGE_TYPE_ING:
-
+		Rush_ING(target, deltaTime);
 		break;
 
 	case MONTAGE_TYPE_END:
+		Rush_END(target, deltaTime);
+		break;
 
-		break;
-	default:
-		SetState(Protocol::MOVE_STATE_IDLE, true);
-		break;
 	}
 }
 
-void Boss::Rush_START(GameObjectRef target)
+void Boss::Rush_START(GameObjectRef target, float deltaTime)
 {
+	// 패링 처리
 
 }
 
-void Boss::Rush_ING(GameObjectRef target)
+void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 {
+	float dist = GetPos().Distance(_targetPos);
+	// 충분히 가까울 때
+	if (dist <= 10.f)
+	{
+		Protocol::ObjectInfo newInfo = *GetObjectInfo();
+		newInfo.set_x(_targetPos.x);
+		newInfo.set_y(_targetPos.y);
 
+		SetObjectInfo(newInfo, true);
+		_attackDelay = 0.f;
+	}
+	else
+	{
+		Vector moveVector = (_targetPos - GetPos()).Normalize();
+
+		moveVector = moveVector * _rushSpeed * deltaTime;
+
+		Protocol::ObjectInfo newInfo = *GetObjectInfo();
+		newInfo.set_x(GetPos().x + moveVector.x);
+		newInfo.set_y(GetPos().y + moveVector.y);
+
+		SetObjectInfo(newInfo);
+	}
 }
 
-void Boss::Rush_END(GameObjectRef target)
+void Boss::Rush_END(GameObjectRef target, float deltaTime)
 {
 
 }
 
 void Boss::DotSkill(GameObjectRef target)
+{
+
+}
+
+void Boss::SpawnPillars(float deltaTime)
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+	
+	if (_attackDelay <= 0.f)
+	{
+		switch (_montageType)
+		{
+		case MONTAGE_TYPE_NONE:
+			_montageType = MONTAGE_TYPE_START;
+			{
+				Protocol::ObjectInfo info;
+				info.CopyFrom(*GetObjectInfo());
+				info.set_x(0.f);
+				info.set_y(0.f);
+
+				SetObjectInfo(info, true, true);
+			}
+			{
+				// 위로 올라오기
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(2);
+				montagePkt.set_isstop(false);
+				montagePkt.set_section_num(1);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(1.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 1.f;
+			}
+			break;
+
+		case MONTAGE_TYPE_START:
+			_montageType = MONTAGE_TYPE_ING;
+			{
+				// 필라 스폰
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(3);
+				montagePkt.set_isstop(false);
+				montagePkt.set_section_num(1);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
+			{
+				Protocol::S_SPAWN spawnPkt;
+
+				Vector d[4] =
+				{
+					{1, 1},
+					{1, -1},
+					{-1, 1},
+					{-1, -1}
+				};
+
+				for (int32 i = 0; i < 4; i++)
+				{
+					Vector pos = d[i] * 1000;
+					StructureRef structure = room->SpawnStructure(pos);
+					Protocol::ObjectInfo* info = spawnPkt.add_info();
+					info->CopyFrom(*structure->GetObjectInfo());
+
+				}
+
+				room->DoAsync(&Room::HandleSpawn, spawnPkt);
+			}
+			break;
+
+		case MONTAGE_TYPE_ING:
+			_montageType = MONTAGE_TYPE_END;
+
+			break;
+		case MONTAGE_TYPE_END:
+		{
+			_skillType = EBST_RUSH;
+			_montageType = MONTAGE_TYPE_NONE;
+			StartRush();
+		}
+			break;
+		}
+	}
+	
+	switch (_montageType)
+	{
+	case MONTAGE_TYPE_START:
+		SpawnPillars_START();
+		break;
+
+	case MONTAGE_TYPE_ING:
+		SpawnPillars_ING();
+		break;
+
+	case MONTAGE_TYPE_END:
+		SpawnPillars_END();
+		break;
+	}
+		
+	
+}
+
+void Boss::SpawnPillars_START()
+{
+
+}
+
+void Boss::SpawnPillars_ING()
+{
+
+}
+
+void Boss::SpawnPillars_END()
 {
 
 }
@@ -318,4 +539,38 @@ void Boss::MoveToTarget(GameObjectRef target)
 	float yaw = Utils::GetYawByVector(targetPos - GetPos());
 	_objectInfo->set_yaw(yaw);
 	SetState(Protocol::MOVE_STATE_RUN, true);
+}
+
+void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
+{
+	Super::TakeDamage(instigator, damageType, damage);
+
+	RoomRef room = GetRoomRef();
+
+	switch (_skillType)
+	{
+	case EBossSkillType::EBST_RUSH:
+	{
+		switch (_montageType)
+		{
+		case MONTAGE_TYPE_ING:
+		{
+			_montageType = MONTAGE_TYPE_END;
+			{
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_section_num(4);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
+		}
+			break;
+		}
+	}
+		break;
+	}
 }

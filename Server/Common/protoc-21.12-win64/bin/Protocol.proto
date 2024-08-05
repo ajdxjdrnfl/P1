@@ -39,6 +39,7 @@ message S_DESPAWN
 message S_MOVE
 {
 	ObjectInfo info = 1;
+	bool teleport = 2;
 }
 
 message C_MOVE
@@ -96,4 +97,9 @@ message S_MONTAGE
 	uint64 section_num = 4;
 	bool scalable = 5; // 애니메이션 실행 시간 조정 - false : 클라 속도대로 실행, true : duration동안 재생
 	float duration = 6; 
+}
+
+message S_DEAD
+{
+	ObjectInfo info = 1;
 }

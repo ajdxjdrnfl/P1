@@ -22,6 +22,9 @@ public:
 	void			HandleDead(GameObjectRef gameObject);
 	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
+	bool			HandleSpawn(Protocol::S_SPAWN pkt);
+
+	StructureRef	SpawnStructure(Vector pos);
 
 private:
 	void			EnterGame(PlayerRef player);
@@ -50,6 +53,7 @@ protected:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, EnemyRef> _enemies;
 	unordered_map<uint64, SkillActorRef> _skillActors;
+	unordered_map<uint64, StructureRef> _structures;
 	BossRef _boss;
 
 };

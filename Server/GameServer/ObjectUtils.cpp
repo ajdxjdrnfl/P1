@@ -6,6 +6,7 @@
 #include "Room.h"
 #include "GameSession.h"
 #include "Boss.h"
+#include "Structure.h"
 
 atomic<int64> ObjectUtils::s_idGenerator = 1;
 
@@ -57,4 +58,16 @@ BossRef ObjectUtils::CreateBoss(RoomRef room)
 	boss->Init();
 
 	return boss;
+}
+
+StructureRef ObjectUtils::CreateStructure(RoomRef room)
+{
+	const int64 newId = s_idGenerator.fetch_add(1);
+
+	StructureRef structure = make_shared<Structure>(room);
+	structure->GetObjectInfo()->set_object_id(newId);
+
+	structure->Init();
+
+	return structure;
 }
