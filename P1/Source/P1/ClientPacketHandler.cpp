@@ -113,3 +113,8 @@ bool Handle_S_MONTAGE(PacketSessionRef& session, Protocol::S_MONTAGE& pkt)
 
 	return false;
 }
+
+bool Handle_S_DEAD(PacketSessionRef& session, Protocol::S_DEAD& pkt)
+{
+	return false;
+}

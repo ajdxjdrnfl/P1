@@ -152,6 +152,7 @@ void USkillComponentBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 
 void USkillComponentBase::PlayAnimMontageByDuration(UAnimInstance* AnimInstance, UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt)
 {
+	if (AnimInstance == nullptr || AnimMontage == nullptr) return;
 	float PlayRate = 1;
 	if (pkt.scalable())
 	{

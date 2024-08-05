@@ -136,7 +136,7 @@ void Boss::TickSkill(float deltaTime)
 	float distance = target->GetPos().Distance(GetPos());
 
 	// 공격 범위 안
-	if (distance <= _attackRange && _attackCooldown >= 2.f)
+	if (1)
 	{
 		switch (_skillType)
 		{
