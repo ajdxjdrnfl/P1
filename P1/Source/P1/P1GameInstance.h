@@ -61,6 +61,8 @@ public:
 
 	void PlayMontage(Protocol::S_MONTAGE& Pkt);
 
+	void KillCreature(Protocol::S_DEAD& pkt);
+
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
@@ -69,6 +71,7 @@ public:
 	class AP1Creature* GetCreature(Protocol::S_SKILL& Pkt);
 	class AP1Creature* GetCreature(Protocol::S_MONTAGE& Pkt);
 	class AP1Creature* GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster);
+	class AP1Creature* GetCreature(Protocol::S_DEAD& Pkt);
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;

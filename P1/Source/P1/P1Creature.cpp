@@ -61,7 +61,20 @@ void AP1Creature::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AP1Creature::Die()
 {
-	// TODO: Via Server
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr || M_Die == nullptr)
+		return;
+
+	{
+		Protocol::C_MONTAGE Pkt;
+		Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+		CasterInfo->set_object_id(ObjectInfo->object_id());
+		Pkt.set_isstop(false);
+
+		SEND_PACKET(Pkt);
+	}
+
 	TArray<AActor*> Actors;
 	GetAttachedActors(Actors);
 	for (AActor* Actor : Actors)

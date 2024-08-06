@@ -62,7 +62,7 @@ void UStatComponentBase::SetCurrentHealth(float HealthToSet)
 
 	if (Creature->ObjectInfo->hp() <= 0)
 	{
-		//OwnerCreature->
+		Creature->Die();
 	}
 }
 

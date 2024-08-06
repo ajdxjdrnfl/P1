@@ -45,6 +45,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	FName ClassType;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	class UAnimMontage* M_Die;
+
 public:
 	UPROPERTY(BlueprintReadWrite)
 	ECreatureState CreatureState;

@@ -22,6 +22,7 @@ public:
 
 	bool bCanMove = true;
 	bool bCanUseSkill = true;
+	bool bCanMoveByAnimMontage = true;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	void SetKeyCanUse(int32 SkillIndex);

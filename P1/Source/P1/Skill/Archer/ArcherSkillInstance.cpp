@@ -36,7 +36,7 @@ void AArcherQSkillInstance::SpawnSkill()
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
-	Pkt.set_skillid(2);
+	Pkt.set_skillid(0);
 
 	Pkt.set_damage(GaugeRate * SkillInfo.Damage);
 	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();

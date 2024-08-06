@@ -38,9 +38,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterWidgetComponent* WidgetComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Editable, meta = (AllowPrivateAccess = "true"))
-	class UAnimMontage* M_Die;
-
 public:
 	void OnSpawn(float HealthToSet, float StaminaToSet);
 	void InitOnSpawn(float HealthToSet, float StaminaToSet);
@@ -55,6 +52,7 @@ public:
 	virtual void MoveByServer(float DeltaTime) override;
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
+	void Dodge(float Dot, float Cross);
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

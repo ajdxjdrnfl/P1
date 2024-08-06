@@ -38,9 +38,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UEnemySkillComponent* SkillComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Editable, meta = (AllowPrivateAccess = "true"))
-	class UAnimMontage* M_Die;
-
 public:
 	void InitOnSpawn(float HealthToSet);
 	void OnSpawn(float HealthToSet);

@@ -116,5 +116,12 @@ bool Handle_S_MONTAGE(PacketSessionRef& session, Protocol::S_MONTAGE& pkt)
 
 bool Handle_S_DEAD(PacketSessionRef& session, Protocol::S_DEAD& pkt)
 {
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->KillCreature(pkt);
+
 	return false;
 }

@@ -17,6 +17,7 @@
 #include "InputMappingContext.h"
 #include "InputAction.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -84,6 +85,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(WSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnWSkillReleased);
 		EnhancedInputComponent->BindAction(ESkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnESkillReleased);
 		EnhancedInputComponent->BindAction(RSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnRSkillReleased);
+
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnDodgeTriggered);
 	}
 	else
 	{
@@ -107,7 +110,7 @@ void AP1PlayerController::OnSetDestinationTriggered()
 {
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (!SubSystem->bCanMove)
+		if (!SubSystem->bCanMove || !SubSystem->bCanMoveByAnimMontage)
 		{
 			return;
 		}
@@ -143,7 +146,7 @@ void AP1PlayerController::OnSetDestinationReleased()
 {
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (!SubSystem->bCanMove)
+		if (!SubSystem->bCanMove || !SubSystem->bCanMoveByAnimMontage)
 		{
 			return;
 		}
@@ -215,6 +218,20 @@ void AP1PlayerController::OnRSkillTriggered()
 
 void AP1PlayerController::OnRSkillReleased()
 {
+}
+
+void AP1PlayerController::OnDodgeTriggered()
+{
+	if (OwnerCharacter == nullptr) return;
+
+	FVector TargetVector = (CachedDestination - OwnerCharacter->GetActorLocation()).GetSafeNormal2D();
+	FVector CurrentVector = OwnerCharacter->GetActorForwardVector().GetSafeNormal2D();
+	FVector2D TargetVector2D = FVector2D(TargetVector.X, TargetVector.Y);
+	FVector2D CurrentVector2D = FVector2D(CurrentVector.X, CurrentVector.Y);
+
+	double Dot = UKismetMathLibrary::DotProduct2D(CurrentVector2D, TargetVector2D);
+	double Cross = UKismetMathLibrary::CrossProduct2D(CurrentVector2D, TargetVector2D);
+	OwnerCharacter->Dodge(Dot, Cross);
 }
 
 void AP1PlayerController::SendMovePacketToServer()

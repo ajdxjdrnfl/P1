@@ -62,13 +62,6 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 	if (InstigatorLocal == nullptr)
 		return;
 
-	bool b1 = Cast<AEnemyBase>(Creature) && Cast<AP1Character>(InstigatorOfSkill);
-	bool b2 = Cast<AEnemyBase>(InstigatorOfSkill) && Cast<AP1Character>(Creature);
-	//if (!(Cast<AEnemyBase>(Creature) && Cast<AP1Character>(GetOwner()) || Cast<AEnemyBase>(GetOwner()) && Cast<AP1Character>(Creature)))
-	//	return;
-	if (!b1 && !b2)
-		return;
-
 	UP1GameInstance* P1GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance());
 	if (P1GameInstance == nullptr)
 		return;
