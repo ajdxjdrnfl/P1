@@ -134,7 +134,6 @@ void AWarriorWSkillInstance::UseSkill()
 
 void AWarriorWSkillInstance::SpawnSkill()
 {
-	if (CurrentSkillActor) return;
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
@@ -161,7 +160,8 @@ void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 {
 	if ((AnimMontage == M_Skill) && CurrentSkillActor)
 	{
-		CurrentSkillActor->Destroy();
+		bool b = CurrentSkillActor->Destroy();
+		UE_LOG(LogTemp, Log, TEXT("%d"), b);
 		CurrentSkillActor = nullptr;
 	}
 }

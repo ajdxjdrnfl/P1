@@ -110,7 +110,7 @@ void AP1PlayerController::OnSetDestinationTriggered()
 {
 	if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		if (!SubSystem->bCanMove || !SubSystem->bCanMoveByAnimMontage)
+		if (!SubSystem->CanMove())
 		{
 			return;
 		}

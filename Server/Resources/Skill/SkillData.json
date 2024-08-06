@@ -83,7 +83,7 @@
 				"SkillNumLocal": 1,
 				"HitNum": -1,
 				"CooldownTime": 3,
-				"Damage": 18,
+				"Damage": 1,
 				"XScale": 100,
 				"YScale": 100,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Warrior_W.Montage_Warrior_W'",

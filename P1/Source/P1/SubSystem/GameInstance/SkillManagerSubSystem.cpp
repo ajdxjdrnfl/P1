@@ -39,3 +39,8 @@ bool USkillManagerSubSystem::CanUseSkill(int32 SkillIndex)
 	if (!bCanUseSkill) return false;
 	return SkillCanUseMapByCooldownTime[SkillIndex] && SkillCanUseMapByCasting[SkillIndex];
 }
+
+bool USkillManagerSubSystem::CanMove()
+{
+	return bCanMove && bCanMoveByAnimMontage;
+}

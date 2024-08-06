@@ -92,7 +92,9 @@ void AOnLocationSkill::BeginPlay()
 void AOnLocationSkill::BindCollisionDelegate()
 {
 	BoxCollision->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+	BoxCollision->OnComponentEndOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapEnd);
 	SphereCollsion->OnComponentBeginOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapBegin);
+	SphereCollsion->OnComponentEndOverlap.AddUniqueDynamic(this, &AOnLocationSkill::OnCollisionOverlapEnd);
 }
 
 void AOnLocationSkill::SetCollisionSize(FVector2D SizeToSet)
@@ -119,6 +121,9 @@ void AOnLocationSkillByTick::Tick(float DeltaTime)
 
 	for (AP1Creature* Creature : TargetCreatures)
 	{
+		ObjectInfo->set_x(GetActorLocation().X);
+		ObjectInfo->set_y(GetActorLocation().Y);
+		ObjectInfo->set_z(GetActorLocation().Z);
 		SendCollisionPacketToServer(Creature);
 	}
 	
@@ -131,7 +136,7 @@ void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* Overla
 	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
-	TargetCreatures.Add(Cast<AP1Creature>(OtherActor));
+	TargetCreatures.AddUnique(Cast<AP1Creature>(OtherActor));
 }
 
 void AOnLocationSkillByTick::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

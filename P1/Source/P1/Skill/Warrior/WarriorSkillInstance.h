@@ -51,10 +51,14 @@ private:
 	UPROPERTY()
 	class AHoldingByTickSkillManager* HoldingByTickSkillManager;
 
+	UPROPERTY()
+	class ASkillActorBase* CurrentSkillActor;
+
 public:
 	virtual void UseSkill() override;
 	virtual void SpawnSkill() override;
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted) override;
 };
 
 UCLASS()

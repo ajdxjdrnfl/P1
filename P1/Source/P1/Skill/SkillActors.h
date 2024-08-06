@@ -74,6 +74,7 @@ public:
 	virtual void BindCollisionDelegate() override;
 	virtual void SetCollisionSize(FVector2D SizeToSet) override;
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual void OnCollisionOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override {}
 };
 
 UCLASS()

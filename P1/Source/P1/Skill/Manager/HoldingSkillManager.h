@@ -19,6 +19,7 @@ private:
 	bool bIsActivated;
 	float AttackTime = 1;
 	float CurrentTime;
+	TArray<class ASkillActorBase*> SkillActors;
 
 public:
 	virtual void BeginPlay() override;
