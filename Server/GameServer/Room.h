@@ -56,6 +56,8 @@ protected:
 	unordered_map<uint64, StructureRef> _structures;
 	BossRef _boss;
 
+	GameTickManager _tickManager;
+
 };
 
 extern RoomRef GRoom;

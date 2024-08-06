@@ -23,6 +23,7 @@ Room::~Room()
 void Room::Init()
 {
 	// TODO : enemy Ãß°¡
+	_tickManager.Init();
 	for (int32 i = 0; i < _maxEnemyCount; i++)
 	{
 		EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
@@ -36,6 +37,10 @@ void Room::Init()
 
 void Room::Update(float deltaTime)
 {
+	_tickManager.Update();
+
+	deltaTime = _tickManager.GetDeltaTime();
+
 	for (auto& item : _players)
 	{
 		PlayerRef player = item.second;
@@ -53,6 +58,8 @@ void Room::Update(float deltaTime)
 	}
 
 	_boss->Update(deltaTime);
+
+	DoTimer(64, &Room::Update, deltaTime);
 }
 
 bool Room::HandleEnterGame(GameSessionRef session)
@@ -457,3 +464,4 @@ GameObjectRef Room::GetGameObjectRef(uint64 id)
 
 	return nullptr;
 }
+
