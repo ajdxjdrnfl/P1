@@ -133,6 +133,7 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 {
 	if (this == nullptr) return;
 
+	ObjectInfo->set_state(Pkt.info().state());
 	FTransform TargetTransform;
 	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
 	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);

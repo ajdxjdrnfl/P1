@@ -116,6 +116,7 @@ void AP1PlayerController::OnSetDestinationTriggered()
 		}
 	}
 
+	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_RUN);
 	FollowTime += GetWorld()->GetDeltaSeconds();
 	
 	FHitResult Hit;
@@ -224,6 +225,9 @@ void AP1PlayerController::OnDodgeTriggered()
 {
 	if (OwnerCharacter == nullptr) return;
 
+	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_JUMP);
+	SendMovePacketToServer();
+
 	FVector TargetVector = (CachedDestination - OwnerCharacter->GetActorLocation()).GetSafeNormal2D();
 	FVector CurrentVector = OwnerCharacter->GetActorForwardVector().GetSafeNormal2D();
 	FVector2D TargetVector2D = FVector2D(TargetVector.X, TargetVector.Y);
@@ -232,6 +236,10 @@ void AP1PlayerController::OnDodgeTriggered()
 	double Dot = UKismetMathLibrary::DotProduct2D(CurrentVector2D, TargetVector2D);
 	double Cross = UKismetMathLibrary::CrossProduct2D(CurrentVector2D, TargetVector2D);
 	OwnerCharacter->Dodge(Dot, Cross);
+	
+	
+
+	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 }
 
 void AP1PlayerController::SendMovePacketToServer()
