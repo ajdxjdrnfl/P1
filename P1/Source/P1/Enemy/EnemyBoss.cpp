@@ -24,6 +24,8 @@ void AEnemyBoss::BeginPlay()
 	}
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBoss::OnCollisionOverlapBegin);
+
+	BossSkillState.SetNum(4);
 }
 
 void AEnemyBoss::MoveToTargetLocation(FVector TargetLoc)
@@ -57,6 +59,24 @@ void AEnemyBoss::UsePillarSkill(FVector2D Location)
 void AEnemyBoss::SetAttackMode(bool bAttackMode)
 {
 	bIsAttackMode = bAttackMode;
+}
+
+void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
+{
+	if (pkt.section_num() < 1)
+	{
+		Super::PlayAnimMontageByServer(pkt);
+		return;
+	}
+
+	if (pkt.isstop())
+	{
+		BossSkillState[pkt.id()] = 0;
+	}
+	else
+	{
+		BossSkillState[pkt.id()] = pkt.section_num();
+	}
 }
 
 void AEnemyBoss::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
