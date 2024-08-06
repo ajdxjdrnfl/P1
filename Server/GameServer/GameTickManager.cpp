@@ -13,6 +13,8 @@ void GameTickManager::Update()
     // Delta Time
     past = now;
     now = GetTickCount64();
+
+    uint64 a = now;
 }
 
 float GameTickManager::GetDeltaTime()

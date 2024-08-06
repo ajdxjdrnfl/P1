@@ -15,14 +15,11 @@ uint64 FrameCount = 0;
 
 void DoWorkerJob(ServerServiceRef& service)
 {
+	GRoomManager.Update(0.f);
+
 	while (true)
 	{
 		LEndTickCount = ::GetTickCount64() + WORKER_TICK;
-
-		GTickManager.Update();
-		float deltaTime = GTickManager.GetDeltaTime();
-
-		GRoomManager.Update(deltaTime);
 
 		// 네트워크 입출력 처리 -> 인게임 로직까지 (패킷 핸들러에 의해)
 		service->GetIocpCore()->Dispatch(10);
@@ -41,7 +38,6 @@ int main()
 	GRoomManager.Init();
 	GTickManager.Init();
 
-
 	GResourceManager.Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
@@ -59,7 +55,6 @@ int main()
 			DoWorkerJob(service);
 		});
 	}
-
 
 	while (true)
 	{

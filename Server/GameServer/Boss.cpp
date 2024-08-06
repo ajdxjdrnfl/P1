@@ -34,10 +34,7 @@ void Boss::Update(float deltaTime)
 		_dirtyFlag = true;
 	}
 
-	if (_prevStepElapsedTime > _nextStepCooldown)
-	{
-		Super::Update(deltaTime);
-	}
+	Super::Update(deltaTime);
 
 }
 
@@ -136,7 +133,7 @@ void Boss::TickSkill(float deltaTime)
 	float distance = target->GetPos().Distance(GetPos());
 
 	// 공격 범위 안
-	if (1)
+	if (true)
 	{
 		switch (_skillType)
 		{
@@ -144,13 +141,19 @@ void Boss::TickSkill(float deltaTime)
 			DefaultAttack(target);
 			break;
 		case EBST_RUSH:
-			Rush(target, deltaTime);
+		{
+			GameObjectRef pillar = _pillars[_pillarNum].lock();
+			Rush(pillar, deltaTime);
+		}
 			break;
 		case EBST_SPAWNPILLAS:
 			SpawnPillars(deltaTime);
+			break;
+		case EBST_TELEPORT:
+			Teleport({0.f, 0.f}, deltaTime);
+			break;
 		}
 		_attackCooldown = 0.f;
-		SetState(Protocol::MOVE_STATE_IDLE, true);
 		_prevStepElapsedTime = 0.f;
 	}
 	// 공격 범위 밖
@@ -211,27 +214,6 @@ void Boss::StartRush()
 	
 }
 
-void Boss::StartSpawnPillars()
-{
-	// 아래로 들어가기
-	RoomRef room = GetRoomRef();
-	
-	if (room == nullptr)
-		return;
-
-	{
-		Protocol::S_MONTAGE montagePkt;
-		*montagePkt.mutable_caster() = *GetObjectInfo();
-		montagePkt.set_id(1);
-		montagePkt.set_isstop(false);
-		montagePkt.set_section_num(1);
-		montagePkt.set_scalable(true);
-		montagePkt.set_duration(1.f);
-		room->HandleMontage(montagePkt);
-	}
-	_attackDelay = 1.f;
-}
-
 void Boss::SelectSkill()
 {
 	// Default
@@ -244,8 +226,8 @@ void Boss::SelectSkill()
 
 	// SpawnPillars
 
-	_skillType = EBST_SPAWNPILLAS;
-	StartSpawnPillars();
+	_skillType = EBST_TELEPORT;
+	StartTeleport();
 }
 
 void Boss::DefaultAttack(GameObjectRef target)
@@ -283,6 +265,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		return;
 
 	RoomRef room = GetRoomRef();
+
 
 	if (room == nullptr)
 		return;
@@ -351,7 +334,9 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		break;
 
 	case MONTAGE_TYPE_ING:
+	{
 		Rush_ING(target, deltaTime);
+	}
 		break;
 
 	case MONTAGE_TYPE_END:
@@ -369,20 +354,23 @@ void Boss::Rush_START(GameObjectRef target, float deltaTime)
 
 void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 {
-	float dist = GetPos().Distance(_targetPos);
+	if (target == nullptr)
+		return;
+
+	float dist = GetPos().Distance(target->GetPos());
 	// 충분히 가까울 때
 	if (dist <= 10.f)
 	{
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
-		newInfo.set_x(_targetPos.x);
-		newInfo.set_y(_targetPos.y);
+		newInfo.set_x(target->GetPos().x);
+		newInfo.set_y(target->GetPos().y);
 
-		SetObjectInfo(newInfo, true);
+		SetObjectInfo(newInfo, false, true);
 		_attackDelay = 0.f;
 	}
 	else
 	{
-		Vector moveVector = (_targetPos - GetPos()).Normalize();
+		Vector moveVector = (target->GetPos() - GetPos()).Normalize();
 
 		moveVector = moveVector * _rushSpeed * deltaTime;
 
@@ -404,6 +392,14 @@ void Boss::DotSkill(GameObjectRef target)
 
 }
 
+
+void Boss::StartSpawnPillars()
+{
+	
+	_attackDelay = 2.f;
+}
+
+
 void Boss::SpawnPillars(float deltaTime)
 {
 	RoomRef room = GetRoomRef();
@@ -418,41 +414,21 @@ void Boss::SpawnPillars(float deltaTime)
 		case MONTAGE_TYPE_NONE:
 			_montageType = MONTAGE_TYPE_START;
 			{
-				Protocol::ObjectInfo info;
-				info.CopyFrom(*GetObjectInfo());
-				info.set_x(0.f);
-				info.set_y(0.f);
-
-				SetObjectInfo(info, true, true);
-			}
-			{
-				// 위로 올라오기
+				// 필라 스폰
 				Protocol::S_MONTAGE montagePkt;
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(2);
+				montagePkt.set_id(1);
 				montagePkt.set_isstop(false);
-				montagePkt.set_section_num(1);
+				montagePkt.set_section_num(3);
 				montagePkt.set_scalable(true);
-				montagePkt.set_duration(1.f);
+				montagePkt.set_duration(3.f);
 				room->HandleMontage(montagePkt);
-				_attackDelay = 1.f;
+				_attackDelay = 2.f;
 			}
 			break;
 
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
-			{
-				// 필라 스폰
-				Protocol::S_MONTAGE montagePkt;
-				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(3);
-				montagePkt.set_isstop(false);
-				montagePkt.set_section_num(1);
-				montagePkt.set_scalable(true);
-				montagePkt.set_duration(2.f);
-				room->HandleMontage(montagePkt);
-				_attackDelay = 2.f;
-			}
 			{
 				Protocol::S_SPAWN spawnPkt;
 
@@ -468,23 +444,26 @@ void Boss::SpawnPillars(float deltaTime)
 				{
 					Vector pos = d[i] * 1000;
 					StructureRef structure = room->SpawnStructure(pos);
+					_pillars.push_back(structure);
 					Protocol::ObjectInfo* info = spawnPkt.add_info();
 					info->CopyFrom(*structure->GetObjectInfo());
 
 				}
 
 				room->DoAsync(&Room::HandleSpawn, spawnPkt);
+				_attackDelay = 1.f;
 			}
 			break;
 
 		case MONTAGE_TYPE_ING:
 			_montageType = MONTAGE_TYPE_END;
-
+			_attackDelay = 1.f;
 			break;
 		case MONTAGE_TYPE_END:
 		{
 			_skillType = EBST_RUSH;
 			_montageType = MONTAGE_TYPE_NONE;
+			_pillarNum = Utils::GetRandom(0, (int32)_pillars.size() - 1);
 			StartRush();
 		}
 			break;
@@ -522,6 +501,86 @@ void Boss::SpawnPillars_ING()
 void Boss::SpawnPillars_END()
 {
 
+}
+
+
+void Boss::StartTeleport()
+{
+	// 아래로 들어가기
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	{
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *GetObjectInfo();
+		montagePkt.set_id(1);
+		montagePkt.set_isstop(false);
+		montagePkt.set_section_num(1);
+		montagePkt.set_scalable(true);
+		montagePkt.set_duration(2.f);
+		room->HandleMontage(montagePkt);
+	}
+
+	_attackDelay = 3.f;
+}
+
+void Boss::Teleport(Vector pos, float deltaTime)
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	if (_attackDelay <= 0.f)
+	{
+		switch (_montageType)
+		{
+		case MONTAGE_TYPE_NONE:
+			_montageType = MONTAGE_TYPE_START;
+			{
+				Protocol::ObjectInfo info;
+				info.CopyFrom(*GetObjectInfo());
+
+				info.set_x(pos.x);
+				info.set_y(pos.y);
+				info.set_yaw(0.f);
+
+				SetObjectInfo(info, true, true);
+				_attackDelay = 1.f;
+			}
+			break;
+
+		case MONTAGE_TYPE_START:
+			_montageType = MONTAGE_TYPE_ING;
+			{
+				// 위로 올라오기
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_isstop(false);
+				montagePkt.set_section_num(2);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
+			break;
+
+		case MONTAGE_TYPE_ING:
+			_montageType = MONTAGE_TYPE_END;
+			_attackDelay = 1.f;
+			break;
+		case MONTAGE_TYPE_END:
+		{
+			_skillType = EBST_SPAWNPILLAS;
+			_montageType = MONTAGE_TYPE_NONE;
+			StartSpawnPillars();
+		}
+		break;
+		}
+	}
 }
 
 void Boss::MoveToTarget(GameObjectRef target)

@@ -27,6 +27,7 @@ private:
     void StartDefaultAttack();
     void StartRush();
     void StartSpawnPillars();
+    void StartTeleport();
 
     // Default Skill
 private:
@@ -52,10 +53,14 @@ private:
     void SpawnPillars_ING();
     void SpawnPillars_END();
 
+    // Teleport
+    void Teleport(Vector pos, float deltaTime);
+
     // Gimmick
 
 private:
-    
+    vector<weak_ptr<Structure>> _pillars;
+    int32 _pillarNum;
 
 private:
     void MoveToTarget(GameObjectRef target);
