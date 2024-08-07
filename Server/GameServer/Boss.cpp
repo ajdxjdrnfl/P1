@@ -57,7 +57,9 @@ void Boss::TickIdle(float deltaTime)
 	// 1. 체력 체크 후 기믹 발동 여부 확인
 	if(false)
 	{
-		
+		_isGimmik = true;
+		SelectSkill(nullptr);
+		SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
 	else
 	// 2. Target쪽으로 이동 / 기본공격
@@ -72,7 +74,7 @@ void Boss::TickIdle(float deltaTime)
 
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
-			SelectSkill();
+			SelectSkill(target);
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
 		else
@@ -215,7 +217,7 @@ void Boss::StartRush()
 	
 }
 
-void Boss::SelectSkill()
+void Boss::SelectSkill(GameObjectRef target)
 {
 	// Default
 	//_skillType = EBST_DEFAULT;
@@ -226,9 +228,19 @@ void Boss::SelectSkill()
 	//StartRush();
 
 	// SpawnPillars
+	
+	/*if (_isGimmik)
+	{
+		_skillType = EBST_TELEPORT;
+		StartTeleport();
+		return;
+	}
 
-	_skillType = EBST_TELEPORT;
-	StartTeleport();
+	else
+	{
+		
+	}*/
+	
 }
 
 void Boss::DefaultAttack(GameObjectRef target)
@@ -295,7 +307,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			_montageType = MONTAGE_TYPE_ING;
 			{
 				// TODO : 스킬액터 스폰
-				room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)1, GetPos(), _objectInfo->yaw(), 100.f);
+				//room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)1, GetPos(), _objectInfo->yaw(), 100.f);
 			}
 			{
 				// 달려가기
@@ -385,7 +397,6 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 	// pillar와 충돌이 일어났을때
 	if (victimCollision->CheckCollision(pillarCollision))
 	{
-		_montageType = MONTAGE_TYPE_END;
 		_attackDelay = 0.0f;
 		_forceNext = true;
 		{
@@ -403,7 +414,7 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 		newInfo.set_x(GetPos().x + moveVector.x);
 		newInfo.set_y(GetPos().y + moveVector.y);
 
-		SetObjectInfo(newInfo);
+		SetObjectInfo(newInfo, false, true);
 	}
 }
 

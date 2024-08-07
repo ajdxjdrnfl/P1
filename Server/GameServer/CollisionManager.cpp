@@ -66,9 +66,9 @@ bool CollisionManager::CheckOverlapCollisionCircleToCircle(Collision* trigger, C
 	float radius1 = static_cast<ColliderCircle*>(trigger->GetCollider())->_radius;
 	float radius2 = static_cast<ColliderCircle*>(victim->GetCollider())->_radius;
 
-	float distance = pos1.DistanceSquared(pos2);
+	float distance = pos1.Distance(pos2);
 
-	if (distance <= radius1 + radius2)
+	if (distance > radius1 + radius2)
 		return false;
 	else
 		return true;

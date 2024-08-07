@@ -32,7 +32,7 @@ private:
 
     // Default Skill
 private:
-    void SelectSkill();
+    void SelectSkill(GameObjectRef target);
 
     // Skill Tick
     
