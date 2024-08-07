@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CollisionManager.h"
 #include "Collider.h"
+#include "GameObject.h"
+
 
 bool CollisionManager::CheckOverlapCollisionBoxToBox(Collision* trigger, Collision* victim)
 {

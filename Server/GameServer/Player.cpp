@@ -11,6 +11,7 @@ Player::Player(GameSessionRef session, RoomRef room) : Super(room), _session(ses
 	_objectInfo->set_stamina(100.f);
 	_objectInfo->set_max_stamina(100.f);
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_WARRIOR);
+	_objectInfo->set_speed(400.f);
 }
 
 Player::~Player()

@@ -193,6 +193,7 @@ class ObjectInfo final :
     kStaminaFieldNumber = 9,
     kMaxStaminaFieldNumber = 10,
     kCastertypeFieldNumber = 11,
+    kSpeedFieldNumber = 12,
   };
   // uint64 object_id = 1;
   void clear_object_id();
@@ -293,6 +294,15 @@ class ObjectInfo final :
   void _internal_set_castertype(::Protocol::CasterType value);
   public:
 
+  // float speed = 12;
+  void clear_speed();
+  float speed() const;
+  void set_speed(float value);
+  private:
+  float _internal_speed() const;
+  void _internal_set_speed(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -312,6 +322,7 @@ class ObjectInfo final :
     float stamina_;
     float max_stamina_;
     int castertype_;
+    float speed_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -782,6 +793,26 @@ inline void ObjectInfo::_internal_set_castertype(::Protocol::CasterType value) {
 inline void ObjectInfo::set_castertype(::Protocol::CasterType value) {
   _internal_set_castertype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.castertype)
+}
+
+// float speed = 12;
+inline void ObjectInfo::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline float ObjectInfo::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline float ObjectInfo::speed() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.speed)
+  return _internal_speed();
+}
+inline void ObjectInfo::_internal_set_speed(float value) {
+  
+  _impl_.speed_ = value;
+}
+inline void ObjectInfo::set_speed(float value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.speed)
 }
 
 // -------------------------------------------------------------------

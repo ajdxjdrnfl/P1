@@ -11,6 +11,7 @@ Boss::Boss(RoomRef room) : GameObject(room)
 	_objectInfo->set_hp(1000.f);
 	_objectInfo->set_max_hp(1000.f);
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_BOSS);
+	_objectInfo->set_speed(_moveSpeed);
 }
 
 Boss::~Boss()
@@ -206,7 +207,7 @@ void Boss::StartRush()
 		info.CopyFrom(*GetObjectInfo());
 		info.set_x(0.f);
 		info.set_y(0.f);
-
+		info.set_speed(_rushSpeed);
 		SetObjectInfo(info, true, true);
 	}
 	_attackDelay = 2.f;
@@ -293,6 +294,10 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
 			{
+				// TODO : 스킬액터 스폰
+				room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)1, GetPos(), _objectInfo->yaw(), 100.f);
+			}
+			{
 				// 달려가기
 				*montagePkt.mutable_caster() = *GetObjectInfo();
 				montagePkt.set_id(1);
@@ -321,7 +326,19 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			break;
 
 		case MONTAGE_TYPE_END:
-			
+		{
+			*montagePkt.mutable_caster() = *GetObjectInfo();
+			montagePkt.set_id(1);
+			montagePkt.set_section_num(0);
+			montagePkt.set_isstop(true);
+			room->HandleMontage(montagePkt);
+		}
+		{
+			Protocol::ObjectInfo info;
+			info.CopyFrom(*GetObjectInfo());
+			info.set_speed(_moveSpeed);
+			SetObjectInfo(info, true, true);
+		}
 			break;
 		}
 
@@ -334,9 +351,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		break;
 
 	case MONTAGE_TYPE_ING:
-	{
 		Rush_ING(target, deltaTime);
-	}
 		break;
 
 	case MONTAGE_TYPE_END:
@@ -357,19 +372,27 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 	if (target == nullptr)
 		return;
 
-	float dist = GetPos().Distance(target->GetPos());
-	// 충분히 가까울 때
-	if (dist <= 10.f)
-	{
-		Protocol::ObjectInfo newInfo = *GetObjectInfo();
-		newInfo.set_x(target->GetPos().x);
-		newInfo.set_y(target->GetPos().y);
+	RoomRef room = GetRoomRef();
 
-		SetObjectInfo(newInfo, false, true);
-		_attackDelay = 0.f;
+	if (room == nullptr)
+		return;
+
+	float dist = GetPos().Distance(target->GetPos());
+
+	Collision* victimCollision = static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION));
+	Collision* pillarCollision = static_cast<Collision*>(target->GetComponent(EComponentType::ECT_COLLISION));
+
+	// pillar와 충돌이 일어났을때
+	if (victimCollision->CheckCollision(pillarCollision))
+	{
+		_attackDelay = 0.1f;
+		{
+			room->HandleSkill(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
+		}
 	}
 	else
 	{
+		
 		Vector moveVector = (target->GetPos() - GetPos()).Normalize();
 
 		moveVector = moveVector * _rushSpeed * deltaTime;
@@ -387,7 +410,82 @@ void Boss::Rush_END(GameObjectRef target, float deltaTime)
 
 }
 
-void Boss::DotSkill(GameObjectRef target)
+void Boss::StartDot()
+{
+	_attackDelay = 1.f;
+}
+
+void Boss::DotSkill(GameObjectRef target, float deltaTime)
+{
+	if (target == nullptr)
+		return;
+
+	RoomRef room = GetRoomRef();
+
+
+	if (room == nullptr)
+		return;
+
+	if (_attackDelay < 0.f)
+	{
+		Protocol::S_MONTAGE montagePkt;
+
+		switch (_montageType)
+		{
+		case MONTAGE_TYPE_NONE:
+			_montageType = MONTAGE_TYPE_START;
+			{
+				
+			}
+			break;
+		case MONTAGE_TYPE_START:
+			_montageType = MONTAGE_TYPE_ING;
+			{
+				
+			}
+			break;
+
+		case MONTAGE_TYPE_ING:
+			_montageType = MONTAGE_TYPE_END;
+			{
+				
+			}
+			break;
+
+		case MONTAGE_TYPE_END:
+
+			break;
+		}
+
+	}
+
+	switch (_montageType)
+	{
+	case MONTAGE_TYPE_START:
+		DotSkill_START(target, deltaTime);
+		break;
+	case MONTAGE_TYPE_ING:
+		DotSkill_ING(target, deltaTime);
+		break;
+
+	case MONTAGE_TYPE_END:
+		DotSkill_END(target, deltaTime);
+		break;
+	}
+}
+
+
+void Boss::DotSkill_START(GameObjectRef target, float deltaTime)
+{
+
+}
+
+void Boss::DotSkill_ING(GameObjectRef target, float deltaTime)
+{
+
+}
+
+void Boss::DotSkill_END(GameObjectRef target, float deltaTime)
 {
 
 }
@@ -602,7 +700,6 @@ void Boss::MoveToTarget(GameObjectRef target)
 
 void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
 {
-	Super::TakeDamage(instigator, damageType, damage);
 
 	RoomRef room = GetRoomRef();
 
@@ -612,14 +709,18 @@ void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType,
 	{
 		switch (_montageType)
 		{
+		case MONTAGE_TYPE_START:
+			// TODO : 패링처리
+			break;
 		case MONTAGE_TYPE_ING:
 		{
 			_montageType = MONTAGE_TYPE_END;
 			{
+				// 후딜레이
 				Protocol::S_MONTAGE montagePkt;
 				*montagePkt.mutable_caster() = *GetObjectInfo();
 				montagePkt.set_id(1);
-				montagePkt.set_section_num(4);
+				montagePkt.set_section_num(6);
 				montagePkt.set_isstop(false);
 				montagePkt.set_scalable(true);
 				montagePkt.set_duration(2.f);
@@ -632,4 +733,7 @@ void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType,
 	}
 		break;
 	}
+
+	Super::TakeDamage(instigator, damageType, damage);
+
 }

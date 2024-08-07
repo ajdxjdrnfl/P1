@@ -28,6 +28,7 @@ private:
     void StartRush();
     void StartSpawnPillars();
     void StartTeleport();
+    void StartDot();
 
     // Default Skill
 private:
@@ -45,7 +46,10 @@ private:
     void Rush_END(GameObjectRef target, float deltaTime);
 
     // Dot Spell
-    void DotSkill(GameObjectRef target);
+    void DotSkill(GameObjectRef target, float deltaTime);
+    void DotSkill_START(GameObjectRef target, float deltaTime);
+    void DotSkill_ING(GameObjectRef target, float deltaTime);
+    void DotSkill_END(GameObjectRef target, float deltaTime);
     
     // Pillar Spawn 
     void SpawnPillars(float deltaTime);
@@ -73,7 +77,7 @@ private:
     bool _isGimmik = false;
     
     float _moveSpeed = 300.f;
-    float _rushSpeed = 450.f;
+    float _rushSpeed = 600.f;
 
     float _nextStepCooldown = 1.f;
     float _prevStepElapsedTime = 0.f;

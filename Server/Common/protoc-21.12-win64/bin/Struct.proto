@@ -16,6 +16,7 @@ message ObjectInfo
 	float stamina = 9;
 	float max_stamina = 10;
 	CasterType castertype = 11;
+	float speed = 12;
 
 }
 

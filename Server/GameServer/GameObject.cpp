@@ -140,8 +140,7 @@ void GameObject::TickDot(float deltaTime)
 
 void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
 {
-	// TODO : 사망 처리
-	
+
 	switch (damageType)
 	{
 	case Protocol::DAMAGE_TYPE_NORMAL:
@@ -167,6 +166,12 @@ void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damag
 	}
 
 
+	// TODO : 사망 처리 - 각 클래스에서?? + TickDead에서 처리
+	if (_objectInfo->hp() == 0.f)
+	{
+		SetState(Protocol::MOVE_STATE_DEAD, true);
+	}
+	
 }
 
 ComponentBase* GameObject::GetComponent(EComponentType type)
