@@ -159,7 +159,7 @@ void Boss::TickSkill(float deltaTime)
 	}
 	// 공격 범위 밖
 
-	if (_attackDelay <= 0.f)
+	if (!_forceNext && _attackDelay <= 0.f)
 	{
 		_attackDelay = 0.f;
 		_skillType = EBST_NONE;
@@ -167,7 +167,7 @@ void Boss::TickSkill(float deltaTime)
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 	}
 	// TODO : 스킬 구현 - 기본 스킬을 먼저
-
+	_forceNext = false;
 }
 
 void Boss::TickStun(float deltaTime)
@@ -385,7 +385,9 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 	// pillar와 충돌이 일어났을때
 	if (victimCollision->CheckCollision(pillarCollision))
 	{
-		_attackDelay = 0.1f;
+		_montageType = MONTAGE_TYPE_END;
+		_attackDelay = 0.0f;
+		_forceNext = true;
 		{
 			room->HandleSkill(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
 		}
@@ -715,18 +717,7 @@ void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType,
 		case MONTAGE_TYPE_ING:
 		{
 			_montageType = MONTAGE_TYPE_END;
-			{
-				// 후딜레이
-				Protocol::S_MONTAGE montagePkt;
-				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
-				montagePkt.set_section_num(6);
-				montagePkt.set_isstop(false);
-				montagePkt.set_scalable(true);
-				montagePkt.set_duration(2.f);
-				room->HandleMontage(montagePkt);
-				_attackDelay = 2.f;
-			}
+			_forceNext = true;
 		}
 			break;
 		}

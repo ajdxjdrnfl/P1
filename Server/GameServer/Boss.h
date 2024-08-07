@@ -75,6 +75,7 @@ private:
     float _attackRange = 200.f;
 
     bool _isGimmik = false;
+    bool _forceNext = false;
     
     float _moveSpeed = 300.f;
     float _rushSpeed = 600.f;
