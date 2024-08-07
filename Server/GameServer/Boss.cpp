@@ -240,6 +240,10 @@ void Boss::SelectSkill(GameObjectRef target)
 	{
 		
 	}*/
+
+	_skillType = EBST_TELEPORT;
+	StartTeleport();
+	return;
 	
 }
 
