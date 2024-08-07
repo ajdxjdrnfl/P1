@@ -56,7 +56,11 @@ void Room::Update(float deltaTime)
 		SkillActorRef skillActor = item.second;
 		skillActor->Update(deltaTime);
 	}
-
+	for (auto& item : _structures)
+	{
+		StructureRef structure = item.second;
+		structure->Update(deltaTime);
+	}
 	_boss->Update(deltaTime);
 
 	DoTimer(64, &Room::Update, deltaTime);
