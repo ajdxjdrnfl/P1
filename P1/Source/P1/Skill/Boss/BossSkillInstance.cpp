@@ -119,3 +119,13 @@ void ABossWSkillInstance::RushToPillar()
 	//OwnerCreature->SetWalkSpeed(800);
 	// Cast<AEnemyBoss>(OwnerCreature)->SetAttackMode(true);
 }
+
+void ABossESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+}
+
+void ABossESkillInstance::OnSkillDetroyed()
+{
+	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
+}

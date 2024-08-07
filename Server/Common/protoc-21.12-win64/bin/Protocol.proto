@@ -70,6 +70,7 @@ message C_ATTACK
 	ObjectInfo caster = 1;
 	ObjectInfo skillactor = 2;
 	ObjectInfo victim = 3;
+	bool counter = 4;
 }
 
 message S_ATTACK
@@ -79,6 +80,7 @@ message S_ATTACK
 	ObjectInfo victim = 3;
 	uint64 skillid = 4;
 	float damage = 5;
+	bool counter = 6;
 }
 
 message C_MONTAGE

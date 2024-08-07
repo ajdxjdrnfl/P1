@@ -55,6 +55,9 @@ public:
 	UFUNCTION()
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted);
 
+	UFUNCTION()
+	virtual void OnSkillDetroyed() {}
+
 	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
 	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
 	FORCEINLINE void SetSkillActorClass(TSubclassOf<class ASkillActorBase> _SkillActorClass) { SkillActorClass = _SkillActorClass; }

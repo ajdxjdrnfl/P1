@@ -56,6 +56,10 @@ public:
 	virtual void SpawnHitParticleOnTarget(AActor* TargetActor);
 	virtual class UParticleSystemComponent* SpawnHoldParticleOnLocation(FVector HoldLocation);
 	virtual class UParticleSystemComponent* SpawnHoldParticleOnTarget(AActor* TargetActor);
+	FVector GetFloorPos(FVector TargetLocation);
+
+	UPROPERTY()
+	class ASkillInstanceBase* SkillInstance;
 
 	UFUNCTION()
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {};

@@ -1835,6 +1835,7 @@ class C_ATTACK final :
     kCasterFieldNumber = 1,
     kSkillactorFieldNumber = 2,
     kVictimFieldNumber = 3,
+    kCounterFieldNumber = 4,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -1890,6 +1891,15 @@ class C_ATTACK final :
       ::Protocol::ObjectInfo* victim);
   ::Protocol::ObjectInfo* unsafe_arena_release_victim();
 
+  // bool counter = 4;
+  void clear_counter();
+  bool counter() const;
+  void set_counter(bool value);
+  private:
+  bool _internal_counter() const;
+  void _internal_set_counter(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_ATTACK)
  private:
   class _Internal;
@@ -1901,6 +1911,7 @@ class C_ATTACK final :
     ::Protocol::ObjectInfo* caster_;
     ::Protocol::ObjectInfo* skillactor_;
     ::Protocol::ObjectInfo* victim_;
+    bool counter_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2034,6 +2045,7 @@ class S_ATTACK final :
     kVictimFieldNumber = 3,
     kSkillidFieldNumber = 4,
     kDamageFieldNumber = 5,
+    kCounterFieldNumber = 6,
   };
   // .Protocol.ObjectInfo caster = 1;
   bool has_caster() const;
@@ -2107,6 +2119,15 @@ class S_ATTACK final :
   void _internal_set_damage(float value);
   public:
 
+  // bool counter = 6;
+  void clear_counter();
+  bool counter() const;
+  void set_counter(bool value);
+  private:
+  bool _internal_counter() const;
+  void _internal_set_counter(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_ATTACK)
  private:
   class _Internal;
@@ -2120,6 +2141,7 @@ class S_ATTACK final :
     ::Protocol::ObjectInfo* victim_;
     uint64_t skillid_;
     float damage_;
+    bool counter_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3764,6 +3786,26 @@ inline void C_ATTACK::set_allocated_victim(::Protocol::ObjectInfo* victim) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.C_ATTACK.victim)
 }
 
+// bool counter = 4;
+inline void C_ATTACK::clear_counter() {
+  _impl_.counter_ = false;
+}
+inline bool C_ATTACK::_internal_counter() const {
+  return _impl_.counter_;
+}
+inline bool C_ATTACK::counter() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ATTACK.counter)
+  return _internal_counter();
+}
+inline void C_ATTACK::_internal_set_counter(bool value) {
+  
+  _impl_.counter_ = value;
+}
+inline void C_ATTACK::set_counter(bool value) {
+  _internal_set_counter(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ATTACK.counter)
+}
+
 // -------------------------------------------------------------------
 
 // S_ATTACK
@@ -4061,6 +4103,26 @@ inline void S_ATTACK::_internal_set_damage(float value) {
 inline void S_ATTACK::set_damage(float value) {
   _internal_set_damage(value);
   // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.damage)
+}
+
+// bool counter = 6;
+inline void S_ATTACK::clear_counter() {
+  _impl_.counter_ = false;
+}
+inline bool S_ATTACK::_internal_counter() const {
+  return _impl_.counter_;
+}
+inline bool S_ATTACK::counter() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ATTACK.counter)
+  return _internal_counter();
+}
+inline void S_ATTACK::_internal_set_counter(bool value) {
+  
+  _impl_.counter_ = value;
+}
+inline void S_ATTACK::set_counter(bool value) {
+  _internal_set_counter(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.counter)
 }
 
 // -------------------------------------------------------------------

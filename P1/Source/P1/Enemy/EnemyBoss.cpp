@@ -63,20 +63,19 @@ void AEnemyBoss::SetAttackMode(bool bAttackMode)
 
 void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 {
+	BossSkillStateIndex = pkt.section_num();
+
 	if (pkt.section_num() < 1)
 	{
 		Super::PlayAnimMontageByServer(pkt);
+		if (pkt.isstop())
+		{
+			BossSkillState[pkt.id()] = 0;
+		}
 		return;
 	}
 
-	if (pkt.isstop())
-	{
-		BossSkillState[pkt.id()] = 0;
-	}
-	else
-	{
-		BossSkillState[pkt.id()] = pkt.section_num();
-	}
+	BossSkillState[pkt.id()] = pkt.section_num();
 }
 
 void AEnemyBoss::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -8,6 +8,8 @@
 #include "P1/Enemy/EnemyBase.h"
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "P1/Skill/SkillInstanceBase.h"
 
 ASkillActorBase::ASkillActorBase()
 {
@@ -35,7 +37,10 @@ void ASkillActorBase::Tick(float DeltaTime)
 	else
 	{
 		if (this != nullptr)
+		{
 			Destroy();
+			SkillInstance->OnSkillDetroyed();
+		}
 	}
 
 }
@@ -84,6 +89,8 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 	VictimInfo->CopyFrom(*Creature->ObjectInfo);
 	SkillActorInfoLocal->CopyFrom(*ObjectInfo);
 
+	Pkt.set_counter(Creature->GetCounterState());
+
 	SEND_PACKET(Pkt);
 }
 
@@ -91,7 +98,7 @@ void ASkillActorBase::SpawnActivationParticleOnLocation(FVector ActivationLocati
 {
 	if (P_Activation == nullptr) return;
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Activation, ActivationLocation);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Activation, GetFloorPos(ActivationLocation));
 }
 
 void ASkillActorBase::SpawnActivationParticleOnTarget(AActor* TargetActor)
@@ -105,7 +112,7 @@ void ASkillActorBase::SpawnHitParticleOnLocation(FVector HitLocation)
 {
 	if (P_Hit == nullptr) return;
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hit, HitLocation);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hit, GetFloorPos(HitLocation));
 }
 
 void ASkillActorBase::SpawnHitParticleOnTarget(AActor* TargetActor)
@@ -119,7 +126,7 @@ UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnLocation(FVector H
 {
 	if (P_Hold == nullptr) return nullptr;
 
-	return UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hold, HoldLocation);
+	return UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hold, GetFloorPos(HoldLocation));
 }
 
 UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnTarget(AActor* TargetActor)
@@ -127,4 +134,35 @@ UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnTarget(AActor* Tar
 	if (P_Hold == nullptr) return nullptr;
 
 	return UGameplayStatics::SpawnEmitterAttached(P_Hold, TargetActor->GetRootComponent());
+}
+
+FVector ASkillActorBase::GetFloorPos(FVector TargetLocation)
+{
+	FVector ResultPos = TargetLocation;
+	FVector Start = TargetLocation;
+	FVector End = Start - (10000 * TargetLocation);
+	TArray<AActor*> ActorsToIgnore;
+	FHitResult OutHit;
+
+	bool bIsHit = UKismetSystemLibrary::LineTraceSingle(
+		GetWorld(),
+		Start,
+		End,
+		ETraceTypeQuery::TraceTypeQuery1,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::Persistent,
+		OutHit,
+		true
+		);
+
+	if (bIsHit)
+	{
+		if (Cast<AP1Creature>(OutHit.GetActor()) || Cast<ASkillActorBase>(OutHit.GetActor())) 
+			return ResultPos;
+
+		ResultPos = OutHit.Location;
+	}
+
+	return ResultPos;
 }

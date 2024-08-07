@@ -162,6 +162,7 @@ PROTOBUF_CONSTEXPR C_ATTACK::C_ATTACK(
     /*decltype(_impl_.caster_)*/nullptr
   , /*decltype(_impl_.skillactor_)*/nullptr
   , /*decltype(_impl_.victim_)*/nullptr
+  , /*decltype(_impl_.counter_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_ATTACKDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C_ATTACKDefaultTypeInternal()
@@ -179,6 +180,7 @@ PROTOBUF_CONSTEXPR S_ATTACK::S_ATTACK(
   , /*decltype(_impl_.victim_)*/nullptr
   , /*decltype(_impl_.skillid_)*/uint64_t{0u}
   , /*decltype(_impl_.damage_)*/0
+  , /*decltype(_impl_.counter_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_ATTACKDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_ATTACKDefaultTypeInternal()
@@ -328,6 +330,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.caster_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.skillactor_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.victim_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_ATTACK, _impl_.counter_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -339,6 +342,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.victim_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.skillid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.damage_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_ATTACK, _impl_.counter_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_MONTAGE, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -381,10 +385,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 56, -1, -1, sizeof(::Protocol::C_SKILL)},
   { 68, -1, -1, sizeof(::Protocol::S_SKILL)},
   { 77, -1, -1, sizeof(::Protocol::C_ATTACK)},
-  { 86, -1, -1, sizeof(::Protocol::S_ATTACK)},
-  { 97, -1, -1, sizeof(::Protocol::C_MONTAGE)},
-  { 107, -1, -1, sizeof(::Protocol::S_MONTAGE)},
-  { 119, -1, -1, sizeof(::Protocol::S_DEAD)},
+  { 87, -1, -1, sizeof(::Protocol::S_ATTACK)},
+  { 99, -1, -1, sizeof(::Protocol::C_MONTAGE)},
+  { 109, -1, -1, sizeof(::Protocol::S_MONTAGE)},
+  { 121, -1, -1, sizeof(::Protocol::S_DEAD)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -420,22 +424,23 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ge\030\003 \001(\002\022\t\n\001x\030\004 \001(\002\022\t\n\001y\030\005 \001(\002\022\013\n\003yaw\030\006 "
   "\001(\002\"j\n\007S_SKILL\022$\n\006caster\030\001 \001(\0132\024.Protoco"
   "l.ObjectInfo\022(\n\nskillactor\030\002 \001(\0132\024.Proto"
-  "col.ObjectInfo\022\017\n\007skillid\030\003 \001(\004\"\200\001\n\010C_AT"
+  "col.ObjectInfo\022\017\n\007skillid\030\003 \001(\004\"\221\001\n\010C_AT"
   "TACK\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectIn"
   "fo\022(\n\nskillactor\030\002 \001(\0132\024.Protocol.Object"
   "Info\022$\n\006victim\030\003 \001(\0132\024.Protocol.ObjectIn"
-  "fo\"\241\001\n\010S_ATTACK\022$\n\006caster\030\001 \001(\0132\024.Protoc"
-  "ol.ObjectInfo\022(\n\nskillactor\030\002 \001(\0132\024.Prot"
-  "ocol.ObjectInfo\022$\n\006victim\030\003 \001(\0132\024.Protoc"
-  "ol.ObjectInfo\022\017\n\007skillid\030\004 \001(\004\022\016\n\006damage"
-  "\030\005 \001(\002\"b\n\tC_MONTAGE\022$\n\006caster\030\001 \001(\0132\024.Pr"
-  "otocol.ObjectInfo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030"
-  "\003 \001(\004\022\023\n\013section_num\030\004 \001(\004\"\206\001\n\tS_MONTAGE"
-  "\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectInfo\022\016"
-  "\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013section_nu"
-  "m\030\004 \001(\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010duration\030\006 "
-  "\001(\002\",\n\006S_DEAD\022\"\n\004info\030\001 \001(\0132\024.Protocol.O"
-  "bjectInfob\006proto3"
+  "fo\022\017\n\007counter\030\004 \001(\010\"\262\001\n\010S_ATTACK\022$\n\006cast"
+  "er\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskilla"
+  "ctor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n\006vict"
+  "im\030\003 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007skilli"
+  "d\030\004 \001(\004\022\016\n\006damage\030\005 \001(\002\022\017\n\007counter\030\006 \001(\010"
+  "\"b\n\tC_MONTAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol"
+  ".ObjectInfo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022"
+  "\023\n\013section_num\030\004 \001(\004\"\206\001\n\tS_MONTAGE\022$\n\006ca"
+  "ster\030\001 \001(\0132\024.Protocol.ObjectInfo\022\016\n\006isst"
+  "op\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001("
+  "\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010duration\030\006 \001(\002\",\n"
+  "\006S_DEAD\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectI"
+  "nfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -443,7 +448,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1177, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1211, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 15,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2463,6 +2468,7 @@ C_ATTACK::C_ATTACK(const C_ATTACK& from)
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
+    , decltype(_impl_.counter_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -2475,6 +2481,7 @@ C_ATTACK::C_ATTACK(const C_ATTACK& from)
   if (from._internal_has_victim()) {
     _this->_impl_.victim_ = new ::Protocol::ObjectInfo(*from._impl_.victim_);
   }
+  _this->_impl_.counter_ = from._impl_.counter_;
   // @@protoc_insertion_point(copy_constructor:Protocol.C_ATTACK)
 }
 
@@ -2486,6 +2493,7 @@ inline void C_ATTACK::SharedCtor(
       decltype(_impl_.caster_){nullptr}
     , decltype(_impl_.skillactor_){nullptr}
     , decltype(_impl_.victim_){nullptr}
+    , decltype(_impl_.counter_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2528,6 +2536,7 @@ void C_ATTACK::Clear() {
     delete _impl_.victim_;
   }
   _impl_.victim_ = nullptr;
+  _impl_.counter_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2557,6 +2566,14 @@ const char* C_ATTACK::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr = ctx->ParseMessage(_internal_mutable_victim(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool counter = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.counter_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2611,6 +2628,12 @@ uint8_t* C_ATTACK::_InternalSerialize(
         _Internal::victim(this).GetCachedSize(), target, stream);
   }
 
+  // bool counter = 4;
+  if (this->_internal_counter() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_counter(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2648,6 +2671,11 @@ size_t C_ATTACK::ByteSizeLong() const {
         *_impl_.victim_);
   }
 
+  // bool counter = 4;
+  if (this->_internal_counter() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -2678,6 +2706,9 @@ void C_ATTACK::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
     _this->_internal_mutable_victim()->::Protocol::ObjectInfo::MergeFrom(
         from._internal_victim());
   }
+  if (from._internal_counter() != 0) {
+    _this->_internal_set_counter(from._internal_counter());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -2696,8 +2727,8 @@ void C_ATTACK::InternalSwap(C_ATTACK* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.victim_)
-      + sizeof(C_ATTACK::_impl_.victim_)
+      PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.counter_)
+      + sizeof(C_ATTACK::_impl_.counter_)
       - PROTOBUF_FIELD_OFFSET(C_ATTACK, _impl_.caster_)>(
           reinterpret_cast<char*>(&_impl_.caster_),
           reinterpret_cast<char*>(&other->_impl_.caster_));
@@ -2763,6 +2794,7 @@ S_ATTACK::S_ATTACK(const S_ATTACK& from)
     , decltype(_impl_.victim_){nullptr}
     , decltype(_impl_.skillid_){}
     , decltype(_impl_.damage_){}
+    , decltype(_impl_.counter_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -2776,8 +2808,8 @@ S_ATTACK::S_ATTACK(const S_ATTACK& from)
     _this->_impl_.victim_ = new ::Protocol::ObjectInfo(*from._impl_.victim_);
   }
   ::memcpy(&_impl_.skillid_, &from._impl_.skillid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.damage_) -
-    reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.damage_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.counter_) -
+    reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.counter_));
   // @@protoc_insertion_point(copy_constructor:Protocol.S_ATTACK)
 }
 
@@ -2791,6 +2823,7 @@ inline void S_ATTACK::SharedCtor(
     , decltype(_impl_.victim_){nullptr}
     , decltype(_impl_.skillid_){uint64_t{0u}}
     , decltype(_impl_.damage_){0}
+    , decltype(_impl_.counter_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2834,8 +2867,8 @@ void S_ATTACK::Clear() {
   }
   _impl_.victim_ = nullptr;
   ::memset(&_impl_.skillid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.damage_) -
-      reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.damage_));
+      reinterpret_cast<char*>(&_impl_.counter_) -
+      reinterpret_cast<char*>(&_impl_.skillid_)) + sizeof(_impl_.counter_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2882,6 +2915,14 @@ const char* S_ATTACK::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
           _impl_.damage_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
           ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool counter = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _impl_.counter_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -2951,6 +2992,12 @@ uint8_t* S_ATTACK::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_damage(), target);
   }
 
+  // bool counter = 6;
+  if (this->_internal_counter() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(6, this->_internal_counter(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3002,6 +3049,11 @@ size_t S_ATTACK::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
+  // bool counter = 6;
+  if (this->_internal_counter() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -3042,6 +3094,9 @@ void S_ATTACK::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   if (raw_damage != 0) {
     _this->_internal_set_damage(from._internal_damage());
   }
+  if (from._internal_counter() != 0) {
+    _this->_internal_set_counter(from._internal_counter());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -3060,8 +3115,8 @@ void S_ATTACK::InternalSwap(S_ATTACK* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.damage_)
-      + sizeof(S_ATTACK::_impl_.damage_)
+      PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.counter_)
+      + sizeof(S_ATTACK::_impl_.counter_)
       - PROTOBUF_FIELD_OFFSET(S_ATTACK, _impl_.caster_)>(
           reinterpret_cast<char*>(&_impl_.caster_),
           reinterpret_cast<char*>(&other->_impl_.caster_));

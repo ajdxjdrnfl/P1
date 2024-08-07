@@ -37,3 +37,23 @@ public:
 	void SpawnPillar();
 	void RushToPillar();
 };
+
+// Fresnel Multiplier -1 ~ 1
+UCLASS()
+class P1_API ABossESkillInstance : public ASkillInstanceBase
+{
+	GENERATED_BODY()
+
+private:
+	UPROPERTY()
+	TArray<ASkillActorBase*> SpawnedPillars;
+
+	UPROPERTY()
+	class UParticleSystemComponent* CurrentParticle;
+
+public:
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
+	virtual void OnSkillDetroyed() override;
+
+};
+

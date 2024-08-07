@@ -33,6 +33,7 @@ void ASkillInstanceBase::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	if (SkillActor == nullptr) return;
 
+	SkillActor->SkillInstance = this;
 	SkillActor->ActivateSkill();
 }
 
