@@ -12,6 +12,7 @@
 #include "P1/Skill/HoldingByTickSkillManager.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Component/SkillComponent/CharacterSkillComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AWarriorQSkillInstance::AWarriorQSkillInstance()
 {
@@ -155,6 +156,7 @@ void AWarriorWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 	CurrentSkillActor = SkillActor;
+	CurrentParticle = SkillActor->SpawnHoldParticleOnTarget(SkillActor);
 }
 
 void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
@@ -163,6 +165,11 @@ void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 	{
 		CurrentSkillActor->Destroy();
 		CurrentSkillActor = nullptr;
+
+		if (CurrentParticle)
+		{
+			CurrentParticle->DestroyComponent();
+		}
 	}
 }
 
@@ -188,6 +195,11 @@ void AWarriorESkillInstance::SpawnSkill()
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
+}
+
+void AWarriorESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->SpawnActivationParticleOnLocation(SkillActor->GetActorLocation());
 }
 
 void AWarriorRSkillInstance::Init(AP1Creature* _OwnerCreature)

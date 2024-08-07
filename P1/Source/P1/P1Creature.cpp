@@ -157,6 +157,8 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 		TargetInfo->set_z(TargetLocation.Z);
 		TargetInfo->set_yaw(TargetRotation.Yaw);
 	}
+
+	GetCharacterMovement()->MaxWalkSpeed = Pkt.info().speed();
 }
 
 void AP1Creature::SetObjectInfo()

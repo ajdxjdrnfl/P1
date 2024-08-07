@@ -26,17 +26,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = Editable)
 	class UAnimMontage* M_Dodge_F;
 
-	UPROPERTY(EditAnywhere, Category = Editable)
-	class UAnimMontage* M_Dodge_B;
-
-	UPROPERTY(EditAnywhere, Category = Editable)
-	class UAnimMontage* M_Dodge_R;
-
-	UPROPERTY(EditAnywhere, Category = Editable)
-	class UAnimMontage* M_Dodge_L;
-
 public:
-	void Dodge(float Dot, float Cross);
+	void Dodge();
 	
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte);

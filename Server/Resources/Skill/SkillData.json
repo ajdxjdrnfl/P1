@@ -153,7 +153,7 @@
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 1,
-				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_BossQSkill.BP_BossQSkill_C'",
+				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossQSkill.BP_BossQSkill_C'",
 				"Thumbnail": "None"
 			},
 			{
@@ -171,7 +171,7 @@
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 0.5,
-				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_MobQSkill.BP_MobQSkill_C'",
+				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossWSkill.BP_BossWSkill_C'",
 				"Thumbnail": "None"
 			}
 		]

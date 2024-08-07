@@ -233,9 +233,7 @@ void AP1PlayerController::OnDodgeTriggered()
 	FVector2D TargetVector2D = FVector2D(TargetVector.X, TargetVector.Y);
 	FVector2D CurrentVector2D = FVector2D(CurrentVector.X, CurrentVector.Y);
 
-	double Dot = UKismetMathLibrary::DotProduct2D(CurrentVector2D, TargetVector2D);
-	double Cross = UKismetMathLibrary::CrossProduct2D(CurrentVector2D, TargetVector2D);
-	OwnerCharacter->Dodge(Dot, Cross);
+	OwnerCharacter->Dodge();
 	
 	
 

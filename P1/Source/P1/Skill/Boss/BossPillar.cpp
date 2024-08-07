@@ -20,6 +20,7 @@ void ABossPillar::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 }
 
 void ABossPillar::Tick(float DeltaTime)

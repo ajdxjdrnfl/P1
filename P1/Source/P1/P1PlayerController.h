@@ -109,7 +109,8 @@ private:
 
 public:
 	FORCEINLINE FVector GetMouseLocation() const { return MouseLocation; }
-
+	//FORCEINLINE float GetRoundTripTime() const { return RoundTripTime; }
+	//FORCEINLINE void SetRoundTripTime(float TimeToSet) { RoundTripTime = TimeToSet; }
 };
 
 

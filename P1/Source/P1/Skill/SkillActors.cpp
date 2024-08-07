@@ -109,6 +109,8 @@ void AOnLocationSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedCo
 	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
+	SpawnHitParticleOnTarget(OtherActor);
+
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);
@@ -136,6 +138,8 @@ void AOnLocationSkillByTick::OnCollisionOverlapBegin(UPrimitiveComponent* Overla
 	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
+	SpawnHitParticleOnTarget(OtherActor);
+
 	TargetCreatures.AddUnique(Cast<AP1Creature>(OtherActor));
 }
 
@@ -155,6 +159,9 @@ void AOnLocationBuffSkill::OnCollisionOverlapBegin(UPrimitiveComponent* Overlapp
 	bool check2 = Cast<AP1Character>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 
 	if (!check1 && !check2) return;
+
+	SpawnHitParticleOnTarget(OtherActor);
+	SpawnHitParticleOnTarget(OwnerCreature);
 	
 	AP1Creature* CurrentCreature = Cast<AP1Creature>(OtherActor);
 	SendCollisionPacketToServer(CurrentCreature);

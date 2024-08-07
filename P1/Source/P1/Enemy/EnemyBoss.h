@@ -42,7 +42,7 @@ public:
 	void UsePillarSkill(FVector2D Location);
 	void SetAttackMode(bool bAttackMode);
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<int32> BossSkillState;
 
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;

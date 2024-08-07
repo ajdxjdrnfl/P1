@@ -75,14 +75,7 @@ void AP1Character::Tick(float DeltaSeconds)
 
 	if (!instance->IsMyCharacter(ObjectInfo->object_id()) && ObjectInfo->state() == Protocol::MOVE_STATE_JUMP)
 	{
-		FVector TargetVector = (FVector(TargetInfo->x(), TargetInfo->y(), TargetInfo->z()) - GetActorLocation()).GetSafeNormal2D();
-		FVector CurrentVector = GetActorForwardVector().GetSafeNormal2D();
-		FVector2D TargetVector2D = FVector2D(TargetVector.X, TargetVector.Y);
-		FVector2D CurrentVector2D = FVector2D(CurrentVector.X, CurrentVector.Y);
-
-		double Dot = UKismetMathLibrary::DotProduct2D(CurrentVector2D, TargetVector2D);
-		double Cross = UKismetMathLibrary::CrossProduct2D(CurrentVector2D, TargetVector2D);
-		Dodge(Dot, Cross);
+		Dodge();
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	}
 }
@@ -218,10 +211,10 @@ void AP1Character::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 	}
 }
 
-void AP1Character::Dodge(float Dot, float Cross)
+void AP1Character::Dodge()
 {
 	if (SkillComponent)
 	{
-		SkillComponent->Dodge(Dot, Cross);
+		SkillComponent->Dodge();
 	}
 }

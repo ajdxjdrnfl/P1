@@ -52,7 +52,7 @@ public:
 	virtual void MoveByServer(float DeltaTime) override;
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
-	void Dodge(float Dot, float Cross);
+	void Dodge();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

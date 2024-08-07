@@ -47,6 +47,7 @@ public:
 	virtual void MoveByServer(float DeltaTime) override;
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
+	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 
 
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }

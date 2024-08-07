@@ -53,6 +53,8 @@ private:
 
 	UPROPERTY()
 	class ASkillActorBase* CurrentSkillActor;
+	UPROPERTY()
+	class UParticleSystemComponent* CurrentParticle;
 
 public:
 	virtual void UseSkill() override;
@@ -73,6 +75,7 @@ private:
 public:
 	virtual void UseSkill() override;
 	virtual void SpawnSkill() override;
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
 };
 
 UCLASS()

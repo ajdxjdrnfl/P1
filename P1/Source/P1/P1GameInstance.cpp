@@ -224,6 +224,10 @@ void UP1GameInstance::CharacterMove(Protocol::S_MOVE& Pkt)
 
 void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 {
+	AP1Creature* Creature = GetCreature(Pkt);
+	if (Creature == nullptr) 
+		return;
+
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
 	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
@@ -237,12 +241,11 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 
 	SkillActor->SkillInfo = CurrentSkillInfo;
 	SkillActor->ObjectInfo->CopyFrom(Pkt.skillactor());
-	SkillActor->InitOnSpawn(GetCreature(Pkt));
-	SkillActor->InstigatorOfSkill = GetCreature(Pkt);
+	SkillActor->InitOnSpawn(Creature);
+	SkillActor->InstigatorOfSkill = Creature;
 	SkillActor->BindCollisionDelegate();
 	
-	AP1Character* Character = Cast<AP1Character>(GetCreature(Pkt));
-	Character->SetSpawnedSkill(Pkt.skillid(), SkillActor);
+	Creature->SetSpawnedSkill(Pkt.skillid(), SkillActor);
 
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
 	SkillActor->ActivateSkill();

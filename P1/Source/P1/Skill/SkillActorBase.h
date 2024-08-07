@@ -41,6 +41,22 @@ public:
 
 	float CurrentLifeTime;
 
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* P_Hit;
+
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* P_Activation;
+
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* P_Hold;
+
+	virtual void SpawnActivationParticleOnLocation(FVector HitLocation);
+	virtual void SpawnActivationParticleOnTarget(AActor* TargetActor);
+	virtual void SpawnHitParticleOnLocation(FVector HitLocation);
+	virtual void SpawnHitParticleOnTarget(AActor* TargetActor);
+	virtual class UParticleSystemComponent* SpawnHoldParticleOnLocation(FVector HoldLocation);
+	virtual class UParticleSystemComponent* SpawnHoldParticleOnTarget(AActor* TargetActor);
+
 	UFUNCTION()
 	virtual void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {};
 	UFUNCTION()

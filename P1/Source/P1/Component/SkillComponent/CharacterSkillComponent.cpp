@@ -21,46 +21,35 @@ void UCharacterSkillComponent::BeginPlay()
 	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &UCharacterSkillComponent::OnMontageEnded);
 }
 
-void UCharacterSkillComponent::Dodge(float Dot, float Cross)
+void UCharacterSkillComponent::Dodge()
 {
 	USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>();
-	if (SubSystem == nullptr || !SubSystem->bCanMove) return;
+
+	if (SubSystem == nullptr || !SubSystem->bCanMove) 
+		return;
 
 	AP1Character* Character = Cast<AP1Character>(GetOwner());
-	if (Character == nullptr) return;
+
+	if (Character == nullptr) 
+		return;
 
 	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
-	if (AnimInstance == nullptr) return;
+	if (AnimInstance == nullptr) 
+		return;
 
 	if (AnimInstance->Montage_IsPlaying(nullptr))
 		return;
 
-	if (Dot > -0.5f && Dot < 0.5f && Cross > 0)
-	{
-		AnimInstance->Montage_Play(M_Dodge_R);
-		SubSystem->bCanMoveByAnimMontage = false;
-	}
-	else if (Dot > -0.5f && Dot < 0.5f && Cross < 0)
-	{
-		AnimInstance->Montage_Play(M_Dodge_L);
-		SubSystem->bCanMoveByAnimMontage = false;
-	}
-	else if (Dot > 0.5f)
-	{
-		AnimInstance->Montage_Play(M_Dodge_F);
-		SubSystem->bCanMoveByAnimMontage = false;
-	}
-	else if (Dot < -0.5f)
-	{
-		AnimInstance->Montage_Play(M_Dodge_B);
-		SubSystem->bCanMoveByAnimMontage = false;
-	}
+	if (M_Dodge_F == nullptr)
+		return;
 
+	AnimInstance->Montage_Play(M_Dodge_F);
+	SubSystem->bCanMoveByAnimMontage = false;
 }
 
 void UCharacterSkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte)
 {
-	if (AnimMontage == M_Dodge_F || AnimMontage == M_Dodge_B || AnimMontage == M_Dodge_R || AnimMontage == M_Dodge_L)
+	if (AnimMontage == M_Dodge_F)
 	{
 		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{

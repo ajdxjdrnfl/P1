@@ -125,6 +125,14 @@ FSkillInfo AEnemyBase::GetSkillInfoByIndex(int32 SkillIndex)
 	return SkillComponent->GetSkillInfoByIndex(SkillIndex);
 }
 
+void AEnemyBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
+{
+	if (SkillComponent)
+	{
+		SkillComponent->SetSpawnedSkill(SkillID, SkillActor);
+	}
+}
+
 void AEnemyBase::MoveByServer(float DeltaTime)
 {
 	if (CreatureState == ECreatureState::Move)

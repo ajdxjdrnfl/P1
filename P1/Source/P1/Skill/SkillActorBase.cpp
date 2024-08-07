@@ -6,6 +6,8 @@
 #include "P1/P1Creature.h"
 #include "P1/P1Character.h"
 #include "P1/Enemy/EnemyBase.h"
+#include "Particles/ParticleSystem.h"
+#include "Kismet/GameplayStatics.h"
 
 ASkillActorBase::ASkillActorBase()
 {
@@ -85,3 +87,44 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 	SEND_PACKET(Pkt);
 }
 
+void ASkillActorBase::SpawnActivationParticleOnLocation(FVector ActivationLocation)
+{
+	if (P_Activation == nullptr) return;
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Activation, ActivationLocation);
+}
+
+void ASkillActorBase::SpawnActivationParticleOnTarget(AActor* TargetActor)
+{
+	if (P_Activation == nullptr) return;
+
+	UGameplayStatics::SpawnEmitterAttached(P_Activation, TargetActor->GetRootComponent());
+}
+
+void ASkillActorBase::SpawnHitParticleOnLocation(FVector HitLocation)
+{
+	if (P_Hit == nullptr) return;
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hit, HitLocation);
+}
+
+void ASkillActorBase::SpawnHitParticleOnTarget(AActor* TargetActor)
+{
+	if (P_Hit == nullptr) return;
+
+	UGameplayStatics::SpawnEmitterAttached(P_Hit, TargetActor->GetRootComponent());
+}
+
+UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnLocation(FVector HoldLocation)
+{
+	if (P_Hold == nullptr) return nullptr;
+
+	return UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hold, HoldLocation);
+}
+
+UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnTarget(AActor* TargetActor)
+{
+	if (P_Hold == nullptr) return nullptr;
+
+	return UGameplayStatics::SpawnEmitterAttached(P_Hold, TargetActor->GetRootComponent());
+}
