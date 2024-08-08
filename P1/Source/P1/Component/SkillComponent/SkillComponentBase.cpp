@@ -74,10 +74,10 @@ void USkillComponentBase::SetSkills()
 			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
 			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			/*SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
+			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
 			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
+			/*SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
 			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);*/
 		}
 		else if (P1Creature->GetClassType() == FName("Mob"))

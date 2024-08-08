@@ -33,7 +33,6 @@ void ASkillInstanceBase::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	if (SkillActor == nullptr) return;
 
-	SkillActor->SkillInstance = this;
 	SkillActor->ActivateSkill();
 }
 
@@ -90,5 +89,10 @@ void ASkillInstanceBase::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterru
 			SubSystem->SetKeyCanUse(-1);
 		}
 	}
+}
+
+void ASkillInstanceBase::SetSkillInstanceOfSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->SkillInstance = this;
 }
 

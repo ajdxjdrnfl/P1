@@ -15,14 +15,14 @@
 
 void AArcherQSkillInstance::UseSkill()
 {
-	if (ChargingSkillManager == nullptr)
+	if (CastingSkillManager == nullptr)
 	{
-		ChargingSkillManager = Cast<AChargingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AChargingSkillManager::StaticClass()));
-		ChargingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
+		CastingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 	}
 
-	ChargingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	ChargingSkillManager->StartCasting(SkillInfo.CastingTime);
+	CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+	CastingSkillManager->StartCasting(SkillInfo.CastingTime);
 }
 
 void AArcherQSkillInstance::SpawnSkill()
@@ -49,4 +49,16 @@ void AArcherQSkillInstance::SpawnSkill()
 	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
 	SEND_PACKET(Pkt);
+}
+
+void AArcherQSkillInstance::OnCastingEnd()
+{
+	{
+		Protocol::C_MONTAGE Pkt;
+		Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+		CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		Pkt.set_isstop(false);
+		Pkt.set_id(0);
+		SEND_PACKET(Pkt);
+	}
 }

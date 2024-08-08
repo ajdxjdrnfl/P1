@@ -39,7 +39,6 @@ void ASkillActorBase::Tick(float DeltaTime)
 		if (this != nullptr)
 		{
 			Destroy();
-			SkillInstance->OnSkillDetroyed();
 		}
 	}
 
@@ -73,8 +72,12 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 	if (P1GameInstance == nullptr)
 		return;
 
-	if (!P1GameInstance->IsMyCharacter(InstigatorLocal->ObjectInfo->object_id()))
-		return;
+	if (Cast<AP1Character>(InstigatorLocal))
+	{
+		if (!P1GameInstance->IsMyCharacter(InstigatorLocal->ObjectInfo->object_id()))
+			return;
+	}
+
 
 	if (P1GameInstance->ClassCasterMap.Contains(InstigatorLocal->GetClassType()))
 	{
@@ -98,7 +101,7 @@ void ASkillActorBase::SpawnActivationParticleOnLocation(FVector ActivationLocati
 {
 	if (P_Activation == nullptr) return;
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Activation, GetFloorPos(ActivationLocation));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Activation, ActivationLocation);
 }
 
 void ASkillActorBase::SpawnActivationParticleOnTarget(AActor* TargetActor)
@@ -112,7 +115,7 @@ void ASkillActorBase::SpawnHitParticleOnLocation(FVector HitLocation)
 {
 	if (P_Hit == nullptr) return;
 
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hit, GetFloorPos(HitLocation));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hit, HitLocation);
 }
 
 void ASkillActorBase::SpawnHitParticleOnTarget(AActor* TargetActor)
@@ -126,7 +129,7 @@ UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnLocation(FVector H
 {
 	if (P_Hold == nullptr) return nullptr;
 
-	return UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hold, GetFloorPos(HoldLocation));
+	return UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Hold, HoldLocation);
 }
 
 UParticleSystemComponent* ASkillActorBase::SpawnHoldParticleOnTarget(AActor* TargetActor)
@@ -151,7 +154,7 @@ FVector ASkillActorBase::GetFloorPos(FVector TargetLocation)
 		ETraceTypeQuery::TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::Persistent,
+		EDrawDebugTrace::None,
 		OutHit,
 		true
 		);

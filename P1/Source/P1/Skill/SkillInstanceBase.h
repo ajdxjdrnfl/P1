@@ -44,6 +44,9 @@ public:
 	virtual void UseSkill() {};
 
 	UFUNCTION(BlueprintCallable)
+	virtual void UseSkillAfterTargeting() {};
+
+	UFUNCTION(BlueprintCallable)
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor);
 
 	UFUNCTION(BlueprintCallable)
@@ -56,7 +59,12 @@ public:
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted);
 
 	UFUNCTION()
-	virtual void OnSkillDetroyed() {}
+	virtual void OnSkillDetroyed(AActor* ActorToDestroy) {}
+
+	virtual void OnCastingEnd() {}
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SetSkillInstanceOfSkill(class ASkillActorBase* SkillActor);
 
 	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
 	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }

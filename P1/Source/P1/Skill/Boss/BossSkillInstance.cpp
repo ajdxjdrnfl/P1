@@ -123,9 +123,10 @@ void ABossWSkillInstance::RushToPillar()
 void ABossESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+	SkillActor->OnDestroyed.AddUniqueDynamic(this, &ABossESkillInstance::OnSkillDetroyed);
 }
 
-void ABossESkillInstance::OnSkillDetroyed()
+void ABossESkillInstance::OnSkillDetroyed(AActor* ActorToDestroy)
 {
-	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
+	//OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
 }

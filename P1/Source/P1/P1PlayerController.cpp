@@ -71,6 +71,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AP1PlayerController::OnSetDestinationReleased);
 
+		EnhancedInputComponent->BindAction(RMBClickAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnRMBTriggered);
+
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AP1PlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnTouchReleased);
@@ -87,6 +89,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(RSkillAction, ETriggerEvent::Completed, this, &AP1PlayerController::OnRSkillReleased);
 
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnDodgeTriggered);
+
+		EnhancedInputComponent->BindAction(FOVAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnFOVTriggered);
 	}
 	else
 	{
@@ -238,6 +242,16 @@ void AP1PlayerController::OnDodgeTriggered()
 	
 
 	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+}
+
+void AP1PlayerController::OnRMBTriggered()
+{
+	OnRMBClickedDelegate.Broadcast();
+}
+
+void AP1PlayerController::OnFOVTriggered(const FInputActionValue& Value)
+{
+	OwnerCharacter->AddCameraBoomLength(Value.Get<float>());
 }
 
 void AP1PlayerController::SendMovePacketToServer()

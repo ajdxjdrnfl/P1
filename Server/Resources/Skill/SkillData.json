@@ -119,18 +119,18 @@
 				"SkillNumLocal": 3,
 				"HitNum": -1,
 				"CooldownTime": 2,
-				"Damage": 100,
+				"Damage": 5,
 				"XScale": 100,
 				"YScale": 30,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Warrior_R.Montage_Warrior_R'",
-				"CollisionType": "Circle",
+				"CollisionType": "Box",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Casting",
 				"CastingTime": 3,
 				"CCTime": 0,
-				"LifeTime": 0.2,
-				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorRSkill.BP_WarriorRSkill_C'",
+				"LifeTime": 10,
+				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorRSkillByTick.BP_WarriorRSkillByTick_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/spinning-sword.spinning-sword'"
 			}
 		]
@@ -152,7 +152,7 @@
 				"SkillType": "Normal",
 				"CastingTime": 0,
 				"CCTime": 0,
-				"LifeTime": 1,
+				"LifeTime": 5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossQSkill.BP_BossQSkill_C'",
 				"Thumbnail": "None"
 			},
@@ -163,7 +163,7 @@
 				"Damage": 30,
 				"XScale": 100,
 				"YScale": 100,
-				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Lich/Montage_Lich_W.Montage_Lich_W'",
+				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Lich/Montage_Lich_E.Montage_Lich_E'",
 				"CollisionType": "Circle",
 				"CCType": "Normal",
 				"DamageType": "Normal",
@@ -203,21 +203,21 @@
 		"Name": "Archer",
 		"SkillInfos": [
 			{
-				"SkillNumLocal": 2,
+				"SkillNumLocal": 0,
 				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": 20,
 				"XScale": 30,
 				"YScale": 30,
-				"AnimMontage": "None",
+				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Archer/Montage_Archer_Q.Montage_Archer_Q'",
 				"CollisionType": "Circle",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Charging",
 				"CastingTime": 3,
 				"CCTime": 0,
-				"LifeTime": 3,
-				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_ArcherESkill.BP_ArcherESkill_C'",
+				"LifeTime": 5,
+				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_ArcherQSkill.BP_ArcherQSkill_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'"
 			}
 		]

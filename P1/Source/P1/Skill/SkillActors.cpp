@@ -63,7 +63,6 @@ void AProjectileSkill::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedCo
 	bool check2 = Cast<AEnemyBase>(OwnerCreature) && Cast<AP1Character>(OtherActor);
 	if (!check1 && !check2) return;
 
-	SphereComponent->UpdateOverlaps();
 	if (AP1Creature* Creature = Cast<AP1Creature>(OtherActor))
 	{
 		SendCollisionPacketToServer(Creature);

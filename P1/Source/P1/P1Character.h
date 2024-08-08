@@ -53,6 +53,7 @@ public:
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 	void Dodge();
+	void AddCameraBoomLength(float Value);
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

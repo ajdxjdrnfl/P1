@@ -53,7 +53,7 @@ private:
 
 public:
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
-	virtual void OnSkillDetroyed() override;
+	virtual void OnSkillDetroyed(AActor* ActorToDestroy) override;
 
 };
 

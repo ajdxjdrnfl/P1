@@ -72,6 +72,7 @@ void ACastingSkillManager::OnCastingEnd()
 		
 	if (SkillInstance)
 	{
-		SkillInstance->SpawnSkill();
+		SkillInstance->OnCastingEnd();
 	}
+	Destroy();
 }
