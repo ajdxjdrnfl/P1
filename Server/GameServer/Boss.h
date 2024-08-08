@@ -32,7 +32,7 @@ private:
 
     // Default Skill
 private:
-    void SelectSkill(GameObjectRef target);
+    void SelectSkill();
 
     // Skill Tick
     
@@ -64,7 +64,8 @@ private:
 
 private:
     vector<weak_ptr<Structure>> _pillars;
-    int32 _pillarNum;
+    int32 _pillarNum = 0;
+    int32 _pillarCount = 0;
 
 private:
     void MoveToTarget(GameObjectRef target);
@@ -72,24 +73,26 @@ private:
     
 private:
     weak_ptr<class Player> _target;
-    float _attackRange = 200.f;
+    float _attackRange = 600.f;
+    float _teleportRange = 1000.f;
 
     bool _isGimmik = false;
+
+    // 강제로 다음 상태로 넘어감
     bool _forceNext = false;
     
     float _moveSpeed = 300.f;
     float _rushSpeed = 600.f;
 
-    float _nextStepCooldown = 1.f;
-    float _prevStepElapsedTime = 0.f;
-    float _attackCooldown = 2.f;
     float _attackDelay = 0.f;
 
     // update time
-    float _updatePacketCooldown = 1.f;
+    float _updatePacketCooldown = 0.2f;
     float _elapsedPacket = 0.f;
 
     Vector _targetPos;
+
+    uint64 _bossPhase = 1;
 
     // Boss Skill
 private:

@@ -23,6 +23,7 @@ public:
 	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 	bool			HandleSpawn(Protocol::S_SPAWN pkt);
+	bool			HandleDespawn(Protocol::S_DESPAWN pkt);
 
 	StructureRef	SpawnStructure(Vector pos);
 

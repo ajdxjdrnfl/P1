@@ -12,5 +12,11 @@ float Utils::GetYawByVector(Vector vec)
 	if (dist == 0.f)
 		return 0.f;
 
-	else return acos(cosV);
+	else return acos(cosV) * 180.f / PI;
+}
+
+Vector Utils::GetVectorByYaw(float yaw)
+{
+	float radian = yaw * PI / 180.f;
+	return { cos(radian), sin(radian) };
 }
