@@ -25,5 +25,7 @@ public:
 	}
 
 	static float GetYawByVector(struct Vector vec);
+
+	static Vector GetVectorByYaw(float yaw);
 };
 

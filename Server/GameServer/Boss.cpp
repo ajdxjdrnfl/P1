@@ -22,12 +22,13 @@ void Boss::Update(float deltaTime)
 {
 	_target = FindClosestTarget();
 	_elapsedPacket += deltaTime;
-	_prevStepElapsedTime += deltaTime;
-
+	
 	PlayerRef target = _target.lock();
 
 	if (target == nullptr)
 		return;
+
+	Super::Update(deltaTime);
 
 	if (_elapsedPacket >= _updatePacketCooldown)
 	{
@@ -35,8 +36,7 @@ void Boss::Update(float deltaTime)
 		_dirtyFlag = true;
 	}
 
-	Super::Update(deltaTime);
-
+	BroadcastUpdate();
 }
 
 void Boss::Init()
@@ -55,11 +55,11 @@ void Boss::TickIdle(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
 	// 1. 체력 체크 후 기믹 발동 여부 확인
-	if(false)
+	if(_objectInfo->hp() <= 500.f && !_isGimmik && _bossPhase == 1)
 	{
 		_isGimmik = true;
-		SelectSkill(nullptr);
-		SetState(Protocol::MOVE_STATE_SKILL, true);
+		_bossPhase = 2;
+		SelectSkill();
 	}
 	else
 	// 2. Target쪽으로 이동 / 기본공격
@@ -74,8 +74,7 @@ void Boss::TickIdle(float deltaTime)
 
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
-			SelectSkill(target);
-			SetState(Protocol::MOVE_STATE_SKILL, true);
+			SelectSkill();
 		}
 		else
 		{
@@ -90,6 +89,11 @@ void Boss::TickRun(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
 
+	GameObjectRef target = _target.lock();
+
+	if(target == nullptr)
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+
 	float dist = GetPos().Distance(_targetPos);
 	// 충분히 가까울 때
 	if ( dist <= 10.f)
@@ -100,10 +104,20 @@ void Boss::TickRun(float deltaTime)
 	
 		SetObjectInfo(newInfo);
 		SetState(Protocol::MOVE_STATE_IDLE, true);
-		_prevStepElapsedTime = 0.f;
+		
 	}
 	else
 	{
+
+		float distance = target->GetPos().Distance(GetPos());
+
+		if (distance >= _teleportRange)
+		{
+			StartTeleport();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
+			return;
+		}
+
 		Vector moveVector = (_targetPos - GetPos()).Normalize();
 		
 		moveVector = moveVector * _moveSpeed * deltaTime;
@@ -125,15 +139,13 @@ void Boss::TickSkill(float deltaTime)
 		return;
 
 	_attackDelay -= deltaTime;
-	_attackCooldown += deltaTime;
 
 	GameObjectRef target = _target.lock();
 	if (target == nullptr)
 	{
 		SetState(Protocol::MOVE_STATE_IDLE, true);
+		return;
 	}
-
-	float distance = target->GetPos().Distance(GetPos());
 
 	// 공격 범위 안
 	if (true)
@@ -145,22 +157,48 @@ void Boss::TickSkill(float deltaTime)
 			break;
 		case EBST_RUSH:
 		{
-			GameObjectRef pillar = _pillars[_pillarNum].lock();
-			Rush(pillar, deltaTime);
+			target = nullptr;
+			if (_isGimmik)
+			{
+				target = _pillars[_pillarNum].lock();
+			}
+			else
+			{
+
+			}
+			Rush(target, deltaTime);
 		}
 			break;
 		case EBST_SPAWNPILLAS:
 			SpawnPillars(deltaTime);
 			break;
 		case EBST_TELEPORT:
-			Teleport({0.f, 0.f}, deltaTime);
+		{
+			Vector pos;
+			if (_isGimmik)
+				pos = { 0.f , 0.f };
+			else
+			{
+				float yaw = Utils::GetRandom(-180.f, 180.f);
+				Vector randomVector = Utils::GetVectorByYaw(yaw);
+
+				Collision* victimCollision = static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION));
+				Collision* pillarCollision = static_cast<Collision*>(target->GetComponent(EComponentType::ECT_COLLISION));
+
+				float radius = static_cast<ColliderCircle*>(victimCollision->GetCollider())->_radius + static_cast<ColliderCircle*>(pillarCollision->GetCollider())->_radius;
+				
+				randomVector = randomVector* radius;
+
+				pos = target->GetPos() + randomVector;
+			}
+			Teleport(pos, deltaTime);
+		}
+			
 			break;
 		}
-		_attackCooldown = 0.f;
-		_prevStepElapsedTime = 0.f;
+		
 	}
-	// 공격 범위 밖
-
+	
 	if (!_forceNext && _attackDelay <= 0.f)
 	{
 		_attackDelay = 0.f;
@@ -168,7 +206,7 @@ void Boss::TickSkill(float deltaTime)
 		_montageType = MONTAGE_TYPE_NONE;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 	}
-	// TODO : 스킬 구현 - 기본 스킬을 먼저
+	
 	_forceNext = false;
 }
 
@@ -190,60 +228,58 @@ PlayerRef Boss::FindClosestTarget()
 
 void Boss::StartDefaultAttack()
 {
-	_attackDelay = 2.f;
+	_skillType = EBST_DEFAULT;
+	_attackDelay = 1.f;
 }
 
 void Boss::StartRush()
 {
-	{
-		Protocol::S_MONTAGE montagePkt;
-		*montagePkt.mutable_caster() = *GetObjectInfo();
-		montagePkt.set_id(1);
-		montagePkt.set_isstop(false);
-		montagePkt.set_section_num(1);
-		montagePkt.set_scalable(true);
-		montagePkt.set_duration(2.f);
-	}
+	_skillType = EBST_RUSH;
+	_attackDelay = 1.f;
 	{
 		Protocol::ObjectInfo info;
 		info.CopyFrom(*GetObjectInfo());
-		info.set_x(0.f);
-		info.set_y(0.f);
 		info.set_speed(_rushSpeed);
-		SetObjectInfo(info, true, true);
+		SetObjectInfo(info, false , true);
 	}
-	_attackDelay = 2.f;
-
-	
 }
 
-void Boss::SelectSkill(GameObjectRef target)
+void Boss::SelectSkill()
 {
-	// Default
-	//_skillType = EBST_DEFAULT;
-	//StartDefaultAttack();
-
-	// Rush
-	//_skillType = EBST_RUSH;
-	//StartRush();
-
-	// SpawnPillars
 	
-	/*if (_isGimmik)
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	if (_isGimmik)
 	{
-		_skillType = EBST_TELEPORT;
 		StartTeleport();
+		SetState(Protocol::MOVE_STATE_SKILL, true);
 		return;
 	}
 
 	else
 	{
-		
-	}*/
+		PlayerRef player = room->FindClosestPlayer(GetPos());
 
-	_skillType = EBST_TELEPORT;
-	StartTeleport();
-	return;
+		_target = player;
+
+		float distance = player->GetPos().Distance(GetPos());
+
+		if(distance <= _attackRange)
+		{
+			StartDefaultAttack();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
+			return;
+		}
+		else
+		{
+			SetState(Protocol::MOVE_STATE_IDLE, true);
+			return;
+		}
+	}
+
 	
 }
 
@@ -264,8 +300,8 @@ void Boss::DefaultAttack(GameObjectRef target)
 		montagePkt.set_duration(1.f);
 		
 		_attackDelay = 1.f;
-		room->DoAsync(&Room::HandleMontage, montagePkt);
-		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, {target->GetPos().x, target->GetPos().y}, target->GetObjectInfo()->yaw(), 30.f);
+		room->HandleMontage(montagePkt);
+		room->HandleSkill(shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 30.f);
 		
 		_montageType = MONTAGE_TYPE_START;
 	}
@@ -287,7 +323,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 	if (room == nullptr)
 		return;
 
-	if (_attackDelay < 0.f)
+	if (_attackDelay <= 0.f)
 	{
 		Protocol::S_MONTAGE montagePkt;
 
@@ -305,6 +341,25 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 				montagePkt.set_duration(2.f);
 				room->HandleMontage(montagePkt);
 				_attackDelay = 2.f;
+			}
+			{
+				
+				if (_isGimmik)
+				{
+					_pillarNum = Utils::GetRandom(0, (int32)_pillars.size() -1 );
+					while (_pillarCount < _pillars.size())
+					{
+						if (GameObjectRef pillar = _pillars[_pillarNum].lock())
+						{
+							_pillarCount++;
+							break;
+						}
+						else
+						{
+							_pillarNum = (_pillarNum + 1) % _pillars.size();
+						}
+					}
+				}
 			}
 			break;
 		case MONTAGE_TYPE_START:
@@ -342,19 +397,43 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			break;
 
 		case MONTAGE_TYPE_END:
-		{
-			*montagePkt.mutable_caster() = *GetObjectInfo();
-			montagePkt.set_id(1);
-			montagePkt.set_section_num(0);
-			montagePkt.set_isstop(true);
-			room->HandleMontage(montagePkt);
-		}
-		{
-			Protocol::ObjectInfo info;
-			info.CopyFrom(*GetObjectInfo());
-			info.set_speed(_moveSpeed);
-			SetObjectInfo(info, true, true);
-		}
+			if (_isGimmik && _pillarCount < _pillars.size())
+			{
+				_montageType = MONTAGE_TYPE_NONE;
+				StartRush();
+			}
+			else
+			{
+				{
+					*montagePkt.mutable_caster() = *GetObjectInfo();
+					montagePkt.set_id(1);
+					montagePkt.set_section_num(0);
+					montagePkt.set_isstop(true);
+					room->HandleMontage(montagePkt);
+				}
+				{
+					Protocol::ObjectInfo info;
+					info.CopyFrom(*GetObjectInfo());
+					info.set_speed(_moveSpeed);
+					SetObjectInfo(info, true, true);
+				}
+				if (_isGimmik)
+				{
+
+					_isGimmik = false;
+
+					Protocol::S_DESPAWN despawnPkt;
+					for (int32 i = 0; i < _pillars.size(); i++)
+					{
+						StructureRef pillar = _pillars[i].lock();
+						if (pillar)
+							despawnPkt.add_object_ids(pillar->GetObjectInfo()->object_id());
+
+					}
+					room->DoAsync(&Room::HandleDespawn, despawnPkt);
+				}
+			}
+		
 			break;
 		}
 
@@ -393,33 +472,54 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 	if (room == nullptr)
 		return;
 
-	float dist = GetPos().Distance(target->GetPos());
-
-	Collision* victimCollision = static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION));
-	Collision* pillarCollision = static_cast<Collision*>(target->GetComponent(EComponentType::ECT_COLLISION));
-
-	// pillar와 충돌이 일어났을때
-	if (victimCollision->CheckCollision(pillarCollision))
+	if (_isGimmik)
 	{
-		_attackDelay = 0.0f;
-		_forceNext = true;
+		float dist = GetPos().Distance(target->GetPos());
+
+		Collision* victimCollision = static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION));
+		Collision* pillarCollision = static_cast<Collision*>(target->GetComponent(EComponentType::ECT_COLLISION));
+
+		// pillar와 충돌이 일어났을때
+		if (victimCollision->CheckCollision(pillarCollision))
 		{
-			room->HandleSkill(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
+			_attackDelay = 0.0f;
+			_forceNext = true;
+
+			Vector moveVector = (GetPos() - target->GetPos()).Normalize();
+			float radius = static_cast<ColliderCircle*>(victimCollision->GetCollider())->_radius + static_cast<ColliderCircle*>(pillarCollision->GetCollider())->_radius;
+
+			moveVector = moveVector * radius;
+
+			Protocol::ObjectInfo newInfo = *GetObjectInfo();
+			newInfo.set_x(GetPos().x + moveVector.x);
+			newInfo.set_y(GetPos().y + moveVector.y);
+
+			SetObjectInfo(newInfo, false, true);
+			{
+				room->HandleSkill(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
+			}
+
+			{
+				Protocol::S_DESPAWN despawnPkt;
+				despawnPkt.add_object_ids(target->GetObjectInfo()->object_id());
+				room->HandleDespawn(despawnPkt);
+			}
+		}
+		else
+		{
+
+			Vector moveVector = (target->GetPos() - GetPos()).Normalize();
+
+			moveVector = moveVector * _rushSpeed * deltaTime;
+
+			Protocol::ObjectInfo newInfo = *GetObjectInfo();
+			newInfo.set_x(GetPos().x + moveVector.x);
+			newInfo.set_y(GetPos().y + moveVector.y);
+
+			SetObjectInfo(newInfo, false, true);
 		}
 	}
-	else
-	{
-		
-		Vector moveVector = (target->GetPos() - GetPos()).Normalize();
-
-		moveVector = moveVector * _rushSpeed * deltaTime;
-
-		Protocol::ObjectInfo newInfo = *GetObjectInfo();
-		newInfo.set_x(GetPos().x + moveVector.x);
-		newInfo.set_y(GetPos().y + moveVector.y);
-
-		SetObjectInfo(newInfo, false, true);
-	}
+	
 }
 
 void Boss::Rush_END(GameObjectRef target, float deltaTime)
@@ -429,6 +529,7 @@ void Boss::Rush_END(GameObjectRef target, float deltaTime)
 
 void Boss::StartDot()
 {
+	_skillType = EBST_DOT;
 	_attackDelay = 1.f;
 }
 
@@ -510,7 +611,7 @@ void Boss::DotSkill_END(GameObjectRef target, float deltaTime)
 
 void Boss::StartSpawnPillars()
 {
-	
+	_skillType = EBST_SPAWNPILLAS;
 	_attackDelay = 2.f;
 }
 
@@ -576,10 +677,11 @@ void Boss::SpawnPillars(float deltaTime)
 			break;
 		case MONTAGE_TYPE_END:
 		{
-			_skillType = EBST_RUSH;
-			_montageType = MONTAGE_TYPE_NONE;
-			_pillarNum = Utils::GetRandom(0, (int32)_pillars.size() - 1);
-			StartRush();
+			if (_isGimmik)
+			{
+				_montageType = MONTAGE_TYPE_NONE;
+				StartRush();
+			}
 		}
 			break;
 		}
@@ -621,24 +723,14 @@ void Boss::SpawnPillars_END()
 
 void Boss::StartTeleport()
 {
-	// 아래로 들어가기
 	RoomRef room = GetRoomRef();
 
 	if (room == nullptr)
 		return;
 
-	{
-		Protocol::S_MONTAGE montagePkt;
-		*montagePkt.mutable_caster() = *GetObjectInfo();
-		montagePkt.set_id(1);
-		montagePkt.set_isstop(false);
-		montagePkt.set_section_num(1);
-		montagePkt.set_scalable(true);
-		montagePkt.set_duration(2.f);
-		room->HandleMontage(montagePkt);
-	}
+	_skillType = EBST_TELEPORT;
 
-	_attackDelay = 3.f;
+	_attackDelay = 0.5f;
 }
 
 void Boss::Teleport(Vector pos, float deltaTime)
@@ -655,6 +747,23 @@ void Boss::Teleport(Vector pos, float deltaTime)
 		case MONTAGE_TYPE_NONE:
 			_montageType = MONTAGE_TYPE_START;
 			{
+				// 아래로 들어가기
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(1);
+				montagePkt.set_isstop(false);
+				montagePkt.set_section_num(1);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.5f;
+			}
+			break;
+
+		case MONTAGE_TYPE_START:
+			_montageType = MONTAGE_TYPE_ING;
+			{
+				// 위치로 순간이동
 				Protocol::ObjectInfo info;
 				info.CopyFrom(*GetObjectInfo());
 
@@ -667,8 +776,8 @@ void Boss::Teleport(Vector pos, float deltaTime)
 			}
 			break;
 
-		case MONTAGE_TYPE_START:
-			_montageType = MONTAGE_TYPE_ING;
+		case MONTAGE_TYPE_ING:
+			_montageType = MONTAGE_TYPE_END;
 			{
 				// 위로 올라오기
 				Protocol::S_MONTAGE montagePkt;
@@ -677,21 +786,18 @@ void Boss::Teleport(Vector pos, float deltaTime)
 				montagePkt.set_isstop(false);
 				montagePkt.set_section_num(2);
 				montagePkt.set_scalable(true);
-				montagePkt.set_duration(2.f);
+				montagePkt.set_duration(1.f);
 				room->HandleMontage(montagePkt);
-				_attackDelay = 2.f;
+				_attackDelay = 2.5f;
 			}
-			break;
-
-		case MONTAGE_TYPE_ING:
-			_montageType = MONTAGE_TYPE_END;
-			_attackDelay = 1.f;
 			break;
 		case MONTAGE_TYPE_END:
 		{
-			_skillType = EBST_SPAWNPILLAS;
-			_montageType = MONTAGE_TYPE_NONE;
-			StartSpawnPillars();
+			if (_isGimmik)
+			{
+				_montageType = MONTAGE_TYPE_NONE;
+				StartSpawnPillars();
+			}
 		}
 		break;
 		}

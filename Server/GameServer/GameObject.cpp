@@ -67,10 +67,6 @@ void GameObject::Update(float deltaTime)
 
 	TickDot(deltaTime);
 	
-	BroadcastUpdate();
-	_dirtyFlag = false;
-	_teleport = false;
-	
 }
 
 void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport, bool dirtyFlag)
@@ -101,6 +97,9 @@ void GameObject::BroadcastUpdate()
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updatePkt);
 		room->Broadcast(sendBuffer);
 	}
+	
+	_dirtyFlag = false;
+	_teleport = false;
 }
 void GameObject::TickDot(float deltaTime)
 {

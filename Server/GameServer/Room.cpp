@@ -334,6 +334,17 @@ bool Room::HandleSpawn(Protocol::S_SPAWN pkt)
 	return false;
 }
 
+bool Room::HandleDespawn(Protocol::S_DESPAWN pkt)
+{
+	for (auto& id : pkt.object_ids())
+	{
+		RemoveObject(GetGameObjectRef(id));
+	}
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	Broadcast(sendBuffer);
+	return false;
+}
+
 StructureRef Room::SpawnStructure(Vector pos)
 {
 	StructureRef structure = ObjectUtils::CreateStructure(GetRoomRef());
@@ -384,17 +395,41 @@ void Room::LeaveGame(PlayerRef player)
 
 bool Room::RemoveObject(GameObjectRef gameObject)
 {
+	if (gameObject == nullptr)
+		return false;
+
 	const uint64 id = gameObject->GetObjectInfo()->object_id();
 
 	if (_players.find(id) != _players.end())
+	{
+		_players.erase(id);
 		return true;
+	}
 
 	if (_enemies.find(id) != _enemies.end())
+	{
+		_enemies.erase(id);
 		return true;
+	}
 
 	if (_skillActors.find(id) != _skillActors.end())
+	{
+		_skillActors.erase(id);
 		return true;
+	}
 
+	if (_structures.find(id) != _structures.end())
+	{
+		_structures.erase(id);
+		return true;
+	}
+		
+	if (_boss->GetObjectInfo()->object_id() == id)
+	{
+		_boss = nullptr;
+		return true;
+	}
+		
 	return false;
 }
 
