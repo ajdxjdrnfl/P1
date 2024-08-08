@@ -73,8 +73,10 @@ private:
     
 private:
     weak_ptr<class Player> _target;
-    float _attackRange = 600.f;
-    float _teleportRange = 1000.f;
+    float _attackRange = 500.f;
+
+    float _teleportRange = 600.f;
+    float _defaultAttackRange = 300.f;
 
     bool _isGimmik = false;
 

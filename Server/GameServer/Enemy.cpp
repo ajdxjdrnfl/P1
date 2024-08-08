@@ -35,12 +35,15 @@ void Enemy::Update(float deltaTime)
 		randomWalkDuration = 0.f;
 	}
 	
+	Super::Update(deltaTime);
+
 	if (_elapsedPacket >= _updatePacketCooldown)
 	{
 		_elapsedPacket = 0.f;
 		_dirtyFlag = true;
 	}
-	Super::Update(deltaTime);
+
+	BroadcastUpdate();
 }
 
 void Enemy::Init()

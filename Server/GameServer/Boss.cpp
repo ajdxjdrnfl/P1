@@ -23,11 +23,12 @@ void Boss::Update(float deltaTime)
 	_target = FindClosestTarget();
 	_elapsedPacket += deltaTime;
 	
-
 	PlayerRef target = _target.lock();
 
 	if (target == nullptr)
 		return;
+
+	Super::Update(deltaTime);
 
 	if (_elapsedPacket >= _updatePacketCooldown)
 	{
@@ -35,8 +36,7 @@ void Boss::Update(float deltaTime)
 		_dirtyFlag = true;
 	}
 
-	Super::Update(deltaTime);
-
+	BroadcastUpdate();
 }
 
 void Boss::Init()
@@ -60,7 +60,6 @@ void Boss::TickIdle(float deltaTime)
 		_isGimmik = true;
 		_bossPhase = 2;
 		SelectSkill();
-		SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
 	else
 	// 2. Target쪽으로 이동 / 기본공격
@@ -76,7 +75,6 @@ void Boss::TickIdle(float deltaTime)
 		if (GetPos().Distance(_targetPos) <= _attackRange)
 		{
 			SelectSkill();
-			SetState(Protocol::MOVE_STATE_SKILL, true);
 		}
 		else
 		{
@@ -90,6 +88,11 @@ void Boss::TickRun(float deltaTime)
 {
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
+
+	GameObjectRef target = _target.lock();
+
+	if(target == nullptr)
+		SetState(Protocol::MOVE_STATE_IDLE, true);
 
 	float dist = GetPos().Distance(_targetPos);
 	// 충분히 가까울 때
@@ -105,6 +108,16 @@ void Boss::TickRun(float deltaTime)
 	}
 	else
 	{
+
+		float distance = target->GetPos().Distance(GetPos());
+
+		if (distance >= _teleportRange)
+		{
+			StartTeleport();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
+			return;
+		}
+
 		Vector moveVector = (_targetPos - GetPos()).Normalize();
 		
 		moveVector = moveVector * _moveSpeed * deltaTime;
@@ -242,6 +255,7 @@ void Boss::SelectSkill()
 	if (_isGimmik)
 	{
 		StartTeleport();
+		SetState(Protocol::MOVE_STATE_SKILL, true);
 		return;
 	}
 
@@ -251,14 +265,17 @@ void Boss::SelectSkill()
 
 		_target = player;
 
-		if (player->GetPos().Distance(GetPos()) >= _teleportRange)
+		float distance = player->GetPos().Distance(GetPos());
+
+		if(distance <= _attackRange)
 		{
-			StartTeleport();
+			StartDefaultAttack();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
 			return;
 		}
 		else
 		{
-			StartDefaultAttack();
+			SetState(Protocol::MOVE_STATE_IDLE, true);
 			return;
 		}
 	}
