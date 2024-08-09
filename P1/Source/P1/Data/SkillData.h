@@ -113,6 +113,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UTexture2D* Thumbnail;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ASkillTargetingBase> SkillTargeting;
 };
 
 USTRUCT(BlueprintType)

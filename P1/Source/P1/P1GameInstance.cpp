@@ -201,10 +201,10 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 			Characters.Add({ info.object_id(), SpawnCharacter(Pkt.info(i), Loc) });
 			break;
 		case Protocol::CASTER_TYPE_BOSS:
-			Boss = SpawnBoss(Pkt.info(i), Loc);
+			//Boss = SpawnBoss(Pkt.info(i), Loc);
 			break;
 		case Protocol::CASTER_TYPE_STRUCTURE:
-			BossPillars.Add({info.object_id(), SpawnBossPillar(Pkt.info(i), Loc) });
+			//BossPillars.Add({info.object_id(), SpawnBossPillar(Pkt.info(i), Loc) });
 			break;
 		default:
 			break;
@@ -272,6 +272,7 @@ void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
 
 void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
 {
+	if (GetCreature(Pkt) == nullptr) return;
 	GetCreature(Pkt)->PlayAnimMontageByServer(Pkt);
 }
 

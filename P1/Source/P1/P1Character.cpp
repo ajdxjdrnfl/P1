@@ -218,3 +218,9 @@ void AP1Character::Dodge()
 		SkillComponent->Dodge();
 	}
 }
+
+void AP1Character::AddCameraBoomLength(float Value)
+{
+	 CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 50, 500, 2500);
+}
+

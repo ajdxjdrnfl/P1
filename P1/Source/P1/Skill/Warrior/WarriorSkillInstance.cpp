@@ -13,6 +13,7 @@
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Component/SkillComponent/CharacterSkillComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "P1/Skill/Targeting/OwnerToCursorSkillTargeting.h"
 
 AWarriorQSkillInstance::AWarriorQSkillInstance()
 {
@@ -156,7 +157,6 @@ void AWarriorWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 	CurrentSkillActor = SkillActor;
-	CurrentParticle = SkillActor->SpawnHoldParticleOnTarget(SkillActor);
 }
 
 void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
@@ -165,11 +165,6 @@ void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 	{
 		CurrentSkillActor->Destroy();
 		CurrentSkillActor = nullptr;
-
-		if (CurrentParticle)
-		{
-			CurrentParticle->DestroyComponent();
-		}
 	}
 }
 
@@ -199,7 +194,7 @@ void AWarriorESkillInstance::SpawnSkill()
 
 void AWarriorESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
-	SkillActor->SpawnActivationParticleOnLocation(SkillActor->GetActorLocation());
+	SkillActor->SpawnActivationParticleOnLocation(OwnerCreature->GetActorLocation());
 }
 
 void AWarriorRSkillInstance::Init(AP1Creature* _OwnerCreature)
@@ -216,15 +211,45 @@ void AWarriorRSkillInstance::Init(AP1Creature* _OwnerCreature)
 
 void AWarriorRSkillInstance::UseSkill()
 {
-	if (CastingSkillManager == nullptr)
+	if (!IsValid(SkillTargeting))
+	{
+		if (IsValid(CastingSkillManager))
+		{
+			UseSkillAfterTargeting();
+			return;
+		}
+
+		SkillTargeting = Cast<AOwnerToCursorSkillTargeting>(OwnerCreature->GetWorld()->SpawnActor(SkillInfo.SkillTargeting));
+		SkillTargeting->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		SkillTargeting->Init(this, 0.5f);
+	}
+	else
+	{
+		SkillTargeting->Destroy();
+		SkillTargeting = nullptr;
+	}
+}
+
+void AWarriorRSkillInstance::UseSkillAfterTargeting()
+{
+	if (!IsValid(CastingSkillManager))
 	{
 		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
 		CastingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+		CastingSkillManager->StartCasting(SkillInfo.CastingTime);
 	}
+	else
+	{
+		// To Stop Casting
+		CastingSkillManager->StartCasting(SkillInfo.CastingTime);
+		CastingSkillManager = nullptr;
+	}
+	SetAnimMontage();
+}
 
-	CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	CastingSkillManager->StartCasting(SkillInfo.CastingTime);
-
+void AWarriorRSkillInstance::SetAnimMontage()
+{
 	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
 
 	if (AnimInstance == nullptr || M_Skill == nullptr)
@@ -264,7 +289,6 @@ void AWarriorRSkillInstance::UseSkill()
 			SubSystem->bCanMove = true;
 		}
 	}
-
 }
 
 void AWarriorRSkillInstance::SpawnSkill()
@@ -283,12 +307,39 @@ void AWarriorRSkillInstance::SpawnSkill()
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
 			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
-			Pkt.set_id(0);
+			Pkt.set_id(3);
 			Pkt.set_section_num(2);
 
 			SEND_PACKET(Pkt);
 		}
 	}
+
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(3);
+
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	FVector SpawnLocation = OwnerCreature->GetActorLocation();
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+	SEND_PACKET(Pkt);
+}
+
+void AWarriorRSkillInstance::OnCastingEnd()
+{
+	SpawnSkill();
+}
+
+void AWarriorRSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+	CurrentSkillActor = SkillActor;
 }
 
 void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte)
@@ -299,5 +350,11 @@ void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 		{
 			SubSystem->bCanMove = true;
 		}
+	}
+
+	if (CurrentSkillActor)
+	{
+		CurrentSkillActor->Destroy();
+		CurrentSkillActor = nullptr;
 	}
 }

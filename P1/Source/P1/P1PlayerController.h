@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "InputActionValue.h"
 #include "P1PlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -13,6 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRMBClickedDelegate);
 
 UCLASS()
 class AP1PlayerController : public APlayerController
@@ -26,19 +28,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	float ShortPressThreshold;
 
-	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
 
-	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 	
-	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationClickAction;
 
-	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RMBClickAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationTouchAction;
 
@@ -56,6 +57,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DodgeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FOVAction;
+
+	FOnRMBClickedDelegate OnRMBClickedDelegate;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -84,6 +90,8 @@ protected:
 	void OnRSkillTriggered();
 	void OnRSkillReleased();
 	void OnDodgeTriggered();
+	void OnRMBTriggered();
+	void OnFOVTriggered(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))

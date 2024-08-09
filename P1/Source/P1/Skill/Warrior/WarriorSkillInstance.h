@@ -53,8 +53,6 @@ private:
 
 	UPROPERTY()
 	class ASkillActorBase* CurrentSkillActor;
-	UPROPERTY()
-	class UParticleSystemComponent* CurrentParticle;
 
 public:
 	virtual void UseSkill() override;
@@ -87,10 +85,19 @@ private:
 	UPROPERTY()
 	class ACastingSkillManager* CastingSkillManager;
 
+	UPROPERTY()
+	class ASkillActorBase* CurrentSkillActor;
+
+	UPROPERTY()
+	class AOwnerToCursorSkillTargeting* SkillTargeting;
+
 public:
 	virtual void Init(class AP1Creature* _OwnerCreature);
 	virtual void UseSkill() override;
+	virtual void UseSkillAfterTargeting() override;
+	void SetAnimMontage();
 	virtual void SpawnSkill() override;
-
+	virtual void OnCastingEnd() override;
+	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte) override;
 };

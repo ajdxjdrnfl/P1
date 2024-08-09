@@ -16,9 +16,10 @@ class P1_API AArcherQSkillInstance : public ASkillInstanceBase
 	
 private:
 	UPROPERTY()
-	class AChargingSkillManager* ChargingSkillManager;
+	class ACastingSkillManager* CastingSkillManager;
 
 public:
 	virtual void UseSkill() override;
 	virtual void SpawnSkill() override;
+	virtual void OnCastingEnd() override;
 };
