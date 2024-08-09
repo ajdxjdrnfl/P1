@@ -23,7 +23,7 @@ public:
 	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 	bool			HandleSpawn(Protocol::S_SPAWN pkt);
-	bool			HandleDespawn(Protocol::S_DESPAWN pkt);
+	bool			HandleDespawn(Protocol::S_DESPAWN pkt, bool remove = false);
 
 	StructureRef	SpawnStructure(Vector pos);
 
@@ -48,7 +48,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 0;
+	const int32 _maxEnemyCount = 2;
 
 protected:
 	unordered_map<uint64, PlayerRef> _players;

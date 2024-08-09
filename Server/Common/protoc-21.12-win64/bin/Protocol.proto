@@ -33,7 +33,7 @@ message S_SPAWN
 
 message S_DESPAWN
 {
-	repeated uint64 object_ids = 1;
+	repeated ObjectInfo info = 1;
 }
 
 message S_MOVE

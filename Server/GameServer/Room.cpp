@@ -141,7 +141,7 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 
 		for (auto& item : _players)
 		{
-			pkt.add_object_ids(item.first);
+			pkt.add_info()->CopyFrom(*item.second->GetObjectInfo());
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
@@ -162,7 +162,7 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 	// 다른 플레이어들에게 퇴장 사실 전달
 	{
 		Protocol::S_DESPAWN pkt;
-		pkt.add_object_ids(objectId);
+		pkt.add_info()->CopyFrom(*player->GetObjectInfo());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		Broadcast(sendBuffer, objectId);
@@ -283,7 +283,7 @@ void Room::HandleDead(GameObjectRef gameObject)
 	{
 		Protocol::S_DESPAWN despawnPkt;
 
-		despawnPkt.add_object_ids(gameObject->GetObjectInfo()->object_id());
+		despawnPkt.add_info()->CopyFrom(*gameObject->GetObjectInfo());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
 		Broadcast(sendBuffer);
@@ -334,12 +334,16 @@ bool Room::HandleSpawn(Protocol::S_SPAWN pkt)
 	return false;
 }
 
-bool Room::HandleDespawn(Protocol::S_DESPAWN pkt)
+bool Room::HandleDespawn(Protocol::S_DESPAWN pkt, bool remove)
 {
-	for (auto& id : pkt.object_ids())
+	if (remove)
 	{
-		RemoveObject(GetGameObjectRef(id));
+		for (auto& item : pkt.info())
+		{
+			RemoveObject(GetGameObjectRef(item.object_id()));
+		}
 	}
+	
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 	Broadcast(sendBuffer);
 	return false;

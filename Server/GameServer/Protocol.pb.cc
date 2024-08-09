@@ -85,8 +85,7 @@ struct S_SPAWNDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SPAWNDefaultTypeInternal _S_SPAWN_default_instance_;
 PROTOBUF_CONSTEXPR S_DESPAWN::S_DESPAWN(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.object_ids_)*/{}
-  , /*decltype(_impl_._object_ids_cached_byte_size_)*/{0}
+    /*decltype(_impl_.info_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_DESPAWNDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_DESPAWNDefaultTypeInternal()
@@ -284,7 +283,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_DESPAWN, _impl_.object_ids_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_DESPAWN, _impl_.info_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MOVE, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -415,32 +414,32 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ccess\030\001 \001(\010\"C\n\014S_ENTER_GAME\022\017\n\007success\030\001"
   " \001(\010\022\"\n\004info\030\002 \001(\0132\024.Protocol.ObjectInfo"
   "\"\016\n\014C_LEAVE_GAME\"-\n\007S_SPAWN\022\"\n\004info\030\001 \003("
-  "\0132\024.Protocol.ObjectInfo\"\037\n\tS_DESPAWN\022\022\n\n"
-  "object_ids\030\001 \003(\004\">\n\006S_MOVE\022\"\n\004info\030\001 \001(\013"
-  "2\024.Protocol.ObjectInfo\022\020\n\010teleport\030\002 \001(\010"
-  "\",\n\006C_MOVE\022\"\n\004info\030\001 \001(\0132\024.Protocol.Obje"
-  "ctInfo\"s\n\007C_SKILL\022$\n\006caster\030\001 \001(\0132\024.Prot"
-  "ocol.ObjectInfo\022\017\n\007skillid\030\002 \001(\004\022\016\n\006dama"
-  "ge\030\003 \001(\002\022\t\n\001x\030\004 \001(\002\022\t\n\001y\030\005 \001(\002\022\013\n\003yaw\030\006 "
-  "\001(\002\"j\n\007S_SKILL\022$\n\006caster\030\001 \001(\0132\024.Protoco"
-  "l.ObjectInfo\022(\n\nskillactor\030\002 \001(\0132\024.Proto"
-  "col.ObjectInfo\022\017\n\007skillid\030\003 \001(\004\"\221\001\n\010C_AT"
-  "TACK\022$\n\006caster\030\001 \001(\0132\024.Protocol.ObjectIn"
-  "fo\022(\n\nskillactor\030\002 \001(\0132\024.Protocol.Object"
-  "Info\022$\n\006victim\030\003 \001(\0132\024.Protocol.ObjectIn"
-  "fo\022\017\n\007counter\030\004 \001(\010\"\262\001\n\010S_ATTACK\022$\n\006cast"
-  "er\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskilla"
-  "ctor\030\002 \001(\0132\024.Protocol.ObjectInfo\022$\n\006vict"
-  "im\030\003 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007skilli"
-  "d\030\004 \001(\004\022\016\n\006damage\030\005 \001(\002\022\017\n\007counter\030\006 \001(\010"
-  "\"b\n\tC_MONTAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol"
-  ".ObjectInfo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022"
-  "\023\n\013section_num\030\004 \001(\004\"\206\001\n\tS_MONTAGE\022$\n\006ca"
-  "ster\030\001 \001(\0132\024.Protocol.ObjectInfo\022\016\n\006isst"
-  "op\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001("
-  "\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010duration\030\006 \001(\002\",\n"
-  "\006S_DEAD\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectI"
-  "nfob\006proto3"
+  "\0132\024.Protocol.ObjectInfo\"/\n\tS_DESPAWN\022\"\n\004"
+  "info\030\001 \003(\0132\024.Protocol.ObjectInfo\">\n\006S_MO"
+  "VE\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfo\022\020"
+  "\n\010teleport\030\002 \001(\010\",\n\006C_MOVE\022\"\n\004info\030\001 \001(\013"
+  "2\024.Protocol.ObjectInfo\"s\n\007C_SKILL\022$\n\006cas"
+  "ter\030\001 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007skill"
+  "id\030\002 \001(\004\022\016\n\006damage\030\003 \001(\002\022\t\n\001x\030\004 \001(\002\022\t\n\001y"
+  "\030\005 \001(\002\022\013\n\003yaw\030\006 \001(\002\"j\n\007S_SKILL\022$\n\006caster"
+  "\030\001 \001(\0132\024.Protocol.ObjectInfo\022(\n\nskillact"
+  "or\030\002 \001(\0132\024.Protocol.ObjectInfo\022\017\n\007skilli"
+  "d\030\003 \001(\004\"\221\001\n\010C_ATTACK\022$\n\006caster\030\001 \001(\0132\024.P"
+  "rotocol.ObjectInfo\022(\n\nskillactor\030\002 \001(\0132\024"
+  ".Protocol.ObjectInfo\022$\n\006victim\030\003 \001(\0132\024.P"
+  "rotocol.ObjectInfo\022\017\n\007counter\030\004 \001(\010\"\262\001\n\010"
+  "S_ATTACK\022$\n\006caster\030\001 \001(\0132\024.Protocol.Obje"
+  "ctInfo\022(\n\nskillactor\030\002 \001(\0132\024.Protocol.Ob"
+  "jectInfo\022$\n\006victim\030\003 \001(\0132\024.Protocol.Obje"
+  "ctInfo\022\017\n\007skillid\030\004 \001(\004\022\016\n\006damage\030\005 \001(\002\022"
+  "\017\n\007counter\030\006 \001(\010\"b\n\tC_MONTAGE\022$\n\006caster\030"
+  "\001 \001(\0132\024.Protocol.ObjectInfo\022\016\n\006isstop\030\002 "
+  "\001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013section_num\030\004 \001(\004\"\206\001\n"
+  "\tS_MONTAGE\022$\n\006caster\030\001 \001(\0132\024.Protocol.Ob"
+  "jectInfo\022\016\n\006isstop\030\002 \001(\010\022\n\n\002id\030\003 \001(\004\022\023\n\013"
+  "section_num\030\004 \001(\004\022\020\n\010scalable\030\005 \001(\010\022\020\n\010d"
+  "uration\030\006 \001(\002\",\n\006S_DEAD\022\"\n\004info\030\001 \001(\0132\024."
+  "Protocol.ObjectInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -448,7 +447,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1211, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1227, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 15,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -1145,6 +1144,9 @@ class S_DESPAWN::_Internal {
  public:
 };
 
+void S_DESPAWN::clear_info() {
+  _impl_.info_.Clear();
+}
 S_DESPAWN::S_DESPAWN(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -1155,8 +1157,7 @@ S_DESPAWN::S_DESPAWN(const S_DESPAWN& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_DESPAWN* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.object_ids_){from._impl_.object_ids_}
-    , /*decltype(_impl_._object_ids_cached_byte_size_)*/{0}
+      decltype(_impl_.info_){from._impl_.info_}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1168,8 +1169,7 @@ inline void S_DESPAWN::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.object_ids_){arena}
-    , /*decltype(_impl_._object_ids_cached_byte_size_)*/{0}
+      decltype(_impl_.info_){arena}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1185,7 +1185,7 @@ S_DESPAWN::~S_DESPAWN() {
 
 inline void S_DESPAWN::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.object_ids_.~RepeatedField();
+  _impl_.info_.~RepeatedPtrField();
 }
 
 void S_DESPAWN::SetCachedSize(int size) const {
@@ -1198,7 +1198,7 @@ void S_DESPAWN::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.object_ids_.Clear();
+  _impl_.info_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1208,14 +1208,16 @@ const char* S_DESPAWN::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated uint64 object_ids = 1;
+      // repeated .Protocol.ObjectInfo info = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_object_ids(), ptr, ctx);
-          CHK_(ptr);
-        } else if (static_cast<uint8_t>(tag) == 8) {
-          _internal_add_object_ids(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
-          CHK_(ptr);
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_info(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -1248,13 +1250,12 @@ uint8_t* S_DESPAWN::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated uint64 object_ids = 1;
-  {
-    int byte_size = _impl_._object_ids_cached_byte_size_.load(std::memory_order_relaxed);
-    if (byte_size > 0) {
-      target = stream->WriteUInt64Packed(
-          1, _internal_object_ids(), byte_size, target);
-    }
+  // repeated .Protocol.ObjectInfo info = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_info_size()); i < n; i++) {
+    const auto& repfield = this->_internal_info(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1273,18 +1274,11 @@ size_t S_DESPAWN::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated uint64 object_ids = 1;
-  {
-    size_t data_size = ::_pbi::WireFormatLite::
-      UInt64Size(this->_impl_.object_ids_);
-    if (data_size > 0) {
-      total_size += 1 +
-        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
-    }
-    int cached_size = ::_pbi::ToCachedSize(data_size);
-    _impl_._object_ids_cached_byte_size_.store(cached_size,
-                                    std::memory_order_relaxed);
-    total_size += data_size;
+  // repeated .Protocol.ObjectInfo info = 1;
+  total_size += 1UL * this->_internal_info_size();
+  for (const auto& msg : this->_impl_.info_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1305,7 +1299,7 @@ void S_DESPAWN::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.object_ids_.MergeFrom(from._impl_.object_ids_);
+  _this->_impl_.info_.MergeFrom(from._impl_.info_);
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1323,7 +1317,7 @@ bool S_DESPAWN::IsInitialized() const {
 void S_DESPAWN::InternalSwap(S_DESPAWN* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.object_ids_.InternalSwap(&other->_impl_.object_ids_);
+  _impl_.info_.InternalSwap(&other->_impl_.info_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_DESPAWN::GetMetadata() const {

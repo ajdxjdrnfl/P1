@@ -40,6 +40,7 @@ protected:
 
 	bool _dirtyFlag = false;
 	bool _teleport = false;
+	float _deadElapsedTime = 0.f;
 	
 public:
 	class ComponentBase* GetComponent(EComponentType type);

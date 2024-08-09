@@ -18,6 +18,7 @@ protected:
     virtual void TickRun(float deltaTime) override;
     virtual void TickSkill(float deltaTime) override;
     virtual void TickStun(float deltaTime) override;
+    virtual void TickDead(float deltaTime) override;
 
 private:
     PlayerRef FindClosestTarget();

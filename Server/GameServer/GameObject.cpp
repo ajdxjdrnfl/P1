@@ -164,8 +164,6 @@ void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damag
 		break;
 	}
 
-
-	// TODO : 사망 처리 - 각 클래스에서?? + TickDead에서 처리
 	if (_objectInfo->hp() == 0.f)
 	{
 		SetState(Protocol::MOVE_STATE_DEAD, true);

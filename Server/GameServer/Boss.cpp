@@ -216,6 +216,27 @@ void Boss::TickStun(float deltaTime)
 		return;
 }
 
+void Boss::TickDead(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_DEAD)
+		return;
+
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	_deadElapsedTime += deltaTime;
+
+	if (_deadElapsedTime >= 10.f)
+	{
+		_deadElapsedTime = 0.f;
+		Protocol::S_DESPAWN despawnPkt;
+		despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
+		room->HandleDespawn(despawnPkt, true);
+	}
+}
+
 PlayerRef Boss::FindClosestTarget()
 {
 	RoomRef room = GetRoomRef();
@@ -427,10 +448,10 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 					{
 						StructureRef pillar = _pillars[i].lock();
 						if (pillar)
-							despawnPkt.add_object_ids(pillar->GetObjectInfo()->object_id());
+							despawnPkt.add_info()->CopyFrom(*pillar->GetObjectInfo());
 
 					}
-					room->DoAsync(&Room::HandleDespawn, despawnPkt);
+					room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
 				}
 			}
 		
@@ -501,7 +522,7 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 
 			{
 				Protocol::S_DESPAWN despawnPkt;
-				despawnPkt.add_object_ids(target->GetObjectInfo()->object_id());
+				despawnPkt.add_info()->CopyFrom(*target->GetObjectInfo());
 				room->HandleDespawn(despawnPkt);
 			}
 		}

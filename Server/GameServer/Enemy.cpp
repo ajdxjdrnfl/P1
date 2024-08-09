@@ -184,6 +184,27 @@ void Enemy::TickStun(float deltaTime)
 	Super::TickStun(deltaTime);
 }
 
+void Enemy::TickDead(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_DEAD)
+		return;
+
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	_deadElapsedTime += deltaTime;
+
+	if (_deadElapsedTime >= 10.f)
+	{
+		_deadElapsedTime = 0.f;
+		Protocol::S_DESPAWN despawnPkt;
+		despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
+		room->HandleDespawn(despawnPkt, true);
+	}
+}
+
 PlayerRef Enemy::FindClosestTarget()
 {
 	RoomRef room = GetRoomRef();
