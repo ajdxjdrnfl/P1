@@ -27,7 +27,8 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 	if (GameInstance == nullptr)
 		return false;
 
-	GameInstance->GetMyCharacter()->SetInfo(pkt.info());
+	GameInstance->GetMyCharacter()->ObjectInfo->CopyFrom(pkt.info());
+	GameInstance->GetMyCharacter()->InitOnSpawn(pkt.info());
 	GameInstance->Characters.Add(pkt.info().object_id(), GameInstance->GetMyCharacter());
 	GameInstance->GetMyCharacter()->SetActorLocation(FVector(pkt.info().x(), pkt.info().y(), pkt.info().z()));
 
@@ -48,29 +49,23 @@ bool Handle_S_SPAWN(PacketSessionRef& session, Protocol::S_SPAWN& pkt)
 
 bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
 {
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->DespawnActorByServer(pkt);
 	return false;
 }
 
 bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 {
 	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
-	uint64 id = pkt.info().object_id();
 
-	if (GameInstance == nullptr || GameInstance->IsMyCharacter(id))
+	if (GameInstance == nullptr || GameInstance->IsMyCharacter(pkt.info().object_id()))
 		return false;
 
-	if (pkt.info().castertype() == Protocol::CASTER_TYPE_BOSS)
-	{
-		GameInstance->Boss->SetMoveValueByServer(pkt);
-	}
-	else if (pkt.info().castertype() == Protocol::CASTER_TYPE_MOB)
-	{
-		GameInstance->Enemies[id]->SetMoveValueByServer(pkt);
-	}
-	else
-	{
-		GameInstance->Characters[id]->SetMoveValueByServer(pkt);
-	}
+	GameInstance->MoveByServer(pkt);
 
 	return true;
 }

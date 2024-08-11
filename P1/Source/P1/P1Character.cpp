@@ -60,11 +60,8 @@ void AP1Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Init();
-
-
-	//if (StatComponent == nullptr) return;
-	//StatComponent->OnCharacterHealthChangedDelegate.AddDynamic(WidgetComponent->GetCharacterOverlayWidget()->GetStatWidget(), &UCharacterStatWidget::OnCharacterHealthChanged);
+	CameraBoom->TargetArmLength = 1500;
+	TargetCameraBoomLength = 1500;
 }
 
 void AP1Character::Tick(float DeltaSeconds)
@@ -78,6 +75,8 @@ void AP1Character::Tick(float DeltaSeconds)
 		Dodge();
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	}
+
+	CameraBoom->TargetArmLength = UKismetMathLibrary::FInterpTo(CameraBoom->TargetArmLength, TargetCameraBoomLength, DeltaSeconds, 20);
 }
 
 void AP1Character::PostInitializeComponents()
@@ -102,28 +101,14 @@ void AP1Character::PostInitializeComponents()
 	}
 }
 
-void AP1Character::Init()
+void AP1Character::InitOnSpawn(Protocol::ObjectInfo ObjInfo)
 {
-	if (WidgetComponent == nullptr || StatComponent == nullptr)
+	if (WidgetComponent == nullptr || StatComponent == nullptr || SkillComponent == nullptr)
 		return;
 
-	WidgetComponent->SetCharacterStat(StatComponent);
-	StatComponent->InitStat();
-}
-
-void AP1Character::InitOnSpawn(float HealthToSet, float StaminaToSet)
-{
-	if (WidgetComponent == nullptr || StatComponent == nullptr)
-		return;
-
-	WidgetComponent->SetCharacterStat(StatComponent);
-	StatComponent->InitStat(HealthToSet, StaminaToSet);
-	WidgetComponent->SetSkillButton();
-}
-
-void AP1Character::OnSpawn(float HealthToSet, float StaminaToSet)
-{
-	InitOnSpawn(HealthToSet, StaminaToSet);
+	WidgetComponent->InitOnSpawn(StatComponent);
+	StatComponent->InitOnSpawn(ObjInfo);
+	SkillComponent->InitOnSpawn();
 }
 
 void AP1Character::UseSkill(uint16 SkillIndex)
@@ -172,15 +157,6 @@ FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
 	return SkillComponent->GetSkillInfoByIndex(SkillIndex);
 }
 
-void AP1Character::Die()
-{
-	if (M_Die == nullptr) return;
-
-	GetMesh()->GetAnimInstance()->Montage_Play(M_Die);
-
-	Super::Die();
-}
-
 void AP1Character::MoveByServer(float DeltaTime)
 {
 	if (CreatureState == ECreatureState::Move)
@@ -221,6 +197,6 @@ void AP1Character::Dodge()
 
 void AP1Character::AddCameraBoomLength(float Value)
 {
-	 CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 50, 500, 2500);
+	 TargetCameraBoomLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 100, 500, 2500);
 }
 

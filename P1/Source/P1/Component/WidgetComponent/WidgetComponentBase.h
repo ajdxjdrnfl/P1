@@ -32,6 +32,7 @@ protected:
 	TArray<FSkillInfo> Skills;
 
 public:
+	virtual void InitOnSpawn(class UStatComponentBase* StatComponent);
 	virtual void SetSkills();
 	virtual void UseSkill(uint32 SkillIndex);
 

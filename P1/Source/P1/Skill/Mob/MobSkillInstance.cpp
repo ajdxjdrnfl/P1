@@ -22,7 +22,7 @@ void AMobQSkillInstance::UseSkill()
 void AMobQSkillInstance::SpawnSkill()
 {
 	{
-		if (SkillActorClass == nullptr) return;
+		/*if (SkillActorClass == nullptr) return;
 
 		Protocol::C_SKILL Pkt;
 		Pkt.set_skillid(0);
@@ -35,6 +35,6 @@ void AMobQSkillInstance::SpawnSkill()
 		Pkt.set_y(SpawnLocation.Y);
 		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
-		SEND_PACKET(Pkt);
+		SEND_PACKET(Pkt);*/
 	}
 }

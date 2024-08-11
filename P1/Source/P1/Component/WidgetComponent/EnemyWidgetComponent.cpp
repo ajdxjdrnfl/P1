@@ -11,8 +11,13 @@ void UEnemyWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// TODO: later move to OnSpawn function
+}
+
+void UEnemyWidgetComponent::InitOnSpawn(UStatComponentBase* StatComponent)
+{
+	Super::InitOnSpawn(StatComponent);
 	Cast<AEnemyBase>(GetOwner())->GetStatComponent()->OnEnemyHealthChangedDelegate.AddDynamic(this, &UEnemyWidgetComponent::OnEnemyHealthChanged);
+	SetEnemyStat(Cast<UEnemyStatComponent>(StatComponent));
 }
 
 void UEnemyWidgetComponent::OnEnemyHealthChanged()

@@ -63,6 +63,7 @@ public:
 	float DefaultWalkSpeed;
 
 	virtual void Die();
+	virtual void Despawn();
 
 	UFUNCTION(BlueprintCallable)
 	void SetCreatureStateByServer(FSkillInfo SkillInfo);
@@ -75,6 +76,8 @@ public:
 
 	virtual void MoveByServer(float DeltaTime) {}
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
+
+	bool CheckDeath(Protocol::S_MOVE Pkt);
 
 	void SetObjectInfo();
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) {}

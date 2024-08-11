@@ -18,7 +18,8 @@
 				"CCTime": 0,
 				"LifeTime": 0,
 				"SkillActorClass": "None",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
@@ -36,7 +37,8 @@
 				"CCTime": 0,
 				"LifeTime": 0.1,
 				"SkillActorClass": "None",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 2,
@@ -54,7 +56,8 @@
 				"CCTime": 0,
 				"LifeTime": 0,
 				"SkillActorClass": "None",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			}
 		]
 	},
@@ -77,7 +80,8 @@
 				"CCTime": 0,
 				"LifeTime": 0.2,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorQSkill.BP_WarriorQSkill_C'",
-				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/sword-wound.sword-wound'"
+				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/sword-wound.sword-wound'",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
@@ -95,7 +99,8 @@
 				"CCTime": 0,
 				"LifeTime": 3,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorWSkillByTick.BP_WarriorWSkillByTick_C'",
-				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/stomp-tornado.stomp-tornado'"
+				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/stomp-tornado.stomp-tornado'",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 2,
@@ -113,7 +118,8 @@
 				"CCTime": 0,
 				"LifeTime": 1,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorESkill.BP_WarriorESkill_C'",
-				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'"
+				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 3,
@@ -131,7 +137,8 @@
 				"CCTime": 0,
 				"LifeTime": 10,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_WarriorRSkillByTick.BP_WarriorRSkillByTick_C'",
-				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/spinning-sword.spinning-sword'"
+				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/spinning-sword.spinning-sword'",
+				"SkillTargeting": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Targeting/BP_OwnerToCursor.BP_OwnerToCursor_C'"
 			}
 		]
 	},
@@ -154,7 +161,8 @@
 				"CCTime": 0,
 				"LifeTime": 5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossQSkill.BP_BossQSkill_C'",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
@@ -172,7 +180,8 @@
 				"CCTime": 0,
 				"LifeTime": 0.5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossWSkill.BP_BossWSkill_C'",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			}
 		]
 	},
@@ -183,7 +192,7 @@
 				"SkillNumLocal": 0,
 				"HitNum": -1,
 				"CooldownTime": 4,
-				"Damage": 20,
+				"Damage": 10,
 				"XScale": 30,
 				"YScale": 30,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Mob/Montage_MobAttack.Montage_MobAttack'",
@@ -195,7 +204,8 @@
 				"CCTime": 0,
 				"LifeTime": 1,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_MobQSkill.BP_MobQSkill_C'",
-				"Thumbnail": "None"
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
 			}
 		]
 	},
@@ -218,7 +228,8 @@
 				"CCTime": 0,
 				"LifeTime": 5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/BP_ArcherQSkill.BP_ArcherQSkill_C'",
-				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'"
+				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'",
+				"SkillTargeting": "None"
 			}
 		]
 	}

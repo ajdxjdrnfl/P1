@@ -9,6 +9,12 @@ void UEnemySkillComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UEnemySkillComponent::InitOnSpawn()
+{
+	Super::InitOnSpawn();
+
+}
+
 void UEnemySkillComponent::UseSkill(int32 SkillIndex)
 {
 	Super::UseSkill(SkillIndex);

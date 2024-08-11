@@ -62,3 +62,56 @@ void AArcherQSkillInstance::OnCastingEnd()
 		SEND_PACKET(Pkt);
 	}
 }
+
+void AArcherWSkillInstance::UseSkill()
+{
+	if (OwnerCreature)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AArcherWSkillInstance::OnMontageEnded);
+	}
+
+	if (HoldingByTickSkillManager == nullptr)
+	{
+		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
+		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+	}
+
+	HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+	HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+}
+
+void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if ((AnimMontage == M_Skill) && CurrentSkillActor)
+	{
+		CurrentSkillActor->Destroy();
+		CurrentSkillActor = nullptr;
+		HoldingByTickSkillManager->Destroy();
+		HoldingByTickSkillManager = nullptr;
+	}
+}
+
+void AArcherWSkillInstance::SpawnSkill()
+{
+	if (CurrentSkillActor) return;
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(1);
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	FVector SpawnLocation = OwnerCreature->GetActorLocation();
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+	SEND_PACKET(Pkt);
+}
+
+void AArcherWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+	CurrentSkillActor = SkillActor;
+}

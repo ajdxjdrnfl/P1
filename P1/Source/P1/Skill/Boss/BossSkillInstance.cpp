@@ -128,5 +128,5 @@ void ABossESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 
 void ABossESkillInstance::OnSkillDetroyed(AActor* ActorToDestroy)
 {
-	//OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
+	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
 }

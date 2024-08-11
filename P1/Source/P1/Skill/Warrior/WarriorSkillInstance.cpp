@@ -124,19 +124,23 @@ void AWarriorWSkillInstance::UseSkill()
 		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AWarriorWSkillInstance::OnMontageEnded);
 	}
 
-	if (HoldingByTickSkillManager == nullptr)
+	if (!IsValid(HoldingByTickSkillManager))
 	{
 		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
 		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 	}
-
-	HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+	else
+	{
+		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+		HoldingByTickSkillManager = nullptr;
+	}
 }
 
 void AWarriorWSkillInstance::SpawnSkill()
 {
-	if (CurrentSkillActor) return;
+	if (!IsValid(CurrentSkillActor)) return;
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;
@@ -161,10 +165,12 @@ void AWarriorWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 
 void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
 {
-	if ((AnimMontage == M_Skill) && CurrentSkillActor)
+	if ((AnimMontage == M_Skill) && IsValid(CurrentSkillActor) && IsValid(HoldingByTickSkillManager))
 	{
 		CurrentSkillActor->Destroy();
 		CurrentSkillActor = nullptr;
+		HoldingByTickSkillManager->Destroy();
+		HoldingByTickSkillManager = nullptr;
 	}
 }
 

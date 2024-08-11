@@ -5,6 +5,7 @@
 #include "P1/P1Character.h"
 #include "P1/P1.h"
 #include "P1/P1Creature.h"
+#include "P1/Component/WidgetComponent/CharacterWidgetComponent.h"
 
 UCharacterStatComponent::UCharacterStatComponent()
 {
@@ -18,41 +19,10 @@ void UCharacterStatComponent::BeginPlay()
 
 }
 
-void UCharacterStatComponent::TakeDamage()
+void UCharacterStatComponent::InitOnSpawn(Protocol::ObjectInfo& Info)
 {
-	//Health -= DamageInfo.Damage;
-	//if (Health < 0) Health = 0;
-	//
-	//OnCharacterHealthChangedDelegate.Broadcast();
-//
-	//if (Health <= 0)
-	//{
-		//MainCharacter->Die();
-	//}
-}
-
-void UCharacterStatComponent::UseStamina(float Amount)
-{
-	if (OwnerCharacter == nullptr)
-		return;
-
-	//Creature->Info->stamina() -= Amount;
-	//
-	//if (Stamina < 0) Stamina = 0;
-
-	//OnCharacterStaminaChangedDelegate.Broadcast();
-}
-
-void UCharacterStatComponent::InitStat()
-{
-	if (OwnerCharacter == nullptr)
-		return;
-
-	OwnerCharacter->ObjectInfo->set_hp(OwnerCharacter->ObjectInfo->max_hp());
-	OwnerCharacter->ObjectInfo->set_stamina(OwnerCharacter->ObjectInfo->max_stamina());
-
-	OnCharacterHealthChangedDelegate.Broadcast();
-	OnCharacterStaminaChangedDelegate.Broadcast();
+	Super::InitOnSpawn(Info);
+	InitStat(Info.hp(), Info.stamina());
 }
 
 void UCharacterStatComponent::InitStat(float HealthToSet, float StaminaToSet)
@@ -60,8 +30,10 @@ void UCharacterStatComponent::InitStat(float HealthToSet, float StaminaToSet)
 	if (OwnerCharacter == nullptr)
 		return;
 
-	//Creature->Info->set_hp(HealthToSet);
-	//Creature->Info->set_stamina(StaminaToSet);
+	OwnerCharacter->ObjectInfo->set_hp(HealthToSet);
+	OwnerCharacter->ObjectInfo->set_stamina(StaminaToSet);
+	OwnerCharacter->ObjectInfo->set_max_hp(HealthToSet);
+	OwnerCharacter->ObjectInfo->set_max_stamina(HealthToSet);
 
 	OnCharacterHealthChangedDelegate.Broadcast();
 	OnCharacterStaminaChangedDelegate.Broadcast();
@@ -104,12 +76,9 @@ void UCharacterStatComponent::SetHealth(float HealthToSet)
 	if (OwnerCharacter == nullptr)
 		return;
 
+	OnCharacterHealthChangedDelegate.AddUniqueDynamic(OwnerCharacter->GetWidgetComponent(), &UCharacterWidgetComponent::OnCharacterHealthChanged);
+
 	OwnerCharacter->ObjectInfo->set_hp(HealthToSet);
 
 	OnCharacterHealthChangedDelegate.Broadcast();
-
-	if (OwnerCharacter->ObjectInfo->hp() <= 0)
-	{
-		OwnerCharacter->Die();
-	}
 }

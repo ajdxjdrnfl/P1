@@ -19,7 +19,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
+	virtual void InitOnSpawn(class UStatComponentBase* StatComponent) override;
+
 private:
 	UPROPERTY()
 	class AEnemyBase* OwnerEnemy;

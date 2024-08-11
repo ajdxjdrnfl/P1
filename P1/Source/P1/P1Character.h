@@ -38,17 +38,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterWidgetComponent* WidgetComponent;
 
+	float TargetCameraBoomLength;
+
 public:
-	void OnSpawn(float HealthToSet, float StaminaToSet);
-	void InitOnSpawn(float HealthToSet, float StaminaToSet);
-	void Init();
+	void InitOnSpawn(Protocol::ObjectInfo ObjInfo);
 	void UseSkill(uint16 SkillIndex);
 	void OpenSkillGaugeWidget(float CastingTime);
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
-	virtual void Die() override;
 	virtual void MoveByServer(float DeltaTime) override;
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;

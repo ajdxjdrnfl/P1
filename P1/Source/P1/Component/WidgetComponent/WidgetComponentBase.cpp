@@ -22,12 +22,6 @@ void UWidgetComponentBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UP1GameInstance* GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance()))
-	{
-		SkillDataTable = GameInstance->SkillDataTable;
-	}
-
-	SetSkills();
 }
 
 // Called every frame
@@ -38,6 +32,16 @@ void UWidgetComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
+
+void UWidgetComponentBase::InitOnSpawn(UStatComponentBase* StatComponent)
+{
+	if (UP1GameInstance* GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance()))
+	{
+		SkillDataTable = GameInstance->SkillDataTable;
+	}
+
+	SetSkills();
+}
 
 void UWidgetComponentBase::SetSkills()
 {
