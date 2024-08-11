@@ -74,13 +74,17 @@ void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport, b
 	SetState(objectInfo.state(), dirtyFlag);
 	_objectInfo->CopyFrom(objectInfo);
 	_teleport = teleport;
-	_dirtyFlag = dirtyFlag;
+	
+	if (dirtyFlag)
+		_dirtyFlag = dirtyFlag;
 }
 
 void GameObject::SetState(Protocol::MoveState state, bool dirtyFlag)
 {
 	_objectInfo->set_state(state);
-	_dirtyFlag = dirtyFlag;
+
+	if(dirtyFlag)
+		_dirtyFlag = dirtyFlag;
 }
 
 void GameObject::BroadcastUpdate()

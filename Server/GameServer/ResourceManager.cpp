@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ResourceManager.h"
 #include "SKill.h"
+#include "Map.h"
 
 ResourceManager GResourceManager;
 
@@ -25,6 +26,7 @@ void ResourceManager::Init()
 {
 	_configPath = filesystem::current_path() / "..\\Resources";
 	LoadSkillInfos("Skill");
+	LoadMap("Map");
 }
 
 void ResourceManager::LoadSkillInfos(const string& path)
@@ -148,4 +150,20 @@ Protocol::SkillType ResourceManager::ConvertStringToSkillType(const string& str)
 		return Protocol::SKILL_TYPE_CHARGING;
 
 	return Protocol::SKILL_TYPE_NORMAL;
+}
+
+void ResourceManager::LoadMap(const string& path)
+{
+	filesystem::path fullPath = _configPath / path;
+	filesystem::directory_iterator itr(fullPath);
+
+	while (itr != filesystem::end(itr)) {
+		const filesystem::directory_entry& entry = *itr;
+
+		Map* map = new Map();
+		map->Load(entry.path());
+
+		_maps[map->GetName()] = map;
+		itr++;
+	}
 }

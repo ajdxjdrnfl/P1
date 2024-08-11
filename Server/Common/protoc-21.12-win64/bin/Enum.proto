@@ -20,6 +20,7 @@ enum CasterType
 	CASTER_TYPE_BOSS = 3;
 	CASTER_TYPE_MOB = 4;
 	CASTER_TYPE_STRUCTURE = 5;
+	CASTER_TYPE_ARCHER = 6;
 }
 
 enum CollisionType

@@ -9,6 +9,7 @@
 #include "Boss.h"
 #include "Structure.h"
 #include "ResourceManager.h"
+#include "Map.h"
 
 RoomRef GRoom = make_shared<Room>();
 
@@ -24,15 +25,21 @@ void Room::Init()
 {
 	// TODO : enemy Ãß°¡
 	_tickManager.Init();
-	for (int32 i = 0; i < _maxEnemyCount; i++)
-	{
-		EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
-		_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
-		SetObjectToRandomPos(enemy);
-	}
+	_map = GResourceManager.GetMap(_mapName);
 
-	_boss = ObjectUtils::CreateBoss(GetRoomRef());
-	SetObjectToRandomPos(_boss);
+	if (!_debug)
+	{
+		for (int32 i = 0; i < _maxEnemyCount; i++)
+		{
+			EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
+			_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+			SetObjectToRandomPos(enemy);
+		}
+
+		_boss = ObjectUtils::CreateBoss(GetRoomRef());
+		SetObjectToRandomPos(_boss);
+	}
+	
 }
 
 void Room::Update(float deltaTime)
@@ -61,7 +68,12 @@ void Room::Update(float deltaTime)
 		StructureRef structure = item.second;
 		structure->Update(deltaTime);
 	}
-	_boss->Update(deltaTime);
+
+	if (_boss != nullptr)
+	{
+		_boss->Update(deltaTime);
+	}
+	
 
 	DoTimer(64, &Room::Update, deltaTime);
 }
@@ -112,6 +124,8 @@ bool Room::HandleEnterGame(GameSessionRef session)
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*enemy->GetObjectInfo());
 		}
+		
+		if(_boss != nullptr)
 		{
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*_boss->GetObjectInfo());
@@ -427,8 +441,8 @@ bool Room::RemoveObject(GameObjectRef gameObject)
 		_structures.erase(id);
 		return true;
 	}
-		
-	if (_boss->GetObjectInfo()->object_id() == id)
+	
+	if (_boss != nullptr && _boss->GetObjectInfo()->object_id() == id)
 	{
 		_boss = nullptr;
 		return true;
@@ -439,11 +453,22 @@ bool Room::RemoveObject(GameObjectRef gameObject)
 
 void Room::SetObjectToRandomPos(GameObjectRef player)
 {
-	player->GetObjectInfo()->set_x(Utils::GetRandom(-500.f, 500.f));
-	player->GetObjectInfo()->set_y(Utils::GetRandom(-500.f, 500.f));
-	player->GetObjectInfo()->set_z(100.f);
+	while (true)
+	{
+		int32 x = Utils::GetRandom(-50, 50);
+		int32 y = Utils::GetRandom(-50, 50);
 
-	player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
+		if (IsValidAtPos({ x, y }))
+		{
+			player->GetObjectInfo()->set_x(GetPosition({x,y}).x);
+			player->GetObjectInfo()->set_x(GetPosition({ x,y }).y);
+			player->GetObjectInfo()->set_z(100.f);
+			player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
+			break;
+		}
+	}
+	
+	
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
@@ -483,6 +508,139 @@ PlayerRef Room::FindClosestPlayer(Vector pos)
 	return result;
 }
 
+VectorInt Room::GetGridPos(Vector pos)
+{
+	if (_map == nullptr)
+		return { 0,0 };
+	
+	VectorInt result;
+
+	if (!_map->ConvertToGridPos(pos, result))
+	{
+		return { 0, 0 };
+	}
+	else
+	{
+		return result;
+	}
+}
+
+Vector Room::GetPosition(VectorInt gridPos)
+{
+	return _map->GetNode(gridPos).pos;
+}
+
+bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth)
+{
+	priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
+
+	VectorInt gridStart = GetGridPos(start);
+	VectorInt gridEnd = GetGridPos(end);
+
+	map<VectorInt, int32> best;
+	map<VectorInt, VectorInt> parent;
+
+	{
+		int32 cost = abs(gridEnd.x - gridStart.x) + abs(gridEnd.y - gridStart.y);
+		pq.push(PQNode(0, cost, gridStart));
+		best[gridStart] = cost;
+		parent[gridStart] = gridStart;
+	}
+
+	// ºÏ , ºÏµ¿ , µ¿ ...
+	VectorInt d[8] = { {0,1}, {1, 1}, {1, 0}, {1, -1}, {0,-1}, {-1,-1}, {-1, 0}, {-1, 1} };
+
+	bool found = false;
+
+	while (!pq.empty())
+	{
+		PQNode node = pq.top();
+		int32 curDepth = node.g;
+		int32 curCost = node.h;
+		pq.pop();
+
+		if (best[node.pos] < curCost + curDepth)
+		{
+			continue;
+		}
+
+		if (node.pos == gridEnd)
+		{
+			found = true;
+			break;
+		}
+
+		for (int32 dir = 0; dir < 8; dir++)
+		{
+			VectorInt nextPos = node.pos + d[dir];
+			if (CanGo(node.pos, dir) == false) continue;
+
+			int32 depth = curDepth + 1;
+			if (depth >= maxDepth) continue;
+
+			int32 cost = abs(gridEnd.y - nextPos.y) + abs(gridEnd.x - nextPos.x);
+			int32 bestCost = best[nextPos];
+
+			if (bestCost != 0)
+			{
+				if (bestCost <= depth + cost) continue;
+			}
+
+			best[nextPos] = depth + cost;
+			pq.push(PQNode(depth, cost, nextPos));
+			parent[nextPos] = node.pos;
+		}
+	}
+
+	if (found == false)
+	{
+		float bestScore = FLT_MAX;
+
+		for (auto& item : best)
+		{
+			VectorInt pos = item.first;
+			int32 score = item.second;
+
+			if (bestScore == score)
+			{
+				int32 dist1 = abs(gridEnd.x - gridStart.x) + abs(gridEnd.y - gridStart.y);
+				int32 dist2 = abs(pos.x - gridStart.x) + abs(pos.y - gridStart.y);
+
+				if (dist1 > dist2) gridEnd = pos;
+			}
+			if (bestScore > score)
+			{
+				gridEnd = pos;
+				bestScore = score;
+			}
+		}
+	}
+
+	path.clear();
+	VectorInt pos = gridEnd;
+	while (true)
+	{
+		path.push_back(pos);
+
+		if (pos == parent[pos]) break;
+
+		pos = parent[pos];
+	}
+	std::reverse(path.begin(), path.end());
+	return true;
+
+}
+
+bool Room::CanGo(VectorInt current, int32 dir)
+{
+	return _map->IsValidToDirection(current, dir);
+}
+
+bool Room::IsValidAtPos(VectorInt gridPos)
+{
+	return _map->IsValidAtGridPos(gridPos);
+}
+
 RoomRef Room::GetRoomRef()
 {
 	return static_pointer_cast<Room>(shared_from_this());
@@ -499,7 +657,7 @@ GameObjectRef Room::GetGameObjectRef(uint64 id)
 	if (_skillActors.find(id) != _skillActors.end())
 		return _skillActors[id];
 
-	if (_boss->GetObjectInfo()->object_id() == id)
+	if (_boss != nullptr && _boss->GetObjectInfo()->object_id() == id)
 		return _boss;
 
 	if (_structures.find(id) != _structures.end())

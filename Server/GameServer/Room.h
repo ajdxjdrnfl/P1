@@ -1,6 +1,20 @@
 #pragma once
 #include "JobQueue.h"
 
+// priority queue node for A* algorithm;
+struct PQNode
+{
+	PQNode(int32 g, int32 h, VectorInt pos) : g(g), h(h), pos(pos) { }
+
+	bool operator<(const PQNode& other) const { return g + h < other.g + other.h; }
+	bool operator>(const PQNode& other) const { return g + h > other.g + other.h; }
+
+	int32 g;
+	int32 h;
+	VectorInt pos;
+
+};
+
 class Room : public JobQueue
 {
 public:
@@ -39,9 +53,16 @@ private:
 public:
 	void			Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
-	// Temp Utils
+	// Temp Utils with map
 public:
 	PlayerRef		FindClosestPlayer(Vector pos);
+	VectorInt GetGridPos(Vector pos);
+	Vector GetPosition(VectorInt gridPos);
+
+	// Find Path a*
+	bool FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth = 100);
+	bool CanGo(VectorInt current, int32 dir);
+	bool IsValidAtPos(VectorInt gridPos);
 
 public:
 	RoomRef			GetRoomRef();
@@ -49,6 +70,11 @@ public:
 	
 private:
 	const int32 _maxEnemyCount = 2;
+
+	bool _debug = false;
+private:
+	class Map* _map;
+	string _mapName = "Raid";
 
 protected:
 	unordered_map<uint64, PlayerRef> _players;
@@ -58,7 +84,7 @@ protected:
 	BossRef _boss;
 
 	GameTickManager _tickManager;
-
+	
 };
 
 extern RoomRef GRoom;

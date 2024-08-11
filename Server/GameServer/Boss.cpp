@@ -233,7 +233,7 @@ void Boss::TickDead(float deltaTime)
 		_deadElapsedTime = 0.f;
 		Protocol::S_DESPAWN despawnPkt;
 		despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
-		room->HandleDespawn(despawnPkt, true);
+		room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
 	}
 }
 

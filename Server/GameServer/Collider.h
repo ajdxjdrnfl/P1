@@ -22,7 +22,7 @@ public:
     ColliderBox() : Super(EColliderType::COLLIDER_BOX) { }
     virtual ~ColliderBox() { }
 
-    virtual void Load(const string& path) override;
+    virtual void Load(const filesystem::path& path) override;
 
 public:
     Vector extent;
@@ -36,7 +36,7 @@ public:
     ColliderCircle() : Super(EColliderType::COLLIDER_CIRCLE) { }
     virtual ~ColliderCircle() { }
 
-    virtual void Load(const string& path) override;
+    virtual void Load(const filesystem::path& path) override;
 
 public:
     float _radius;

@@ -33,3 +33,9 @@ enum EBossSkillType : uint8
 	EBST_DOT,
 	EBST_MAX
 };
+
+enum EGridType : uint8
+{
+	EGT_Blocked = 0,
+	EGT_Walkable = 1,
+};

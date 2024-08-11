@@ -35,10 +35,10 @@ void DoWorkerJob(ServerServiceRef& service)
 int main()
 {
 	ServerPacketHandler::Init();
-	GRoomManager.Init();
+	GResourceManager.Init();
 	GTickManager.Init();
 
-	GResourceManager.Init();
+	GRoomManager.Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),

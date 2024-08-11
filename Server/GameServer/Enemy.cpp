@@ -114,8 +114,8 @@ void Enemy::TickIdle(float deltaTime)
 
 	if (GetPos().Distance(_targetPos) <= _attackRange)
 	{
-		//AttackToTarget(target);
-		//SetState(Protocol::MOVE_STATE_SKILL, true);
+		AttackToTarget(target);
+		SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
 	else
 	{
@@ -151,7 +151,7 @@ void Enemy::TickRun(float deltaTime)
 		newInfo.set_x(GetPos().x + moveVector.x);
 		newInfo.set_y(GetPos().y + moveVector.y);
 
-		SetObjectInfo(newInfo);
+		SetObjectInfo(newInfo, true);
 	}
 }
 
@@ -201,7 +201,7 @@ void Enemy::TickDead(float deltaTime)
 		_deadElapsedTime = 0.f;
 		Protocol::S_DESPAWN despawnPkt;
 		despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
-		room->HandleDespawn(despawnPkt, true);
+		room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
 	}
 }
 
@@ -220,16 +220,27 @@ void Enemy::MoveToTarget(GameObjectRef target)
 	if (target == nullptr)
 		return;
 
-	// TODO : 맵 데이터에 맞는 이동방식 필요 
-	Vector targetPos = target->GetPos();
+	RoomRef room = GetRoomRef();
 
-	Vector targetVector = (targetPos - GetPos());
+	room->GetGridPos(_targetPos);
 
-	_targetPos = targetVector * 0.75 + GetPos();
+	vector<VectorInt> path;
 
-	float yaw = Utils::GetYawByVector(targetPos - GetPos());
-	_objectInfo->set_yaw(yaw);
-	SetState(Protocol::MOVE_STATE_RUN, true);
+	bool found = room->FindPath(GetPos(), target->GetPos(), path, 30);
+
+	if (found)
+	{
+		if (path.size() > 1)
+		{
+			_targetPos = room->GetPosition(path[1]);
+			Vector targetVector = (_targetPos - GetPos());
+			float yaw = Utils::GetYawByVector(targetVector);
+			_objectInfo->set_yaw(yaw);
+			SetState(Protocol::MOVE_STATE_RUN, true);
+		}
+		
+	}
+	
 }
 
 void Enemy::AttackToTarget(GameObjectRef target)
