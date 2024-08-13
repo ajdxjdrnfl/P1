@@ -3,6 +3,34 @@
 #include "Collision.h"
 #include "GameObject.h"
 
+QuadNode::~QuadNode()
+{
+	if (nw != nullptr)
+	{
+		delete nw;
+		nw = nullptr;
+	}
+
+	if (ne != nullptr)
+	{
+		delete ne;
+		ne = nullptr;
+	}
+
+	if (sw != nullptr)
+	{
+		delete sw;
+		sw = nullptr;
+	}
+
+	if (se != nullptr)
+	{
+		delete se;
+		se = nullptr;
+	}
+
+}
+
 bool QuadNode::IsBoundOverlapped(Collision* collision)
 {
 	Bound cb = collision->GetBound();

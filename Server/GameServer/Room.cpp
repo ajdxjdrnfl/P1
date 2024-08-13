@@ -16,6 +16,7 @@ RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
+	_tree = new QuadTree();
 }
 
 Room::~Room()
