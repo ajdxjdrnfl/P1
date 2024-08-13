@@ -155,6 +155,12 @@
     <ClInclude Include="Structure.h">
       <Filter>Game\GameObject\Structure</Filter>
     </ClInclude>
+    <ClInclude Include="Npc.h">
+      <Filter>Game\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h">
+      <Filter>Game\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -249,6 +255,12 @@
     </ClCompile>
     <ClCompile Include="Structure.cpp">
       <Filter>Game\GameObject\Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="Npc.cpp">
+      <Filter>Game\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTree.cpp">
+      <Filter>Game\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

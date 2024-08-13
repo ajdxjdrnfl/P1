@@ -12,7 +12,7 @@ Enemy::Enemy(RoomRef room) : GameObject(room)
 	_objectInfo->set_hp(50.f);
 	_objectInfo->set_max_hp(50.f);
 	_objectInfo->set_castertype(Protocol::CASTER_TYPE_MOB);
-	_objectInfo->set_speed(250.f);
+	_objectInfo->set_speed(_moveSpeed);
 }
 
 Enemy::~Enemy()

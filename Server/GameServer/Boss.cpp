@@ -830,16 +830,26 @@ void Boss::MoveToTarget(GameObjectRef target)
 	if (target == nullptr)
 		return;
 
-	// TODO : 맵 데이터에 맞는 이동방식 필요 
-	Vector targetPos = target->GetPos();
-	
-	Vector targetVector = (targetPos - GetPos());
-	
-	_targetPos = targetVector * 0.75 + GetPos();
+	RoomRef room = GetRoomRef();
 
-	float yaw = Utils::GetYawByVector(targetPos - GetPos());
-	_objectInfo->set_yaw(yaw);
-	SetState(Protocol::MOVE_STATE_RUN, true);
+	room->GetGridPos(_targetPos);
+
+	vector<VectorInt> path;
+
+	bool found = room->FindPath(GetPos(), target->GetPos(), path, 30);
+
+	if (found)
+	{
+		if (path.size() > 1)
+		{
+			_targetPos = room->GetPosition(path[1]);
+			Vector targetVector = (_targetPos - GetPos());
+			float yaw = Utils::GetYawByVector(targetVector);
+			_objectInfo->set_yaw(yaw);
+			SetState(Protocol::MOVE_STATE_RUN, true);
+		}
+
+	}
 }
 
 void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)

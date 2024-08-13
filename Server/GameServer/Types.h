@@ -20,7 +20,7 @@ struct VectorInt
 		return ret;
 	}
 
-	VectorInt operator-(const VectorInt& other)
+	VectorInt operator-(const VectorInt& other) const
 	{
 		VectorInt ret;
 		ret.x = x - other.x;
@@ -28,7 +28,7 @@ struct VectorInt
 		return ret;
 	}
 
-	bool operator==(const VectorInt& other)
+	bool operator==(const VectorInt& other) const
 	{
 		return x == other.x && y == other.y;
 	}

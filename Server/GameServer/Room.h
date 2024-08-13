@@ -72,9 +72,12 @@ private:
 	const int32 _maxEnemyCount = 1;
 
 	bool _debug = false;
+	bool _useQuadTree = true;
 private:
 	class Map* _map;
-	string _mapName = "Raid";
+	string _mapName = "Test";
+
+	class QuadTree* _tree = nullptr;
 
 protected:
 	unordered_map<uint64, PlayerRef> _players;
