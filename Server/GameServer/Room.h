@@ -75,7 +75,7 @@ private:
 	bool _useQuadTree = true;
 private:
 	class Map* _map;
-	string _mapName = "Raid";
+	string _mapName = "Test";
 
 	class QuadTree* _tree = nullptr;
 
