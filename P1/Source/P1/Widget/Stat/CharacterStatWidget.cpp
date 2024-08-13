@@ -32,8 +32,8 @@ void UCharacterStatWidget::SetStaminaBar()
 void UCharacterStatWidget::SetCharacterStat(UCharacterStatComponent* StatComponent)
 {
 	CharacterStatComponent = StatComponent;
-	CharacterStatComponent->SetCurrentHealth(CharacterStatComponent->GetMaxHealth());
+	/*CharacterStatComponent->SetCurrentHealth(CharacterStatComponent->GetMaxHealth());
 	CharacterStatComponent->SetCurrentStamina(CharacterStatComponent->GetMaxStamina());
 	SetHealthBar();
-	SetStaminaBar();
+	SetStaminaBar();*/
 }

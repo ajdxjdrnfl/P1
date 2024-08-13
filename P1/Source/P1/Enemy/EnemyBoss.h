@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 BossSkillStateIndex;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 BossSkillID;
+
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
 
 	UFUNCTION()

@@ -31,6 +31,9 @@ private:
 
 	FTSTicker::FDelegateHandle TickDelegateHandle;
 
+	UPROPERTY(EditAnywhere)
+	bool bNoEnemyMode;
+
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -53,7 +56,8 @@ public:
 	bool IsMyCharacter(uint64 ID);
 
 	void SpawnActorByServer(Protocol::S_SPAWN& Pkt);
-	void CharacterMove(Protocol::S_MOVE& Pkt);
+	void DespawnActorByServer(Protocol::S_DESPAWN& Pkt);
+	void MoveByServer(Protocol::S_MOVE& Pkt);
 
 	void SkillSpawn(Protocol::S_SKILL& Pkt);
 
@@ -91,6 +95,9 @@ public:
 	TSubclassOf<class AP1Character> WarriorClass;
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AP1Character> ArcherClass;
+
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AEnemyMob> EnemyMobClass;
 
 	UPROPERTY(EditAnywhere)
@@ -103,6 +110,7 @@ public:
 	TMap<uint64, class ABossPillar*> BossPillars;
 
 	TMap<FName, Protocol::CasterType> ClassCasterMap;
+	TMap<Protocol::CasterType, UClass*> CasterClassMap;
 
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 

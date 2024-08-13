@@ -39,9 +39,7 @@ protected:
 	class UEnemySkillComponent* SkillComponent;
 
 public:
-	void InitOnSpawn(float HealthToSet);
-	void OnSpawn(float HealthToSet);
-	void TakeDamage();
+	void InitOnSpawn(Protocol::ObjectInfo& ObjInfo);
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void Die() override;
 	virtual void MoveByServer(float DeltaTime) override;

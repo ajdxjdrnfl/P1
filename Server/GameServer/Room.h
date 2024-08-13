@@ -69,7 +69,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 2;
+	const int32 _maxEnemyCount = 1;
 
 	bool _debug = false;
 	bool _useQuadTree = true;

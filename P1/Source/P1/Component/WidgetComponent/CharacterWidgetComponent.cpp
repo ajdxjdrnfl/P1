@@ -5,6 +5,7 @@
 #include "P1/Widget/CharacterOverlayWidget.h"
 #include "P1/Widget/Stat/CharacterStatWidget.h"
 #include "P1/P1Character.h"
+#include "P1/P1GameInstance.h"
 #include "P1/Component/StatComponent/CharacterStatComponent.h"
 #include "P1/Widget/CastingSkillWidget.h"
 
@@ -12,17 +13,12 @@ void UCharacterWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OpenOverlayWidget();
-
-	// TODO: 
-	Cast<AP1Character>(GetOwner())->GetStatComponent()->OnCharacterStaminaChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterStaminaChanged);
-	Cast<AP1Character>(GetOwner())->GetStatComponent()->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterHealthChanged);
 }
 
 void UCharacterWidgetComponent::OpenOverlayWidget()
 {
-	if (CharacterOverlayWidgetClass == nullptr) 
-		return;
+	UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>();
+	if (GameInstance == nullptr || !GameInstance->IsMyCharacter(OwnerCharacter->ObjectInfo->object_id()) || CharacterOverlayWidgetClass == nullptr) return;
 
 	CharacterOverlayWidget = CreateWidget<UCharacterOverlayWidget>(GetWorld(), CharacterOverlayWidgetClass);
 
@@ -30,7 +26,23 @@ void UCharacterWidgetComponent::OpenOverlayWidget()
 		return;
 
 	CharacterOverlayWidget->AddToViewport();
-	
+}
+
+void UCharacterWidgetComponent::InitOnSpawn(UStatComponentBase* StatComponent)
+{
+	Super::InitOnSpawn(StatComponent);
+
+	OpenOverlayWidget();
+
+	UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>();
+	if (GameInstance && GameInstance->IsMyCharacter(OwnerCharacter->ObjectInfo->object_id()))
+	{
+		OwnerCharacter->GetStatComponent()->OnCharacterStaminaChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterStaminaChanged);
+		OwnerCharacter->GetStatComponent()->OnCharacterHealthChangedDelegate.AddDynamic(this, &UCharacterWidgetComponent::OnCharacterHealthChanged);
+	}
+
+	SetCharacterStat(Cast<UCharacterStatComponent>(StatComponent));
+	SetSkillButton();
 }
 
 void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
@@ -97,5 +109,6 @@ float UCharacterWidgetComponent::GetGaugeRate()
 
 void UCharacterWidgetComponent::SetSkillButton()
 {
+	if (CharacterOverlayWidget == nullptr) return;
 	CharacterOverlayWidget->SetSkillButton(Skills);
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Component/StatComponent/StatComponentBase.h"
 #include "P1/Data/SkillData.h"
+#include "P1/P1.h"
 #include "CharacterStatComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterStaminaChangedDelegate);
@@ -27,17 +28,13 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void InitOnSpawn(Protocol::ObjectInfo& Info) override;
 
 private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
 public:
-	virtual void TakeDamage() override;
-
-	void UseStamina(float Amount);
-
-	void InitStat();
 	void InitStat(float HealthToSet, float StaminaToSet);
 
 	void SetCurrentStamina(float StaminaToSet);

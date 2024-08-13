@@ -78,6 +78,8 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 			return;
 	}
 
+	CasterInfo->CopyFrom(*InstigatorLocal->ObjectInfo);
+	VictimInfo->CopyFrom(*Creature->ObjectInfo);
 
 	if (P1GameInstance->ClassCasterMap.Contains(InstigatorLocal->GetClassType()))
 	{
@@ -88,8 +90,6 @@ void ASkillActorBase::SendCollisionPacketToServer(AP1Creature* Creature)
 		VictimInfo->set_castertype(P1GameInstance->ClassCasterMap[Creature->GetClassType()]);
 	}
 
-	CasterInfo->CopyFrom(*InstigatorLocal->ObjectInfo);
-	VictimInfo->CopyFrom(*Creature->ObjectInfo);
 	SkillActorInfoLocal->CopyFrom(*ObjectInfo);
 
 	Pkt.set_counter(Creature->GetCounterState());

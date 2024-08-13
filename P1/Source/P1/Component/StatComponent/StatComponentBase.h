@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "P1/Data/SkillData.h"
+#include "P1/P1.h"
 #include "StatComponentBase.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -22,7 +23,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	virtual void TakeDamage();
+	virtual void InitOnSpawn(Protocol::ObjectInfo& Info) {}
 		
 	float GetCurrentHealth();
 	float GetMaxHealth();

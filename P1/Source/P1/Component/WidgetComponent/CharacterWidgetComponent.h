@@ -40,6 +40,7 @@ private:
 	void OpenOverlayWidget();
 
 public:
+	virtual void InitOnSpawn(class UStatComponentBase* StatComponent) override;
 	virtual void UseSkill(uint32 SkillIndex) override;
 	void SetCharacterStat(class UCharacterStatComponent* StatComponent);
 	

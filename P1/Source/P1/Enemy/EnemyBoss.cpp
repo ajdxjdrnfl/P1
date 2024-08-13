@@ -64,6 +64,7 @@ void AEnemyBoss::SetAttackMode(bool bAttackMode)
 void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 {
 	BossSkillStateIndex = pkt.section_num();
+	BossSkillID = pkt.id();
 
 	if (pkt.section_num() < 1)
 	{

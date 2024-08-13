@@ -945,29 +945,25 @@ class S_DESPAWN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectIdsFieldNumber = 1,
+    kInfoFieldNumber = 1,
   };
-  // repeated uint64 object_ids = 1;
-  int object_ids_size() const;
+  // repeated .Protocol.ObjectInfo info = 1;
+  int info_size() const;
   private:
-  int _internal_object_ids_size() const;
+  int _internal_info_size() const;
   public:
-  void clear_object_ids();
+  void clear_info();
+  ::Protocol::ObjectInfo* mutable_info(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_info();
   private:
-  uint64_t _internal_object_ids(int index) const;
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      _internal_object_ids() const;
-  void _internal_add_object_ids(uint64_t value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      _internal_mutable_object_ids();
+  const ::Protocol::ObjectInfo& _internal_info(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_info();
   public:
-  uint64_t object_ids(int index) const;
-  void set_object_ids(int index, uint64_t value);
-  void add_object_ids(uint64_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      object_ids() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      mutable_object_ids();
+  const ::Protocol::ObjectInfo& info(int index) const;
+  ::Protocol::ObjectInfo* add_info();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      info() const;
 
   // @@protoc_insertion_point(class_scope:Protocol.S_DESPAWN)
  private:
@@ -977,8 +973,7 @@ class S_DESPAWN final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > object_ids_;
-    mutable std::atomic<int> _object_ids_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > info_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2899,51 +2894,41 @@ S_SPAWN::info() const {
 
 // S_DESPAWN
 
-// repeated uint64 object_ids = 1;
-inline int S_DESPAWN::_internal_object_ids_size() const {
-  return _impl_.object_ids_.size();
+// repeated .Protocol.ObjectInfo info = 1;
+inline int S_DESPAWN::_internal_info_size() const {
+  return _impl_.info_.size();
 }
-inline int S_DESPAWN::object_ids_size() const {
-  return _internal_object_ids_size();
+inline int S_DESPAWN::info_size() const {
+  return _internal_info_size();
 }
-inline void S_DESPAWN::clear_object_ids() {
-  _impl_.object_ids_.Clear();
+inline ::Protocol::ObjectInfo* S_DESPAWN::mutable_info(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_DESPAWN.info)
+  return _impl_.info_.Mutable(index);
 }
-inline uint64_t S_DESPAWN::_internal_object_ids(int index) const {
-  return _impl_.object_ids_.Get(index);
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+S_DESPAWN::mutable_info() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DESPAWN.info)
+  return &_impl_.info_;
 }
-inline uint64_t S_DESPAWN::object_ids(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_DESPAWN.object_ids)
-  return _internal_object_ids(index);
+inline const ::Protocol::ObjectInfo& S_DESPAWN::_internal_info(int index) const {
+  return _impl_.info_.Get(index);
 }
-inline void S_DESPAWN::set_object_ids(int index, uint64_t value) {
-  _impl_.object_ids_.Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.S_DESPAWN.object_ids)
+inline const ::Protocol::ObjectInfo& S_DESPAWN::info(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_DESPAWN.info)
+  return _internal_info(index);
 }
-inline void S_DESPAWN::_internal_add_object_ids(uint64_t value) {
-  _impl_.object_ids_.Add(value);
+inline ::Protocol::ObjectInfo* S_DESPAWN::_internal_add_info() {
+  return _impl_.info_.Add();
 }
-inline void S_DESPAWN::add_object_ids(uint64_t value) {
-  _internal_add_object_ids(value);
-  // @@protoc_insertion_point(field_add:Protocol.S_DESPAWN.object_ids)
+inline ::Protocol::ObjectInfo* S_DESPAWN::add_info() {
+  ::Protocol::ObjectInfo* _add = _internal_add_info();
+  // @@protoc_insertion_point(field_add:Protocol.S_DESPAWN.info)
+  return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-S_DESPAWN::_internal_object_ids() const {
-  return _impl_.object_ids_;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-S_DESPAWN::object_ids() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_DESPAWN.object_ids)
-  return _internal_object_ids();
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-S_DESPAWN::_internal_mutable_object_ids() {
-  return &_impl_.object_ids_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-S_DESPAWN::mutable_object_ids() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_DESPAWN.object_ids)
-  return _internal_mutable_object_ids();
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+S_DESPAWN::info() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_DESPAWN.info)
+  return _impl_.info_;
 }
 
 // -------------------------------------------------------------------

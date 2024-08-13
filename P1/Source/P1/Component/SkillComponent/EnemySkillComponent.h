@@ -23,6 +23,7 @@ private:
 	class AEnemyBase* OwnerEnemy;
 
 public:
+	virtual void InitOnSpawn();
 	virtual void UseSkill(int32 SkillIndex) override;
 	void UsePillarSkill(FVector2D Location);
 };

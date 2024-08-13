@@ -35,6 +35,11 @@ void USkillComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
+void USkillComponentBase::InitOnSpawn()
+{
+	SetSkills();
+}
+
 void USkillComponentBase::SetSkills()
 {
 	if (UP1GameInstance* GameInstance = Cast<UP1GameInstance>(GetWorld()->GetGameInstance()))

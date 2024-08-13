@@ -17,8 +17,7 @@ void UStatComponentBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+
 }
 
 
@@ -27,11 +26,6 @@ void UStatComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-}
-
-void UStatComponentBase::TakeDamage()
-{
-
 }
 
 float UStatComponentBase::GetCurrentHealth()
@@ -59,11 +53,6 @@ void UStatComponentBase::SetCurrentHealth(float HealthToSet)
 		return;
 
 	Creature->ObjectInfo->set_hp(HealthToSet);
-
-	if (Creature->ObjectInfo->hp() <= 0)
-	{
-		Creature->Die();
-	}
 }
 
 void UStatComponentBase::SetMaxHealth(float HealthToSet)

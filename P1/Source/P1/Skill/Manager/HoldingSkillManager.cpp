@@ -76,6 +76,8 @@ void AHoldingSkillManager::EndSkill()
 
 	SkillInstance->StopMontage(SkillInfo.SkillNumLocal);
 	bIsActivated = false;
+
+	Destroy();
 }
 
 void AHoldingSkillManager::OnCastingEnd()

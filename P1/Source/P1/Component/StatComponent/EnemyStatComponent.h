@@ -26,10 +26,10 @@ public:
 	FOnEnemyStaminaChangedDelegate OnEnemyStaminaChangedDelegate;
 	FOnEnemyHealthChangedDelegate OnEnemyHealthChangedDelegate;
 
+	virtual void InitOnSpawn(Protocol::ObjectInfo& Info) override;
+
 	void InitStat();
 	void InitStat(float InitHealth);
-
-	virtual void TakeDamage() override;
 	void SetHealth(float HealthToSet);
 	void AllStop();
 };

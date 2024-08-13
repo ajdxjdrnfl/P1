@@ -26,6 +26,15 @@ void UP1GameInstance::Init()
 		{ FName("Warrior"), Protocol::CasterType::CASTER_TYPE_WARRIOR },
 		{ FName("Mob"), Protocol::CasterType::CASTER_TYPE_MOB },
 		{ FName("Boss"), Protocol::CasterType::CASTER_TYPE_BOSS },
+		{ FName("Archer"), Protocol::CasterType::CASTER_TYPE_ARCHER },
+	};
+
+	CasterClassMap =
+	{
+		{ Protocol::CasterType::CASTER_TYPE_WARRIOR, WarriorClass },
+		{ Protocol::CasterType::CASTER_TYPE_MOB, EnemyMobClass },
+		{ Protocol::CasterType::CASTER_TYPE_BOSS, EnemyBossClass },
+		{ Protocol::CasterType::CASTER_TYPE_ARCHER, ArcherClass },
 	};
 		
 	InitSkillMap();
@@ -72,18 +81,10 @@ void UP1GameInstance::InitSkillMap()
 		FSkillsByClass* SkillInfos = SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
 		for (FSkillInfo& CurrentSkillInfo : SkillInfos->SkillInfos)
 		{
-			if (Row == FName("Warrior"))
-			{
-				SkillInfo[Protocol::CASTER_TYPE_WARRIOR].Add(CurrentSkillInfo);
-			}
-			else if (Row == FName("Boss"))
-			{
-				SkillInfo[Protocol::CASTER_TYPE_BOSS].Add(CurrentSkillInfo);
-			}
-			else if (Row == FName("Mob"))
-			{
-				SkillInfo[Protocol::CASTER_TYPE_MOB].Add(CurrentSkillInfo);
-			}
+			Protocol::CasterType* CasterType = ClassCasterMap.Find(Row);
+			if (CasterType == nullptr) continue;
+
+			SkillInfo[*CasterType].Add(CurrentSkillInfo);
 
 			// Set skillinfo to each skill game default object
 			SetSkillInfo(CurrentSkillInfo);
@@ -195,16 +196,20 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 		switch (info.castertype())
 		{
 		case Protocol::CASTER_TYPE_MOB:
+			if (bNoEnemyMode) break;
 			Enemies.Add({ info.object_id(), SpawnMob(Pkt.info(i), Loc) });
 			break;
+		case Protocol::CASTER_TYPE_ARCHER:
 		case Protocol::CASTER_TYPE_WARRIOR:
-			Characters.Add({ info.object_id(), SpawnCharacter(Pkt.info(i), Loc) });
+			Characters.Add({ info.object_id(), SpawnCharacter(Pkt.info(i), Loc)});
 			break;
 		case Protocol::CASTER_TYPE_BOSS:
-			//Boss = SpawnBoss(Pkt.info(i), Loc);
+			if (bNoEnemyMode) break;
+			Boss = SpawnBoss(Pkt.info(i), Loc);
 			break;
 		case Protocol::CASTER_TYPE_STRUCTURE:
-			//BossPillars.Add({info.object_id(), SpawnBossPillar(Pkt.info(i), Loc) });
+			if (bNoEnemyMode) break;
+			BossPillars.Add({info.object_id(), SpawnBossPillar(Pkt.info(i), Loc) });
 			break;
 		default:
 			break;
@@ -212,14 +217,59 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 	}
 }
 
-void UP1GameInstance::CharacterMove(Protocol::S_MOVE& Pkt)
+void UP1GameInstance::DespawnActorByServer(Protocol::S_DESPAWN& Pkt)
 {
-	AP1Character* Character = *Characters.Find(Pkt.info().object_id());
+	Protocol::ObjectInfo info;
 
-	if (Character == nullptr)
-		return;
+	for (int32 i = 0; i < Pkt.info_size(); i++)
+	{
+		if (Characters.Contains(Pkt.info(i).object_id()))
+			continue;
 
-	//Character->MoveByServer();
+		info = Pkt.info(i);
+
+		switch (info.castertype())
+		{
+		case Protocol::CASTER_TYPE_MOB:
+			(*Enemies.Find(info.object_id()))->Despawn();
+			Enemies.Remove(info.object_id());
+			break;
+		case Protocol::CASTER_TYPE_ARCHER:
+		case Protocol::CASTER_TYPE_WARRIOR:
+			(*Characters.Find(info.object_id()))->Despawn();
+			Characters.Remove(info.object_id());
+			break;
+		case Protocol::CASTER_TYPE_BOSS:
+			if (bNoEnemyMode) break;
+			Boss->Destroy();
+			Boss = nullptr;
+			break;
+		case Protocol::CASTER_TYPE_STRUCTURE:
+			if (bNoEnemyMode) break;
+			(*BossPillars.Find(info.object_id()))->Destroy();
+			BossPillars.Remove(info.object_id());
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void UP1GameInstance::MoveByServer(Protocol::S_MOVE& Pkt)
+{
+	if (Pkt.info().castertype() == Protocol::CASTER_TYPE_BOSS)
+	{
+		Boss->SetMoveValueByServer(Pkt);
+	}
+	else if (Pkt.info().castertype() == Protocol::CASTER_TYPE_MOB)
+	{
+		(*Enemies.Find(Pkt.info().object_id()))->SetMoveValueByServer(Pkt);
+	}
+	else if(Pkt.info().castertype() == Protocol::CASTER_TYPE_WARRIOR ||
+			Pkt.info().castertype() == Protocol::CASTER_TYPE_ARCHER)
+	{
+		(*Characters.Find(Pkt.info().object_id()))->SetMoveValueByServer(Pkt);
+	}
 }
 
 void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
@@ -234,7 +284,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	FTransform SpawnedTransform;
 	SpawnedTransform.SetLocation(SpawnedLocation);
 	SpawnedTransform.SetRotation(SpawnedRotation.Quaternion());
-	
+
 	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld, CurrentSkillInfo.SkillActorClass, SpawnedTransform));
 	if (SkillActor == nullptr)
 		return;
@@ -244,12 +294,9 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SkillActor->InitOnSpawn(Creature);
 	SkillActor->InstigatorOfSkill = Creature;
 	SkillActor->BindCollisionDelegate();
-	
 	Creature->SetSpawnedSkill(Pkt.skillid(), SkillActor);
-
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
 	SkillActor->ActivateSkill();
-
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
 
 	
@@ -272,8 +319,17 @@ void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
 
 void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
 {
-	if (GetCreature(Pkt) == nullptr) return;
-	GetCreature(Pkt)->PlayAnimMontageByServer(Pkt);
+	AP1Creature* Creature = GetCreature(Pkt);
+	if (Creature == nullptr) return;
+
+	if (Pkt.caster().castertype() == Protocol::CASTER_TYPE_WARRIOR)
+	{
+		Creature->PlayAnimMontageByServer(Pkt);
+	}
+	else if (Pkt.caster().castertype() == Protocol::CASTER_TYPE_ARCHER)
+	{
+		Creature->PlayAnimMontageByServer(Pkt);
+	}
 }
 
 void UP1GameInstance::KillCreature(Protocol::S_DEAD& pkt)
@@ -292,19 +348,23 @@ AEnemyMob* UP1GameInstance::SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc)
 		return nullptr;
 
 	SpawnedMob->ObjectInfo->CopyFrom(ObjInfo);
-	SpawnedMob->InitOnSpawn(ObjInfo.hp());
+	SpawnedMob->InitOnSpawn(ObjInfo);
 	return SpawnedMob;
 }
 
 AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc)
 {
-	AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(WarriorClass, &Loc));
+	UClass* ClassToSpawn = *CasterClassMap.Find(ObjInfo.castertype());
+	if (ClassToSpawn == nullptr)
+		return nullptr;
+
+	AP1Character* SpawnedActor = Cast<AP1Character>(GetWorld()->SpawnActor(ClassToSpawn, &Loc));
 
 	if (SpawnedActor == nullptr)
 		return nullptr;
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
-	SpawnedActor->InitOnSpawn(ObjInfo.hp(), ObjInfo.stamina());
+	SpawnedActor->InitOnSpawn(ObjInfo);
 
 	return SpawnedActor;
 }
@@ -318,7 +378,7 @@ AEnemyBoss* UP1GameInstance::SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	// TODO: Boss hp
-	SpawnedActor->InitOnSpawn(ObjInfo.hp());
+	SpawnedActor->InitOnSpawn(ObjInfo);
 
 	return SpawnedActor;
 }
@@ -344,6 +404,7 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_SKILL& Pkt)
 		break;
 	case Protocol::CASTER_TYPE_MAGE:
 	case Protocol::CASTER_TYPE_WARRIOR:
+	case Protocol::CASTER_TYPE_ARCHER:
 		return Characters[Pkt.caster().object_id()];
 		break;
 	case Protocol::CASTER_TYPE_MOB:
@@ -364,6 +425,7 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_MONTAGE& Pkt)
 		break;
 	case Protocol::CASTER_TYPE_MAGE:
 	case Protocol::CASTER_TYPE_WARRIOR:
+	case Protocol::CASTER_TYPE_ARCHER:
 		return Characters[Pkt.caster().object_id()];
 		break;
 	case Protocol::CASTER_TYPE_MOB:
@@ -385,6 +447,7 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster
 		break;
 	case Protocol::CASTER_TYPE_MAGE:
 	case Protocol::CASTER_TYPE_WARRIOR:
+	case Protocol::CASTER_TYPE_ARCHER:
 		return Characters[ObjInfo.object_id()];
 		break;
 	case Protocol::CASTER_TYPE_MOB:
@@ -405,6 +468,7 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)
 		break;
 	case Protocol::CASTER_TYPE_MAGE:
 	case Protocol::CASTER_TYPE_WARRIOR:
+	case Protocol::CASTER_TYPE_ARCHER:
 		return Characters[Pkt.info().object_id()];
 		break;
 	case Protocol::CASTER_TYPE_MOB:

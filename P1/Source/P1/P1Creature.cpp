@@ -6,6 +6,7 @@
 #include "P1/P1.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AP1Creature::AP1Creature()
@@ -63,18 +64,15 @@ void AP1Creature::Die()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	if (AnimInstance == nullptr || M_Die == nullptr)
+	if (AnimInstance == nullptr || M_Die == nullptr || AnimInstance->Montage_IsPlaying(M_Die))
 		return;
 
-	{
-		Protocol::C_MONTAGE Pkt;
-		Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
-		CasterInfo->set_object_id(ObjectInfo->object_id());
-		Pkt.set_isstop(false);
+	AnimInstance->Montage_Play(M_Die);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
 
-		SEND_PACKET(Pkt);
-	}
-
+void AP1Creature::Despawn()
+{
 	TArray<AActor*> Actors;
 	GetAttachedActors(Actors);
 	for (AActor* Actor : Actors)
@@ -131,7 +129,11 @@ int32 AP1Creature::GetClassTypeInt()
 
 void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 {
-	if (this == nullptr) return;
+	if (this == nullptr)
+		return;
+
+	if (CheckDeath(Pkt)) 
+		return;
 
 	ObjectInfo->set_state(Pkt.info().state());
 	FTransform TargetTransform;
@@ -159,6 +161,16 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = Pkt.info().speed();
+}
+
+bool AP1Creature::CheckDeath(Protocol::S_MOVE Pkt)
+{
+	if (Pkt.info().state() == Protocol::MOVE_STATE_DEAD)
+	{
+		Die();
+		return true;
+	}
+	return false;
 }
 
 void AP1Creature::SetObjectInfo()

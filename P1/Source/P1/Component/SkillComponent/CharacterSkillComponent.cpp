@@ -10,7 +10,11 @@ void UCharacterSkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetSkills();
+}
+
+void UCharacterSkillComponent::InitOnSpawn()
+{
+	Super::InitOnSpawn();
 
 	AP1Character* Character = Cast<AP1Character>(GetOwner());
 	if (Character == nullptr) return;

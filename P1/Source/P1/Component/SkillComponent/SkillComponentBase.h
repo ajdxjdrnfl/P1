@@ -48,6 +48,7 @@ public:
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void InitOnSpawn();
 
 public:
 	void SetSkills();

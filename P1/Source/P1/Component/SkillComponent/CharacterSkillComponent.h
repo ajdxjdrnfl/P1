@@ -16,6 +16,7 @@ class P1_API UCharacterSkillComponent : public USkillComponentBase
 	
 public:
 	virtual void BeginPlay() override;
+	virtual void InitOnSpawn() override;
 
 	friend class AP1Character;
 

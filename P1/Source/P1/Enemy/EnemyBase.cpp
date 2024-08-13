@@ -27,7 +27,7 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Init();
+	//Init();
 }
 
 void AEnemyBase::Init()
@@ -49,15 +49,22 @@ void AEnemyBase::Init()
 	}
 }
 
-void AEnemyBase::InitOnSpawn(float HealthToSet)
+void AEnemyBase::InitOnSpawn(Protocol::ObjectInfo& ObjInfo)
 {
 	if (StatComponent)
 	{
-		StatComponent->InitStat(HealthToSet);
+		StatComponent->OwnerEnemy = this;
+		StatComponent->InitOnSpawn(ObjInfo);
 	}
 	if (WidgetComponent && StatComponent)
 	{
-		WidgetComponent->SetEnemyStat(StatComponent);
+		WidgetComponent->InitOnSpawn(StatComponent);
+		WidgetComponent->OwnerEnemy = this;
+		StatComponent->OwnerEnemy = this;
+	}
+	if (SkillComponent)
+	{
+		SkillComponent->InitOnSpawn();
 	}
 }
 
@@ -89,19 +96,6 @@ void AEnemyBase::PostInitializeComponents()
 	}
 }
 
-void AEnemyBase::OnSpawn(float HealthToSet)
-{
-	InitOnSpawn(HealthToSet);
-}
-
-void AEnemyBase::TakeDamage()
-{
-	if (StatComponent)
-	{
-		StatComponent->TakeDamage();
-	}
-}
-
 void AEnemyBase::SetHealthByDamage(float HealthToSet)
 {
 	if (StatComponent)
@@ -114,8 +108,6 @@ void AEnemyBase::Die()
 {
 	WidgetComponent->AllStop();
 	StatComponent->AllStop();
-
-	GetMesh()->GetAnimInstance()->Montage_Play(M_Die);
 
 	Super::Die();
 }

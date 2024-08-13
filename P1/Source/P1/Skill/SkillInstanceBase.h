@@ -34,20 +34,26 @@ protected:
 public:
 	void Init(class AP1Creature* _OwnerCreature);
 
-	UFUNCTION(BlueprintCallable)
-	virtual void SpawnSkill() {};
+	// UseSkill -> SpawnSkill -> (UseSkillAfterTargeting) -> ActivateSkill
 
-	UFUNCTION(BlueprintCallable)
-	virtual void SpawnSkillAtLocation(FVector2D Location) {};
-
+	// Call after click key
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkill() {};
 
+	// Call when spawn skill
+	UFUNCTION(BlueprintCallable)
+	virtual void SpawnSkill() {};
+
+	// If using targeting skill actor, call after click targeting skill
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkillAfterTargeting() {};
 
+	// Call after spawn skill
 	UFUNCTION(BlueprintCallable)
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SpawnSkillAtLocation(FVector2D Location) {};
 
 	UFUNCTION(BlueprintCallable)
 	virtual void StartMontage(int32 SkillIndexLocal);
