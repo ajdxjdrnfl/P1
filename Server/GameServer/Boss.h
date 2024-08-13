@@ -46,6 +46,8 @@ private:
     void Rush_ING(GameObjectRef target, float deltaTime);
     void Rush_END(GameObjectRef target, float deltaTime);
 
+    int32 GetPillarNum();
+
     // Dot Spell
     void DotSkill(GameObjectRef target, float deltaTime);
     void DotSkill_START(GameObjectRef target, float deltaTime);
@@ -96,6 +98,7 @@ private:
     Vector _targetPos;
 
     uint64 _bossPhase = 1;
+    uint64 _skillId = 2;
 
     // Boss Skill
 private:

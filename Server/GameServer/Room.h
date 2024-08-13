@@ -25,7 +25,7 @@ public:
 	virtual void	Update(float deltaTime);
 
 public:
-	bool			HandleEnterGame(GameSessionRef session);
+	bool			HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt);
 	bool			HandleLeaveGame(GameSessionRef session);
 	bool			HandleMove(Protocol::C_MOVE pkt);
 	bool			HandleSkillPkt(Protocol::C_SKILL pkt);
@@ -69,7 +69,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 1;
+	const int32 _maxEnemyCount = 3;
 
 	bool _debug = false;
 	bool _useQuadTree = true;

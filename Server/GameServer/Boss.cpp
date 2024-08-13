@@ -55,7 +55,7 @@ void Boss::TickIdle(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
 	// 1. 체력 체크 후 기믹 발동 여부 확인
-	if(_objectInfo->hp() <= 500.f && !_isGimmik && _bossPhase == 1)
+	if(_objectInfo->hp() <= 1000.f && !_isGimmik && _bossPhase == 1)
 	{
 		_isGimmik = true;
 		_bossPhase = 2;
@@ -157,10 +157,9 @@ void Boss::TickSkill(float deltaTime)
 			break;
 		case EBST_RUSH:
 		{
-			target = nullptr;
 			if (_isGimmik)
 			{
-				target = _pillars[_pillarNum].lock();
+				target = _pillars[GetPillarNum()].lock();
 			}
 			else
 			{
@@ -251,6 +250,7 @@ void Boss::StartDefaultAttack()
 {
 	_skillType = EBST_DEFAULT;
 	_attackDelay = 1.f;
+	_skillId = 0;
 }
 
 void Boss::StartRush()
@@ -262,6 +262,15 @@ void Boss::StartRush()
 		info.CopyFrom(*GetObjectInfo());
 		info.set_speed(_rushSpeed);
 		SetObjectInfo(info, false , true);
+	}
+
+	if (_isGimmik)
+	{
+		_skillId = 1;
+	}
+	else
+	{
+		_skillId = 2;
 	}
 }
 
@@ -290,7 +299,14 @@ void Boss::SelectSkill()
 
 		if(distance <= _attackRange)
 		{
-			StartDefaultAttack();
+			//StartDefaultAttack();
+			StartRush();
+			SetState(Protocol::MOVE_STATE_SKILL, true);
+			return;
+		}
+		else if(distance >= _teleportRange)
+		{
+			StartTeleport();
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 			return;
 		}
@@ -314,7 +330,7 @@ void Boss::DefaultAttack(GameObjectRef target)
 	{
 		Protocol::S_MONTAGE montagePkt;
 		*montagePkt.mutable_caster() = *GetObjectInfo();
-		montagePkt.set_id(0);
+		montagePkt.set_id(_skillId);
 		montagePkt.set_isstop(false);
 		montagePkt.set_section_num(1);
 		montagePkt.set_scalable(true);
@@ -324,18 +340,23 @@ void Boss::DefaultAttack(GameObjectRef target)
 		room->HandleMontage(montagePkt);
 		room->HandleSkill(shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 30.f);
 		
-		_montageType = MONTAGE_TYPE_START;
+		_montageType = MONTAGE_TYPE_END;
 	}
 	break;
-
-	default:
+	case MONTAGE_TYPE_END:
+		Protocol::S_MONTAGE montagePkt;
+		*montagePkt.mutable_caster() = *GetObjectInfo();
+		montagePkt.set_id(_skillId);
+		montagePkt.set_isstop(true);
+		montagePkt.set_section_num(0);
+		room->HandleMontage(montagePkt);
 		break;
 	}
 }
 
 void Boss::Rush(GameObjectRef target, float deltaTime)
 {
-	if (target == nullptr)
+	if (!_isGimmik && target == nullptr)
 		return;
 
 	RoomRef room = GetRoomRef();
@@ -355,32 +376,13 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				// 준비자세
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_section_num(4);
 				montagePkt.set_isstop(false);
 				montagePkt.set_scalable(true);
 				montagePkt.set_duration(2.f);
 				room->HandleMontage(montagePkt);
 				_attackDelay = 2.f;
-			}
-			{
-				
-				if (_isGimmik)
-				{
-					_pillarNum = Utils::GetRandom(0, (int32)_pillars.size() -1 );
-					while (_pillarCount < _pillars.size())
-					{
-						if (GameObjectRef pillar = _pillars[_pillarNum].lock())
-						{
-							_pillarCount++;
-							break;
-						}
-						else
-						{
-							_pillarNum = (_pillarNum + 1) % _pillars.size();
-						}
-					}
-				}
 			}
 			break;
 		case MONTAGE_TYPE_START:
@@ -392,7 +394,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				// 달려가기
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_section_num(5);
 				montagePkt.set_isstop(false);
 				montagePkt.set_scalable(true);
@@ -407,7 +409,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				// 후딜레이
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_section_num(6);
 				montagePkt.set_isstop(false);
 				montagePkt.set_scalable(true);
@@ -418,6 +420,13 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			break;
 
 		case MONTAGE_TYPE_END:
+			{
+			*montagePkt.mutable_caster() = *GetObjectInfo();
+			montagePkt.set_id(_skillId);
+			montagePkt.set_section_num(0);
+			montagePkt.set_isstop(true);
+			room->HandleMontage(montagePkt);
+			}
 			if (_isGimmik && _pillarCount < _pillars.size())
 			{
 				_montageType = MONTAGE_TYPE_NONE;
@@ -425,13 +434,6 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			}
 			else
 			{
-				{
-					*montagePkt.mutable_caster() = *GetObjectInfo();
-					montagePkt.set_id(1);
-					montagePkt.set_section_num(0);
-					montagePkt.set_isstop(true);
-					room->HandleMontage(montagePkt);
-				}
 				{
 					Protocol::ObjectInfo info;
 					info.CopyFrom(*GetObjectInfo());
@@ -523,7 +525,7 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 			{
 				Protocol::S_DESPAWN despawnPkt;
 				despawnPkt.add_info()->CopyFrom(*target->GetObjectInfo());
-				room->HandleDespawn(despawnPkt);
+				room->HandleDespawn(despawnPkt, true);
 			}
 		}
 		else
@@ -546,6 +548,30 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 void Boss::Rush_END(GameObjectRef target, float deltaTime)
 {
 
+}
+
+int32 Boss::GetPillarNum()
+{
+	if (GameObjectRef pillar = _pillars[_pillarNum].lock())
+	{
+		return _pillarNum;
+	}
+
+	_pillarNum = Utils::GetRandom(0, (int32)_pillars.size() - 1);
+	_pillarCount = 0;
+	while (_pillarCount < _pillars.size())
+	{
+		if (GameObjectRef pillar = _pillars[_pillarNum].lock())
+		{
+			break;
+		}
+		else
+		{
+			_pillarCount++;
+			_pillarNum = (_pillarNum + 1) % _pillars.size();
+		}
+	}
+	return _pillarNum;
 }
 
 void Boss::StartDot()
@@ -634,6 +660,7 @@ void Boss::StartSpawnPillars()
 {
 	_skillType = EBST_SPAWNPILLAS;
 	_attackDelay = 2.f;
+	_skillId = 1;
 }
 
 
@@ -654,7 +681,7 @@ void Boss::SpawnPillars(float deltaTime)
 				// 필라 스폰
 				Protocol::S_MONTAGE montagePkt;
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_isstop(false);
 				montagePkt.set_section_num(3);
 				montagePkt.set_scalable(true);
@@ -750,6 +777,7 @@ void Boss::StartTeleport()
 		return;
 
 	_skillType = EBST_TELEPORT;
+	_skillId = 1;
 
 	_attackDelay = 0.5f;
 }
@@ -771,7 +799,7 @@ void Boss::Teleport(Vector pos, float deltaTime)
 				// 아래로 들어가기
 				Protocol::S_MONTAGE montagePkt;
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_isstop(false);
 				montagePkt.set_section_num(1);
 				montagePkt.set_scalable(true);
@@ -803,7 +831,7 @@ void Boss::Teleport(Vector pos, float deltaTime)
 				// 위로 올라오기
 				Protocol::S_MONTAGE montagePkt;
 				*montagePkt.mutable_caster() = *GetObjectInfo();
-				montagePkt.set_id(1);
+				montagePkt.set_id(_skillId);
 				montagePkt.set_isstop(false);
 				montagePkt.set_section_num(2);
 				montagePkt.set_scalable(true);
@@ -814,6 +842,14 @@ void Boss::Teleport(Vector pos, float deltaTime)
 			break;
 		case MONTAGE_TYPE_END:
 		{
+			{
+				// 위로 올라오기
+				Protocol::S_MONTAGE montagePkt;
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_isstop(true);
+				montagePkt.set_section_num(0);
+			}
 			if (_isGimmik)
 			{
 				_montageType = MONTAGE_TYPE_NONE;

@@ -2,7 +2,7 @@
 class ObjectUtils
 {
 public:
-	static PlayerRef CreatePlayer(GameSessionRef session, RoomRef room);
+	static PlayerRef CreatePlayer(GameSessionRef session, RoomRef room, Protocol::CasterType casterType);
 	static EnemyRef CreateEnemy(RoomRef room);
 	static SkillActorRef CreateSkillActor(GameObjectRef caster, RoomRef room);
 	static BossRef CreateBoss(RoomRef room);

@@ -20,13 +20,13 @@ public:
 	virtual void Init() {};
 	virtual void Update(float deltaTime) {};
 
-	GameObjectRef GetOwner() { return _owner; }
+	GameObjectRef GetOwner() { return _owner.lock(); }
 	void SetOwner(GameObjectRef owner) { _owner = owner; }
 
 	EComponentType GetComponentType() { return _componentType; }
 	
 private:
-	GameObjectRef _owner;
+	weak_ptr<GameObject> _owner;
 	EComponentType _componentType;
 };
 

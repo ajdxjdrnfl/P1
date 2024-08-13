@@ -167,6 +167,7 @@ void Enemy::TickSkill(float deltaTime)
 	if (target == nullptr)
 	{
 		SetState(Protocol::MOVE_STATE_IDLE, true);
+		return;
 	}
 
 	float distance = target->GetPos().Distance(GetPos());
