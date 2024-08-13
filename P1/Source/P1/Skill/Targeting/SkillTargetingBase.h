@@ -15,7 +15,7 @@ public:
 	ASkillTargetingBase();
 
 	virtual void BeginPlay() override;
-	void Init(class ASkillInstanceBase* _SkillInstance);
+	virtual void Init(class ASkillInstanceBase* _SkillInstance);
 
 protected:
 	UPROPERTY()

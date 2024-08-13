@@ -26,6 +26,7 @@ void AP1Creature::BeginPlay()
 	Super::BeginPlay();
 	
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	GetClassTypeInt();
 }
 
 // Called every frame
@@ -106,25 +107,24 @@ void AP1Creature::GetStun(float _CCTime)
 	}
 }
 
-int32 AP1Creature::GetClassTypeInt()
+void AP1Creature::GetClassTypeInt()
 {
 	if (ClassType == FName("Warrior"))
 	{
-		return 0;
+		ClassTypeInt = 0;
 	}
 	else if (ClassType == FName("Archer"))
 	{
-		return 1;
+		ClassTypeInt = 1;
 	}
 	else if (ClassType == FName("Boss"))
 	{
-		return 2;
+		ClassTypeInt = 2;
 	}
 	else if (ClassType == FName("Mob"))
 	{
-		return 3;
+		ClassTypeInt = 3;
 	}
-	return -1;
 }
 
 void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)

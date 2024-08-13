@@ -280,7 +280,8 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
-	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
+	// FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
+	FSkillInfo CurrentSkillInfo = SkillInfo[6][Pkt.skillid()];
 	FTransform SpawnedTransform;
 	SpawnedTransform.SetLocation(SpawnedLocation);
 	SpawnedTransform.SetRotation(SpawnedRotation.Quaternion());

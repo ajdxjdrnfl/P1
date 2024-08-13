@@ -48,12 +48,12 @@ void AChargingSkillManager::FireSkill(float rate = 1.f)
 
 	if (SkillInstance)
 	{
-		SkillInstance->SpawnSkill();
+		SkillInstance->OnCastingEnd();
 	}
-
 }
 
 void AChargingSkillManager::OnCastingEnd()
 {
 	FireSkill();
+	Destroy();
 }

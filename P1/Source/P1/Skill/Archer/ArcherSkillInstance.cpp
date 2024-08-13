@@ -12,43 +12,55 @@
 #include "P1/Skill/HoldingByTickSkillManager.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1/Component/SkillComponent/CharacterSkillComponent.h"
+#include "P1/Skill/Targeting/WorldCursorSkillTargeting.h"
 
 void AArcherQSkillInstance::UseSkill()
 {
-	if (CastingSkillManager == nullptr)
+	if (!IsValid(ChargingSkillManager))
 	{
-		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
-		CastingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		ChargingSkillManager = Cast<AChargingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AChargingSkillManager::StaticClass()));
+		ChargingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		ChargingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+		ChargingSkillManager->StartCasting(SkillInfo.CastingTime);
 	}
-
-	CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	CastingSkillManager->StartCasting(SkillInfo.CastingTime);
+	else
+	{
+		ChargingSkillManager->StartCasting(SkillInfo.CastingTime);
+		ChargingSkillManager = nullptr;
+	}
 }
 
 void AArcherQSkillInstance::SpawnSkill()
 {
-	float GaugeRate = 0.f;
-	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		GaugeRate = SubSystem->CastingSkillGaugeRate;
+		float GaugeRate = 0.f;
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			GaugeRate = SubSystem->CastingSkillGaugeRate;
+		}
+
+		if (SkillActorClass == nullptr) return;
+
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(0);
+
+		Pkt.set_damage(GaugeRate * SkillInfo.Damage);
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+		FVector SpawnLocation = OwnerCreature->GetActorLocation();
+		Pkt.set_x(SpawnLocation.X);
+		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		SEND_PACKET(Pkt);
 	}
 
-	if (SkillActorClass == nullptr) return;
-
-	Protocol::C_SKILL Pkt;
-	Pkt.set_skillid(0);
-
-	Pkt.set_damage(GaugeRate * SkillInfo.Damage);
-	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
-
-	FVector SpawnLocation = OwnerCreature->GetActorLocation();
-	Pkt.set_x(SpawnLocation.X);
-	Pkt.set_y(SpawnLocation.Y);
-	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
-
-	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
-
-	SEND_PACKET(Pkt);
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->bCanMove = false;
+	}
 }
 
 void AArcherQSkillInstance::OnCastingEnd()
@@ -63,21 +75,35 @@ void AArcherQSkillInstance::OnCastingEnd()
 	}
 }
 
+void AArcherQSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (AnimMontage == M_Skill)
+	{
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMove = true;
+		}
+	}
+}
+
 void AArcherWSkillInstance::UseSkill()
 {
-	if (OwnerCreature)
+	if (!IsValid(SkillTargeting))
 	{
-		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AArcherWSkillInstance::OnMontageEnded);
-	}
+		if (IsValid(HoldingByTickSkillManager))
+		{
+			UseSkillAfterTargeting();
+			return;
+		}
 
-	if (HoldingByTickSkillManager == nullptr)
+		SkillTargeting = Cast<AWorldCursorSkillTargeting>(OwnerCreature->GetWorld()->SpawnActor(SkillInfo.SkillTargeting));
+		SkillTargeting->Init(this);
+	}
+	else
 	{
-		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
-		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		SkillTargeting->Destroy();
+		SkillTargeting = nullptr;
 	}
-
-	HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
-	HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 }
 
 void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
@@ -110,8 +136,102 @@ void AArcherWSkillInstance::SpawnSkill()
 	SEND_PACKET(Pkt);
 }
 
+void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
+{
+	SkillPos = TargetPos;
+
+	if (OwnerCreature)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AArcherWSkillInstance::OnMontageEnded);
+	}
+
+	if (!IsValid(HoldingByTickSkillManager))
+	{
+		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
+		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+	}
+	else
+	{
+		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+		HoldingByTickSkillManager = nullptr;
+	}
+}
+
 void AArcherWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
+{
+	CurrentSkillActor = SkillActor;
+	SkillActor->SetActorLocation(SkillPos);
+}
+
+void AArcherESkillInstance::UseSkill()
+{
+	if (!IsValid(CastingSkillManager))
+	{
+		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
+		CastingSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
+		CastingSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
+		CastingSkillManager->StartCasting(SkillInfo.CastingTime);
+	}
+	else
+	{
+		CastingSkillManager->StartCasting(SkillInfo.CastingTime);
+		CastingSkillManager = nullptr;
+	}
+}
+
+void AArcherESkillInstance::SpawnSkill()
+{
+	if (SkillActorClass == nullptr) return;
+
+	Protocol::C_SKILL Pkt;
+	Pkt.set_skillid(2);
+
+	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 600;
+	Pkt.set_x(SpawnLocation.X);
+	Pkt.set_y(SpawnLocation.Y);
+	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
+	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+	SEND_PACKET(Pkt);
+}
+
+void AArcherESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 	CurrentSkillActor = SkillActor;
+}
+
+void AArcherESkillInstance::OnCastingEnd()
+{
+	{
+		Protocol::C_MONTAGE Pkt;
+		Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+		CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		Pkt.set_isstop(false);
+		Pkt.set_id(2);
+		SEND_PACKET(Pkt);
+	}
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->bCanMove = false;
+	}
+}
+
+void AArcherESkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if ((AnimMontage == M_Skill) && IsValid(CurrentSkillActor))
+	{
+		CurrentSkillActor->Destroy();
+		CurrentSkillActor = nullptr;
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMove = true;
+		}
+	}
 }
