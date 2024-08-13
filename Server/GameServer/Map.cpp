@@ -9,7 +9,7 @@ void Map::Load(const filesystem::path& path)
 	_name = path.stem().generic_string();
 	{
 		int32 nodeCountX, nodeCountY;
-		ifs >> _mapSize.x >> _mapSize.y >> _gridSize.x >> _gridSize.y >> _pos.x >> _pos.y >> nodeCountX >> nodeCountY;
+		ifs >> _mapSize.x >> _mapSize.y >> _gridSize.x >> _gridSize.y >> _pos.x >> _pos.y >> nodeCountY >> nodeCountX;
 
 		for (int32 i = 0; i < nodeCountY; i++)
 		{
@@ -31,6 +31,14 @@ void Map::Load(const filesystem::path& path)
 						node.around[k] = (EGridType)aroundValue;
 					}
 				}
+
+				else if (value == 0)
+				{
+					for (int32 k = 0; k < 8; k++)
+					{
+						node.around[k] = (EGridType)0;
+					}
+				}
 				
 				nodes.push_back(node);
 			}
@@ -38,6 +46,9 @@ void Map::Load(const filesystem::path& path)
 		}
 
 	}
+
+	_bound = Bound(_pos.x - _mapSize.x/2, _pos.y - _mapSize.y/2, 
+		_pos.x + _mapSize.x/2, _pos.y + _mapSize.y);
 
 	ifs.close();
 }
@@ -47,10 +58,10 @@ bool Map::IsValidAtGridPos(VectorInt gridPos)
 	int32 x = gridPos.x;
 	int32 y = gridPos.y;
 
-	if (x < 0 || x >= _nodes.size() || y < 0 || y >= _nodes[0].size())
+	if (x < 0 || x >= _nodes[0].size() || y < 0 || y >= _nodes.size())
 		return false;
 
-	switch (_nodes[x][y].value)
+	switch (_nodes[y][x].value)
 	{
 	case EGT_Walkable:
 		return true;

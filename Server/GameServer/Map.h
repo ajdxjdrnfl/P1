@@ -21,6 +21,7 @@ public:
 	Vector GetGridSize() { return _gridSize; }
 	Vector GetMapSize() { return _mapSize; }
 	Vector GetPos() { return _pos; }
+	Bound  GetBound() { return _bound; }
 	GridNode GetNode(VectorInt pos) { return _nodes[pos.y][pos.x]; }
 
 	string GetName() { return _name; }
@@ -33,6 +34,7 @@ private:
 	Vector							_gridSize;
 	Vector							_mapSize;
 	Vector							_pos;
+	Bound							_bound;
 	vector<vector<GridNode>>		_nodes;
 
 	string							_name;

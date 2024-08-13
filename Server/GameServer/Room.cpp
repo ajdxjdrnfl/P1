@@ -10,6 +10,7 @@
 #include "Structure.h"
 #include "ResourceManager.h"
 #include "Map.h"
+#include "QuadTree.h"
 
 RoomRef GRoom = make_shared<Room>();
 
@@ -19,6 +20,7 @@ Room::Room()
 
 Room::~Room()
 {
+	delete _tree;
 }
 
 void Room::Init()
@@ -26,6 +28,7 @@ void Room::Init()
 	// TODO : enemy 추가
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
+	_tree->Init(_map->GetBound());
 
 	if (!_debug)
 	{
@@ -48,11 +51,21 @@ void Room::Update(float deltaTime)
 
 	deltaTime = _tickManager.GetDeltaTime();
 
+	_tree->Clear();
+
 	for (auto& item : _players)
 	{
 		PlayerRef player = item.second;
 		player->Update(deltaTime);
+
+		// QuadTree Update
+		// 몹들 업데이트 후 QuadTree를 업데이트
+		if (_tree != nullptr)
+		{
+			_tree->Insert(player);
+		}
 	}
+
 	for (auto& item : _enemies)
 	{
 		EnemyRef enemy = item.second;
@@ -73,7 +86,6 @@ void Room::Update(float deltaTime)
 	{
 		_boss->Update(deltaTime);
 	}
-	
 
 	DoTimer(64, &Room::Update, deltaTime);
 }
@@ -455,13 +467,14 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	while (true)
 	{
-		int32 x = Utils::GetRandom(-50, 50);
-		int32 y = Utils::GetRandom(-50, 50);
+		int32 x = Utils::GetRandom(0, 40);
+		int32 y = Utils::GetRandom(0, 40);
 
 		if (IsValidAtPos({ x, y }))
 		{
-			player->GetObjectInfo()->set_x(GetPosition({x,y}).x);
-			player->GetObjectInfo()->set_x(GetPosition({ x,y }).y);
+			Vector pos = GetPosition({ x,y });
+			player->GetObjectInfo()->set_x(pos.x);
+			player->GetObjectInfo()->set_y(pos.y);
 			player->GetObjectInfo()->set_z(100.f);
 			player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 			break;

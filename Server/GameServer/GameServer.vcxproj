@@ -167,10 +167,12 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="LogUtils.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Npc.h" />
     <ClInclude Include="ObjectUtils.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Raid.h" />
     <ClInclude Include="ResourceBase.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -203,6 +205,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="LogUtils.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Npc.cpp" />
     <ClCompile Include="ObjectUtils.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -211,6 +214,7 @@
     <ClCompile Include="Protocol.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Raid.cpp" />
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
