@@ -48,6 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void UseSkillAfterTargeting() {};
 
+	UFUNCTION(BlueprintCallable)
+	virtual void UseSkillAfterTargetingWithPos(FVector TargetPos) {};
+
 	// Call after spawn skill
 	UFUNCTION(BlueprintCallable)
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor);

@@ -69,6 +69,10 @@ void USkillComponentBase::SetSkills()
 		{
 			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherQSkillInstance::StaticClass()));
 			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherWSkillInstance::StaticClass()));
+			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherESkillInstance::StaticClass()));
+			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
 		}
 		else if (P1Creature->GetClassType() == FName("Boss"))

@@ -38,8 +38,6 @@ void AOwnerToCursorSkillTargeting::OnRMBClicked()
 
 void AOwnerToCursorSkillTargeting::Init(ASkillInstanceBase* _SkillInstance, float Length)
 {
-	SkillInstance = _SkillInstance;
-
 	FVector CurrentScale = GetActorScale3D();
 	SetActorScale3D(FVector(CurrentScale.X, CurrentScale.Y * Length, CurrentScale.Z));
 }

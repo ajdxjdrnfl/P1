@@ -45,6 +45,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	FName ClassType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	int32 ClassTypeInt;
+
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bIsCounterState;
 
@@ -71,8 +74,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GetStun(float _CCTime);
 
-	UFUNCTION(BlueprintCallable)
-	int32 GetClassTypeInt();
+	void GetClassTypeInt();
 
 	virtual void MoveByServer(float DeltaTime) {}
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
