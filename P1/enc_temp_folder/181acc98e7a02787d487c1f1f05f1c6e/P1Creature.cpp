@@ -34,12 +34,7 @@ void AP1Creature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
-	{
-		if (GameInstance->IsMyCharacter(ObjectInfo->object_id())) return;
-		MoveByServer(DeltaTime);
-	}
-	
+	MoveByServer(DeltaTime);
 
 	/*if (CreatureState == ECreatureState::Stun)
 	{

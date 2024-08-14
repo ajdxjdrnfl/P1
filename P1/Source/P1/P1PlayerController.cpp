@@ -266,6 +266,7 @@ void AP1PlayerController::SendMovePacketToServer()
 	OwnerCharacter->ObjectInfo->set_y(OwnerCharacter->GetActorLocation().Y);
 	OwnerCharacter->ObjectInfo->set_z(OwnerCharacter->GetActorLocation().Z);
 	OwnerCharacter->ObjectInfo->set_yaw(OwnerCharacter->GetActorRotation().Yaw);
+	OwnerCharacter->ObjectInfo->set_state(OwnerCharacter->ObjectInfo->state());
 
 	info->CopyFrom(*OwnerCharacter->ObjectInfo);
 

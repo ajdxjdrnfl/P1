@@ -48,20 +48,22 @@ void AWarriorQSkillInstance::Tick(float DeltaTime)
 void AWarriorQSkillInstance::SpawnSkill()
 {
 	if (bDoOnceActivated) return;
-	bDoOnceActivated = true; // set false at skill end
+	bDoOnceActivated = true; // set false at skill end anim notify
 
-	Protocol::C_SKILL Pkt;
-	Pkt.set_skillid(0);
-	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+	{
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(0);
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 200.f;
-	Pkt.set_x(SpawnLocation.X);
-	Pkt.set_y(SpawnLocation.Y);
-	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+		FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 200.f;
+		Pkt.set_x(SpawnLocation.X);
+		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
-	SEND_PACKET(Pkt);
+		SEND_PACKET(Pkt);
+	}
 }
 
 void AWarriorQSkillInstance::UseSkill()
@@ -75,9 +77,6 @@ void AWarriorQSkillInstance::UseSkill()
 	if (!bIsMontagePlaying)
 	{
 		AttackIndex = 1;
-		//AnimInstance->Montage_Play(M_Skill);
-
-		// Send Packet
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
@@ -88,7 +87,7 @@ void AWarriorQSkillInstance::UseSkill()
 			SEND_PACKET(Pkt);
 		}
 
-		OwnerCreature->CreatureState = ECreatureState::Skill;
+		OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_SKILL);
 		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
 			SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
@@ -97,22 +96,18 @@ void AWarriorQSkillInstance::UseSkill()
 	else if (bIsComboTiming)
 	{
 		AttackIndex++;
-		// AnimInstance->Montage_JumpToSection(AttackSectionIndex);
 		bIsComboTiming = false;
-
-		// Send Packet
 		{
 			Protocol::C_MONTAGE Pkt;
 			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
 			CasterInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			Pkt.set_isstop(false);
 			Pkt.set_id(0);
-			
 			Pkt.set_section_num(FCString::Atoi(*AttackSectionIndex.ToString()));
 
 			SEND_PACKET(Pkt);
 
-			OwnerCreature->CreatureState = ECreatureState::Idle;
+			OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		}
 	}
 }
@@ -290,6 +285,7 @@ void AWarriorRSkillInstance::SetAnimMontage()
 
 			SEND_PACKET(Pkt);
 		}
+
 		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
 			SubSystem->bCanMove = true;

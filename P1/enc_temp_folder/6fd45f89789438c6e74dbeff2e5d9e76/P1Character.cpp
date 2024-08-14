@@ -159,6 +159,7 @@ FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
 
 void AP1Character::MoveByServer(float DeltaTime)
 {
+	UE_LOG(LogTemp, Log, TEXT("%s"), *(ObjectInfo->state() == Protocol::MOVE_STATE_RUN ? FString("Run") : FString("Idle")));
 	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
 		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);

@@ -51,14 +51,14 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bIsCounterState;
 
+	float CurrentTimeToMove;
+	float DefaultTimeToMove = 0.1f;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	class UAnimMontage* M_Die;
 
 public:
-	UPROPERTY(BlueprintReadWrite)
-	ECreatureState CreatureState;
-
 	Protocol::ObjectInfo* ObjectInfo;
 	Protocol::ObjectInfo* TargetInfo;
 

@@ -127,7 +127,7 @@ void AEnemyBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 
 void AEnemyBase::MoveByServer(float DeltaTime)
 {
-	if (CreatureState == ECreatureState::Move)
+	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
 		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
 		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);

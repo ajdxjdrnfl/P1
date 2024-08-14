@@ -36,7 +36,7 @@
 				"CollisionType": "Box",
 				"CCType": "Normal",
 				"DamageType": "Normal",
-				"SkillType": "Casting",
+				"SkillType": "Hold",
 				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 3,
@@ -168,13 +168,13 @@
 				"CooldownTime": 2,
 				"Damage": 20,
 				"XScale": 30,
-				"YScale": 700,
+				"YScale": 30,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Archer/Montage_Archer_Q.Montage_Archer_Q'",
 				"CollisionType": "Circle",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Charging",
-				"CastingTime": 0.5,
+				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 3,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Archer/BP_ArcherQSkill.BP_ArcherQSkill_C'",
@@ -198,7 +198,7 @@
 				"LifeTime": 3,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Archer/BP_ArcherWSkill.BP_ArcherWSkill_C'",
 				"Thumbnail": "None",
-				"SkillTargeting": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Targeting/BP_OwnerToCursor.BP_OwnerToCursor_C'"
+				"SkillTargeting": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Targeting/BP_WorldCursor.BP_WorldCursor_C'"
 			},
 			{
 				"SkillNumLocal": 2,

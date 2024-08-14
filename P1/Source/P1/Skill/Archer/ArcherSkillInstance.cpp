@@ -39,22 +39,24 @@ void AArcherQSkillInstance::SpawnSkill()
 			GaugeRate = SubSystem->CastingSkillGaugeRate;
 		}
 
-		if (SkillActorClass == nullptr) return;
+		{
+			if (SkillActorClass == nullptr) return;
 
-		Protocol::C_SKILL Pkt;
-		Pkt.set_skillid(0);
+			Protocol::C_SKILL Pkt;
+			Pkt.set_skillid(0);
 
-		Pkt.set_damage(GaugeRate * SkillInfo.Damage);
-		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+			Pkt.set_damage(GaugeRate * SkillInfo.Damage);
+			Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-		FVector SpawnLocation = OwnerCreature->GetActorLocation();
-		Pkt.set_x(SpawnLocation.X);
-		Pkt.set_y(SpawnLocation.Y);
-		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+			FVector SpawnLocation = OwnerCreature->GetActorLocation();
+			Pkt.set_x(SpawnLocation.X);
+			Pkt.set_y(SpawnLocation.Y);
+			Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
-		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+			ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-		SEND_PACKET(Pkt);
+			SEND_PACKET(Pkt);
+		}
 	}
 
 	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
@@ -92,7 +94,7 @@ void AArcherWSkillInstance::UseSkill()
 	{
 		if (IsValid(HoldingByTickSkillManager))
 		{
-			UseSkillAfterTargeting();
+			UseSkillAfterTargetingWithPos(FVector(0));
 			return;
 		}
 
@@ -108,32 +110,41 @@ void AArcherWSkillInstance::UseSkill()
 
 void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
 {
-	if ((AnimMontage == M_Skill) && CurrentSkillActor)
+	if ((AnimMontage == M_Skill) && IsValid(CurrentSkillActor))
 	{
 		CurrentSkillActor->Destroy();
 		CurrentSkillActor = nullptr;
-		HoldingByTickSkillManager->Destroy();
-		HoldingByTickSkillManager = nullptr;
+	}
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->bCanMove = true;
 	}
 }
 
 void AArcherWSkillInstance::SpawnSkill()
 {
-	if (CurrentSkillActor) return;
 	if (SkillActorClass == nullptr) return;
 
-	Protocol::C_SKILL Pkt;
-	Pkt.set_skillid(1);
-	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+	{
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(1);
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	FVector SpawnLocation = OwnerCreature->GetActorLocation();
-	Pkt.set_x(SpawnLocation.X);
-	Pkt.set_y(SpawnLocation.Y);
-	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+		FVector SpawnLocation = OwnerCreature->GetActorLocation();
+		Pkt.set_x(SpawnLocation.X);
+		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
-	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	SEND_PACKET(Pkt);
+		SEND_PACKET(Pkt);
+	}
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->bCanMove = false;
+	}
 }
 
 void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
@@ -156,6 +167,11 @@ void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 	{
 		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 		HoldingByTickSkillManager = nullptr;
+		if (IsValid(CurrentSkillActor))
+		{
+			CurrentSkillActor->Destroy();
+			CurrentSkillActor = nullptr;
+		}
 	}
 }
 
@@ -185,19 +201,21 @@ void AArcherESkillInstance::SpawnSkill()
 {
 	if (SkillActorClass == nullptr) return;
 
-	Protocol::C_SKILL Pkt;
-	Pkt.set_skillid(2);
+	{
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(2);
 
-	Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-	FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 600;
-	Pkt.set_x(SpawnLocation.X);
-	Pkt.set_y(SpawnLocation.Y);
-	Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+		FVector SpawnLocation = OwnerCreature->GetActorLocation() + OwnerCreature->GetActorForwardVector() * 600;
+		Pkt.set_x(SpawnLocation.X);
+		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
-	ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
 
-	SEND_PACKET(Pkt);
+		SEND_PACKET(Pkt);
+	}
 }
 
 void AArcherESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)

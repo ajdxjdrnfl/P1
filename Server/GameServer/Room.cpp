@@ -546,7 +546,7 @@ Vector Room::GetPosition(VectorInt gridPos)
 
 bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth)
 {
-	/*priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
+	priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
 
 	VectorInt gridStart = GetGridPos(start);
 	VectorInt gridEnd = GetGridPos(end);
@@ -641,8 +641,6 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 		pos = parent[pos];
 	}
 	std::reverse(path.begin(), path.end());
-	return true;*/
-
 	return true;
 }
 

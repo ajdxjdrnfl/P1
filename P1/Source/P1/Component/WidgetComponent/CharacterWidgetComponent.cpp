@@ -50,7 +50,7 @@ void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
 	if (CharacterOverlayWidget == nullptr)
 		return;
 
-	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging) return;
+	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging || Skills[SkillIndex].SkillType == ESkillType::Hold) return;
 	CharacterOverlayWidget->UseSkill(Skills[SkillIndex]);
 }
 

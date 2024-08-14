@@ -137,6 +137,8 @@ void UP1GameInstance::ConnectToGameServer()
 		{
 			Protocol::C_LOGIN Pkt;
 			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
+			Pkt.set_castertype(Protocol::CASTER_TYPE_ARCHER);
+
 			SendPacket(SendBuffer);
 		}
 	}
@@ -280,8 +282,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
-	// FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
-	FSkillInfo CurrentSkillInfo = SkillInfo[6][Pkt.skillid()];
+	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 	FTransform SpawnedTransform;
 	SpawnedTransform.SetLocation(SpawnedLocation);
 	SpawnedTransform.SetRotation(SpawnedRotation.Quaternion());
@@ -323,14 +324,7 @@ void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
 	AP1Creature* Creature = GetCreature(Pkt);
 	if (Creature == nullptr) return;
 
-	if (Pkt.caster().castertype() == Protocol::CASTER_TYPE_WARRIOR)
-	{
-		Creature->PlayAnimMontageByServer(Pkt);
-	}
-	else if (Pkt.caster().castertype() == Protocol::CASTER_TYPE_ARCHER)
-	{
-		Creature->PlayAnimMontageByServer(Pkt);
-	}
+	Creature->PlayAnimMontageByServer(Pkt);
 }
 
 void UP1GameInstance::KillCreature(Protocol::S_DEAD& pkt)
