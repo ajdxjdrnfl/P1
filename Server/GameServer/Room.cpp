@@ -29,7 +29,7 @@ void Room::Init()
 	// TODO : enemy Ãß°¡
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
-	_tree->Init(_map->GetBound());
+	_tree->Init(_map->GetBound());	
 
 	if (!_debug)
 	{
@@ -40,8 +40,8 @@ void Room::Init()
 			SetObjectToRandomPos(enemy);
 		}
 
-		//_boss = ObjectUtils::CreateBoss(GetRoomRef());
-		//SetObjectToRandomPos(_boss);
+		_boss = ObjectUtils::CreateBoss(GetRoomRef());
+		SetObjectToRandomPos(_boss);
 	}
 	
 }
@@ -91,9 +91,9 @@ void Room::Update(float deltaTime)
 	DoTimer(64, &Room::Update, deltaTime);
 }
 
-bool Room::HandleEnterGame(GameSessionRef session)
+bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 {
-	PlayerRef player = ObjectUtils::CreatePlayer(session, GetRoomRef());
+	PlayerRef player = ObjectUtils::CreatePlayer(session, GetRoomRef(), pkt.castertype());
 	session->_player.store(player);
 	EnterGame(player);
 
@@ -265,8 +265,10 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 
 	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
 
+	bool bCounter = pkt.counter();
 	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo().damageType, skillActorCast->GetDamage());
 	
+
 	{
 		Protocol::S_ATTACK attackPkt;
 		*attackPkt.mutable_caster() = *caster->GetObjectInfo();
@@ -641,6 +643,8 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 		pos = parent[pos];
 	}
 	std::reverse(path.begin(), path.end());
+	return true;
+
 	return true;
 }
 

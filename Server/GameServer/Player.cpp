@@ -4,13 +4,13 @@
 #include "Collider.h"
 #include "ComponentBase.h"
 
-Player::Player(GameSessionRef session, RoomRef room) : Super(room), _session(session)
+Player::Player(GameSessionRef session, RoomRef room, Protocol::CasterType casterType) : Super(room), _session(session)
 {
 	_objectInfo->set_hp(100.f);
 	_objectInfo->set_max_hp(100.f);
 	_objectInfo->set_stamina(100.f);
 	_objectInfo->set_max_stamina(100.f);
-	_objectInfo->set_castertype(Protocol::CASTER_TYPE_WARRIOR);
+	_objectInfo->set_castertype(casterType);
 	_objectInfo->set_speed(400.f);
 }
 

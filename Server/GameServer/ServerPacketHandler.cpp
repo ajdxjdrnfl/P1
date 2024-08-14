@@ -24,7 +24,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		return false;
 
 	LOG(pkt);
-	GRoomManager.EnterGame(gameSession);
+	GRoomManager.EnterGame(gameSession, pkt);
 
 	return true;
 }

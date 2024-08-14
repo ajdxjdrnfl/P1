@@ -10,12 +10,12 @@
 
 atomic<int64> ObjectUtils::s_idGenerator = 1;
 
-PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session, RoomRef room)
+PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session, RoomRef room, Protocol::CasterType casterType)
 {
 	// ID »ý¼º±â
 	const int64 newId = s_idGenerator.fetch_add(1);
 
-	PlayerRef player = make_shared<Player>(session, room);
+	PlayerRef player = make_shared<Player>(session, room, casterType);
 	player->GetObjectInfo()->set_object_id(newId);
 
 	player->Init();

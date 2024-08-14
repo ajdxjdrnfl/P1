@@ -49,13 +49,13 @@ void GameRoomManager::Init()
 	GRoom->Init();
 }
 
-void GameRoomManager::EnterGame(GameSessionRef session)
+void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 {
 	WRITE_LOCK;
 	RoomRef room = GRoom;
 
 	if (room)
-		room->DoAsync(&Room::HandleEnterGame, session);
+		room->DoAsync(&Room::HandleEnterGame, session, pkt);
 }
 
 void GameRoomManager::ExitGame(GameSessionRef session)

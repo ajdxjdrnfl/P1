@@ -8,7 +8,7 @@ public:
 	void Init();
 	void Update(float deltaTime);
 
-	void EnterGame(GameSessionRef session);
+	void EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt);
 	void ExitGame(GameSessionRef session);
 
 	bool ChangeRoom(PlayerRef session);

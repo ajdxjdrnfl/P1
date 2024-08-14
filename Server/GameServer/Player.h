@@ -5,7 +5,7 @@ class Player :
 {
     using Super = GameObject;
 public:
-    Player(GameSessionRef session, RoomRef room);
+    Player(GameSessionRef session, RoomRef room, Protocol::CasterType casterType);
     virtual ~Player();
 
     virtual void Init() override;
