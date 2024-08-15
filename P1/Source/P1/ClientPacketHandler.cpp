@@ -62,7 +62,7 @@ bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
 {
 	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
 
-	if (GameInstance == nullptr || GameInstance->IsMyCharacter(pkt.info().object_id()))
+	if (GameInstance == nullptr)
 		return false;
 
 	GameInstance->MoveByServer(pkt);

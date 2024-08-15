@@ -49,7 +49,7 @@ void AP1PlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	MoveByServer(DeltaTime);
+	// MoveByServer(DeltaTime);
 
 	FHitResult Hit;
 	bool bHitSuccessful = false;
@@ -143,7 +143,30 @@ void AP1PlayerController::OnSetDestinationTriggered()
 	if (ControlledPawn != nullptr)
 	{
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+
+		{
+			if (OwnerCharacter == nullptr) return;
+
+			Protocol::C_MOVE Pkt;
+			Protocol::ObjectInfo* ObjectInfo = Pkt.mutable_info();
+			Protocol::ObjectInfo* TargetInfo = Pkt.mutable_targetinfo();
+			// TODO: State
+
+			TargetInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+
+			TargetInfo->set_x(CachedDestination.X);
+			TargetInfo->set_y(CachedDestination.Y);
+			TargetInfo->set_z(CachedDestination.Z);
+			TargetInfo->set_yaw(WorldDirection.Rotation().Yaw);
+			TargetInfo->set_state(Protocol::MOVE_STATE_RUN);
+
+			ObjectInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+			ObjectInfo->set_x(OwnerCharacter->GetActorLocation().X);
+			ObjectInfo->set_y(OwnerCharacter->GetActorLocation().Y);
+			ObjectInfo->set_z(OwnerCharacter->GetActorLocation().Z);
+
+			SEND_PACKET(Pkt);
+		}
 	}
 }
 
@@ -159,7 +182,7 @@ void AP1PlayerController::OnSetDestinationReleased()
 
 	if (FollowTime <= ShortPressThreshold)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 
@@ -229,19 +252,7 @@ void AP1PlayerController::OnDodgeTriggered()
 {
 	if (OwnerCharacter == nullptr) return;
 
-	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_JUMP);
-	SendMovePacketToServer();
-
-	FVector TargetVector = (CachedDestination - OwnerCharacter->GetActorLocation()).GetSafeNormal2D();
-	FVector CurrentVector = OwnerCharacter->GetActorForwardVector().GetSafeNormal2D();
-	FVector2D TargetVector2D = FVector2D(TargetVector.X, TargetVector.Y);
-	FVector2D CurrentVector2D = FVector2D(CurrentVector.X, CurrentVector.Y);
-
 	OwnerCharacter->Dodge();
-	
-	
-
-	OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 }
 
 void AP1PlayerController::OnRMBTriggered()

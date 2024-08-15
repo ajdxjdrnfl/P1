@@ -19,6 +19,8 @@
 #include "P1/Widget/SkillButtonWidget.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "P1GameInstance.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AIController.h"
 
 AP1Character::AP1Character()
 {
@@ -68,15 +70,21 @@ void AP1Character::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	UP1GameInstance* instance = Cast<UP1GameInstance>(GetGameInstance());
-
-	if (!instance->IsMyCharacter(ObjectInfo->object_id()) && ObjectInfo->state() == Protocol::MOVE_STATE_JUMP)
-	{
-		Dodge();
-		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-	}
-
 	CameraBoom->TargetArmLength = UKismetMathLibrary::FInterpTo(CameraBoom->TargetArmLength, TargetCameraBoomLength, DeltaSeconds, 20);
+
+	switch (ObjectInfo->state())
+	{
+	case Protocol::MOVE_STATE_IDLE:
+		break;
+	case Protocol::MOVE_STATE_RUN:
+		TickMove(DeltaSeconds);
+		break;
+	case Protocol::MOVE_STATE_JUMP:
+		TickJump();
+		break;
+	default:
+		break;
+	}
 }
 
 void AP1Character::PostInitializeComponents()
@@ -157,23 +165,35 @@ FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
 	return SkillComponent->GetSkillInfoByIndex(SkillIndex);
 }
 
-void AP1Character::MoveByServer(float DeltaTime)
+void AP1Character::TickMove(float DeltaTime)
 {
 	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
 		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
-		FVector TargetForwardVector = (TargetLocation - GetActorLocation()).GetSafeNormal();
+		FRotator TargetRotator = (TargetLocation - GetActorLocation()).Rotation();
 
-		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetForwardVector.Rotation(), DeltaTime, 10.f);
-
-		//bool NearYaw = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetForwardVector.ro.Yaw, GetActorRotation().Yaw);
-		//if (NearYaw) return;
-
+		bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+		bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
 		
-
-		AddMovementInput(TargetForwardVector);
+		if (NearX && NearY)
+		{
+			ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+			return;
+		}
+		
+		AddMovementInput(TargetRotator.Vector().GetSafeNormal());
 		SetObjectInfo();
-		SetActorRotation(NextRotation);
+	}
+}
+
+void AP1Character::TickJump()
+{
+	UP1GameInstance* Instance = Cast<UP1GameInstance>(GetGameInstance());
+
+	if (ObjectInfo->state() == Protocol::MOVE_STATE_JUMP && SkillComponent)
+	{
+		SkillComponent->DodgeByServer();
+		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	}
 }
 

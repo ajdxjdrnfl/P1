@@ -106,6 +106,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABossPillar> BossPillarClass;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AAIController> CharacterAIControllerClass;
+
 	UPROPERTY()
 	TMap<uint64, class ABossPillar*> BossPillars;
 

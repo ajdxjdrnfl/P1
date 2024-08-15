@@ -76,7 +76,7 @@ public:
 
 	void GetClassTypeInt();
 
-	virtual void MoveByServer(float DeltaTime) {}
+	virtual void TickMove(float DeltaTime) {}
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	bool CheckDeath(Protocol::S_MOVE Pkt);

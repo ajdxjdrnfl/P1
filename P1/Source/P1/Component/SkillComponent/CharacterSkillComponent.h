@@ -29,6 +29,7 @@ private:
 
 public:
 	void Dodge();
+	void DodgeByServer();
 	
 	UFUNCTION()
 	void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte);

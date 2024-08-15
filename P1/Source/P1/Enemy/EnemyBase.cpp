@@ -72,7 +72,7 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	MoveByServer(DeltaTime);
+	TickMove(DeltaTime);
 }
 
 void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -125,13 +125,13 @@ void AEnemyBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 	}
 }
 
-void AEnemyBase::MoveByServer(float DeltaTime)
+void AEnemyBase::TickMove(float DeltaTime)
 {
 	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
 		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
 		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
-		FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
+		//FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
 
 		AAIController* AIEnemyController = Cast<AAIController>(GetController());
 
@@ -139,7 +139,7 @@ void AEnemyBase::MoveByServer(float DeltaTime)
 
 		AIEnemyController->MoveToLocation(TargetLocation);
 		SetObjectInfo();
-		SetActorRotation(NextRotation);
+		//SetActorRotation(NextRotation);
 	}
 }
 

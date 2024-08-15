@@ -34,12 +34,10 @@ void AP1Creature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
+	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
-		if (GameInstance->IsMyCharacter(ObjectInfo->object_id())) return;
-		MoveByServer(DeltaTime);
+		TickMove(DeltaTime);
 	}
-	
 
 	/*if (CreatureState == ECreatureState::Stun)
 	{
@@ -140,38 +138,27 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 	if (CheckDeath(Pkt)) 
 		return;
 
-	FTransform TargetTransform;
-	FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
+	TargetInfo->CopyFrom(Pkt.info());
+	ObjectInfo->set_state(Pkt.info().state());
+
+	/*FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
 	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
-	TargetTransform.SetLocation(TargetLocation);
-	TargetTransform.SetRotation(TargetRotation.Quaternion());
 
-	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X);
-	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y);
-	bool NearZ = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Z, GetActorLocation().Z);
-	bool NearYaw = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetRotation.Yaw, GetActorRotation().Yaw);
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 2);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 2);
+	bool NearYaw = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetRotation.Yaw, GetActorRotation().Yaw, 5);
 
-	bool bIsNearLoc = NearX && NearY && NearZ;
+	bool bIsNearLoc = NearX && NearY;
 
-	if (bIsNearLoc && NearYaw)
+	if (bIsNearLoc)
 	{
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	}
 	else
 	{
 		ObjectInfo->set_state(Protocol::MOVE_STATE_RUN);
-		if (!bIsNearLoc)
-		{
-			TargetInfo->set_x(TargetLocation.X);
-			TargetInfo->set_y(TargetLocation.Y);
-			TargetInfo->set_z(TargetLocation.Z);
-		}
-		if (!NearYaw)
-		{
-			TargetInfo->set_yaw(TargetRotation.Yaw);
-		}
-	}
-
+	}*/
+	
 	GetCharacterMovement()->MaxWalkSpeed = Pkt.info().speed();
 }
 

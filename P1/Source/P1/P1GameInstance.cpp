@@ -18,6 +18,7 @@
 #include "P1/Enemy/EnemyBoss.h"
 #include "Containers/Ticker.h"
 #include "P1/Skill/Boss/BossPillar.h"
+#include "AIController.h"
 
 void UP1GameInstance::Init()
 {
@@ -136,8 +137,8 @@ void UP1GameInstance::ConnectToGameServer()
 		// TODO : 로비에서 캐릭터 선택
 		{
 			Protocol::C_LOGIN Pkt;
-			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
 			Pkt.set_castertype(Protocol::CASTER_TYPE_ARCHER);
+			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
 
 			SendPacket(SendBuffer);
 		}
@@ -360,6 +361,12 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo);
+
+	if (!IsMyCharacter(ObjInfo.object_id()))
+	{
+		AAIController* SpawnedController = Cast<AAIController>(GetWorld()->SpawnActor(ClassToSpawn));
+		SpawnedActor->Controller = SpawnedController;
+	}
 
 	return SpawnedActor;
 }

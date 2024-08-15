@@ -46,8 +46,37 @@ void UCharacterSkillComponent::Dodge()
 
 	if (M_Dodge_F == nullptr)
 		return;
+	
+	{
+		if (OwnerCharacter == nullptr) return;
+
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* ObjectInfo = Pkt.mutable_info();
+		Protocol::ObjectInfo* TargetInfo = Pkt.mutable_targetinfo();
+		// TODO: State
+
+		TargetInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+		TargetInfo->set_yaw(OwnerCharacter->GetActorRotation().Yaw);
+		TargetInfo->set_state(Protocol::MOVE_STATE_JUMP);
+
+		ObjectInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+
+		SEND_PACKET(Pkt);
+	}
+}
+
+void UCharacterSkillComponent::DodgeByServer()
+{
+	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+	if (AnimInstance == nullptr) return;
 
 	AnimInstance->Montage_Play(M_Dodge_F);
+
+	USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>();
+
+	if (SubSystem == nullptr)
+		return;
+
 	SubSystem->bCanMoveByAnimMontage = false;
 }
 
