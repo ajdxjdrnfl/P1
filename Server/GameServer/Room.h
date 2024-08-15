@@ -69,9 +69,9 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 	
 private:
-	const int32 _maxEnemyCount = 3;
+	const int32 _maxEnemyCount = 0;
 
-	bool _debug = false;
+	bool _debug = true;
 	bool _useQuadTree = true;
 private:
 	class Map* _map;

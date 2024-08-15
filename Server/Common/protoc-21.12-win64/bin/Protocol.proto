@@ -45,6 +45,7 @@ message S_MOVE
 message C_MOVE
 {
 	ObjectInfo info = 1;
+	ObjectInfo targetinfo = 2;
 }
 
 // Skill Actor Spawn

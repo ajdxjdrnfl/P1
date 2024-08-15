@@ -205,20 +205,21 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 	if (_players.find(objectId) == _players.end())
 		return false;
 
-	// TODO : 갈 수 있는 곳인지 검증
-	// 현재는 움직인 곳으로 바로 이동
-
 	PlayerRef player = _players[objectId];
-	player->SetObjectInfo(pkt.info());
 
-	Protocol::S_MOVE movePkt;
+	if (player->HandleMovePacket(pkt))
 	{
-		Protocol::ObjectInfo* info = movePkt.mutable_info();
-		info->CopyFrom(pkt.info());
+		Protocol::S_MOVE movePkt;
+		{
+			Protocol::ObjectInfo* info = movePkt.mutable_info();
+			info->CopyFrom(pkt.targetinfo());
+		}
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+		Broadcast(sendBuffer);
 	}
+	else return false;
 	
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	Broadcast(sendBuffer);
 
 	return true;
 
