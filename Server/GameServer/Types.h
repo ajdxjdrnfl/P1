@@ -4,6 +4,9 @@ struct VectorInt
 {
 	int32 x, y;
 
+
+	VectorInt& operator=(const VectorInt& other) = default;
+
 	bool operator < (const VectorInt& vec) const
 	{
 		if (x != vec.x)

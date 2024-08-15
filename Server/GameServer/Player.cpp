@@ -86,7 +86,8 @@ void Player::ClearTargetPath()
 
 void Player::AddTargetPath(vector<VectorInt>& path)
 {
-	_targetPath.emplace(path);
+	for(int32 i=0; i<path.size(); i++)
+		_targetPath.emplace(path[i]);
 }
 
 bool Player::PopTargetPath()
