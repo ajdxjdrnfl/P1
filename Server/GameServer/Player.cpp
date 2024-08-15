@@ -50,25 +50,42 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 		return false;
 
 	Vector clientPos = Vector(pkt.info().x(), pkt.info().y());
+	Protocol::ObjectInfo targetInfo = pkt.targetinfo();
 
 	// TODO : 현재 위치에서 갈만한 곳인지 검증
 	_objectInfo->CopyFrom(pkt.info());
 	ClearTargetPath();
 
-	if (_objectInfo->state() != Protocol::MOVE_STATE_RUN)
-		return false;
+	if (targetInfo.state() == Protocol::MOVE_STATE_RUN)
+	{
+		Vector targetPos = Vector(pkt.info().x(), pkt.info().y());
 
-	Vector targetPos = Vector(pkt.info().x(), pkt.info().y());
+		// 갈 수 있는 곳인지 검증
+		vector<VectorInt> path;
+		if (!room->FindPath(clientPos, targetPos, path, 30))
+			return false;
 
-	// 갈 수 있는 곳인지 검증
-	vector<VectorInt> path;	
-	if (!room->FindPath(clientPos, targetPos, path, 30))
-		return false;
+		AddTargetPath(path);
+		PopTargetPath();
 
-	AddTargetPath(path);
-	PopTargetPath();
+		return true;
+	}
+	else if (targetInfo.state() == Protocol::MOVE_STATE_JUMP)
+	{
+		_objectInfo->set_state(Protocol::MOVE_STATE_JUMP);
+		return true;
+	}
+	else if (targetInfo.state() == Protocol::MOVE_STATE_IDLE)
+	{
+		_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+		return true;
+	}
+	else if (targetInfo.state() == Protocol::MOVE_STATE_STUN)
+	{
+		return true;
+	}
 
-	return true;
+	return false;
 }
 
 void Player::SetTargetInfo(Protocol::ObjectInfo targetInfo)
@@ -113,6 +130,14 @@ bool Player::PopTargetPath()
 void Player::TickIdle(float deltaTime)
 {
 	Super::TickIdle(deltaTime);
+	
+
+}
+
+void Player::TickJump(float deltaTime)
+{
+	Super::TickJump(deltaTime);
+	
 	
 }
 

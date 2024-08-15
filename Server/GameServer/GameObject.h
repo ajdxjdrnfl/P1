@@ -28,6 +28,7 @@ protected:
 protected:
 	virtual void TickIdle(float deltaTime) { }
 	virtual void TickRun(float deltaTime) { }
+	virtual void TickJump(float deltaTime) { }
 	virtual void TickSkill(float deltaTime) { }
 	virtual void TickStun(float deltaTime) { }
 	virtual void TickDead(float deltaTime) { }

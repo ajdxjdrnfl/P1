@@ -25,6 +25,7 @@ public:
 
 protected:
     virtual void TickIdle(float deltaTime) override;
+    virtual void TickJump(float deltaTime) override;
     virtual void TickRun(float deltaTime) override;
     virtual void TickSkill(float deltaTime) override;
     virtual void TickStun(float deltaTime) override;
@@ -37,5 +38,7 @@ protected:
     Protocol::ObjectInfo* _targetInfo;
     queue<VectorInt> _targetPath;
     Vector _targetPos;
+
+    float _jumpSpeed = 300.f;
 };
 

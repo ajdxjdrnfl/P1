@@ -63,6 +63,10 @@ void ResourceManager::LoadSkillInfos(const string& path)
 			{
 				SkillInfoParser(Protocol::CASTER_TYPE_MOB, json[skillInfosKey]);
 			}
+			else if (name == "Archer")
+			{
+				SkillInfoParser(Protocol::CASTER_TYPE_ARCHER, json[skillInfosKey]);
+			}
 		}
 
 		ifs.close();
