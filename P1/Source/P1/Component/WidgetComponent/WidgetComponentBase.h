@@ -32,8 +32,11 @@ protected:
 	TArray<FSkillInfo> Skills;
 
 public:
+	UPROPERTY(EditAnywhere, Category = Editable)
+	TSubclassOf<class ADamageIndicatorActor> DamageIndicatorActorClass;
+
 	virtual void InitOnSpawn(class UStatComponentBase* StatComponent);
 	virtual void SetSkills();
 	virtual void UseSkill(uint32 SkillIndex);
-
+	virtual void SpawnDamageIndicator(float Damage) {};
 };

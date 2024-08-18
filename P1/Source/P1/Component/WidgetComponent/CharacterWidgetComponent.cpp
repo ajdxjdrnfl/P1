@@ -8,6 +8,7 @@
 #include "P1/P1GameInstance.h"
 #include "P1/Component/StatComponent/CharacterStatComponent.h"
 #include "P1/Widget/CastingSkillWidget.h"
+#include "P1/DamageIndicator/DamageIndicatorActor.h"
 
 void UCharacterWidgetComponent::BeginPlay()
 {
@@ -111,4 +112,14 @@ void UCharacterWidgetComponent::SetSkillButton()
 {
 	if (CharacterOverlayWidget == nullptr) return;
 	CharacterOverlayWidget->SetSkillButton(Skills);
+}
+
+void UCharacterWidgetComponent::SpawnDamageIndicator(float Damage)
+{
+	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
+	ADamageIndicatorActor* DamageIndicator = Cast<ADamageIndicatorActor>(GetWorld()->SpawnActor(DamageIndicatorActorClass, &SpawnLocation));
+	if (DamageIndicator)
+	{
+		DamageIndicator->ActivateDamageIndicator(Damage, false);
+	}
 }

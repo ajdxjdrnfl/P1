@@ -190,7 +190,7 @@ void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
 
 	for (int32 i = 0; i < Pkt.info_size(); i++)
 	{
-		if (Characters.Contains(Pkt.info(i).object_id()))
+		if (Characters.Contains(Pkt.info(i).object_id()) || IsMyCharacter(Pkt.info(i).object_id()))
 			continue;
 
 		info = Pkt.info(i);
@@ -361,12 +361,6 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo);
-
-	if (!IsMyCharacter(ObjInfo.object_id()))
-	{
-		AAIController* SpawnedController = Cast<AAIController>(GetWorld()->SpawnActor(ClassToSpawn));
-		SpawnedActor->Controller = SpawnedController;
-	}
 
 	return SpawnedActor;
 }

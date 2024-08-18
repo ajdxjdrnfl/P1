@@ -6,6 +6,7 @@
 #include "P1/Component/StatComponent/EnemyStatComponent.h"
 #include "P1/Widget/Stat/EnemyStatWidget.h"
 #include "Components/WidgetComponent.h"
+#include "P1/DamageIndicator/DamageIndicatorActor.h"
 
 void UEnemyWidgetComponent::BeginPlay()
 {
@@ -48,4 +49,14 @@ void UEnemyWidgetComponent::AllStop()
 void UEnemyWidgetComponent::SetStatWidget(UEnemyStatWidget* StatWidgetToSet)
 {
 	StatWidget = StatWidgetToSet;
+}
+
+void UEnemyWidgetComponent::SpawnDamageIndicator(float Damage)
+{
+	FVector SpawnLocation = OwnerEnemy->GetActorLocation();
+	ADamageIndicatorActor* DamageIndicator = Cast<ADamageIndicatorActor>(GetWorld()->SpawnActor(DamageIndicatorActorClass, &SpawnLocation));
+	if (DamageIndicator)
+	{
+		DamageIndicator->ActivateDamageIndicator(Damage, true);
+	}
 }

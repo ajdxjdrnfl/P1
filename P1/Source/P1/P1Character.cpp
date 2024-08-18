@@ -21,6 +21,7 @@
 #include "P1GameInstance.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
+//#include "P1/Component/DamageIndicator/EnemyDamageIndicatorComponent.h"
 
 AP1Character::AP1Character()
 {
@@ -64,6 +65,11 @@ void AP1Character::BeginPlay()
 
 	CameraBoom->TargetArmLength = 1500;
 	TargetCameraBoomLength = 1500;
+
+	//DamageIndicatorComponents.Add();
+
+	//UDamageIndicatorComponent* DamageIndicator = NewObject<UDamageIndicatorComponent>(this, DamageIndicatorComponentClass);
+	//Ladder->RegisterComponent();
 }
 
 void AP1Character::Tick(float DeltaSeconds)
@@ -178,6 +184,7 @@ void AP1Character::TickMove(float DeltaTime)
 		if (NearX && NearY)
 		{
 			ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+			SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
 			return;
 		}
 		

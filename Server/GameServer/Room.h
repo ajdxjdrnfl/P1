@@ -71,7 +71,7 @@ public:
 private:
 	const int32 _maxEnemyCount = 0;
 
-	bool _debug = true;
+	bool _debug = false;
 	bool _useQuadTree = true;
 private:
 	class Map* _map;

@@ -7,6 +7,7 @@
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
+//#include "P1/Component/DamageIndicator/DamageIndicatorComponentBase.h"
 
 // Sets default values
 AP1Creature::AP1Creature()
@@ -27,6 +28,7 @@ void AP1Creature::BeginPlay()
 	
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	GetClassTypeInt();
+	
 }
 
 // Called every frame

@@ -53,6 +53,7 @@ public:
 	void CloseSkillGaugeWidget();
 	float GetGaugeRate();
 	void SetSkillButton();
+	virtual void SpawnDamageIndicator(float Damage) override;
 	
 	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() const { return CharacterOverlayWidget; }
 	FORCEINLINE FSkillInfo GetSkillInfoBySkillIndex(int32 SkillIndex) const { return Skills[SkillIndex]; }

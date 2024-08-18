@@ -38,5 +38,8 @@ public:
 	void AllStop();
 
 	void SetStatWidget(class UEnemyStatWidget* StatWidgetToSet);
+
+	virtual void SpawnDamageIndicator(float Damage) override;
+
 	FORCEINLINE class UEnemyStatWidget* GetStatWidget() const { return StatWidget; }
 };

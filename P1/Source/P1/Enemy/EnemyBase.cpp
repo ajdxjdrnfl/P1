@@ -11,6 +11,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "P1/Enemy/AIControllerEnemy.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+//#include "P1/Component/DamageIndicator/EnemyDamageIndicatorComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -26,8 +27,6 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//Init();
 }
 
 void AEnemyBase::Init()
@@ -98,6 +97,11 @@ void AEnemyBase::PostInitializeComponents()
 
 void AEnemyBase::SetHealthByDamage(float HealthToSet)
 {
+	if (WidgetComponent)
+	{
+		WidgetComponent->SpawnDamageIndicator(ObjectInfo->hp() - HealthToSet);
+	}
+
 	if (StatComponent)
 	{
 		StatComponent->SetHealth(HealthToSet);
@@ -130,16 +134,21 @@ void AEnemyBase::TickMove(float DeltaTime)
 	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
 	{
 		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
-		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
-		//FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10.f);
+
+		bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+		bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
+
+		if (NearX && NearY)
+		{
+			ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+			SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
+			return;
+		}
 
 		AAIController* AIEnemyController = Cast<AAIController>(GetController());
-
 		if (AIEnemyController == nullptr) return;
-
 		AIEnemyController->MoveToLocation(TargetLocation);
 		SetObjectInfo();
-		//SetActorRotation(NextRotation);
 	}
 }
 
