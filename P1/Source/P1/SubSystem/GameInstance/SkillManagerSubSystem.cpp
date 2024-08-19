@@ -4,6 +4,7 @@
 #include "SkillManagerSubSystem.h"
 #include "P1/P1GameInstance.h"
 #include "P1/Skill/SkillActorBase.h"
+#include "P1/Skill/Targeting/SkillTargetingBase.h"
 
 void USkillManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -43,4 +44,13 @@ bool USkillManagerSubSystem::CanUseSkill(int32 SkillIndex)
 bool USkillManagerSubSystem::CanMove()
 {
 	return bCanMove && bCanMoveByAnimMontage;
+}
+
+void USkillManagerSubSystem::CheckSkillTargeting()
+{
+	if (IsValid(CurrentSkillTargeting))
+	{
+		CurrentSkillTargeting->Destroy();
+		CurrentSkillTargeting = nullptr;
+	}
 }

@@ -53,7 +53,8 @@ void UEnemyWidgetComponent::SetStatWidget(UEnemyStatWidget* StatWidgetToSet)
 
 void UEnemyWidgetComponent::SpawnDamageIndicator(float Damage)
 {
-	FVector SpawnLocation = OwnerEnemy->GetActorLocation();
+	int Gap = FMath::RandRange(50, 100);
+	FVector SpawnLocation = OwnerEnemy->GetActorLocation() + FVector(Gap, Gap, Gap);
 	ADamageIndicatorActor* DamageIndicator = Cast<ADamageIndicatorActor>(GetWorld()->SpawnActor(DamageIndicatorActorClass, &SpawnLocation));
 	if (DamageIndicator)
 	{

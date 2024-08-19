@@ -25,3 +25,19 @@ void AEnemyMob::BeginPlay()
 		GetWidgetComponent()->SetStatWidget(EnemyStatWidget);
 	}
 }
+
+void AEnemyMob::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	switch (ObjectInfo->state())
+	{
+	case Protocol::MOVE_STATE_IDLE:
+		break;
+	case Protocol::MOVE_STATE_RUN:
+		TickMove(DeltaTime);
+		break;
+	default:
+		break;
+	}
+}

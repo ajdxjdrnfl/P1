@@ -71,7 +71,6 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TickMove(DeltaTime);
 }
 
 void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

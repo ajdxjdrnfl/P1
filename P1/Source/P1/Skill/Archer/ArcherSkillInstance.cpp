@@ -16,6 +16,7 @@
 
 void AArcherQSkillInstance::UseSkill()
 {
+	Super::UseSkill();
 	if (!IsValid(ChargingSkillManager))
 	{
 		ChargingSkillManager = Cast<AChargingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AChargingSkillManager::StaticClass()));
@@ -100,6 +101,11 @@ void AArcherWSkillInstance::UseSkill()
 
 		SkillTargeting = Cast<AWorldCursorSkillTargeting>(OwnerCreature->GetWorld()->SpawnActor(SkillInfo.SkillTargeting));
 		SkillTargeting->Init(this);
+
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->CurrentSkillTargeting = SkillTargeting;
+		}
 	}
 	else
 	{
@@ -131,9 +137,8 @@ void AArcherWSkillInstance::SpawnSkill()
 		Pkt.set_skillid(1);
 		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
 
-		FVector SpawnLocation = OwnerCreature->GetActorLocation();
-		Pkt.set_x(SpawnLocation.X);
-		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_x(SkillPos.X);
+		Pkt.set_y(SkillPos.Y);
 		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
 
 		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
@@ -145,6 +150,8 @@ void AArcherWSkillInstance::SpawnSkill()
 	{
 		SubSystem->bCanMove = false;
 	}
+
+	Cast<AP1Character>(OwnerCreature)->StopMoving();
 }
 
 void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
@@ -178,11 +185,12 @@ void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 void AArcherWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	CurrentSkillActor = SkillActor;
-	SkillActor->SetActorLocation(SkillPos);
+	// SkillActor->SetActorLocation(SkillPos);
 }
 
 void AArcherESkillInstance::UseSkill()
 {
+	Super::UseSkill();
 	if (!IsValid(CastingSkillManager))
 	{
 		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));

@@ -38,7 +38,7 @@ public:
 
 	// Call after click key
 	UFUNCTION(BlueprintCallable)
-	virtual void UseSkill() {};
+	virtual void UseSkill();
 
 	// Call when spawn skill
 	UFUNCTION(BlueprintCallable)

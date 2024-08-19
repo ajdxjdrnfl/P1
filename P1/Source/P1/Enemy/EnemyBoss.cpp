@@ -28,6 +28,23 @@ void AEnemyBoss::BeginPlay()
 	BossSkillState.SetNum(4);
 }
 
+void AEnemyBoss::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	switch (ObjectInfo->state())
+	{
+	case Protocol::MOVE_STATE_IDLE:
+		break;
+	case Protocol::MOVE_STATE_SKILL:
+	case Protocol::MOVE_STATE_RUN:
+		TickMove(DeltaTime);
+		break;
+	default:
+		break;
+	}
+}
+
 void AEnemyBoss::MoveToTargetLocation(FVector TargetLoc)
 {
 	if (EnemyController == nullptr) return;

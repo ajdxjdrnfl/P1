@@ -65,11 +65,6 @@ void AP1Character::BeginPlay()
 
 	CameraBoom->TargetArmLength = 1500;
 	TargetCameraBoomLength = 1500;
-
-	//DamageIndicatorComponents.Add();
-
-	//UDamageIndicatorComponent* DamageIndicator = NewObject<UDamageIndicatorComponent>(this, DamageIndicatorComponentClass);
-	//Ladder->RegisterComponent();
 }
 
 void AP1Character::Tick(float DeltaSeconds)
@@ -173,31 +168,26 @@ FSkillInfo AP1Character::GetSkillInfoByIndex(int32 SkillIndex)
 
 void AP1Character::TickMove(float DeltaTime)
 {
-	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
-	{
-		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
-		FRotator TargetRotator = (TargetLocation - GetActorLocation()).Rotation();
+	FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
+	FRotator TargetRotator = (TargetLocation - GetActorLocation()).Rotation();
 
-		bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
-		bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
-		
-		if (NearX && NearY)
-		{
-			ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-			SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
-			return;
-		}
-		
-		AddMovementInput(TargetRotator.Vector().GetSafeNormal());
-		SetObjectInfo();
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
+	
+	if (NearX && NearY)
+	{
+		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+		SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
+		return;
 	}
+	
+	AddMovementInput(TargetRotator.Vector().GetSafeNormal());
+	SetObjectInfo();
 }
 
 void AP1Character::TickJump()
 {
-	UP1GameInstance* Instance = Cast<UP1GameInstance>(GetGameInstance());
-
-	if (ObjectInfo->state() == Protocol::MOVE_STATE_JUMP && SkillComponent)
+	if (SkillComponent)
 	{
 		SkillComponent->DodgeByServer();
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
@@ -231,5 +221,17 @@ void AP1Character::Dodge()
 void AP1Character::AddCameraBoomLength(float Value)
 {
 	 TargetCameraBoomLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 100, 500, 2500);
+}
+
+void AP1Character::StopMoving()
+{
+	Protocol::C_MOVE Pkt;
+	Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+	Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+	ObjInfo->CopyFrom(*ObjectInfo);
+	_TargetInfo->CopyFrom(*TargetInfo);
+	_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+	 
+	SEND_PACKET(Pkt);
 }
 

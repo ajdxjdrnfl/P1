@@ -17,6 +17,7 @@ class P1_API AEnemyMob : public AEnemyBase
 public:
 	AEnemyMob();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY(EditAnywhere)

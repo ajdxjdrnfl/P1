@@ -25,6 +25,7 @@ class P1_API AEnemyBoss : public AEnemyBase
 	
 public:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	bool bIsAttackMode;

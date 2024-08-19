@@ -69,9 +69,6 @@ public:
 	int32 SkillNumLocal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 HitNum = -1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CooldownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -106,6 +103,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LifeTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeInterval;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ASkillActorBase> SkillActorClass;

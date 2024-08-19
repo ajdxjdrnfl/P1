@@ -186,3 +186,8 @@ void AP1Creature::SetWalkSpeed(float WalkSpeed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
+
+int32 AP1Creature::GetObjectID()
+{
+	return ObjectInfo->object_id();
+}

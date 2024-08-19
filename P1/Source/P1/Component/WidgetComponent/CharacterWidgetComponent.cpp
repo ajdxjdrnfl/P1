@@ -48,7 +48,7 @@ void UCharacterWidgetComponent::InitOnSpawn(UStatComponentBase* StatComponent)
 
 void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
 {
-	if (CharacterOverlayWidget == nullptr)
+	if (CharacterOverlayWidget == nullptr || Skills.IsValidIndex(SkillIndex))
 		return;
 
 	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging || Skills[SkillIndex].SkillType == ESkillType::Hold) return;

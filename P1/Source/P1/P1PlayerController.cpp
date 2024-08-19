@@ -91,6 +91,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnDodgeTriggered);
 
 		EnhancedInputComponent->BindAction(FOVAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnFOVTriggered);
+
+		EnhancedInputComponent->BindAction(StopMovingAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnStopMovingTriggered);
 	}
 	else
 	{
@@ -258,6 +260,11 @@ void AP1PlayerController::OnDodgeTriggered()
 void AP1PlayerController::OnRMBTriggered()
 {
 	OnRMBClickedDelegate.Broadcast();
+}
+
+void AP1PlayerController::OnStopMovingTriggered()
+{
+	OwnerCharacter->StopMoving();
 }
 
 void AP1PlayerController::OnFOVTriggered(const FInputActionValue& Value)

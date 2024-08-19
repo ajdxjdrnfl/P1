@@ -53,7 +53,8 @@ public:
 
 	void SendPacket(SendBufferRef SendBuffer);
 
-	bool IsMyCharacter(uint64 ID);
+	UFUNCTION(BlueprintCallable)
+	bool IsMyCharacter(int32 ID);
 
 	void SpawnActorByServer(Protocol::S_SPAWN& Pkt);
 	void DespawnActorByServer(Protocol::S_DESPAWN& Pkt);

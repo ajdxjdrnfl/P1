@@ -54,6 +54,7 @@ public:
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 	void Dodge();
 	void AddCameraBoomLength(float Value);
+	void StopMoving();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

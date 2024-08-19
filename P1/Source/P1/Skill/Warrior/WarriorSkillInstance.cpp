@@ -135,7 +135,7 @@ void AWarriorWSkillInstance::UseSkill()
 
 void AWarriorWSkillInstance::SpawnSkill()
 {
-	if (!IsValid(CurrentSkillActor)) return;
+	if (IsValid(CurrentSkillActor)) return;
 	if (SkillActorClass == nullptr) return;
 
 	Protocol::C_SKILL Pkt;

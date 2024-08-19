@@ -89,6 +89,9 @@ public:
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) { return FSkillInfo(); }
 	void SetWalkSpeed(float WalkSpeed);
 
+	UFUNCTION(BlueprintCallable)
+	int32 GetObjectID();
+
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }
 	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { ObjectInfo->CopyFrom(InfoToSet); }

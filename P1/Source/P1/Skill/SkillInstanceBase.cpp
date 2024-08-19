@@ -29,6 +29,14 @@ void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
 	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
 }
 
+void ASkillInstanceBase::UseSkill()
+{
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->CheckSkillTargeting();
+	}
+}
+
 void ASkillInstanceBase::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	if (SkillActor == nullptr) return;

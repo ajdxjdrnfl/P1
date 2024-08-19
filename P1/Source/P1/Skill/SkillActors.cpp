@@ -120,12 +120,21 @@ void AOnLocationSkillByTick::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (AP1Creature* Creature : TargetCreatures)
+	if (CurrentTimeToSkill < SkillInfo.TimeInterval)
 	{
-		ObjectInfo->set_x(GetActorLocation().X);
-		ObjectInfo->set_y(GetActorLocation().Y);
-		ObjectInfo->set_z(GetActorLocation().Z);
-		SendCollisionPacketToServer(Creature);
+		CurrentTimeToSkill += DeltaTime;
+	}
+	else
+	{
+		for (AP1Creature* Creature : TargetCreatures)
+		{
+			ObjectInfo->set_x(GetActorLocation().X);
+			ObjectInfo->set_y(GetActorLocation().Y);
+			ObjectInfo->set_z(GetActorLocation().Z);
+			SendCollisionPacketToServer(Creature);
+		}
+
+		CurrentTimeToSkill = 0;
 	}
 	
 }

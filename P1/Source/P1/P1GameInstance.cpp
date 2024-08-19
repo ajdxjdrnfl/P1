@@ -175,7 +175,7 @@ void UP1GameInstance::SendPacket(SendBufferRef SendBuffer)
 	GameServerSession->SendPacket(SendBuffer);
 }
 
-bool UP1GameInstance::IsMyCharacter(uint64 ID)
+bool UP1GameInstance::IsMyCharacter(int32 ID)
 {
 	return MyCharacter->ObjectInfo->object_id() == ID;
 }
@@ -272,6 +272,17 @@ void UP1GameInstance::MoveByServer(Protocol::S_MOVE& Pkt)
 			Pkt.info().castertype() == Protocol::CASTER_TYPE_ARCHER)
 	{
 		(*Characters.Find(Pkt.info().object_id()))->SetMoveValueByServer(Pkt);
+
+		/*if (MyCharacter->ObjectInfo->object_id() == Pkt.info().object_id() && Pkt.info().state() == Protocol::MOVE_STATE_IDLE)
+		{
+			Protocol::C_MOVE Pkt;
+			Protocol::ObjectInfo* TargetInfo = Pkt.mutable_targetinfo();
+			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+			ObjInfo->CopyFrom(*MyCharacter->ObjectInfo);
+			TargetInfo->CopyFrom(*MyCharacter->ObjectInfo);
+
+			SEND_PACKET(Pkt);
+		}*/
 	}
 }
 
@@ -282,7 +293,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 		return;
 
 	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
-	FRotator SpawnedRotation = FRotator(0, Pkt.skillactor().yaw(), 0);
+	FRotator SpawnedRotation = FRotator(Creature->GetActorRotation().Pitch, Pkt.skillactor().yaw(), Creature->GetActorRotation().Roll);
 	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 	FTransform SpawnedTransform;
 	SpawnedTransform.SetLocation(SpawnedLocation);
@@ -298,6 +309,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SkillActor->InstigatorOfSkill = Creature;
 	SkillActor->BindCollisionDelegate();
 	Creature->SetSpawnedSkill(Pkt.skillid(), SkillActor);
+	Creature->SetActorRotation(SpawnedRotation);
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
 	SkillActor->ActivateSkill();
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);
