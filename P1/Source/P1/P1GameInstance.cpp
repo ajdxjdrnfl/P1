@@ -309,7 +309,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	SkillActor->InstigatorOfSkill = Creature;
 	SkillActor->BindCollisionDelegate();
 	Creature->SetSpawnedSkill(Pkt.skillid(), SkillActor);
-	Creature->SetActorRotation(SpawnedRotation);
+
 	UGameplayStatics::FinishSpawningActor(SkillActor, SpawnedTransform);
 	SkillActor->ActivateSkill();
 	Skills.Add(Pkt.skillactor().object_id(), SkillActor);

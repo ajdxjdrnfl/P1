@@ -130,25 +130,22 @@ void AEnemyBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 
 void AEnemyBase::TickMove(float DeltaTime)
 {
-	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
+	FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
+
+	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
+
+	if (NearX && NearY)
 	{
-		FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
-
-		bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
-		bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
-
-		if (NearX && NearY)
-		{
-			ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-			SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
-			return;
-		}
-
-		AAIController* AIEnemyController = Cast<AAIController>(GetController());
-		if (AIEnemyController == nullptr) return;
-		AIEnemyController->MoveToLocation(TargetLocation);
-		SetObjectInfo();
+		//ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+		SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
+		return;
 	}
+
+	AAIController* AIEnemyController = Cast<AAIController>(GetController());
+	if (AIEnemyController == nullptr) return;
+	AIEnemyController->MoveToLocation(TargetLocation);
+	SetObjectInfo();
 }
 
 void AEnemyBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
