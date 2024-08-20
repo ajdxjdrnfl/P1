@@ -338,6 +338,7 @@ void Boss::DefaultAttack(GameObjectRef target)
 			info.set_yaw(yaw);
 			SetObjectInfo(info, false, true);
 
+			_targetPos = target->GetPos();
 			Protocol::S_MONTAGE montagePkt;
 			*montagePkt.mutable_caster() = *GetObjectInfo();
 			montagePkt.set_id(_skillId);
