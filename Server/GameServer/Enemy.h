@@ -23,19 +23,23 @@ protected:
     virtual void TickDead(float deltaTime) override;
 
 private:
-    PlayerRef FindClosestTarget();
+    PlayerRef FindClosestTarget(float maxDistance);
 
 private:
     void RandomWalk();
 
     float randomWalkDuration = 0.f;
-    float randomWalkCoolDonw = 2.f;
+    float randomWalkCooldown = 2.f;
+
+private:
+    void RandomRotate();
 
 private:
     weak_ptr<Player> _target;
     Vector _targetPos;
 
-    float _attackRange = 200.f;
+    float _detectRange = 600.f;
+    float _attackRange = 300.f;
     float _moveSpeed = 200.f;
 
     float _attackCooldown = 2.f;
@@ -45,6 +49,7 @@ private:
     void MoveToTarget(GameObjectRef target);
     void AttackToTarget(GameObjectRef target);
 
+    bool _sendSkillPacket = false;
 private:
     float _updatePacketCooldown = 1.f;
     float _elapsedPacket = 0.f;

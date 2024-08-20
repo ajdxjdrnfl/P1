@@ -55,7 +55,7 @@ public:
 
 	// Temp Utils with map
 public:
-	PlayerRef		FindClosestPlayer(Vector pos);
+	PlayerRef	FindClosestPlayer(Vector pos, float maxDistance);
 	VectorInt GetGridPos(Vector pos);
 	Vector GetPosition(VectorInt gridPos);
 
@@ -73,6 +73,7 @@ private:
 
 	bool _debug = false;
 	bool _useQuadTree = true;
+
 private:
 	class Map* _map;
 	string _mapName = "Test";

@@ -2,6 +2,10 @@
 
 
 #include "GridBuilder.h"
+#include "Kismet/GameplayStatics.h"
+#include "Enemy/EnemyBase.h"
+#include "Enemy/EnemyBoss.h"
+#include "Enemy/EnemyMob.h"
 
 // Sets default values
 AGridBuilder::AGridBuilder()
@@ -73,6 +77,20 @@ void AGridBuilder::SaveToFile(FString path)
 			}
 		}
 
+		FString enemyContent;
+
+		enemyContent += FString::FromInt(_enemies.Num()) + "\n";
+		for (int32 i = 0; i < _enemies.Num(); i++)
+		{
+			FEnemyInfo info = _enemies[i];
+			FVector Location = info.Location;
+			float yaw = info.yaw;
+
+			enemyContent += FString::SanitizeFloat(Location.X) + " " + FString::SanitizeFloat(Location.Y) + " " + FString::SanitizeFloat(Location.Z) + " "
+				+ FString::SanitizeFloat(yaw) + " "
+				+ FString::FromInt(info.casterType) + "\n";
+		}
+
 		bool success = FFileHelper::SaveStringToFile(content, *path);
 		if (success)
 		{
@@ -108,7 +126,6 @@ void AGridBuilder::PostEditChangeProperty(FPropertyChangedEvent& PropertyChanged
 void AGridBuilder::BuildGrids(UWorld* world)
 {
 
-	
 	FVector builderLocation = GetActorLocation();
 
 	for (float y = builderLocation.Y - _worldSize.Y / 2; y < builderLocation.Y + _worldSize.Y / 2; y += _gridSize)
@@ -144,6 +161,33 @@ void AGridBuilder::BuildGrids(UWorld* world)
 	}
 
 	CheckAroundGrid(GetWorld());
+}
+
+void AGridBuilder::BuildWorldEnemies(UWorld* world)
+{
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(world, AEnemyBase::StaticClass(), OutActors);
+
+	for (int32 i = 0; i < OutActors.Num(); i++)
+	{
+		AActor* enemy = OutActors[i];
+
+		FEnemyInfo info;
+
+		info.Location = enemy->GetActorLocation();
+		info.yaw = enemy->GetActorRotation().Yaw;
+	
+		if (enemy->IsA<AEnemyBoss>())
+		{
+			info.casterType = (int32)Protocol::CASTER_TYPE_BOSS;
+		}
+		else if (enemy->IsA<AEnemyMob>())
+		{
+			info.casterType = (int32)Protocol::CASTER_TYPE_MOB;
+		}
+
+		_enemies.Add(info);
+	}
 }
 
 bool AGridBuilder::IsBuildableAtLocation(UWorld* world, FVector& Location, FHitResult& hit, float& length)

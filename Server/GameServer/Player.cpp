@@ -58,6 +58,7 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 
 	if (targetInfo.state() == Protocol::MOVE_STATE_RUN)
 	{
+		SetTargetInfo(pkt.targetinfo());
 		Vector targetPos = Vector(pkt.info().x(), pkt.info().y());
 
 		// 갈 수 있는 곳인지 검증
@@ -78,6 +79,11 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 	else if (targetInfo.state() == Protocol::MOVE_STATE_IDLE)
 	{
 		_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+		
+		// IDLE - IDLE 핑퐁 시에는 보내지 않음
+		if (pkt.info().state() == Protocol::MOVE_STATE_IDLE)
+			return false;
+
 		return true;
 	}
 	else if (targetInfo.state() == Protocol::MOVE_STATE_STUN)

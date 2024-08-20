@@ -14,6 +14,13 @@ struct FNode
 	uint64 around[8]; // ¼ø¼­´ë·Î ºÏ, ºÏµ¿, µ¿, ³²µ¿..
 };
 
+struct FEnemyInfo
+{
+	FVector Location;
+	float yaw;
+	int32 casterType;
+};
+
 UCLASS()
 class P1_API AGridBuilder : public AActor
 {
@@ -36,6 +43,8 @@ public:
 
 public:
 	void BuildGrids(UWorld* world);
+
+	void BuildWorldEnemies(UWorld* world);
 
 	bool IsBuildableAtLocation(UWorld* world, FVector& Location, FHitResult& hit, float& length);
 
@@ -77,4 +86,6 @@ public:
 
 private:
 	TArray<TArray<FNode>> _nodes;
+
+	TArray<FEnemyInfo> _enemies;
 };

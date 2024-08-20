@@ -10,5 +10,9 @@ public:
 
     virtual void Init() override;
     virtual void Update(float deltaTime) override;
+
+    
+private:
+    int32 _phaseCount = 0;
 };
 

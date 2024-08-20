@@ -25,16 +25,11 @@ void Enemy::Update(float deltaTime)
 
 	if (room == nullptr)
 		return;
-
+	
 	_elapsedPacket += deltaTime;
 	randomWalkDuration += deltaTime;
+	_attackCooldown += deltaTime;
 
-	if (randomWalkDuration >= randomWalkCoolDonw)
-	{
-		//RandomWalk();
-		randomWalkDuration = 0.f;
-	}
-	
 	Super::Update(deltaTime);
 
 	if (_elapsedPacket >= _updatePacketCooldown)
@@ -59,30 +54,44 @@ void Enemy::Init()
 
 void Enemy::RandomWalk()
 {
-	Vector currentPos = Vector(_objectInfo->x(), _objectInfo->y());
-	VectorInt d[9] =
-	{
-		{-1,-1},
-		{-1,1},
-		{1,-1},
-		{1,1},
-		{0,1},
-		{1,0},
-		{-1,0},
-		{0,-1},
-		{0,0}
-	};
+	RoomRef room = GetRoomRef();
 
-	float randomX = Utils::GetRandom(0.f, 50.f);
-	float randomY = Utils::GetRandom(0.f, 50.f);
-	
+	if (room == nullptr)
+		return;
+
+	Vector currentPos = Vector(_objectInfo->x(), _objectInfo->y());
+
+	VectorInt d[9] =
+	{ {1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1,0}, {-1,-1}, {0, -1}, {1, -1} };
+
 	uint8 randomIndex = Utils::GetRandom(0, 8);
 
-	Vector nextPos = Vector(currentPos.x + randomX * d[randomIndex].x, currentPos.y + randomY * d[randomIndex].y);
+	VectorInt gridPos = room->GetGridPos(GetPos());
+
+	if (room->CanGo(gridPos, randomIndex))
+	{
+		Vector nextPos = room->GetPosition(gridPos + d[randomIndex]);
+
+		_objectInfo->set_x(nextPos.x);
+		_objectInfo->set_y(nextPos.y);
+		_objectInfo->set_state(Protocol::MOVE_STATE_RUN);
+
+		_targetPos = nextPos;
+
+		_dirtyFlag = true;
+	}
 	
-	_objectInfo->set_x(nextPos.x);
-	_objectInfo->set_y(nextPos.y);
-	_objectInfo->set_state(Protocol::MOVE_STATE_RUN);
+
+}
+
+void Enemy::RandomRotate()
+{
+	float currentYaw = _objectInfo->yaw();
+
+	float nextYaw = Utils::GetRandom(currentYaw - 40.f, currentYaw + 40.f);
+
+	_objectInfo->set_yaw(nextYaw);
+	_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 
 	_dirtyFlag = true;
 }
@@ -103,23 +112,39 @@ void Enemy::TickIdle(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
 
-	_target = FindClosestTarget();
+	_target = FindClosestTarget(_detectRange);
 
 	GameObjectRef target = _target.lock();
 
 	if (target == nullptr)
+	{
+		if (randomWalkDuration >= randomWalkCooldown)
+		{
+			int32 random = Utils::GetRandom(0, 1);
+			if (random == 0)
+			{
+				RandomWalk();
+			}
+			else if (random == 1)
+			{
+				RandomRotate();
+			}
+			
+			randomWalkDuration = 0.f;
+		}
+	
 		return;
+	}
 
 	_targetPos = target->GetPos();
 
-	if (GetPos().Distance(_targetPos) <= _attackRange)
+	if (GetPos().Distance(_targetPos) <= _attackRange && _attackCooldown >= 1.f)
 	{
 		AttackToTarget(target);
 		SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
 	else
 	{
-
 		MoveToTarget(target);
 	}
 }
@@ -137,9 +162,11 @@ void Enemy::TickRun(float deltaTime)
 		newInfo.set_x(_targetPos.x);
 		newInfo.set_y(_targetPos.y);
 
+		
 		SetObjectInfo(newInfo);
 		SetState(Protocol::MOVE_STATE_IDLE, true);
 
+		_attackCooldown = 0.f;
 	}
 	else
 	{
@@ -147,9 +174,12 @@ void Enemy::TickRun(float deltaTime)
 
 		moveVector = moveVector * _moveSpeed * deltaTime;
 
+		float yaw=  Utils::GetYawByVector(moveVector);
+
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
 		newInfo.set_x(GetPos().x + moveVector.x);
 		newInfo.set_y(GetPos().y + moveVector.y);
+		newInfo.set_yaw(yaw);
 
 		SetObjectInfo(newInfo, true);
 	}
@@ -157,11 +187,15 @@ void Enemy::TickRun(float deltaTime)
 
 void Enemy::TickSkill(float deltaTime)
 {
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
 	if (GetState() != Protocol::MOVE_STATE_SKILL)
 		return;
 
 	_attackDelay -= deltaTime;
-	_attackCooldown += deltaTime;
 
 	GameObjectRef target = _target.lock();
 	if (target == nullptr)
@@ -173,7 +207,13 @@ void Enemy::TickSkill(float deltaTime)
 	float distance = target->GetPos().Distance(GetPos());
 
 	// 공격 범위 안
-	if (_attackDelay <= 0.f && _attackCooldown >= 2.f)
+	if(_attackDelay <= 0.5f && _sendSkillPacket == false)
+	{
+		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 20.f);
+		_sendSkillPacket = true;
+	}
+
+	if (_attackDelay <= 0.f)
 	{
 		_attackCooldown = 0.f;
 		SetState(Protocol::MOVE_STATE_IDLE, true);
@@ -206,14 +246,14 @@ void Enemy::TickDead(float deltaTime)
 	}
 }
 
-PlayerRef Enemy::FindClosestTarget()
+PlayerRef Enemy::FindClosestTarget(float maxDistance)
 {
 	RoomRef room = GetRoomRef();
 
 	if (room == nullptr)
 		return nullptr;
 
-	return room->FindClosestPlayer(GetPos());
+	return room->FindClosestPlayer(GetPos(), maxDistance);
 }
 
 void Enemy::MoveToTarget(GameObjectRef target)
@@ -261,5 +301,5 @@ void Enemy::AttackToTarget(GameObjectRef target)
 
 	_attackDelay = 1.f;
 	room->DoAsync(&Room::HandleMontage, montagePkt);
-	room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 20.f);
+	_sendSkillPacket = false;
 }

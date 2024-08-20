@@ -7,12 +7,23 @@ float Utils::GetYawByVector(Vector vec)
 
 	float dot = xAxis.Dot(vec);
 	float dist = xAxis.Length() * vec.Length();
-	float cosV = dot / dist;
 
 	if (dist == 0.f)
 		return 0.f;
 
-	else return acos(cosV) * 180.f / PI;
+	Vector yAxis = Vector{ 0.f, 1.f };
+
+	float yDot = yAxis.Dot(vec);
+
+	float cosV = dot / dist;
+	
+	float value = acos(cosV) * 180.f / PI;
+
+	if (yDot >= 0)
+	{
+		return value;
+	}
+	else return 360.f - value;
 }
 
 Vector Utils::GetVectorByYaw(float yaw)

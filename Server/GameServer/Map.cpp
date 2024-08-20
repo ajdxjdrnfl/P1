@@ -7,6 +7,8 @@ void Map::Load(const filesystem::path& path)
 	ifs.open(path);
 
 	_name = path.stem().generic_string();
+	
+	// 맵 데이터 저장
 	{
 		int32 nodeCountX, nodeCountY;
 		ifs >> _mapSize.x >> _mapSize.y >> _gridSize.x >> _gridSize.y >> _pos.x >> _pos.y >> nodeCountY >> nodeCountX;
@@ -50,6 +52,25 @@ void Map::Load(const filesystem::path& path)
 	_bound = Bound(_pos.x - _mapSize.x/2, _pos.y - _mapSize.y/2, 
 		_pos.x + _mapSize.x/2, _pos.y + _mapSize.y);
 
+
+	// 몬스터 저장
+	{
+		int32 enemyCount;
+		ifs >> enemyCount;
+
+		for (int32 i = 0; i < enemyCount; i++)
+		{
+			EnemyInfo info;
+			int32 type;
+
+			ifs >> info.Location.x >> info.Location.y >> info.z >> info.yaw >> type;
+
+			info.casterType = (Protocol::CasterType)type;
+
+			_enemies.push_back(info);
+		}
+
+	}
 	ifs.close();
 }
 

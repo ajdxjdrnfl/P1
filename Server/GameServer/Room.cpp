@@ -31,14 +31,42 @@ void Room::Init()
 	_map = GResourceManager.GetMap(_mapName);
 	_tree->Init(_map->GetBound());	
 
+	for (int32 i = 0; i < _maxEnemyCount; i++)
+	{
+		EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
+		_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+		SetObjectToRandomPos(enemy);
+	}
+
 	if (!_debug)
 	{
-		for (int32 i = 0; i < _maxEnemyCount; i++)
+
+		auto& v = _map->GetEnemies();
+		
+		/*for (int32 i = 0; i < v.size(); i++)
 		{
-			EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
-			_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
-			SetObjectToRandomPos(enemy);
-		}
+			Vector pos = {v[i].Location.x, v[i].Location.y};
+			float yaw = v[i].yaw;
+			Protocol::CasterType type = v[i].casterType;
+
+			if (type == Protocol::CASTER_TYPE_MOB)
+			{
+				EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
+				_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+				enemy->GetObjectInfo()->set_x(pos.x);
+				enemy->GetObjectInfo()->set_y(pos.y);
+				enemy->GetObjectInfo()->set_z(100.f);
+				enemy->GetObjectInfo()->set_yaw(yaw);
+			}
+			else if (type == Protocol::CASTER_TYPE_BOSS)
+			{
+				_boss = ObjectUtils::CreateBoss(GetRoomRef());
+				_boss->GetObjectInfo()->set_x(pos.x);
+				_boss->GetObjectInfo()->set_y(pos.y);
+				_boss->GetObjectInfo()->set_z(100.f);
+				_boss->GetObjectInfo()->set_yaw(yaw);
+			}
+		}*/
 
 		_boss = ObjectUtils::CreateBoss(GetRoomRef());
 		SetObjectToRandomPos(_boss);
@@ -471,8 +499,8 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	while (true)
 	{
-		int32 x = Utils::GetRandom(0, 40);
-		int32 y = Utils::GetRandom(0, 40);
+		int32 x = Utils::GetRandom(0, 30);
+		int32 y = Utils::GetRandom(0, 30);
 
 		if (IsValidAtPos({ x, y }))
 		{
@@ -504,22 +532,21 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 	}
 }
 
-PlayerRef Room::FindClosestPlayer(Vector pos)
+PlayerRef Room::FindClosestPlayer(Vector pos, float maxDistance)
 {
 	PlayerRef result = nullptr;
 	
 	for (auto& item : _players)
 	{
-		if (result == nullptr)
-			result = item.second;
-		else
-		{
-			float dist1 = pos.Distance(result->GetPos());
-			float dist2 = pos.Distance(item.second->GetPos());
+		
+		float dist = pos.Distance(item.second->GetPos());
 
-			if (dist1 > dist2)
-				result = item.second;
+		if (maxDistance > dist)
+		{
+			result = item.second;
+			maxDistance = dist;
 		}
+		
 	}
 
 	return result;

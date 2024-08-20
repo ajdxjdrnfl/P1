@@ -9,6 +9,14 @@ struct GridNode
 	EGridType around[8];
 };
 
+struct EnemyInfo
+{
+	Vector Location;
+	float z;
+	float yaw;
+	Protocol::CasterType casterType;
+};
+
 class Map : public ResourceBase
 {
 public:
@@ -24,6 +32,8 @@ public:
 	Bound  GetBound() { return _bound; }
 	GridNode GetNode(VectorInt pos) { return _nodes[pos.y][pos.x]; }
 
+	vector<EnemyInfo>& GetEnemies() { return _enemies; }
+
 	string GetName() { return _name; }
 public:
 	bool IsValidAtGridPos(VectorInt gridPos);
@@ -37,6 +47,9 @@ private:
 	Bound							_bound;
 	vector<vector<GridNode>>		_nodes;
 
+	vector<EnemyInfo>				_enemies;
+
 	string							_name;
+	
 };
 
