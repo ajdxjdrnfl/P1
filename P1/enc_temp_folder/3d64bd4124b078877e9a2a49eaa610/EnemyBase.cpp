@@ -158,7 +158,7 @@ void AEnemyBase::TickMove(float DeltaTime)
 		FRotator NextRotation = FMath::RInterpTo(GetActorRotation(), FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll), DeltaTime, 10);
 		SetActorRotation(NextRotation);
 	}
-	break;
+		break;
 	default:
 		break;
 	}
