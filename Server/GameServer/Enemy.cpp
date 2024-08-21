@@ -253,7 +253,7 @@ PlayerRef Enemy::FindClosestTarget(float maxDistance)
 	if (room == nullptr)
 		return nullptr;
 
-	return room->FindClosestPlayer(GetPos(), maxDistance);
+	return static_pointer_cast<Player>(room->FindClosestPlayer(GetPos(), maxDistance));
 }
 
 void Enemy::MoveToTarget(GameObjectRef target)

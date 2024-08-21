@@ -29,21 +29,21 @@ void Room::Init()
 	// TODO : enemy 추가
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
-	_tree->Init(_map->GetBound());	
+	_tree->Init(_map->GetBound());
 
 	for (int32 i = 0; i < _maxEnemyCount; i++)
 	{
 		EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
-		_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+		AddGameObject(enemy);
 		SetObjectToRandomPos(enemy);
 	}
 
 	if (!_debug)
 	{
 
-		auto& v = _map->GetEnemies();
+		/*auto& v = _map->GetEnemies();
 		
-		/*for (int32 i = 0; i < v.size(); i++)
+		for (int32 i = 0; i < v.size(); i++)
 		{
 			Vector pos = {v[i].Location.x, v[i].Location.y};
 			float yaw = v[i].yaw;
@@ -52,7 +52,7 @@ void Room::Init()
 			if (type == Protocol::CASTER_TYPE_MOB)
 			{
 				EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
-				_enemies[enemy->GetObjectInfo()->object_id()] = enemy;
+				AddGameObject(enemy);
 				enemy->GetObjectInfo()->set_x(pos.x);
 				enemy->GetObjectInfo()->set_y(pos.y);
 				enemy->GetObjectInfo()->set_z(100.f);
@@ -60,16 +60,18 @@ void Room::Init()
 			}
 			else if (type == Protocol::CASTER_TYPE_BOSS)
 			{
-				_boss = ObjectUtils::CreateBoss(GetRoomRef());
-				_boss->GetObjectInfo()->set_x(pos.x);
-				_boss->GetObjectInfo()->set_y(pos.y);
-				_boss->GetObjectInfo()->set_z(100.f);
-				_boss->GetObjectInfo()->set_yaw(yaw);
+				BossRef boss = ObjectUtils::CreateBoss(GetRoomRef());
+				AddGameObject(boss);
+				boss->GetObjectInfo()->set_x(pos.x);
+				boss->GetObjectInfo()->set_y(pos.y);
+				boss->GetObjectInfo()->set_z(100.f);
+				boss->GetObjectInfo()->set_yaw(yaw);
 			}
 		}*/
 
-		_boss = ObjectUtils::CreateBoss(GetRoomRef());
-		SetObjectToRandomPos(_boss);
+		BossRef boss = ObjectUtils::CreateBoss(GetRoomRef());
+		AddGameObject(boss);
+		SetObjectToRandomPos(boss);
 	}
 	
 }
@@ -82,38 +84,25 @@ void Room::Update(float deltaTime)
 
 	_tree->Clear();
 
-	for (auto& item : _players)
-	{
-		PlayerRef player = item.second;
-		player->Update(deltaTime);
+	//for (auto& item : _players)
+	//{
+	//	PlayerRef player = item.second;
+	//	player->Update(deltaTime);
 
-		// QuadTree Update
-		// 몹들 업데이트 후 QuadTree를 업데이트
-		if (_tree != nullptr)
+	//	// QuadTree Update
+	//	// 몹들 업데이트 후 QuadTree를 업데이트
+	//	if (_tree != nullptr)
+	//	{
+	//		_tree->Insert(player);
+	//	}
+	//}
+
+	for (auto& v : _actors)
+	{
+		for (auto& item : v)
 		{
-			_tree->Insert(player);
+			item.second->Update(deltaTime);
 		}
-	}
-
-	for (auto& item : _enemies)
-	{
-		EnemyRef enemy = item.second;
-		enemy->Update(deltaTime);
-	}
-	for (auto& item : _skillActors)
-	{
-		SkillActorRef skillActor = item.second;
-		skillActor->Update(deltaTime);
-	}
-	for (auto& item : _structures)
-	{
-		StructureRef structure = item.second;
-		structure->Update(deltaTime);
-	}
-
-	if (_boss != nullptr)
-	{
-		_boss->Update(deltaTime);
 	}
 
 	DoTimer(64, &Room::Update, deltaTime);
@@ -152,24 +141,13 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 	{
 		Protocol::S_SPAWN pkt;
 
-		for (auto& item : _players)
-		{
-			PlayerRef player = item.second;
-			Protocol::ObjectInfo* info = pkt.add_info();
-			info->CopyFrom(*player->GetObjectInfo());
-		}
+		auto v = GetGameObjects();
 
-		for (auto& item : _enemies)
+		for (auto& item : v)
 		{
-			EnemyRef enemy = item.second;
+			GameObjectRef gameObject = item;
 			Protocol::ObjectInfo* info = pkt.add_info();
-			info->CopyFrom(*enemy->GetObjectInfo());
-		}
-		
-		if(_boss != nullptr)
-		{
-			Protocol::ObjectInfo* info = pkt.add_info();
-			info->CopyFrom(*_boss->GetObjectInfo());
+			info->CopyFrom(*gameObject->GetObjectInfo());
 		}
 
 		// TODO : 새로 접속한 유저에게 스킬 액터들도 같이 스폰할지?
@@ -194,9 +172,11 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 	{
 		Protocol::S_DESPAWN pkt;
 
-		for (auto& item : _players)
+		auto v = GetPlayers();
+
+		for (auto& player : v)
 		{
-			pkt.add_info()->CopyFrom(*item.second->GetObjectInfo());
+			pkt.add_info()->CopyFrom(*player->GetObjectInfo());
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
@@ -230,10 +210,7 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 {
 	const uint64 objectId = pkt.info().object_id();
 
-	if (_players.find(objectId) == _players.end())
-		return false;
-
-	PlayerRef player = _players[objectId];
+	PlayerRef player = static_pointer_cast<Player>(GetGameObjectRef(objectId));
 
 	if (player->HandleMovePacket(pkt))
 	{
@@ -337,7 +314,7 @@ bool Room::HandleMontagePkt(Protocol::C_MONTAGE pkt)
 
 void Room::HandleDead(GameObjectRef gameObject)
 {
-	if (RemoveObject(gameObject))
+	if (RemoveGameObject(gameObject))
 	{
 		Protocol::S_DESPAWN despawnPkt;
 
@@ -398,7 +375,7 @@ bool Room::HandleDespawn(Protocol::S_DESPAWN pkt, bool remove)
 	{
 		for (auto& item : pkt.info())
 		{
-			RemoveObject(GetGameObjectRef(item.object_id()));
+			RemoveGameObject(GetGameObjectRef(item.object_id()));
 		}
 	}
 	
@@ -411,14 +388,12 @@ StructureRef Room::SpawnStructure(Vector pos)
 {
 	StructureRef structure = ObjectUtils::CreateStructure(GetRoomRef());
 	
+	AddGameObject(structure);
+
 	structure->GetObjectInfo()->set_x(pos.x);
 	structure->GetObjectInfo()->set_y(pos.y);
 	structure->GetObjectInfo()->set_z(100.f);
 	structure->GetObjectInfo()->set_yaw(0.f);
-
-	uint64 id = structure->GetObjectInfo()->object_id();
-	_structures[id] = structure;
-
 
 	return structure;
 }
@@ -427,72 +402,96 @@ void Room::EnterGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();
 
-	if (_players.find(id) != _players.end())
-		return;
-
-	_players[id] = player;
+	AddGameObject(player);
 	SetObjectToRandomPos(player);
 }
 
 void Room::SpawnSkill(SkillActorRef skillActor)
 {
-	const uint64 id = skillActor->GetObjectInfo()->object_id();
-
-	if (_skillActors.find(id) != _skillActors.end())
-		return;
-
-	_skillActors[id] = skillActor;
+	AddGameObject(skillActor);
 }
 
 void Room::LeaveGame(PlayerRef player)
 {
 	const uint64 id = player->GetObjectInfo()->object_id();
 
-	if (_players.find(id) == _players.end())
-		return;
-
-	_players.erase(id);
+	RemoveGameObject(player);
 
 }
 
-bool Room::RemoveObject(GameObjectRef gameObject)
+bool Room::AddGameObject(GameObjectRef gameObject)
 {
 	if (gameObject == nullptr)
 		return false;
 
 	const uint64 id = gameObject->GetObjectInfo()->object_id();
 
-	if (_players.find(id) != _players.end())
+	Protocol::CasterType type = gameObject->GetObjectInfo()->castertype();
+
+	if (_actors[type].find(id) == _actors[type].end())
 	{
-		_players.erase(id);
+		_actors[type][id] = gameObject;
 		return true;
 	}
 
-	if (_enemies.find(id) != _enemies.end())
-	{
-		_enemies.erase(id);
-		return true;
-	}
+	return false;
+}
 
-	if (_skillActors.find(id) != _skillActors.end())
-	{
-		_skillActors.erase(id);
-		return true;
-	}
 
-	if (_structures.find(id) != _structures.end())
-	{
-		_structures.erase(id);
-		return true;
-	}
+bool Room::RemoveGameObject(GameObjectRef gameObject)
+{
+	if (gameObject == nullptr)
+		return false;
+
+	const uint64 id = gameObject->GetObjectInfo()->object_id();
+
+	Protocol::CasterType type = gameObject->GetObjectInfo()->castertype();
 	
-	if (_boss != nullptr && _boss->GetObjectInfo()->object_id() == id)
+	if (_actors[type].find(id) != _actors[type].end())
 	{
-		_boss = nullptr;
+		_actors[type].erase(id);
 		return true;
 	}
 		
 	return false;
+}
+
+vector<PlayerRef> Room::GetPlayers()
+{
+	vector<PlayerRef> players;
+
+	for (auto& item : _actors[Protocol::CASTER_TYPE_WARRIOR])
+	{
+		players.push_back(static_pointer_cast<Player>(item.second));
+	}
+
+	for (auto& item : _actors[Protocol::CASTER_TYPE_ARCHER])
+	{
+		players.push_back(static_pointer_cast<Player>(item.second));
+	}
+
+	for (auto& item : _actors[Protocol::CASTER_TYPE_MAGE])
+	{
+		players.push_back(static_pointer_cast<Player>(item.second));
+	}
+
+	return players;
+	
+}
+
+vector<GameObjectRef> Room::GetGameObjects()
+{
+	vector<GameObjectRef> results;
+
+	for (auto& v : _actors)
+	{
+		for (auto& item : v)
+		{
+			results.push_back(item.second);
+		}
+	}
+
+	return results;
 }
 
 void Room::SetObjectToRandomPos(GameObjectRef player)
@@ -518,9 +517,11 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {
-	for (auto& item : _players)
+	auto v = GetPlayers();
+
+	for (auto& item : v)
 	{
-		PlayerRef player = item.second;
+		PlayerRef player = item;
 		
 		if (player->GetObjectInfo()->object_id() == exceptId)
 			continue;
@@ -530,20 +531,22 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 			gameSession->Send(sendBuffer);
 		}
 	}
+
 }
 
-PlayerRef Room::FindClosestPlayer(Vector pos, float maxDistance)
+GameObjectRef Room::FindClosestPlayer(Vector pos, float maxDistance)
 {
-	PlayerRef result = nullptr;
-	
-	for (auto& item : _players)
+	GameObjectRef result = nullptr;
+	auto v = GetPlayers();
+
+	for (auto& item : v)
 	{
 		
-		float dist = pos.Distance(item.second->GetPos());
+		float dist = pos.Distance(item->GetPos());
 
 		if (maxDistance > dist)
 		{
-			result = item.second;
+			result = item;
 			maxDistance = dist;
 		}
 		
@@ -693,6 +696,37 @@ Vector Room::GoMoveVector(Vector currentPos, Vector moveVector)
 	return Vector();
 }
 
+bool Room::Bresenham(Vector start, Vector end)
+{
+	float incl = (end - start).y / (end - start).x;
+	
+	bool isReverse = false;
+
+	if (incl < 0)
+	{
+		Vector temp = start;
+		start = end;
+		end = temp;
+		isReverse = true;
+	}
+
+	incl = (end - start).y / (end - start).x;
+
+	if (incl > 1)
+	{
+		
+	}
+	else
+	{
+		int x = start.x;
+		int y = start.y;
+
+
+	}
+
+	return false;
+}
+
 RoomRef Room::GetRoomRef()
 {
 	return static_pointer_cast<Room>(shared_from_this());
@@ -700,20 +734,11 @@ RoomRef Room::GetRoomRef()
 
 GameObjectRef Room::GetGameObjectRef(uint64 id)
 {
-	if (_players.find(id) != _players.end())
-		return _players[id];
-
-	if (_enemies.find(id) != _enemies.end())
-		return _enemies[id];
-
-	if (_skillActors.find(id) != _skillActors.end())
-		return _skillActors[id];
-
-	if (_boss != nullptr && _boss->GetObjectInfo()->object_id() == id)
-		return _boss;
-
-	if (_structures.find(id) != _structures.end())
-		return _structures[id];
+	for (auto actors : _actors)
+	{
+		if (actors.find(id) != actors.end())
+			return actors[id];
+	}
 
 	return nullptr;
 }

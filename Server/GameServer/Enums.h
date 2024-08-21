@@ -39,3 +39,11 @@ enum EGridType : uint8
 	EGT_Blocked = 0,
 	EGT_Walkable = 1,
 };
+
+enum EMapType : uint8
+{
+	EMT_NONE = 0,
+	EMT_TOWN = 1, // 일반적인 마을
+	EMT_GROUND = 2, // 사냥터
+	EMT_RAID = 3, // 레이드
+};

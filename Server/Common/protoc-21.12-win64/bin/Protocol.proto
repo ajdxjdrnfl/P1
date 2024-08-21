@@ -19,6 +19,7 @@ message S_ENTER_GAME
 {
 	bool success = 1;
 	ObjectInfo info = 2;
+	RoomType roomtype = 3;
 }
 
 message C_LEAVE_GAME
@@ -105,4 +106,9 @@ message S_MONTAGE
 message S_DEAD
 {
 	ObjectInfo info = 1;
+}
+
+message S_PHASE
+{
+	uint64 phasenumber = 1;
 }

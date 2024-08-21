@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Protocol {
 }  // namespace Protocol
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[6];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[7];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Enum_2eproto = nullptr;
 const uint32_t TableStruct_Enum_2eproto::offsets[1] = {};
 static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
@@ -47,11 +47,13 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "UN\020\001\022\020\n\014CC_TYPE_SLOW\020\002\022\024\n\020CC_TYPE_AIRBOR"
   "NE\020\003*h\n\tSkillType\022\025\n\021SKILL_TYPE_NORMAL\020\000"
   "\022\023\n\017SKILL_TYPE_HOLD\020\001\022\026\n\022SKILL_TYPE_CAST"
-  "ING\020\002\022\027\n\023SKILL_TYPE_CHARGING\020\003b\006proto3"
+  "ING\020\002\022\027\n\023SKILL_TYPE_CHARGING\020\003*6\n\010RoomTy"
+  "pe\022\023\n\017ROOM_TYPE_FIELD\020\000\022\025\n\021ROOM_TYPE_DUN"
+  "GEON\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 758, descriptor_table_protodef_Enum_2eproto,
+    false, false, 814, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -160,6 +162,20 @@ bool SkillType_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* RoomType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[6];
+}
+bool RoomType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
       return true;
     default:
       return false;

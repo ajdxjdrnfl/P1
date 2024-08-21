@@ -39,7 +39,7 @@ protected:
 	class UEnemySkillComponent* SkillComponent;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = Editable, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = "true"))
 	int32 PhaseNum;
 
 public:
@@ -51,7 +51,7 @@ public:
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 
-
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }
 	FORCEINLINE class UEnemyWidgetComponent* GetWidgetComponent() { return WidgetComponent; }
+	FORCEINLINE int32 GetPhaseNum() { return PhaseNum; }
 };

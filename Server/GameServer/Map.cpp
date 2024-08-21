@@ -63,7 +63,7 @@ void Map::Load(const filesystem::path& path)
 			EnemyInfo info;
 			int32 type;
 
-			ifs >> info.Location.x >> info.Location.y >> info.z >> info.yaw >> type;
+			ifs >> info.Location.x >> info.Location.y >> info.z >> info.yaw >> type >> info.phaseNumber;
 
 			info.casterType = (Protocol::CasterType)type;
 
@@ -72,6 +72,14 @@ void Map::Load(const filesystem::path& path)
 
 	}
 	ifs.close();
+}
+
+GridNode Map::GetNode(VectorInt pos)
+{
+	if (IsValidAtGridPos(pos))
+		return _nodes[pos.y][pos.x];
+
+	return GridNode();
 }
 
 bool Map::IsValidAtGridPos(VectorInt gridPos)
@@ -94,6 +102,9 @@ bool Map::IsValidAtGridPos(VectorInt gridPos)
 
 bool Map::IsValidToDirection(VectorInt current, int32 dir)
 {
+	if (!IsValidAtGridPos(current))
+		return false;
+
 	GridNode node = GetNode(current);
 
 	if (node.value == EGT_Blocked)

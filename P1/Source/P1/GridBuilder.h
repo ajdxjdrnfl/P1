@@ -19,6 +19,7 @@ struct FEnemyInfo
 	FVector Location;
 	float yaw;
 	int32 casterType;
+	int32 phaseNumber;
 };
 
 UCLASS()

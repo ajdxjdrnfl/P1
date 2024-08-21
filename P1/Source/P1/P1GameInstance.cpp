@@ -411,7 +411,7 @@ void UP1GameInstance::SetPhase(Protocol::S_PHASE& pkt)
 {
 	UDungeonManagerSubsystem* DungeonManager = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UDungeonManagerSubsystem>();
 	if (DungeonManager == nullptr) return;
-	DungeonManager->OpenPhaseDoor(pkt.phasenumber);
+	DungeonManager->OpenPhaseDoor(pkt.phasenumber());
 }
 
 AP1Creature* UP1GameInstance::GetCreature(Protocol::S_SKILL& Pkt)

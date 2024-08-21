@@ -10,9 +10,13 @@ public:
 
     virtual void Init() override;
     virtual void Update(float deltaTime) override;
-
     
 private:
-    int32 _phaseCount = 0;
+    bool ProceedNextPhase();
+
+private:
+    uint64 _currentPhase = 1;
+    uint64 _phaseCount = 2;
+    
 };
 

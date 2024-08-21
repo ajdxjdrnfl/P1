@@ -26,7 +26,7 @@ void AGridBuilder::BeginPlay()
 	if (_execute)
 	{
 		BuildGrids(GetWorld());
-
+		BuildWorldEnemies(GetWorld());
 		FString fileName;
 
 		if (name.Len() > 0)
@@ -88,10 +88,10 @@ void AGridBuilder::SaveToFile(FString path)
 
 			enemyContent += FString::SanitizeFloat(Location.X) + " " + FString::SanitizeFloat(Location.Y) + " " + FString::SanitizeFloat(Location.Z) + " "
 				+ FString::SanitizeFloat(yaw) + " "
-				+ FString::FromInt(info.casterType) + "\n";
+				+ FString::FromInt(info.casterType) + " " + FString::FromInt(info.phaseNumber) + "\n";
 		}
 
-		bool success = FFileHelper::SaveStringToFile(content, *path);
+		bool success = FFileHelper::SaveStringToFile(content + enemyContent, *path);
 		if (success)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("File success!")));
@@ -170,12 +170,13 @@ void AGridBuilder::BuildWorldEnemies(UWorld* world)
 
 	for (int32 i = 0; i < OutActors.Num(); i++)
 	{
-		AActor* enemy = OutActors[i];
+		AEnemyBase* enemy = Cast<AEnemyBase>(OutActors[i]);
 
 		FEnemyInfo info;
 
 		info.Location = enemy->GetActorLocation();
 		info.yaw = enemy->GetActorRotation().Yaw;
+		info.phaseNumber = enemy->GetPhaseNum();
 	
 		if (enemy->IsA<AEnemyBoss>())
 		{

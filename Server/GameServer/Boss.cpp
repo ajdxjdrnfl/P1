@@ -243,7 +243,7 @@ PlayerRef Boss::FindClosestTarget()
 	if (room == nullptr)
 		return nullptr;
 
-	return room->FindClosestPlayer(GetPos(), FLT_MAX);
+	return static_pointer_cast<Player>(room->FindClosestPlayer(GetPos(), FLT_MAX));
 }
 
 void Boss::StartDefaultAttack()
@@ -287,7 +287,7 @@ void Boss::SelectSkill()
 
 	else
 	{
-		PlayerRef player = room->FindClosestPlayer(GetPos(), FLT_MAX);
+		PlayerRef player = static_pointer_cast<Player>(room->FindClosestPlayer(GetPos(), FLT_MAX));
 
 		_target = player;
 

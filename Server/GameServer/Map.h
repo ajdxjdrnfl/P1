@@ -15,6 +15,7 @@ struct EnemyInfo
 	float z;
 	float yaw;
 	Protocol::CasterType casterType;
+	int32 phaseNumber;
 };
 
 class Map : public ResourceBase
@@ -30,7 +31,7 @@ public:
 	Vector GetMapSize() { return _mapSize; }
 	Vector GetPos() { return _pos; }
 	Bound  GetBound() { return _bound; }
-	GridNode GetNode(VectorInt pos) { return _nodes[pos.y][pos.x]; }
+	GridNode GetNode(VectorInt pos);
 
 	vector<EnemyInfo>& GetEnemies() { return _enemies; }
 
@@ -50,6 +51,8 @@ private:
 	vector<EnemyInfo>				_enemies;
 
 	string							_name;
-	
+
+private:
+	EMapType						_mapType;
 };
 

@@ -41,7 +41,7 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 	if (pkt.roomtype() == Protocol::RoomType::ROOM_TYPE_DUNGEON)
 	{
 		UDungeonManagerSubsystem* DungeonManager = GameInstance->GetSubsystem<UDungeonManagerSubsystem>();
-		if (DungeonManager == nullptr) return;
+		if (DungeonManager == nullptr) return false;
 
 		DungeonManager->Init();
 	}
@@ -132,5 +132,10 @@ bool Handle_S_DEAD(PacketSessionRef& session, Protocol::S_DEAD& pkt)
 
 	GameInstance->KillCreature(pkt);
 
+	return false;
+}
+
+bool Handle_S_PHASE(PacketSessionRef& session, Protocol::S_PHASE& pkt)
+{
 	return false;
 }

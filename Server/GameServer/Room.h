@@ -46,8 +46,6 @@ private:
 	void			SpawnSkill(SkillActorRef skillActor);
 	void			LeaveGame(PlayerRef player);
 
-	bool			RemoveObject(GameObjectRef gameObject);
-
 	void			SetObjectToRandomPos(GameObjectRef player);
 
 public:
@@ -55,7 +53,7 @@ public:
 
 	// Temp Utils with map
 public:
-	PlayerRef	FindClosestPlayer(Vector pos, float maxDistance);
+	GameObjectRef	FindClosestPlayer(Vector pos, float maxDistance);
 	VectorInt GetGridPos(Vector pos);
 	Vector GetPosition(VectorInt gridPos);
 
@@ -66,9 +64,19 @@ public:
 	bool IsValidAtPos(VectorInt gridPos);
 	Vector GoMoveVector(Vector currentPos, Vector moveVector);
 
+private:
+	bool Bresenham(Vector start, Vector end);
+
 public:
 	RoomRef			GetRoomRef();
 	GameObjectRef	GetGameObjectRef(uint64 id);
+
+	// Actor Utils
+private:
+	bool			AddGameObject(GameObjectRef gameObject);
+	bool			RemoveGameObject(GameObjectRef gameObject);
+	vector<PlayerRef>	GetPlayers();
+	vector<GameObjectRef> GetGameObjects();
 	
 private:
 	const int32 _maxEnemyCount = 0;
@@ -83,12 +91,8 @@ private:
 	class QuadTree* _tree = nullptr;
 
 protected:
-	unordered_map<uint64, PlayerRef> _players;
-	unordered_map<uint64, EnemyRef> _enemies;
-	unordered_map<uint64, SkillActorRef> _skillActors;
-	unordered_map<uint64, StructureRef> _structures;
-	BossRef _boss;
-
+	unordered_map<uint64, GameObjectRef> _actors[Protocol::CasterType_ARRAYSIZE];
+	
 	GameTickManager _tickManager;
 	
 };
