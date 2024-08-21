@@ -68,6 +68,8 @@ public:
 
 	void KillCreature(Protocol::S_DEAD& pkt);
 
+	void SetPhase(Protocol::S_PHASE& pkt);
+
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);

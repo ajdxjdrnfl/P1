@@ -27,6 +27,8 @@ public:
 	UPROPERTY()
 	class ASkillTargetingBase* CurrentSkillTargeting;
 
+	FVector TargetingSkillLocation;
+
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	void SetKeyCanUse(int32 SkillIndex);
 	bool CanUseSkill(int32 SkillIndex);

@@ -6,6 +6,7 @@
 #include "P1Character.h"
 #include "P1/Enemy/EnemyBoss.h"
 #include "Kismet/GameplayStatics.h"
+#include "P1/SubSystem/GameInstance/DungeonManagerSubsystem.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -29,8 +30,21 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 
 	GameInstance->GetMyCharacter()->ObjectInfo->CopyFrom(pkt.info());
 	GameInstance->GetMyCharacter()->InitOnSpawn(pkt.info());
+	
+	GameInstance->GetMyCharacter()->TargetInfo->set_x(pkt.info().x());
+	GameInstance->GetMyCharacter()->TargetInfo->set_y(pkt.info().y());
+	GameInstance->GetMyCharacter()->TargetInfo->set_z(pkt.info().z());
+
 	GameInstance->Characters.Add(pkt.info().object_id(), GameInstance->GetMyCharacter());
 	GameInstance->GetMyCharacter()->SetActorLocation(FVector(pkt.info().x(), pkt.info().y(), pkt.info().z()));
+
+	if (pkt.roomtype() == Protocol::RoomType::ROOM_TYPE_DUNGEON)
+	{
+		UDungeonManagerSubsystem* DungeonManager = GameInstance->GetSubsystem<UDungeonManagerSubsystem>();
+		if (DungeonManager == nullptr) return;
+
+		DungeonManager->Init();
+	}
 
 	return true;
 }

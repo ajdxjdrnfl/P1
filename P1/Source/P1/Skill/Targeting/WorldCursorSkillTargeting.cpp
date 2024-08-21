@@ -7,6 +7,7 @@
 #include "P1/P1Creature.h"
 #include "P1/P1PlayerController.h"
 #include "P1/Skill/SkillInstanceBase.h"
+#include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
 
 void AWorldCursorSkillTargeting::BeginPlay()
 {
@@ -27,8 +28,13 @@ void AWorldCursorSkillTargeting::OnRMBClicked()
 	FVector CursorDirection = OwnerController->GetMouseLocation() - OwnerCreature->GetActorLocation();
 	FVector CursorDirection2D = FVector(CursorDirection.X, CursorDirection.Y, 0);
 
-	OwnerCreature->SetActorRotation(CursorDirection2D.Rotation());
 	SkillInstance->UseSkillAfterTargetingWithPos(OwnerController->GetMouseLocation());
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->TargetingSkillLocation = CursorDirection;
+	}
+
 	Destroy();
 }
 

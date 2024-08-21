@@ -69,6 +69,7 @@ void UCharacterSkillComponent::DodgeByServer()
 {
 	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	if (AnimInstance == nullptr) return;
+	if (AnimInstance->Montage_IsPlaying(M_Dodge_F)) return;
 
 	AnimInstance->Montage_Play(M_Dodge_F);
 
@@ -88,5 +89,9 @@ void UCharacterSkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bI
 		{
 			SubSystem->bCanMoveByAnimMontage = true;
 		}
+		OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+		OwnerCharacter->TargetInfo->set_x(OwnerCharacter->GetActorLocation().X);
+		OwnerCharacter->TargetInfo->set_y(OwnerCharacter->GetActorLocation().Y);
+		OwnerCharacter->SetOnceDodge(false);
 	}
 }

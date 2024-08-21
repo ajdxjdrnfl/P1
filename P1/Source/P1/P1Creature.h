@@ -92,6 +92,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetObjectID();
 
+	UFUNCTION(BlueprintCallable)
+	FRotator GetTargetYaw();
+
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }
 	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { ObjectInfo->CopyFrom(InfoToSet); }

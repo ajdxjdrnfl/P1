@@ -40,6 +40,8 @@ private:
 
 	float TargetCameraBoomLength;
 
+	bool bDoOnceDodge;
+
 public:
 	void InitOnSpawn(Protocol::ObjectInfo ObjInfo);
 	void UseSkill(uint16 SkillIndex);
@@ -49,6 +51,8 @@ public:
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
 	virtual void TickMove(float DeltaTime) override;
+	void TickIdle(float DeltaTime);
+	void TickStop();
 	void TickJump();
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
@@ -59,5 +63,6 @@ public:
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }
 	FORCEINLINE class UCharacterWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
+	FORCEINLINE void SetOnceDodge(bool bOnce) { bDoOnceDodge = bOnce; }
 };
 

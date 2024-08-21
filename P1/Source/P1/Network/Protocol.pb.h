@@ -534,6 +534,7 @@ class S_ENTER_GAME final :
   enum : int {
     kInfoFieldNumber = 2,
     kSuccessFieldNumber = 1,
+    kRoomtypeFieldNumber = 3,
   };
   // .Protocol.ObjectInfo info = 2;
   bool has_info() const;
@@ -562,6 +563,15 @@ class S_ENTER_GAME final :
   void _internal_set_success(bool value);
   public:
 
+  // .Protocol.RoomType roomtype = 3;
+  void clear_roomtype();
+  ::Protocol::RoomType roomtype() const;
+  void set_roomtype(::Protocol::RoomType value);
+  private:
+  ::Protocol::RoomType _internal_roomtype() const;
+  void _internal_set_roomtype(::Protocol::RoomType value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_ENTER_GAME)
  private:
   class _Internal;
@@ -572,6 +582,7 @@ class S_ENTER_GAME final :
   struct Impl_ {
     ::Protocol::ObjectInfo* info_;
     bool success_;
+    int roomtype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2913,6 +2924,26 @@ inline void S_ENTER_GAME::set_allocated_info(::Protocol::ObjectInfo* info) {
   }
   _impl_.info_ = info;
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ENTER_GAME.info)
+}
+
+// .Protocol.RoomType roomtype = 3;
+inline void S_ENTER_GAME::clear_roomtype() {
+  _impl_.roomtype_ = 0;
+}
+inline ::Protocol::RoomType S_ENTER_GAME::_internal_roomtype() const {
+  return static_cast< ::Protocol::RoomType >(_impl_.roomtype_);
+}
+inline ::Protocol::RoomType S_ENTER_GAME::roomtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ENTER_GAME.roomtype)
+  return _internal_roomtype();
+}
+inline void S_ENTER_GAME::_internal_set_roomtype(::Protocol::RoomType value) {
+  
+  _impl_.roomtype_ = value;
+}
+inline void S_ENTER_GAME::set_roomtype(::Protocol::RoomType value) {
+  _internal_set_roomtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_ENTER_GAME.roomtype)
 }
 
 // -------------------------------------------------------------------

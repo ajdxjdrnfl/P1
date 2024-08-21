@@ -156,6 +156,17 @@ void AArcherWSkillInstance::SpawnSkill()
 
 void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 {
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->CopyFrom(*OwnerCreature->TargetInfo);
+		_TargetInfo->set_yaw((TargetPos - OwnerCreature->GetActorLocation()).Rotation().Yaw);
+
+		SEND_PACKET(Pkt);
+	}
+
 	SkillPos = TargetPos;
 
 	if (OwnerCreature)

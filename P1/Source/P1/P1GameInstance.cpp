@@ -19,6 +19,7 @@
 #include "Containers/Ticker.h"
 #include "P1/Skill/Boss/BossPillar.h"
 #include "AIController.h"
+#include "P1/SubSystem/GameInstance/DungeonManagerSubsystem.h"
 
 void UP1GameInstance::Init()
 {
@@ -373,6 +374,9 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo);
+	SpawnedActor->TargetInfo->set_x(ObjInfo.x());
+	SpawnedActor->TargetInfo->set_y(ObjInfo.y());
+	SpawnedActor->TargetInfo->set_z(ObjInfo.z());
 
 	return SpawnedActor;
 }
@@ -401,6 +405,13 @@ ABossPillar* UP1GameInstance::SpawnBossPillar(Protocol::ObjectInfo ObjInfo, FVec
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 
 	return SpawnedActor;
+}
+
+void UP1GameInstance::SetPhase(Protocol::S_PHASE& pkt)
+{
+	UDungeonManagerSubsystem* DungeonManager = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UDungeonManagerSubsystem>();
+	if (DungeonManager == nullptr) return;
+	DungeonManager->OpenPhaseDoor(pkt.phasenumber);
 }
 
 AP1Creature* UP1GameInstance::GetCreature(Protocol::S_SKILL& Pkt)

@@ -38,6 +38,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UEnemySkillComponent* SkillComponent;
 
+private:
+	UPROPERTY(VisibleAnywhere, Category = Editable, meta = (AllowPrivateAccess = "true"))
+	int32 PhaseNum;
+
 public:
 	void InitOnSpawn(Protocol::ObjectInfo& ObjInfo);
 	virtual void SetHealthByDamage(float HealthToSet) override;

@@ -76,12 +76,16 @@ void AP1Character::Tick(float DeltaSeconds)
 	switch (ObjectInfo->state())
 	{
 	case Protocol::MOVE_STATE_IDLE:
+		TickIdle(DeltaSeconds);
 		break;
 	case Protocol::MOVE_STATE_RUN:
 		TickMove(DeltaSeconds);
 		break;
 	case Protocol::MOVE_STATE_JUMP:
 		TickJump();
+		break;
+	case Protocol::MOVE_STATE_STOP:
+		TickStop();
 		break;
 	default:
 		break;
@@ -171,10 +175,10 @@ void AP1Character::TickMove(float DeltaTime)
 	FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
 	FRotator TargetRotator = (TargetLocation - GetActorLocation()).Rotation();
 
-	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
-	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
+	bool bNearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+	bool bNearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
 	
-	if (NearX && NearY)
+	if (bNearX && bNearY)
 	{
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
@@ -185,12 +189,49 @@ void AP1Character::TickMove(float DeltaTime)
 	SetObjectInfo();
 }
 
+void AP1Character::TickIdle(float DeltaTime)
+{
+	FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
+	bool bNearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
+	bool bNearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
+
+	if (!bNearX || !bNearY)
+	{
+		SetActorLocation(TargetLocation);
+	}
+
+	FRotator TargetRotator = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
+	FRotator NextRotator = FMath::RInterpTo(GetActorRotation(), TargetRotator, DeltaTime, 10);
+	SetActorRotation(NextRotator);
+}
+
+void AP1Character::TickStop()
+{
+	UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>();
+	if (GameInstance == nullptr) return;
+
+	if (GameInstance->IsMyCharacter(ObjectInfo->object_id()))
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*ObjectInfo);
+		_TargetInfo->CopyFrom(*ObjectInfo);
+		_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+
+		SEND_PACKET(Pkt);
+	}
+
+	ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+}
+
 void AP1Character::TickJump()
 {
 	if (SkillComponent)
 	{
+		if (bDoOnceDodge) return;
+		bDoOnceDodge = true;
 		SkillComponent->DodgeByServer();
-		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 	}
 }
 
@@ -230,8 +271,8 @@ void AP1Character::StopMoving()
 	Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 	ObjInfo->CopyFrom(*ObjectInfo);
 	_TargetInfo->CopyFrom(*TargetInfo);
-	_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
-	 
+	_TargetInfo->set_state(Protocol::MOVE_STATE_STOP);
+	
 	SEND_PACKET(Pkt);
 }
 

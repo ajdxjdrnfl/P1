@@ -132,30 +132,20 @@ void AEnemyBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 void AEnemyBase::TickMove(float DeltaTime)
 {
 	FVector TargetLocation = FVector(TargetInfo->x(), TargetInfo->y(), GetActorLocation().Z);
-
-	/*bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
-	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
-
-	UE_LOG(LogTemp, Log, TEXT("%f, %f"), TargetLocation.X, GetActorLocation().X);
-
-	if (NearX && NearY)
-	{
-		//ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-		FRotator NextRotation = FMath::RInterpTo(GetActorRotation(), FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll), DeltaTime, 10);
-		SetActorRotation(NextRotation);
-		return;
-	}*/
-
 	AAIController* AIEnemyController = Cast<AAIController>(GetController());
-	if (AIEnemyController == nullptr) return;
+	float CapsuleRadius = GetCapsuleComponent()->GetScaledCapsuleRadius();
 
-	EPathFollowingRequestResult::Type Result = AIEnemyController->MoveToLocation(TargetLocation, GetCapsuleComponent()->GetScaledCapsuleRadius());
+	if (AIEnemyController == nullptr) 
+		return;
+
+	EPathFollowingRequestResult::Type Result = AIEnemyController->MoveToLocation(TargetLocation, CapsuleRadius);
 
 	switch (Result)
 	{
 	case EPathFollowingRequestResult::AlreadyAtGoal:
 	{
-		FRotator NextRotation = FMath::RInterpTo(GetActorRotation(), FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll), DeltaTime, 10);
+		FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
+		FRotator NextRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10);
 		SetActorRotation(NextRotation);
 	}
 	break;

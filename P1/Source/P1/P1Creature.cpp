@@ -35,28 +35,6 @@ void AP1Creature::BeginPlay()
 void AP1Creature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
-	{
-		TickMove(DeltaTime);
-	}
-
-	/*if (CreatureState == ECreatureState::Stun)
-	{
-		if (CCTime <= 0)
-		{
-			CreatureState = ECreatureState::Idle;
-			if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
-			{
-				SkillSubSystem->bCanUseSkill = true;
-				SkillSubSystem->bCanMove = true;
-			}
-		}
-		else
-		{
-			CCTime -= DeltaTime;
-		}
-	}*/
 }
 
 // Called to bind functionality to input
@@ -190,4 +168,15 @@ void AP1Creature::SetWalkSpeed(float WalkSpeed)
 int32 AP1Creature::GetObjectID()
 {
 	return ObjectInfo->object_id();
+}
+
+FRotator AP1Creature::GetTargetYaw()
+{
+	FRotator RotationToGet;
+	if (USkillManagerSubSystem* SubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		RotationToGet = SubSystem->TargetingSkillLocation.Rotation();
+	}
+
+	return RotationToGet;
 }
