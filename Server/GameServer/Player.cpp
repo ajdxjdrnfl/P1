@@ -79,15 +79,17 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 	else if (targetInfo.state() == Protocol::MOVE_STATE_IDLE)
 	{
 		_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-		
-		// IDLE - IDLE 핑퐁 시에는 보내지 않음
-		if (pkt.info().state() == Protocol::MOVE_STATE_IDLE)
-			return false;
 
 		return true;
 	}
 	else if (targetInfo.state() == Protocol::MOVE_STATE_STUN)
 	{
+		return true;
+	}
+	else if (targetInfo.state() == Protocol::MOVE_STATE_STOP)
+	{
+		// stop시에는 바로 IDLE;
+		_objectInfo->set_state(Protocol::MOVE_STATE_STOP);
 		return true;
 	}
 

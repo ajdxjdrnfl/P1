@@ -96,6 +96,7 @@ private:
     float _elapsedPacket = 0.f;
 
     Vector _targetPos;
+    Vector _rushVector;
 
     uint64 _bossPhase = 1;
     uint64 _skillId = 2;

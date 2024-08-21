@@ -79,7 +79,7 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 	for (auto& json : jsonObjects)
 	{
 		uint64 skillNum = json[skillNumLocalKey].get<uint64>();
-		int32 hitNum = json[hitNumKey].get<int32>();
+		int32 hitNum = 0; //json[hitNumKey].get<int32>();
 
 		float coolDown = json[coolDownKey].get<float>();
 		float damage = json[damageKey].get<float>();

@@ -686,6 +686,13 @@ bool Room::IsValidAtPos(VectorInt gridPos)
 	return _map->IsValidAtGridPos(gridPos);
 }
 
+Vector Room::GoMoveVector(Vector currentPos, Vector moveVector)
+{
+	Vector gridSize = _map->GetGridSize();
+	GetGridPos(currentPos);
+	return Vector();
+}
+
 RoomRef Room::GetRoomRef()
 {
 	return static_pointer_cast<Room>(shared_from_this());

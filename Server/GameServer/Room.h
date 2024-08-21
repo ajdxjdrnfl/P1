@@ -61,8 +61,10 @@ public:
 
 	// Find Path a*
 	bool FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth = 100);
+
 	bool CanGo(VectorInt current, int32 dir);
 	bool IsValidAtPos(VectorInt gridPos);
+	Vector GoMoveVector(Vector currentPos, Vector moveVector);
 
 public:
 	RoomRef			GetRoomRef();

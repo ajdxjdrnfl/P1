@@ -259,12 +259,6 @@ void Boss::StartRush()
 {
 	_skillType = EBST_RUSH;
 	_attackDelay = 1.f;
-	{
-		Protocol::ObjectInfo info;
-		info.CopyFrom(*GetObjectInfo());
-		info.set_speed(_rushSpeed);
-		SetObjectInfo(info, false , true);
-	}
 
 	if (_isGimmik)
 	{
@@ -302,7 +296,7 @@ void Boss::SelectSkill()
 		if(distance <= _attackRange)
 		{
 			StartDefaultAttack();
-			//StartRush();
+			StartRush();
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 			return;
 		}
@@ -392,6 +386,13 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		case MONTAGE_TYPE_NONE:
 			_montageType = MONTAGE_TYPE_START;
 			{
+				Protocol::ObjectInfo info;
+				info.CopyFrom(*GetObjectInfo());
+				info.set_speed(_rushSpeed);
+				SetObjectInfo(info, false, true);
+			}
+			if(_isGimmik)
+			{
 				// 준비자세
 				*montagePkt.mutable_caster() = *GetObjectInfo();
 				montagePkt.set_id(_skillId);
@@ -402,13 +403,27 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 				room->HandleMontage(montagePkt);
 				_attackDelay = 2.f;
 			}
+			else
+			{
+				// 준비자세
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(1);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
 			break;
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
 			{
+				_rushVector = (target->GetPos() - GetPos()).Normalize();
 				// TODO : 스킬액터 스폰
 				//room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)1, GetPos(), _objectInfo->yaw(), 100.f);
 			}
+			if(_isGimmik)
 			{
 				// 달려가기
 				*montagePkt.mutable_caster() = *GetObjectInfo();
@@ -420,10 +435,23 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 				room->HandleMontage(montagePkt);
 				_attackDelay = 10.f;
 			}
+			else
+			{
+				// 달려가기
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(2);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
+			}
 			break;
 
 		case MONTAGE_TYPE_ING:
 			_montageType = MONTAGE_TYPE_END;
+			if(_isGimmik)
 			{
 				// 후딜레이
 				*montagePkt.mutable_caster() = *GetObjectInfo();
@@ -434,6 +462,18 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 				montagePkt.set_duration(2.f);
 				room->HandleMontage(montagePkt);
 				_attackDelay = 2.f;
+			}
+			else
+			{
+				// 후딜레이 - 기믹이 아닐때
+				/**montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(3);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(2.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;*/
 			}
 			break;
 
@@ -487,7 +527,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 		break;
 
 	case MONTAGE_TYPE_ING:
-		Rush_ING(target, deltaTime);
+ 		Rush_ING(target, deltaTime);
 		break;
 
 	case MONTAGE_TYPE_END:
@@ -500,7 +540,12 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 void Boss::Rush_START(GameObjectRef target, float deltaTime)
 {
 	// 패링 처리
-
+	{
+		Protocol::ObjectInfo info;
+		info.CopyFrom(*GetObjectInfo());
+		info.set_yaw(Utils::GetYawByVector((target->GetPos() - GetPos()).Normalize()));
+		SetObjectInfo(info, false, true);
+;	}
 }
 
 void Boss::Rush_ING(GameObjectRef target, float deltaTime)
@@ -550,6 +595,22 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 		{
 
 			Vector moveVector = (target->GetPos() - GetPos()).Normalize();
+
+			moveVector = moveVector * _rushSpeed * deltaTime;
+
+			Protocol::ObjectInfo newInfo = *GetObjectInfo();
+			newInfo.set_x(GetPos().x + moveVector.x);
+			newInfo.set_y(GetPos().y + moveVector.y);
+
+			SetObjectInfo(newInfo, false, true);
+		}
+	}
+
+	else
+	{
+		// TODO : 플레이어와 충돌 처리
+		{
+			Vector moveVector = _rushVector;
 
 			moveVector = moveVector * _rushSpeed * deltaTime;
 
