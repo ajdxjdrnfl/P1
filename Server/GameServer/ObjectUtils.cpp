@@ -23,11 +23,11 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session, RoomRef room, Protoc
 	return player;
 }
 
-EnemyRef ObjectUtils::CreateEnemy(RoomRef room)
+EnemyRef ObjectUtils::CreateEnemy(RoomRef room, uint64 phaseNumber)
 {
 	const int64 newId = s_idGenerator.fetch_add(1);
 
-	EnemyRef enemy = make_shared<Enemy>(room);
+	EnemyRef enemy = make_shared<Enemy>(room, phaseNumber);
 	enemy->GetObjectInfo()->set_object_id(newId);
 
 	enemy->Init();
@@ -48,11 +48,11 @@ SkillActorRef ObjectUtils::CreateSkillActor(GameObjectRef caster, RoomRef room)
 	return skillActor;
 }
 
-BossRef ObjectUtils::CreateBoss(RoomRef room)
+BossRef ObjectUtils::CreateBoss(RoomRef room, uint64 phaseNumber)
 {
 	const int64 newId = s_idGenerator.fetch_add(1);
 
-	BossRef boss = make_shared<Boss>(room);
+	BossRef boss = make_shared<Boss>(room, phaseNumber);
 	boss->GetObjectInfo()->set_object_id(newId);
 
 	boss->Init();

@@ -7,7 +7,7 @@
 #include "Player.h"
 
 
-Enemy::Enemy(RoomRef room) : GameObject(room)
+Enemy::Enemy(RoomRef room, uint64 phaseNumber) : GameObject(room), _phaseNumber(phaseNumber)
 {
 	_objectInfo->set_hp(50.f);
 	_objectInfo->set_max_hp(50.f);

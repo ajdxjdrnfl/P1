@@ -5,7 +5,7 @@ class Enemy :
 {
     using Super = GameObject;
 public:
-    Enemy(RoomRef room);
+    Enemy(RoomRef room, uint64 phaseNumber);
     virtual ~Enemy();
 
     virtual void Update(float deltaTime);
@@ -22,6 +22,8 @@ protected:
     virtual void TickStun(float deltaTime) override;
     virtual void TickDead(float deltaTime) override;
 
+public:
+    uint64 GetPhaseNumber() { return _phaseNumber; }
 private:
     PlayerRef FindClosestTarget(float maxDistance);
 
@@ -53,5 +55,8 @@ private:
 private:
     float _updatePacketCooldown = 1.f;
     float _elapsedPacket = 0.f;
+
+private:
+    uint64 _phaseNumber = 0;
 };
 
