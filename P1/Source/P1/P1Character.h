@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "P1Creature.h"
+#include "P1/Interface/InteractInterface.h"
 #include "P1Character.generated.h"
 
 UCLASS(Blueprintable)
-class AP1Character : public AP1Creature
+class AP1Character : public AP1Creature, public IInteractInterface
 {
 	GENERATED_BODY()
 
@@ -42,6 +43,9 @@ private:
 
 	bool bDoOnceDodge;
 
+	UPROPERTY()
+	TScriptInterface<IInteractInterface> InteractInterfaceActor;
+
 public:
 	void InitOnSpawn(Protocol::ObjectInfo ObjInfo);
 	void UseSkill(uint16 SkillIndex);
@@ -59,10 +63,13 @@ public:
 	void Dodge();
 	void AddCameraBoomLength(float Value);
 	void StopMoving();
+	void Interact();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }
 	FORCEINLINE class UCharacterWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
 	FORCEINLINE void SetOnceDodge(bool bOnce) { bDoOnceDodge = bOnce; }
+	FORCEINLINE void SetInteractInterfaceActor(TScriptInterface<IInteractInterface> ActorToSet) { InteractInterfaceActor = ActorToSet; }
+	FORCEINLINE TScriptInterface<IInteractInterface> GetInteractInterfaceActor() const { return InteractInterfaceActor; }
 };
 

@@ -93,6 +93,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(FOVAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnFOVTriggered);
 
 		EnhancedInputComponent->BindAction(StopMovingAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnStopMovingTriggered);
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnInteractTriggered);
 	}
 	else
 	{
@@ -270,6 +272,11 @@ void AP1PlayerController::OnStopMovingTriggered()
 void AP1PlayerController::OnFOVTriggered(const FInputActionValue& Value)
 {
 	OwnerCharacter->AddCameraBoomLength(Value.Get<float>());
+}
+
+void AP1PlayerController::OnInteractTriggered()
+{
+	OwnerCharacter->Interact();
 }
 
 void AP1PlayerController::SendMovePacketToServer()

@@ -276,3 +276,9 @@ void AP1Character::StopMoving()
 	SEND_PACKET(Pkt);
 }
 
+void AP1Character::Interact()
+{
+	if (InteractInterfaceActor == nullptr) return;
+	InteractInterfaceActor->Interact();
+}
+
