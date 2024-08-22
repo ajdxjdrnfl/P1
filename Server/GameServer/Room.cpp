@@ -12,7 +12,7 @@
 #include "Map.h"
 #include "QuadTree.h"
 
-RoomRef GRoom = make_shared<Room>();
+//RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
@@ -40,34 +40,6 @@ void Room::Init()
 
 	if (!_debug)
 	{
-
-		/*auto& v = _map->GetEnemies();
-		
-		for (int32 i = 0; i < v.size(); i++)
-		{
-			Vector pos = {v[i].Location.x, v[i].Location.y};
-			float yaw = v[i].yaw;
-			Protocol::CasterType type = v[i].casterType;
-
-			if (type == Protocol::CASTER_TYPE_MOB)
-			{
-				EnemyRef enemy = ObjectUtils::CreateEnemy(GetRoomRef());
-				AddGameObject(enemy);
-				enemy->GetObjectInfo()->set_x(pos.x);
-				enemy->GetObjectInfo()->set_y(pos.y);
-				enemy->GetObjectInfo()->set_z(100.f);
-				enemy->GetObjectInfo()->set_yaw(yaw);
-			}
-			else if (type == Protocol::CASTER_TYPE_BOSS)
-			{
-				BossRef boss = ObjectUtils::CreateBoss(GetRoomRef());
-				AddGameObject(boss);
-				boss->GetObjectInfo()->set_x(pos.x);
-				boss->GetObjectInfo()->set_y(pos.y);
-				boss->GetObjectInfo()->set_z(100.f);
-				boss->GetObjectInfo()->set_yaw(yaw);
-			}
-		}*/
 
 		BossRef boss = ObjectUtils::CreateBoss(GetRoomRef());
 		AddGameObject(boss);

@@ -72,7 +72,7 @@ public:
 	GameObjectRef	GetGameObjectRef(uint64 id);
 
 	// Actor Utils
-private:
+protected:
 	bool			AddGameObject(GameObjectRef gameObject);
 	bool			RemoveGameObject(GameObjectRef gameObject);
 	vector<PlayerRef>	GetPlayers();
@@ -81,10 +81,10 @@ private:
 private:
 	const int32 _maxEnemyCount = 0;
 
-	bool _debug = false;
+	bool _debug = true;
 	bool _useQuadTree = true;
 
-private:
+protected:
 	class Map* _map;
 	string _mapName = "Test";
 

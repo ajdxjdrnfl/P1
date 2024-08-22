@@ -5,7 +5,7 @@ class Boss :
 {
     using Super = GameObject;
 public:
-    Boss(RoomRef room);
+    Boss(RoomRef room, uint64 phaseNumber);
     virtual ~Boss();
 
     virtual void Update(float deltaTime);
@@ -19,6 +19,9 @@ protected:
     virtual void TickSkill(float deltaTime) override;
     virtual void TickStun(float deltaTime) override;
     virtual void TickDead(float deltaTime) override;
+
+public:
+    uint64 GetPhaseNumber() { return _phaseNumber; }
 
 private:
     PlayerRef FindClosestTarget();
@@ -105,5 +108,8 @@ private:
 private:
     EBossSkillType _skillType = EBST_NONE;
     EBossMontageType _montageType = MONTAGE_TYPE_NONE;
+
+private:
+    uint64 _phaseNumber = 0;
 };
 

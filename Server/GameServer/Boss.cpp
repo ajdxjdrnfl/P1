@@ -6,7 +6,7 @@
 #include "Room.h"
 #include "Structure.h"
 
-Boss::Boss(RoomRef room) : GameObject(room)
+Boss::Boss(RoomRef room, uint64 phaseNumber) : GameObject(room), _phaseNumber(phaseNumber)
 {
 	_objectInfo->set_hp(1000.f);
 	_objectInfo->set_max_hp(1000.f);
