@@ -18,6 +18,7 @@ private:
 	void SetPhaseDoorMap();
 
 public:
+	UFUNCTION(BlueprintCallable)
 	void Init();
 
 	TArray<AActor*> PhaseDoors;

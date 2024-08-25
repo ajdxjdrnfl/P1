@@ -39,6 +39,7 @@ private:
 public:
 	virtual void SpawnSkill() override;
 	virtual void UseSkill() override;
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted) override;
 
 };
 

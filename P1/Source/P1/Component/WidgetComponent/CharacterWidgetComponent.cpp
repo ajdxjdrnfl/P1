@@ -49,10 +49,13 @@ void UCharacterWidgetComponent::InitOnSpawn(UStatComponentBase* StatComponent)
 
 void UCharacterWidgetComponent::UseSkill(uint32 SkillIndex)
 {
-	if (CharacterOverlayWidget == nullptr || Skills.IsValidIndex(SkillIndex))
+	UE_LOG(LogTemp, Log, TEXT("%d, %d"), CharacterOverlayWidget == nullptr, Skills.IsValidIndex(SkillIndex));
+	if (CharacterOverlayWidget == nullptr || !Skills.IsValidIndex(SkillIndex))
 		return;
 
-	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging || Skills[SkillIndex].SkillType == ESkillType::Hold) return;
+	if (Skills[SkillIndex].SkillType == ESkillType::Casting || Skills[SkillIndex].SkillType == ESkillType::Charging || Skills[SkillIndex].SkillType == ESkillType::Hold) 
+		return;
+
 	CharacterOverlayWidget->UseSkill(Skills[SkillIndex]);
 }
 

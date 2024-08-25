@@ -138,7 +138,7 @@ void UP1GameInstance::ConnectToGameServer()
 		// TODO : 로비에서 캐릭터 선택
 		{
 			Protocol::C_LOGIN Pkt;
-			Pkt.set_castertype(Protocol::CASTER_TYPE_ARCHER);
+			Pkt.set_castertype(Protocol::CASTER_TYPE_WARRIOR);
 			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
 
 			SendPacket(SendBuffer);

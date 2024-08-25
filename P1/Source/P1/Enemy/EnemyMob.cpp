@@ -34,6 +34,7 @@ void AEnemyMob::Tick(float DeltaTime)
 	{
 	case Protocol::MOVE_STATE_IDLE:
 		break;
+	case Protocol::MOVE_STATE_SKILL:
 	case Protocol::MOVE_STATE_RUN:
 		TickMove(DeltaTime);
 		break;

@@ -126,6 +126,16 @@ void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 	{
 		SubSystem->bCanMove = true;
 	}
+
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+
+		SEND_PACKET(Pkt);
+	}
 }
 
 void AArcherWSkillInstance::SpawnSkill()
@@ -161,8 +171,14 @@ void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
-		_TargetInfo->CopyFrom(*OwnerCreature->TargetInfo);
-		_TargetInfo->set_yaw((TargetPos - OwnerCreature->GetActorLocation()).Rotation().Yaw);
+
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			float TargetYaw = (SubSystem->MouseLocation - GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+			_TargetInfo->set_yaw(TargetYaw);
+		}
+
+		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
 
 		SEND_PACKET(Pkt);
 	}

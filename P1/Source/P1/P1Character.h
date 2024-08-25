@@ -58,6 +58,7 @@ public:
 	void TickIdle(float DeltaTime);
 	void TickStop();
 	void TickJump();
+	void TickSkill(float DeltaTime);
 	virtual void SetHealthByDamage(float HealthToSet) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 	void Dodge();

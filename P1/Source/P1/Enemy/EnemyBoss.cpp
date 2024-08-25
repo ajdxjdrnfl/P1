@@ -16,12 +16,12 @@ void AEnemyBoss::BeginPlay()
 
 	EnemyController = Cast<AAIControllerEnemy>(GetController());
 
-	if (HealthBarWidgetClass)
+	/*if (HealthBarWidgetClass)
 	{
 		UBossStatWidget* StatWidget = Cast<UBossStatWidget>(CreateWidget(GetWorld(), HealthBarWidgetClass));
 		StatWidget->AddToViewport();
 		GetWidgetComponent()->SetStatWidget(StatWidget);
-	}
+	}*/
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBoss::OnCollisionOverlapBegin);
 

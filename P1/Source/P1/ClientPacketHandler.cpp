@@ -137,5 +137,11 @@ bool Handle_S_DEAD(PacketSessionRef& session, Protocol::S_DEAD& pkt)
 
 bool Handle_S_PHASE(PacketSessionRef& session, Protocol::S_PHASE& pkt)
 {
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->SetPhase(pkt);
 	return false;
 }
