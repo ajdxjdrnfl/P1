@@ -25,7 +25,8 @@ enum : uint16
 	PKT_C_MONTAGE = 1012,
 	PKT_S_MONTAGE = 1013,
 	PKT_S_DEAD = 1014,
-	PKT_S_PHASE = 1015,
+	PKT_C_PHASE = 1015,
+	PKT_S_PHASE = 1016,
 };
 
 // Custom Handlers
@@ -71,6 +72,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::C_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_C_SKILL); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_C_ATTACK); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MONTAGE& pkt) { return MakeSendBuffer(pkt, PKT_C_MONTAGE); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_PHASE& pkt) { return MakeSendBuffer(pkt, PKT_C_PHASE); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

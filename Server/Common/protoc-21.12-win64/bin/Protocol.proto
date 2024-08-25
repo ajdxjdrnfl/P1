@@ -108,6 +108,11 @@ message S_DEAD
 	ObjectInfo info = 1;
 }
 
+message C_PHASE
+{
+	
+}
+
 message S_PHASE
 {
 	uint64 phasenumber = 1;

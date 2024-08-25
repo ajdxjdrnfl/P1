@@ -13,7 +13,6 @@
 #include "QuadTree.h"
 #include "Collision.h"
 
-// RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
@@ -691,7 +690,6 @@ bool Room::CanGoByVector(Collision* collision, Vector moveVector)
 	
 	Vector movedPos = currentPos + moveVector;
 	
-	if (!IsWalkableAtPos(GetGridPos(movedPos)))
 		return false;
 
 	vector<GameObjectRef> collideObjects;
@@ -750,25 +748,19 @@ bool Room::IsWalkableAtPos(VectorInt gridPos)
 	return _map->IsWalkableAtGridPos(gridPos);
 }
 
-Vector Room::GoMoveVector(Vector currentPos, Vector moveVector)
 {
 	Vector gridSize = _map->GetGridSize();
 	
 	vector<VectorInt> path = Bresenham(currentPos, currentPos + moveVector);
 	
-	float incl = moveVector.y / moveVector.x;
 
-	Vector result = currentPos;
 
 	for (int32 i = 0; i < path.size(); i++)
 	{
 		VectorInt gridPos = path[i];
-		Vector pos = GetPosition(gridPos);
 
 		if (!IsWalkableAtPos(gridPos))
-			break;
 
-		if (abs(pos.x - currentPos.x) * abs(incl) < abs(pos.y - currentPos.y))
 		{
 			result.x = pos.x;
 			result.y = currentPos.y + incl * (pos.x - currentPos.x);
@@ -782,10 +774,8 @@ Vector Room::GoMoveVector(Vector currentPos, Vector moveVector)
 		if (i == path.size() - 1)
 		{
 			result = currentPos + moveVector;
-		}
 	}
 
-	return result;
 }
 
 vector<VectorInt> Room::Bresenham(Vector start, Vector end)

@@ -25,7 +25,8 @@ enum : uint16
 	PKT_C_MONTAGE = 1012,
 	PKT_S_MONTAGE = 1013,
 	PKT_S_DEAD = 1014,
-	PKT_S_PHASE = 1015,
+	PKT_C_PHASE = 1015,
+	PKT_S_PHASE = 1016,
 };
 
 // Custom Handlers
@@ -36,6 +37,7 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
 bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt);
 bool Handle_C_ATTACK(PacketSessionRef& session, Protocol::C_ATTACK& pkt);
 bool Handle_C_MONTAGE(PacketSessionRef& session, Protocol::C_MONTAGE& pkt);
+bool Handle_C_PHASE(PacketSessionRef& session, Protocol::C_PHASE& pkt);
 
 class ServerPacketHandler
 {
@@ -50,6 +52,7 @@ public:
 		GPacketHandler[PKT_C_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };
 		GPacketHandler[PKT_C_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ATTACK>(Handle_C_ATTACK, session, buffer, len); };
 		GPacketHandler[PKT_C_MONTAGE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MONTAGE>(Handle_C_MONTAGE, session, buffer, len); };
+		GPacketHandler[PKT_C_PHASE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PHASE>(Handle_C_PHASE, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)

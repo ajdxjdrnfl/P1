@@ -77,12 +77,18 @@ bool Raid::HandleNextPhase()
 	if (_currentPhase > _phaseCount)
 		return false;
 
+	_currentPhase += 1;
+
+	return HandlePhaseNumber(_currentPhase);
+}
+
+bool Raid::HandlePhaseNumber(uint64 currentPhase)
+{
 	Protocol::S_PHASE pkt;
-	pkt.set_phasenumber(_currentPhase + 1);
+	pkt.set_phasenumber(currentPhase);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 	Broadcast(sendBuffer);
-
 	return true;
 }
 

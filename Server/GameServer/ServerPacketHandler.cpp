@@ -5,6 +5,7 @@
 #include "GameSession.h"
 #include "Player.h"
 #include "Room.h"
+#include "Raid.h"
 #include "GameRoomManager.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -120,5 +121,33 @@ bool Handle_C_MONTAGE(PacketSessionRef& session, Protocol::C_MONTAGE& pkt)
 
 	LOG(pkt);
 	room->DoAsync(&Room::HandleMontagePkt, pkt);
+	return true;
+}
+
+bool Handle_C_PHASE(PacketSessionRef& session, Protocol::C_PHASE& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession == nullptr)
+		return false;
+
+	PlayerRef player = gameSession->_player.load();
+
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->GetRoomRef();
+
+	if (room == nullptr)
+		return false;
+
+	LOG(pkt);
+	
+	RaidRef raid = static_pointer_cast<Raid>(room);
+
+	if (raid == nullptr)
+		return false;
+
+	raid->DoAsync(&Raid::HandlePhaseNumber, raid->GetCurrentPhase());
 	return true;
 }

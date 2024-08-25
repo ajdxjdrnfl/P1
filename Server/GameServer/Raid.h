@@ -14,6 +14,10 @@ public:
 public:
     bool HandleNextPhase();
 
+    bool HandlePhaseNumber(uint64 currentPhase);
+
+    uint64 GetCurrentPhase() { return _currentPhase; }
+
 private:
     bool ProceedNextPhase();
 

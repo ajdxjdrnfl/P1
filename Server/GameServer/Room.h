@@ -66,7 +66,7 @@ public:
 	bool			CheckCollisionInMap(class Collision* collison);
 	bool			CheckCollisionInQuadTree(class Collision* collision, vector<GameObjectRef>& collideObjects);
 	bool			IsWalkableAtPos(VectorInt gridPos);
-	Vector			GoMoveVector(Vector currentPos, Vector moveVector);
+	bool			GoMoveVector(Vector currentPos, Vector moveVector);
 
 private:
 	vector<VectorInt>	Bresenham(Vector start, Vector end);
