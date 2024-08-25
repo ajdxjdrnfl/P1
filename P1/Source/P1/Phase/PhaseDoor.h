@@ -25,9 +25,15 @@ protected:
 	int32 PhaseID;
 
 	UPROPERTY(EditAnywhere)
+	class USceneComponent* DefaultSceneRootComponent;
+
+	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* DoorComponent;
 
 	bool bIsOpeningDoor;
+
+	float DefaultDist;
+	FVector TargetLocation;
 
 	UPROPERTY(EditAnywhere, Category = Editable)
 	float OpeningDist = 200;

@@ -13,7 +13,7 @@
 #include "QuadTree.h"
 #include "Collision.h"
 
-RoomRef GRoom = make_shared<Room>();
+// RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
@@ -477,8 +477,8 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 {
 	while (true)
 	{
-		int32 x = Utils::GetRandom(0, 30);
-		int32 y = Utils::GetRandom(0, 30);
+		int32 x = Utils::GetRandom(0, 100);
+		int32 y = Utils::GetRandom(0, 100);
 
 		if (IsWalkableAtPos({ x, y }))
 		{

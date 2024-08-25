@@ -6,6 +6,7 @@
 #include "P1/Skill/SkillActorBase.h"
 #include "P1/P1GameInstance.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "P1/Component/SkillComponent/CharacterSkillComponent.h"
 
 ASkillInstanceBase::ASkillInstanceBase()
 {

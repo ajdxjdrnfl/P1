@@ -24,6 +24,8 @@ public:
 	bool bCanUseSkill = true;
 	bool bCanMoveByAnimMontage = true;
 
+	FVector MouseLocation;
+
 	UPROPERTY()
 	class ASkillTargetingBase* CurrentSkillTargeting;
 

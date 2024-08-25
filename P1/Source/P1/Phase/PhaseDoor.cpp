@@ -7,16 +7,18 @@ APhaseDoor::APhaseDoor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	DefaultSceneRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	DoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
-	DoorComponent->SetupAttachment(RootComponent);
+	DoorComponent->SetupAttachment(DefaultSceneRootComponent);
 }
 
 void APhaseDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	DefaultDist = OpeningDist;
+	TargetLocation = GetActorLocation() - FVector(0, 0, OpeningDist);
 }
 
 void APhaseDoor::Tick(float DeltaTime)
@@ -25,9 +27,7 @@ void APhaseDoor::Tick(float DeltaTime)
 
 	if (bIsOpeningDoor)
 	{
-		FVector TargetLocation = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - OpeningDist);
-		OpeningDist -= DeltaTime;
-		if (OpeningDist <= 0)
+		if (FMath::IsNearlyEqual(TargetLocation.Z, GetActorLocation().Z, 5))
 		{
 			OnOpeningDoorEnd();
 			return;

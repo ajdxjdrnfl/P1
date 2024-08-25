@@ -87,6 +87,8 @@ void AP1Character::Tick(float DeltaSeconds)
 	case Protocol::MOVE_STATE_STOP:
 		TickStop();
 		break;
+	case Protocol::MOVE_STATE_SKILL:
+		TickSkill(DeltaSeconds);
 	default:
 		break;
 	}
@@ -130,6 +132,7 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
+		UE_LOG(LogTemp, Log, TEXT("%d"), SkillIndex);
 		if (SkillSubSystem->CanUseSkill(SkillIndex))
 		{
 			SkillComponent->UseSkill(SkillIndex);
@@ -195,7 +198,7 @@ void AP1Character::TickIdle(float DeltaTime)
 	bool bNearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
 	bool bNearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
 
-	if (!bNearX || !bNearY)
+	if (!bNearX || !bNearY || !GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr))
 	{
 		SetActorLocation(TargetLocation);
 	}
@@ -233,6 +236,13 @@ void AP1Character::TickJump()
 		bDoOnceDodge = true;
 		SkillComponent->DodgeByServer();
 	}
+}
+
+void AP1Character::TickSkill(float DeltaTime)
+{
+	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll);
+	FRotator NextRotation = UKismetMathLibrary::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 10);
+	SetActorRotation(NextRotation);
 }
 
 void AP1Character::SetHealthByDamage(float HealthToSet)

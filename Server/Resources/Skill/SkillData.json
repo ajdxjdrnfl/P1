@@ -8,7 +8,6 @@
 		"SkillInfos": [
 			{
 				"SkillNumLocal": 0,
-				"HitNum": -1,
 				"CooldownTime": 0,
 				"Damage": 20,
 				"XScale": 100,
@@ -21,15 +20,15 @@
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 0.2,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Warrior/BP_WarriorQSkill.BP_WarriorQSkill_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/sword-wound.sword-wound'",
 				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
-				"HitNum": -1,
 				"CooldownTime": 3,
-				"Damage": 1,
+				"Damage": 10,
 				"XScale": 100,
 				"YScale": 100,
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Warrior_W.Montage_Warrior_W'",
@@ -40,13 +39,13 @@
 				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 3,
+				"TimeInterval": 0.2,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Warrior/BP_WarriorWSkillByTick.BP_WarriorWSkillByTick_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/stomp-tornado.stomp-tornado'",
 				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 2,
-				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": -30,
 				"XScale": 300,
@@ -59,13 +58,13 @@
 				"CastingTime": 1,
 				"CCTime": 0,
 				"LifeTime": 1,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Warrior/BP_WarriorESkill.BP_WarriorESkill_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'",
 				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 3,
-				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": 5,
 				"XScale": 100,
@@ -78,6 +77,7 @@
 				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 10,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Warrior/BP_WarriorRSkillByTick.BP_WarriorRSkillByTick_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/spinning-sword.spinning-sword'",
 				"SkillTargeting": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Targeting/BP_OwnerToCursor.BP_OwnerToCursor_C'"
@@ -93,7 +93,6 @@
 		"SkillInfos": [
 			{
 				"SkillNumLocal": 0,
-				"HitNum": -1,
 				"CooldownTime": 5,
 				"Damage": 100,
 				"XScale": 100,
@@ -106,26 +105,46 @@
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 5,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossQSkill.BP_BossQSkill_C'",
 				"Thumbnail": "None",
 				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
-				"HitNum": -1,
 				"CooldownTime": 5,
 				"Damage": 30,
 				"XScale": 100,
 				"YScale": 100,
-				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Lich/Montage_Lich_E.Montage_Lich_E'",
-				"CollisionType": "Circle",
+				"AnimMontage": "None",
+				"CollisionType": "Box",
 				"CCType": "Normal",
 				"DamageType": "Normal",
 				"SkillType": "Normal",
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 0.5,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossWSkill.BP_BossWSkill_C'",
+				"Thumbnail": "None",
+				"SkillTargeting": "None"
+			},
+			{
+				"SkillNumLocal": 2,
+				"CooldownTime": 3,
+				"Damage": 30,
+				"XScale": 100,
+				"YScale": 100,
+				"AnimMontage": "None",
+				"CollisionType": "Box",
+				"CCType": "Normal",
+				"DamageType": "Normal",
+				"SkillType": "Normal",
+				"CastingTime": 0,
+				"CCTime": 0,
+				"LifeTime": 10,
+				"TimeInterval": 0,
+				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Boss/BP_BossESkill.BP_BossESkill_C'",
 				"Thumbnail": "None",
 				"SkillTargeting": "None"
 			}
@@ -136,7 +155,6 @@
 		"SkillInfos": [
 			{
 				"SkillNumLocal": 0,
-				"HitNum": -1,
 				"CooldownTime": 4,
 				"Damage": 10,
 				"XScale": 30,
@@ -149,6 +167,7 @@
 				"CastingTime": 0,
 				"CCTime": 0,
 				"LifeTime": 1,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Mob/BP_MobQSkill.BP_MobQSkill_C'",
 				"Thumbnail": "None",
 				"SkillTargeting": "None"
@@ -164,7 +183,6 @@
 		"SkillInfos": [
 			{
 				"SkillNumLocal": 0,
-				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": 20,
 				"XScale": 30,
@@ -177,13 +195,13 @@
 				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 3,
+				"TimeInterval": 0,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Archer/BP_ArcherQSkill.BP_ArcherQSkill_C'",
 				"Thumbnail": "/Script/Engine.Texture2D'/Game/TopDown/Blueprint/Asset/burning-round-shot.burning-round-shot'",
 				"SkillTargeting": "None"
 			},
 			{
 				"SkillNumLocal": 1,
-				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": 5,
 				"XScale": 100,
@@ -196,13 +214,13 @@
 				"CastingTime": 3,
 				"CCTime": 0,
 				"LifeTime": 3,
+				"TimeInterval": 0.5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Archer/BP_ArcherWSkill.BP_ArcherWSkill_C'",
 				"Thumbnail": "None",
 				"SkillTargeting": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Targeting/BP_WorldCursor.BP_WorldCursor_C'"
 			},
 			{
 				"SkillNumLocal": 2,
-				"HitNum": -1,
 				"CooldownTime": 2,
 				"Damage": 3,
 				"XScale": 250,
@@ -215,6 +233,7 @@
 				"CastingTime": 2,
 				"CCTime": 0,
 				"LifeTime": 3,
+				"TimeInterval": 0.5,
 				"SkillActorClass": "/Script/Engine.BlueprintGeneratedClass'/Game/TopDown/Blueprint/Skill/Actor/Archer/BP_ArcherESkill.BP_ArcherESkill_C'",
 				"Thumbnail": "None",
 				"SkillTargeting": "None"

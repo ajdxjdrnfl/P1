@@ -63,6 +63,8 @@ void UCharacterSkillComponent::Dodge()
 
 		SEND_PACKET(Pkt);
 	}
+
+	SubSystem->bCanMove = false;
 }
 
 void UCharacterSkillComponent::DodgeByServer()
@@ -88,6 +90,8 @@ void UCharacterSkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bI
 		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
 			SubSystem->bCanMoveByAnimMontage = true;
+
+			SubSystem->bCanMove = true;
 		}
 		OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		OwnerCharacter->TargetInfo->set_x(OwnerCharacter->GetActorLocation().X);

@@ -57,6 +57,10 @@ void AP1PlayerController::Tick(float DeltaTime)
 	if (bHitSuccessful)
 	{
 		MouseLocation = Hit.Location;
+		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->MouseLocation = MouseLocation;
+		}
 	}
 }
 

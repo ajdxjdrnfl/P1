@@ -30,16 +30,6 @@ void AWarriorQSkillInstance::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsTurning && OwnerCreature && Cast<UP1GameInstance>(GetWorld()->GetGameInstance())->IsMyCharacter(OwnerCreature->ObjectInfo->object_id()))
-	{
-		FVector MouseLoc = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
-		FVector CharacterLoc = FVector(OwnerCreature->GetActorLocation().X, OwnerCreature->GetActorLocation().Y, MouseLoc.Z);
-		FVector CharacterToMouseVector = MouseLoc - CharacterLoc;
-		CharacterToMouseVector.Normalize();
-
-		FRotator TargetRot = FRotator(CharacterToMouseVector.Rotation());
-		OwnerCreature->SetActorRotation(UKismetMathLibrary::RInterpTo(OwnerCreature->GetActorRotation(), TargetRot, DeltaTime, 100));
-	}
 }
 
 /*
@@ -68,6 +58,27 @@ void AWarriorQSkillInstance::SpawnSkill()
 
 void AWarriorQSkillInstance::UseSkill()
 {
+	Super::UseSkill();
+	if (OwnerCreature)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AWarriorQSkillInstance::OnMontageEnded);
+	}
+
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
+		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+		_TargetInfo->set_yaw(TargetYaw);
+
+		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
+
+		SEND_PACKET(Pkt);
+	}
+
 	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
 
 	if (AnimInstance == nullptr || M_Skill == nullptr)
@@ -107,13 +118,32 @@ void AWarriorQSkillInstance::UseSkill()
 
 			SEND_PACKET(Pkt);
 
-			OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+			//OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		}
+	}
+}
+
+void AWarriorQSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (AnimMontage == M_Skill)
+	{
+		{
+			Protocol::C_MOVE Pkt;
+			Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+			ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+			_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+
+			SEND_PACKET(Pkt);
+		}
+
+		Super::OnMontageEnded(AnimMontage, bInterrupted);
 	}
 }
 
 void AWarriorWSkillInstance::UseSkill()
 {
+	Super::UseSkill();
 	if (OwnerCreature)
 	{
 		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AWarriorWSkillInstance::OnMontageEnded);
@@ -130,6 +160,12 @@ void AWarriorWSkillInstance::UseSkill()
 	{
 		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 		HoldingByTickSkillManager = nullptr;
+
+		if (IsValid(CurrentSkillActor))
+		{
+			CurrentSkillActor->Destroy();
+			CurrentSkillActor = nullptr;
+		}
 	}
 }
 
@@ -166,11 +202,14 @@ void AWarriorWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 		CurrentSkillActor = nullptr;
 		HoldingByTickSkillManager->Destroy();
 		HoldingByTickSkillManager = nullptr;
+
+		Super::OnMontageEnded(AnimMontage, bInterrupted);
 	}
 }
 
 void AWarriorESkillInstance::UseSkill()
 {
+	Super::UseSkill();
 	SpawnSkill();
 }
 
@@ -223,6 +262,11 @@ void AWarriorRSkillInstance::UseSkill()
 		SkillTargeting = Cast<AOwnerToCursorSkillTargeting>(OwnerCreature->GetWorld()->SpawnActor(SkillInfo.SkillTargeting));
 		SkillTargeting->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 		SkillTargeting->Init(this, 0.5f);
+
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->CurrentSkillTargeting = SkillTargeting;
+		}
 	}
 	else
 	{
@@ -233,6 +277,27 @@ void AWarriorRSkillInstance::UseSkill()
 
 void AWarriorRSkillInstance::UseSkillAfterTargeting()
 {
+	Super::UseSkill();
+	if (OwnerCreature)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AWarriorRSkillInstance::OnMontageEnded);
+	}
+
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
+		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+		_TargetInfo->set_yaw(TargetYaw);
+
+		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
+
+		SEND_PACKET(Pkt);
+	}
+
 	if (!IsValid(CastingSkillManager))
 	{
 		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));
@@ -344,7 +409,7 @@ void AWarriorRSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 	CurrentSkillActor = SkillActor;
 }
 
-void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte)
+void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
 {
 	if (AnimMontage == M_Skill)
 	{
@@ -352,6 +417,18 @@ void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 		{
 			SubSystem->bCanMove = true;
 		}
+
+		{
+			Protocol::C_MOVE Pkt;
+			Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+			ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+			_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+
+			SEND_PACKET(Pkt);
+		}
+
+		Super::OnMontageEnded(AnimMontage, bInterrupted);
 	}
 
 	if (CurrentSkillActor)

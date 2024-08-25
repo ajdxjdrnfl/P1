@@ -13,7 +13,7 @@ APhaseBossDoor::APhaseBossDoor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	CapsuleComponent->SetupAttachment(RootComponent);
+	CapsuleComponent->SetupAttachment(DefaultSceneRootComponent);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(DoorComponent);
@@ -57,7 +57,7 @@ void APhaseBossDoor::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp
 	AP1Character* HitCharacter = Cast<AP1Character>(OtherActor);
 	if (GameInstance && HitCharacter && GameInstance->IsMyCharacter(HitCharacter->ObjectInfo->object_id()) && HitCharacter)
 	{
-		if (bIsAlreadyOpen) return;
+		if (bIsAlreadyOpen || !bCanInteract) return;
 		HitCharacter->SetInteractInterfaceActor(this);
 		WidgetComponent->SetVisibility(true);
 	}
