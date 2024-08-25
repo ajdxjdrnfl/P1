@@ -11,17 +11,20 @@
 #include "ResourceManager.h"
 #include "Map.h"
 #include "QuadTree.h"
+#include "Collision.h"
 
-//RoomRef GRoom = make_shared<Room>();
+RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
 	_tree = new QuadTree();
+	_updatedTree = new QuadTree();
 }
 
 Room::~Room()
 {
 	delete _tree;
+	delete _updatedTree;
 }
 
 void Room::Init()
@@ -30,6 +33,7 @@ void Room::Init()
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
 	_tree->Init(_map->GetBound());
+	_updatedTree->Init(_map->GetBound());
 
 	for (int32 i = 0; i < _maxEnemyCount; i++)
 	{
@@ -54,26 +58,29 @@ void Room::Update(float deltaTime)
 
 	deltaTime = _tickManager.GetDeltaTime();
 
-	_tree->Clear();
+	if (_useQuadTree)
+	{
+		_tree->Clear();
+		_updatedTree->Clear();
 
-	//for (auto& item : _players)
-	//{
-	//	PlayerRef player = item.second;
-	//	player->Update(deltaTime);
+		auto v = GetGameObjects();
 
-	//	// QuadTree Update
-	//	// 몹들 업데이트 후 QuadTree를 업데이트
-	//	if (_tree != nullptr)
-	//	{
-	//		_tree->Insert(player);
-	//	}
-	//}
+		for (auto gameObject : v)
+		{
+			gameObject->PreUpdate(deltaTime);
+			if (_tree != nullptr && gameObject->GetObjectInfo()->castertype() != Protocol::CASTER_TYPE_NONE)
+				_tree->Insert(gameObject);
+		}
+	}
 
 	for (auto& v : _actors)
 	{
 		for (auto& item : v)
 		{
-			item.second->Update(deltaTime);
+			auto gameObject = item.second;
+			gameObject->Update(deltaTime);
+			if(_updatedTree != nullptr && gameObject->GetObjectInfo()->castertype() != Protocol::CASTER_TYPE_NONE)
+				_updatedTree->Insert(item.second);
 		}
 	}
 
@@ -308,7 +315,7 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
 	info->set_x(skillActorPos.x);
 	info->set_y(skillActorPos.y);
-	info->set_z(100.f);
+	info->set_z(GetValidHeight(GetGridPos(skillActorPos)));
 	info->set_yaw(yaw);
 	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid, damage);
 
@@ -473,12 +480,12 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 		int32 x = Utils::GetRandom(0, 30);
 		int32 y = Utils::GetRandom(0, 30);
 
-		if (IsValidAtPos({ x, y }))
+		if (IsWalkableAtPos({ x, y }))
 		{
 			Vector pos = GetPosition({ x,y });
 			player->GetObjectInfo()->set_x(pos.x);
 			player->GetObjectInfo()->set_y(pos.y);
-			player->GetObjectInfo()->set_z(100.f);
+			player->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)) + 80.f);
 			player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 			break;
 		}
@@ -536,7 +543,7 @@ VectorInt Room::GetGridPos(Vector pos)
 
 	if (!_map->ConvertToGridPos(pos, result))
 	{
-		return { 0, 0 };
+		return { -1, -1 };
 	}
 	else
 	{
@@ -547,6 +554,14 @@ VectorInt Room::GetGridPos(Vector pos)
 Vector Room::GetPosition(VectorInt gridPos)
 {
 	return _map->GetNode(gridPos).pos;
+}
+
+float Room::GetValidHeight(VectorInt gridPos)
+{
+	if (!_map->IsValidAtGridPos(gridPos))
+		return 100.f;
+
+	return _map->GetNode(gridPos).z;
 }
 
 bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth)
@@ -592,7 +607,7 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 		for (int32 dir = 0; dir < 8; dir++)
 		{
 			VectorInt nextPos = node.pos + d[dir];
-			if (CanGo(node.pos, dir) == false) continue;
+			if (CanGoByDirection(node.pos, dir) == false) continue;
 
 			int32 depth = curDepth + 1;
 			if (depth >= maxDepth) continue;
@@ -651,27 +666,132 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 	return true;
 }
 
-bool Room::CanGo(VectorInt current, int32 dir)
+bool Room::CanGoByDirection(VectorInt current, int32 dir, bool checkCollision, Collision* collision)
 {
-	return _map->IsValidToDirection(current, dir);
+	if (!_map->IsValidToDirection(current, dir))
+		return false;
+
+	if (!checkCollision)
+		return true;
+
+	VectorInt d[8] =
+	{ {0,1}, {1, 1}, {1, 0}, {1, -1}, {0,-1}, {-1,-1}, {-1, 0}, {-1, 1} };
+
+	Vector pos = collision->GetPos();
+	collision->SetPos(GetPosition(current + d[dir]));
+	bool result = !CheckCollisionInMap(collision);
+	collision->SetPos(pos);
+
+	return result;
 }
 
-bool Room::IsValidAtPos(VectorInt gridPos)
+bool Room::CanGoByVector(Collision* collision, Vector moveVector)
 {
-	return _map->IsValidAtGridPos(gridPos);
+	Vector currentPos = collision->GetPos();
+	
+	Vector movedPos = currentPos + moveVector;
+	
+	if (!IsWalkableAtPos(GetGridPos(movedPos)))
+		return false;
+
+	vector<GameObjectRef> collideObjects;
+
+	collision->SetPos(currentPos + moveVector);
+	bool result = CheckCollisionInQuadTree(collision, collideObjects);
+	collision->SetPos(currentPos);
+
+	return !result;
+}
+
+bool Room::CheckCollisionInMap(Collision* collision)
+{
+	Bound box = collision->GetBound();
+
+	VectorInt topLeft = GetGridPos(box.topLeft);
+	VectorInt bottomRight = GetGridPos(box.BottomRight);
+
+	if (!_map->IsValidAtGridPos(topLeft) || !_map->IsValidAtGridPos(bottomRight))
+		return true;
+
+	for (int32 y = bottomRight.y; y <= topLeft.y; y++)
+	{
+		for (int32 x = topLeft.x; x <= bottomRight.x; x++)
+		{
+			if (_map->GetNode({ x,y }).value == EGT_Blocked)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+bool Room::CheckCollisionInQuadTree(Collision* collision, vector<GameObjectRef>& collideObjects)
+{
+	auto v1 = _tree->Check(collision);
+	auto v2 = _updatedTree->Check(collision);
+
+	collideObjects.insert(collideObjects.begin(), v1.begin(), v1.end());
+	collideObjects.insert(collideObjects.begin(), v2.begin(), v2.end());
+
+	for (auto gameObject : v1)
+	{
+		if (!gameObject->IsUpdated())
+			return true;
+	}
+
+	if (v2.size() > 0)
+		return true;
+
+	return false;
+}
+
+bool Room::IsWalkableAtPos(VectorInt gridPos)
+{
+	return _map->IsWalkableAtGridPos(gridPos);
 }
 
 Vector Room::GoMoveVector(Vector currentPos, Vector moveVector)
 {
 	Vector gridSize = _map->GetGridSize();
-	GetGridPos(currentPos);
-	return Vector();
+	
+	vector<VectorInt> path = Bresenham(currentPos, currentPos + moveVector);
+	
+	float incl = moveVector.y / moveVector.x;
+
+	Vector result = currentPos;
+
+	for (int32 i = 0; i < path.size(); i++)
+	{
+		VectorInt gridPos = path[i];
+		Vector pos = GetPosition(gridPos);
+
+		if (!IsWalkableAtPos(gridPos))
+			break;
+
+		if (abs(pos.x - currentPos.x) * abs(incl) < abs(pos.y - currentPos.y))
+		{
+			result.x = pos.x;
+			result.y = currentPos.y + incl * (pos.x - currentPos.x);
+		}
+		else
+		{
+			result.x = currentPos.x + (pos.y - currentPos.y) / incl;
+			result.y = pos.y;
+		}
+
+		if (i == path.size() - 1)
+		{
+			result = currentPos + moveVector;
+		}
+	}
+
+	return result;
 }
 
-bool Room::Bresenham(Vector start, Vector end)
+vector<VectorInt> Room::Bresenham(Vector start, Vector end)
 {
 	float incl = (end - start).y / (end - start).x;
-	
+	Vector gridSize = _map->GetGridSize();
 	bool isReverse = false;
 
 	if (incl < 0)
@@ -682,21 +802,48 @@ bool Room::Bresenham(Vector start, Vector end)
 		isReverse = true;
 	}
 
-	incl = (end - start).y / (end - start).x;
+	vector<VectorInt> result;
 
-	if (incl > 1)
+	float x = start.x;
+	float y = start.y;
+
+	float W = (end.x - start.x);
+	float H = (end.y - start.y);
+
+	// 초기화
+	y = GetPosition(GetGridPos({ x,y })).y;
+	y += _map->GetGridSize().y / 2.f;
+
+	float F = 2 * H * gridSize.x - W * gridSize.y;
+	float F1 = 2.f * H * gridSize.x;
+	float F2 = 2.f * (H * gridSize.x - W * gridSize.y);
+
+	while (x < end.x)
 	{
-		
+		// 점 넣기
+		VectorInt gridPos = GetGridPos({ x, y });
+		result.push_back(gridPos);
+
+		if (F < 0)
+		{
+			F += F1;
+			float tx = min(x + gridSize.x, end.x);
+			x = tx;
+		}
+		else
+		{
+			y += gridSize.y;
+			F += F2;
+		}
+
 	}
-	else
+
+	if (isReverse)
 	{
-		int x = start.x;
-		int y = start.y;
-
-
+		reverse(result.begin(), result.end());
 	}
 
-	return false;
+	return result;
 }
 
 RoomRef Room::GetRoomRef()

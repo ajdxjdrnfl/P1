@@ -29,14 +29,9 @@ void Enemy::Update(float deltaTime)
 	_elapsedPacket += deltaTime;
 	randomWalkDuration += deltaTime;
 	_attackCooldown += deltaTime;
+	_moveToTargetDelay += deltaTime;
 
 	Super::Update(deltaTime);
-
-	if (_elapsedPacket >= _updatePacketCooldown)
-	{
-		_elapsedPacket = 0.f;
-		_dirtyFlag = true;
-	}
 
 	BroadcastUpdate();
 }
@@ -61,19 +56,17 @@ void Enemy::RandomWalk()
 
 	Vector currentPos = Vector(_objectInfo->x(), _objectInfo->y());
 
-	VectorInt d[9] =
-	{ {1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1,0}, {-1,-1}, {0, -1}, {1, -1} };
+	VectorInt d[8] =
+	{ {0,1}, {1, 1}, {1, 0}, {1, -1}, {0,-1}, {-1,-1}, {-1, 0}, {-1, 1} };
 
-	uint8 randomIndex = Utils::GetRandom(0, 8);
+	uint8 randomIndex = Utils::GetRandom(0, 7);
 
 	VectorInt gridPos = room->GetGridPos(GetPos());
 
-	if (room->CanGo(gridPos, randomIndex))
+	if (room->CanGoByDirection(gridPos, randomIndex, true , static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION))))
 	{
 		Vector nextPos = room->GetPosition(gridPos + d[randomIndex]);
 
-		_objectInfo->set_x(nextPos.x);
-		_objectInfo->set_y(nextPos.y);
 		_objectInfo->set_state(Protocol::MOVE_STATE_RUN);
 
 		_targetPos = nextPos;
@@ -123,7 +116,7 @@ void Enemy::TickIdle(float deltaTime)
 			int32 random = Utils::GetRandom(0, 1);
 			if (random == 0)
 			{
-				RandomWalk();
+				//RandomWalk();
 			}
 			else if (random == 1)
 			{
@@ -143,7 +136,7 @@ void Enemy::TickIdle(float deltaTime)
 		AttackToTarget(target);
 		SetState(Protocol::MOVE_STATE_SKILL, true);
 	}
-	else
+	else if(_moveToTargetDelay >= _moveToTargetCooldown)
 	{
 		MoveToTarget(target);
 	}
@@ -151,6 +144,11 @@ void Enemy::TickIdle(float deltaTime)
 
 void Enemy::TickRun(float deltaTime)
 {
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
 
@@ -164,24 +162,38 @@ void Enemy::TickRun(float deltaTime)
 
 		
 		SetObjectInfo(newInfo);
-		SetState(Protocol::MOVE_STATE_IDLE, true);
 
+		if (!PopTargetPath())
+		{
+			SetState(Protocol::MOVE_STATE_IDLE);
+			_moveToTargetDelay = 0.f;
+		}
 		_attackCooldown = 0.f;
 	}
 	else
 	{
 		Vector moveVector = (_targetPos - GetPos()).Normalize();
 
-		moveVector = moveVector * _moveSpeed * deltaTime;
+		float distance = (_targetPos - GetPos()).Length();
+
+		moveVector = moveVector * min(_moveSpeed * deltaTime, distance);
+		
+		if (!room->CanGoByVector(static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION)), moveVector))
+		{
+			SetState(Protocol::MOVE_STATE_IDLE, true);
+			_moveToTargetDelay = 0.f;
+			return;
+		}
+		Vector nextPos = GetPos() + moveVector;
 
 		float yaw=  Utils::GetYawByVector(moveVector);
 
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
-		newInfo.set_x(GetPos().x + moveVector.x);
-		newInfo.set_y(GetPos().y + moveVector.y);
+		newInfo.set_x(nextPos.x);
+		newInfo.set_y(nextPos.y);
 		newInfo.set_yaw(yaw);
 
-		SetObjectInfo(newInfo, true);
+		SetObjectInfo(newInfo, false, true);
 	}
 }
 
@@ -209,7 +221,7 @@ void Enemy::TickSkill(float deltaTime)
 	// 공격 범위 안
 	if(_attackDelay <= 0.5f && _sendSkillPacket == false)
 	{
-		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { target->GetPos().x, target->GetPos().y }, target->GetObjectInfo()->yaw(), 20.f);
+		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 20.f);
 		_sendSkillPacket = true;
 	}
 
@@ -271,9 +283,10 @@ void Enemy::MoveToTarget(GameObjectRef target)
 
 	if (found)
 	{
-		if (path.size() > 1)
+		if (path.size() > 2)
 		{
-			_targetPos = room->GetPosition(path[1]);
+			PushTargetPath(path);
+			PopTargetPath();
 			Vector targetVector = (_targetPos - GetPos());
 			float yaw = Utils::GetYawByVector(targetVector);
 			_objectInfo->set_yaw(yaw);
@@ -291,6 +304,9 @@ void Enemy::AttackToTarget(GameObjectRef target)
 	if (room == nullptr)
 		return;
 
+	if (target == nullptr)
+		return;
+
 	Protocol::S_MONTAGE montagePkt;
 	*montagePkt.mutable_caster() = *GetObjectInfo();
 	montagePkt.set_id(0);
@@ -302,4 +318,48 @@ void Enemy::AttackToTarget(GameObjectRef target)
 	_attackDelay = 1.f;
 	room->DoAsync(&Room::HandleMontage, montagePkt);
 	_sendSkillPacket = false;
+	
+	// yaw set
+	_targetPos = target->GetPos();
+	float yaw = Utils::GetYawByVector((target->GetPos() - GetPos()).Normalize());
+
+	Protocol::ObjectInfo newInfo = *GetObjectInfo();
+	newInfo.set_yaw(yaw);
+
+	SetObjectInfo(newInfo, false, true);
+}
+
+void Enemy::PushTargetPath(vector<VectorInt>& path)
+{
+	while (!_targetPath.empty())
+	{
+		_targetPath.pop();
+	}
+
+	for (int i = 1; i < path.size()-2; i++)
+		_targetPath.push(path[i]);
+
+	_targetPathSize = path.size();
+}
+
+bool Enemy::PopTargetPath(int32 threshold)
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return false;
+
+	if (_targetPath.empty() || _targetPathSize <= threshold)
+		return false;
+
+	VectorInt gridPos = _targetPath.front();
+	_targetPath.pop();
+	_targetPathSize--;
+
+	if (_targetPath.empty() && _target.lock())
+		_targetPos = Vector(_target.lock()->GetObjectInfo()->x(), _target.lock()->GetObjectInfo()->y());
+	else
+		_targetPos = room->GetPosition(gridPos);
+
+	return true;
 }

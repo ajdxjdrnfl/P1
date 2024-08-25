@@ -496,7 +496,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 					Protocol::ObjectInfo info;
 					info.CopyFrom(*GetObjectInfo());
 					info.set_speed(_moveSpeed);
-					SetObjectInfo(info, true, true);
+					SetObjectInfo(info, false , true);
 				}
 				if (_isGimmik)
 				{
@@ -609,16 +609,20 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 	else
 	{
 		// TODO : 플레이어와 충돌 처리
+		Vector moveVector = _rushVector;
+		moveVector = moveVector * _rushSpeed * min(deltaTime, _attackDelay);
+		if(room->CanGoByVector(static_cast<Collision*>(GetComponent(EComponentType::ECT_COLLISION)), moveVector))
 		{
-			Vector moveVector = _rushVector;
-
-			moveVector = moveVector * _rushSpeed * deltaTime;
-
 			Protocol::ObjectInfo newInfo = *GetObjectInfo();
 			newInfo.set_x(GetPos().x + moveVector.x);
 			newInfo.set_y(GetPos().y + moveVector.y);
 
 			SetObjectInfo(newInfo, false, true);
+		}
+		else
+		{
+			_attackDelay = 0.f;
+			_forceNext = true;
 		}
 	}
 	

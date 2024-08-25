@@ -69,6 +69,11 @@ void QuadNode::GetCollideObjects(Collision* collision, vector<GameObjectRef>& re
 	for (int32 i = 0; i < objects.size(); ++i)
 	{
 		GameObjectRef object = objects[i].lock();
+
+		// 같은 주인은 체크하지 않음
+		if (collision->GetOwner() == object)
+			continue;
+
 		if (object)
 		{
 			if (ComponentBase* collisionComponent = object->GetComponent(EComponentType::ECT_COLLISION))

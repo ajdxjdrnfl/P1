@@ -40,6 +40,9 @@ private:
     weak_ptr<Player> _target;
     Vector _targetPos;
 
+    queue<VectorInt> _targetPath;
+    int32 _targetPathSize = 0;
+
     float _detectRange = 600.f;
     float _attackRange = 300.f;
     float _moveSpeed = 200.f;
@@ -47,9 +50,15 @@ private:
     float _attackCooldown = 2.f;
     float _attackDelay = 0.f;
 
+    float _moveToTargetDelay = 0.f;
+    float _moveToTargetCooldown = 1.f;
+
 private:
     void MoveToTarget(GameObjectRef target);
     void AttackToTarget(GameObjectRef target);
+
+    void PushTargetPath(vector<VectorInt>& path);
+    bool PopTargetPath(int32 threshold = 0);
 
     bool _sendSkillPacket = false;
 private:

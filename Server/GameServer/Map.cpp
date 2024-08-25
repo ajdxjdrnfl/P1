@@ -90,14 +90,7 @@ bool Map::IsValidAtGridPos(VectorInt gridPos)
 	if (x < 0 || x >= _nodes[0].size() || y < 0 || y >= _nodes.size())
 		return false;
 
-	switch (_nodes[y][x].value)
-	{
-	case EGT_Walkable:
-		return true;
-		
-	case EGT_Blocked:
-		return false;
-	}
+	return true;
 }
 
 bool Map::IsValidToDirection(VectorInt current, int32 dir)
@@ -118,12 +111,30 @@ bool Map::IsValidToDirection(VectorInt current, int32 dir)
 	}
 }
 
+bool Map::IsWalkableAtGridPos(VectorInt gridPos)
+{
+	if (!IsValidAtGridPos(gridPos))
+		return false;
+
+	int32 x = gridPos.x;
+	int32 y = gridPos.y;
+
+	switch (_nodes[y][x].value)
+	{
+	case EGT_Walkable:
+		return true;
+
+	case EGT_Blocked:
+		return false;
+	}
+}
+
 bool Map::ConvertToGridPos(Vector pos, VectorInt& gridPos)
 {
 
 	// TODO : 범위를 넘어갔을때를 위한 예외처리
 
-	Vector mapPos = _pos - Vector(_mapSize.x/2, _mapSize.y/2);
+	Vector mapPos = _pos - Vector(_mapSize.x/2.f, _mapSize.y/2.f);
 
 	Vector relativePos = pos - mapPos;
 

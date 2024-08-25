@@ -37,4 +37,5 @@ private:
 public:
 	// obb for collision box
 	OBB obb;
+
 };

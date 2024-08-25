@@ -79,7 +79,6 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 	else if (targetInfo.state() == Protocol::MOVE_STATE_IDLE)
 	{
 		_objectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-
 		return true;
 	}
 	else if (targetInfo.state() == Protocol::MOVE_STATE_STUN)
@@ -90,6 +89,11 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 	{
 		// stop시에는 바로 IDLE;
 		_objectInfo->set_state(Protocol::MOVE_STATE_STOP);
+		return true;
+	}
+	else if (targetInfo.state() == Protocol::MOVE_STATE_SKILL)
+	{
+		_objectInfo->set_state(Protocol::MOVE_STATE_SKILL);
 		return true;
 	}
 

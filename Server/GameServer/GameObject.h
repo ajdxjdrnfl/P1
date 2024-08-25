@@ -6,10 +6,12 @@ public:
 	virtual ~GameObject();
 
 	virtual void Init();
+	virtual void PreUpdate(float deltaTime);
 	virtual void Update(float deltaTime);
-
+	
 	virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage);
 
+	bool IsUpdated() { return _bUpdated; }
 public:
 	void SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport = false , bool dirtyFlag = false);
 
@@ -42,6 +44,7 @@ protected:
 	bool _dirtyFlag = false;
 	bool _teleport = false;
 	float _deadElapsedTime = 0.f;
+	bool _bUpdated = false;
 	
 public:
 	class ComponentBase* GetComponent(EComponentType type);

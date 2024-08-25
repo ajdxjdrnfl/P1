@@ -54,18 +54,22 @@ public:
 	// Temp Utils with map
 public:
 	GameObjectRef	FindClosestPlayer(Vector pos, float maxDistance);
-	VectorInt GetGridPos(Vector pos);
-	Vector GetPosition(VectorInt gridPos);
+	VectorInt		GetGridPos(Vector pos);
+	Vector			GetPosition(VectorInt gridPos);
 
+	float			GetValidHeight(VectorInt gridPos);
 	// Find Path a*
-	bool FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth = 100);
+	bool			FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth = 100);
 
-	bool CanGo(VectorInt current, int32 dir);
-	bool IsValidAtPos(VectorInt gridPos);
-	Vector GoMoveVector(Vector currentPos, Vector moveVector);
+	bool			CanGoByDirection(VectorInt current, int32 dir, bool checkCollision = false, class Collision* collision = nullptr);
+	bool			CanGoByVector(class Collision* collision, Vector moveVector);
+	bool			CheckCollisionInMap(class Collision* collison);
+	bool			CheckCollisionInQuadTree(class Collision* collision, vector<GameObjectRef>& collideObjects);
+	bool			IsWalkableAtPos(VectorInt gridPos);
+	Vector			GoMoveVector(Vector currentPos, Vector moveVector);
 
 private:
-	bool Bresenham(Vector start, Vector end);
+	vector<VectorInt>	Bresenham(Vector start, Vector end);
 
 public:
 	RoomRef			GetRoomRef();
@@ -81,7 +85,7 @@ protected:
 private:
 	const int32 _maxEnemyCount = 0;
 
-	bool _debug = true;
+	bool _debug = false;
 	bool _useQuadTree = true;
 
 protected:
@@ -89,6 +93,7 @@ protected:
 	string _mapName = "Test";
 
 	class QuadTree* _tree = nullptr;
+	class QuadTree* _updatedTree = nullptr;
 
 protected:
 	unordered_map<uint64, GameObjectRef> _actors[Protocol::CasterType_ARRAYSIZE];

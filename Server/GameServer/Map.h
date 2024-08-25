@@ -39,6 +39,7 @@ public:
 public:
 	bool IsValidAtGridPos(VectorInt gridPos);
 	bool IsValidToDirection(VectorInt current, int32 dir);
+	bool IsWalkableAtGridPos(VectorInt gridPos);
 	bool ConvertToGridPos(Vector pos, VectorInt& gridPos);
 	
 private:

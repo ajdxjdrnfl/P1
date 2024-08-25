@@ -6,7 +6,7 @@
 #include "ObjectUtils.h"
 #include "Map.h"
 
-RoomRef GRoom = make_shared<Raid>();
+//RoomRef GRoom = make_shared<Raid>();
 
 Raid::Raid()
 {
@@ -40,7 +40,7 @@ void Raid::Init()
 			AddGameObject(enemy);
 			enemy->GetObjectInfo()->set_x(pos.x);
 			enemy->GetObjectInfo()->set_y(pos.y);
-			enemy->GetObjectInfo()->set_z(100.f);
+			enemy->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)));
 			enemy->GetObjectInfo()->set_yaw(yaw);
 
 			_phaseRequirements[v[i].phaseNumber].push_back(enemy);
@@ -51,7 +51,7 @@ void Raid::Init()
 			AddGameObject(boss);
 			boss->GetObjectInfo()->set_x(pos.x);
 			boss->GetObjectInfo()->set_y(pos.y);
-			boss->GetObjectInfo()->set_z(100.f);
+			boss->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)));
 			boss->GetObjectInfo()->set_yaw(yaw);
 
 			_phaseRequirements[v[i].phaseNumber].push_back(boss);
@@ -62,13 +62,14 @@ void Raid::Init()
 
 void Raid::Update(float deltaTime)
 {
-	Super::Update(deltaTime);
-	
 	if (ProceedNextPhase())
 	{
 		HandleNextPhase();
 		_currentPhase += 1;
 	}
+
+	Super::Update(deltaTime);
+	
 }
 
 bool Raid::HandleNextPhase()
@@ -87,6 +88,9 @@ bool Raid::HandleNextPhase()
 
 bool Raid::ProceedNextPhase()
 {
+	if (_currentPhase > _phaseCount)
+		return false;
+
 	for (auto& item : _phaseRequirements[_currentPhase])
 	{
 		GameObjectRef gameObject = item.lock();

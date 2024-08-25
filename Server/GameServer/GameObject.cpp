@@ -33,6 +33,11 @@ void GameObject::Init()
 
 }
 
+void GameObject::PreUpdate(float deltaTime)
+{
+	_bUpdated = false;
+}
+
 void GameObject::Update(float deltaTime)
 {
 
@@ -66,7 +71,7 @@ void GameObject::Update(float deltaTime)
 	}
 
 	TickDot(deltaTime);
-	
+	_bUpdated = true;
 }
 
 void GameObject::SetObjectInfo(Protocol::ObjectInfo objectInfo, bool teleport, bool dirtyFlag)
