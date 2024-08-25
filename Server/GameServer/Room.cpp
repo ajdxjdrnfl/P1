@@ -15,6 +15,7 @@
 
 //RoomRef GRoom = make_shared<Room>();
 
+
 Room::Room()
 {
 	_tree = new QuadTree();
@@ -29,7 +30,7 @@ Room::~Room()
 
 void Room::Init()
 {
-	// TODO : enemy Ãß°¡
+	// TODO : enemy ï¿½ß°ï¿½
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
 	_tree->Init(_map->GetBound());
@@ -105,7 +106,7 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 		
 	}
 	
-	// ±âÁ¸ Á¢¼ÓÇÑ À¯Àúµé¿¡°Ô »õ·Î¿î À¯Àú Á¢¼Ó Àü¼Û
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Protocol::S_SPAWN pkt;
 		
@@ -116,7 +117,7 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 	}
 
-	// Á¢¼ÓÇÑ À¯Àú¿¡°Ô Á¸ÀçÇÏ´Â ¿ÀºêÁ§Æ® Àü¼Û
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	{
 		Protocol::S_SPAWN pkt;
 
@@ -129,7 +130,7 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 			info->CopyFrom(*gameObject->GetObjectInfo());
 		}
 
-		// TODO : »õ·Î Á¢¼ÓÇÑ À¯Àú¿¡°Ô ½ºÅ³ ¾×ÅÍµéµµ °°ÀÌ ½ºÆùÇÒÁö?
+		// TODO : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½Íµéµµ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		if (auto session = player->GetSessionRef())
@@ -147,7 +148,7 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 	session->_player.store(nullptr);
 	LeaveGame(player);
 
-	// ÅðÀåÇÏ´Â ÇÃ·¹ÀÌ¾î¿¡°Ô ÅðÀå »ç½Ç Àü´Þ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Protocol::S_DESPAWN pkt;
 
@@ -173,7 +174,7 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 			session->Send(sendBuffer);*/
 	}
 
-	// ´Ù¸¥ ÇÃ·¹ÀÌ¾îµé¿¡°Ô ÅðÀå »ç½Ç Àü´Þ
+	// ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Protocol::S_DESPAWN pkt;
 		pkt.add_info()->CopyFrom(*player->GetObjectInfo());
@@ -321,7 +322,7 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 
 	SpawnSkill(skillActor);
 
-	// TODO : S_SKILL ±¸Á¶ ¼öÁ¤
+	// TODO : S_SKILL ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		Protocol::S_SKILL skillPkt;
 		*skillPkt.mutable_caster() = *caster->GetObjectInfo();
@@ -581,7 +582,7 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 		parent[gridStart] = gridStart;
 	}
 
-	// ºÏ , ºÏµ¿ , µ¿ ...
+	// ï¿½ï¿½ , ï¿½Ïµï¿½ , ï¿½ï¿½ ...
 	VectorInt d[8] = { {0,1}, {1, 1}, {1, 0}, {1, -1}, {0,-1}, {-1,-1}, {-1, 0}, {-1, 1} };
 
 	bool found = false;
@@ -810,7 +811,7 @@ vector<VectorInt> Room::Bresenham(Vector start, Vector end)
 	float W = (end.x - start.x);
 	float H = (end.y - start.y);
 
-	// ÃÊ±âÈ­
+	// ï¿½Ê±ï¿½È­
 	y = GetPosition(GetGridPos({ x,y })).y;
 	y += _map->GetGridSize().y / 2.f;
 
@@ -820,7 +821,7 @@ vector<VectorInt> Room::Bresenham(Vector start, Vector end)
 
 	while (x < end.x)
 	{
-		// Á¡ ³Ö±â
+		// ï¿½ï¿½ ï¿½Ö±ï¿½
 		VectorInt gridPos = GetGridPos({ x, y });
 		result.push_back(gridPos);
 
