@@ -29,11 +29,11 @@ void APhaseDoor::Tick(float DeltaTime)
 		OpeningDist -= DeltaTime;
 		if (OpeningDist <= 0)
 		{
-			bIsOpeningDoor = false;
+			OnOpeningDoorEnd();
 			return;
 		}
 
-		FVector NextLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaTime, 10);
+		FVector NextLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaTime, OpeningSpeed);
 		SetActorLocation(NextLocation);
 	}
 }
@@ -41,5 +41,15 @@ void APhaseDoor::Tick(float DeltaTime)
 void APhaseDoor::OpenDoor()
 {
 	bIsOpeningDoor = true;
+}
+
+void APhaseDoor::ClearPhase()
+{
+	OpenDoor();
+}
+
+void APhaseDoor::OnOpeningDoorEnd()
+{
+	bIsOpeningDoor = false;
 }
 

@@ -9,6 +9,7 @@
 #include "P1/Component/StatComponent/CharacterStatComponent.h"
 #include "P1/Widget/CastingSkillWidget.h"
 #include "P1/DamageIndicator/DamageIndicatorActor.h"
+#include "P1/Widget/InteractWidget.h"
 
 void UCharacterWidgetComponent::BeginPlay()
 {

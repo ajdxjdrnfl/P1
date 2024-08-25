@@ -31,6 +31,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = true))
 	TSubclassOf<UUserWidget> SkillGaugeWidgetClass;
 
+	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> InteractWidgetClass;
+
+	UPROPERTY()
+	class UInteractWidget* InteractWidget;
+
 	UPROPERTY()
 	class UCastingSkillWidget* SkillGaugeWidget;
 

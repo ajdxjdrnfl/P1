@@ -37,7 +37,7 @@ void UDungeonManagerSubsystem ::OpenPhaseDoor(int32 PhaseNum)
 	if (PhaseDoorMap.Contains(PhaseNum))
 	{
 		APhaseDoor* PhaseDoor = *PhaseDoorMap.Find(PhaseNum);
-		PhaseDoor->OpenDoor();
+		PhaseDoor->ClearPhase();
 	}
 }
 

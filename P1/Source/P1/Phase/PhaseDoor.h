@@ -20,7 +20,7 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category = Editable)
 	int32 PhaseID;
 
@@ -32,8 +32,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = Editable)
 	float OpeningDist = 200;
 
-public:
+	UPROPERTY(EditAnywhere, Category = Editable)
+	float OpeningSpeed = 5;
+
 	void OpenDoor();
+
+public:
+	virtual void ClearPhase();
+	virtual void OnOpeningDoorEnd();
 
 	FORCEINLINE int32 GetPhaseID() { return PhaseID; }
 
