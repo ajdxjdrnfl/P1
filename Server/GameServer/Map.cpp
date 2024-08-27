@@ -49,8 +49,8 @@ void Map::Load(const filesystem::path& path)
 
 	}
 
-	_bound = Bound(_pos.x - _mapSize.x/2, _pos.y - _mapSize.y/2, 
-		_pos.x + _mapSize.x/2, _pos.y + _mapSize.y);
+	_bound = Bound(_pos.x - _mapSize.x/2, _pos.y + _mapSize.y/2, 
+		_pos.x + _mapSize.x/2, _pos.y - _mapSize.y/2);
 
 
 	// 몬스터 저장

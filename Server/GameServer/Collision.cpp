@@ -28,6 +28,13 @@ void Collision::Init()
 		ColliderBox* box = static_cast<ColliderBox*>(_collider);
 		obb.extent = box->extent;
 	}
+
+	GameObjectRef owner = GetOwner();
+
+	if (owner == nullptr)
+		return;
+
+	SetPos(owner->GetPos());
 }
 
 void Collision::Update(float deltaTime)
@@ -63,16 +70,16 @@ void Collision::SetBound(Vector pos)
 		Vector min = obb.GetMin();
 		Vector max = obb.GetMax();
 
-		_bound.topLeft = { min.x, min.y };
-		_bound.BottomRight = { max.x , max.y };
+		_bound.topLeft = { min.x, max.y };
+		_bound.BottomRight = { max.x , min.y };
 	}
 	else if (_collider->GetColliderType() == EColliderType::COLLIDER_CIRCLE)
 	{
 		ColliderCircle* circle = static_cast<ColliderCircle*>(_collider);
 
 		float radius = circle->_radius;
-		_bound.topLeft = { pos.x - radius, pos.y - radius };
-		_bound.BottomRight = { pos.x + radius, pos.y + radius };
+		_bound.topLeft = { pos.x - radius, pos.y + radius };
+		_bound.BottomRight = { pos.x + radius, pos.y - radius };
 	}
 	
 }

@@ -30,7 +30,11 @@ GameObject::~GameObject()
 
 void GameObject::Init()
 {
-
+	for (auto& item : _components)
+	{
+		if(item != nullptr)
+			item->Init();
+	}
 }
 
 void GameObject::PreUpdate(float deltaTime)
