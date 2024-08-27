@@ -582,7 +582,6 @@ bool Room::FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 max
 		parent[gridStart] = gridStart;
 	}
 
-	// �� , �ϵ� , �� ...
 	VectorInt d[8] = { {0,1}, {1, 1}, {1, 0}, {1, -1}, {0,-1}, {-1,-1}, {-1, 0}, {-1, 1} };
 
 	bool found = false;
@@ -686,14 +685,15 @@ bool Room::CanGoByDirection(VectorInt current, int32 dir, bool checkCollision, C
 	return result;
 }
 
-bool Room::CanGoByVector(Collision* collision, Vector moveVector)
+bool Room::CanGoByVector(Collision* collision, Vector moveVector, bool checkCollision)
 {
 	Vector currentPos = collision->GetPos();
 	
-	Vector movedPos = currentPos + moveVector;
-	
-	if (!GoMoveVector(currentPos, movedPos))
+	if (!GoMoveVector(currentPos, moveVector))
 		return false;
+
+	if (!checkCollision)
+		return true;
 
 	vector<GameObjectRef> collideObjects;
 
@@ -791,11 +791,10 @@ bool Room::GoMoveVector(Vector currentPos, Vector moveVector)
 
 vector<VectorInt> Room::Bresenham(Vector start, Vector end)
 {
-	float incl = (end - start).y / (end - start).x;
 	Vector gridSize = _map->GetGridSize();
 	bool isReverse = false;
 
-	if (incl < 0)
+	if (start.x > end.x)
 	{
 		Vector temp = start;
 		start = end;
@@ -811,17 +810,16 @@ vector<VectorInt> Room::Bresenham(Vector start, Vector end)
 	float W = (end.x - start.x);
 	float H = (end.y - start.y);
 
-	// �ʱ�ȭ
 	y = GetPosition(GetGridPos({ x,y })).y;
 	y += _map->GetGridSize().y / 2.f;
 
 	float F = 2 * H * gridSize.x - W * gridSize.y;
 	float F1 = 2.f * H * gridSize.x;
-	float F2 = 2.f * (H * gridSize.x - W * gridSize.y);
+	float F2 = - 2.f * W * gridSize.y;
 
-	while (x < end.x)
+	while ( abs(x -end.x) > 0.1f)
 	{
-		// �� �ֱ�
+		// 
 		VectorInt gridPos = GetGridPos({ x, y });
 		result.push_back(gridPos);
 

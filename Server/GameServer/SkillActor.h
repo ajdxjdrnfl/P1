@@ -22,8 +22,11 @@ public:
 private:
     weak_ptr<GameObject> _caster;
     
-    // SKill 府家胶
+    // Skill 府家胶
     Skill* _skill = nullptr;
     float _damage = 0.f;
+
+    // 积己 饶 瘤加矫埃
+    float _duration = 0.f;
 };
 

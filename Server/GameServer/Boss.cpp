@@ -473,7 +473,8 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 				montagePkt.set_scalable(true);
 				montagePkt.set_duration(2.f);
 				room->HandleMontage(montagePkt);
-				_attackDelay = 2.f;*/
+				*/
+				_attackDelay = 1.f;
 			}
 			break;
 
@@ -621,7 +622,7 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 		}
 		else
 		{
-			_attackDelay = 0.f;
+ 			_attackDelay = 0.f;
 			_forceNext = true;
 		}
 	}

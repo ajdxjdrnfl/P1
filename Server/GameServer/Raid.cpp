@@ -6,7 +6,7 @@
 #include "ObjectUtils.h"
 #include "Map.h"
 
-// RoomRef GRoom = make_shared<Raid>();
+//RoomRef GRoom = make_shared<Raid>();
 
 Raid::Raid()
 {
