@@ -23,6 +23,15 @@ void SkillActor::Init()
 void SkillActor::Update(float deltaTime)
 {
 	Super::Update(deltaTime);
+
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	_duration += deltaTime;
+	
+
 }
 
 void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage)

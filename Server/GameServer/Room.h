@@ -62,7 +62,7 @@ public:
 	bool			FindPath(Vector start, Vector end, vector<VectorInt>& path, int32 maxDepth = 100);
 
 	bool			CanGoByDirection(VectorInt current, int32 dir, bool checkCollision = false, class Collision* collision = nullptr);
-	bool			CanGoByVector(class Collision* collision, Vector moveVector);
+	bool			CanGoByVector(class Collision* collision, Vector moveVector, bool checkCollision = false);
 	bool			CheckCollisionInMap(class Collision* collison);
 	bool			CheckCollisionInQuadTree(class Collision* collision, vector<GameObjectRef>& collideObjects);
 	bool			IsWalkableAtPos(VectorInt gridPos);
@@ -85,7 +85,7 @@ protected:
 private:
 	const int32 _maxEnemyCount = 0;
 
-	bool _debug = true;
+	bool _debug = false;
 	bool _useQuadTree = true;
 
 protected:
