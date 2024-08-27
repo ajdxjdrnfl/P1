@@ -4,6 +4,7 @@
 #include "Collider.h"
 #include "ComponentBase.h"
 #include "ResourceManager.h"
+#include "Room.h"
 
 SkillActor::SkillActor(GameObjectRef caster, RoomRef room) : GameObject(room), _caster(caster)
 {
@@ -24,14 +25,37 @@ void SkillActor::Update(float deltaTime)
 {
 	Super::Update(deltaTime);
 
+	if (_skill == nullptr)
+		return;
+
 	RoomRef room = GetRoomRef();
 
 	if (room == nullptr)
 		return;
 
-	_duration += deltaTime;
+	_lifeTime += deltaTime;
 	
+	if (_skill->GetSkillInfo().lifeTime <= _lifeTime)
+	{
+		_lifeTime = 0.f;
+		SetState(Protocol::MOVE_STATE_DEAD);
+	}
 
+}
+
+void SkillActor::TickDead(float deltaTime)
+{
+	if (GetState() == Protocol::MOVE_STATE_DEAD)
+		return;
+
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	Protocol::S_DESPAWN despawnPkt;
+	despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
+	room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
 }
 
 void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage)

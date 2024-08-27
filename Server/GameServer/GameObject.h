@@ -9,7 +9,9 @@ public:
 	virtual void PreUpdate(float deltaTime);
 	virtual void Update(float deltaTime);
 	
-	virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage);
+	virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage);
+
+	virtual void SetCCTime(float ccTime);
 
 	bool IsUpdated() { return _bUpdated; }
 public:
@@ -45,6 +47,8 @@ protected:
 	bool _teleport = false;
 	float _deadElapsedTime = 0.f;
 	bool _bUpdated = false;
+
+	float _ccTime = 0.f;
 	
 public:
 	class ComponentBase* GetComponent(EComponentType type);

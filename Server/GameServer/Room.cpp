@@ -252,7 +252,7 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
 
 	bool bCounter = pkt.counter();
-	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo().damageType, skillActorCast->GetDamage());
+	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo(), skillActorCast->GetDamage());
 	
 
 	{

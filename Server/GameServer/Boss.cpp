@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Room.h"
 #include "Structure.h"
+#include "Skill.h"
 
 Boss::Boss(RoomRef room, uint64 phaseNumber) : GameObject(room), _phaseNumber(phaseNumber)
 {
@@ -974,7 +975,7 @@ void Boss::MoveToTarget(GameObjectRef target)
 	}
 }
 
-void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
+void Boss::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
 {
 
 	RoomRef room = GetRoomRef();
@@ -999,6 +1000,6 @@ void Boss::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType,
 		break;
 	}
 
-	Super::TakeDamage(instigator, damageType, damage);
+	Super::TakeDamage(instigator, skillInfo, damage);
 
 }

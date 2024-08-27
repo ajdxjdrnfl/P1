@@ -5,7 +5,7 @@
 #include "Collider.h"
 #include "ComponentBase.h"
 #include "Player.h"
-
+#include "Skill.h"
 
 Enemy::Enemy(RoomRef room, uint64 phaseNumber) : GameObject(room), _phaseNumber(phaseNumber)
 {
@@ -95,9 +95,9 @@ void Enemy::BroadcastUpdate()
 	Super::BroadcastUpdate();
 }
 
-void Enemy::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
+void Enemy::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
 {
-	Super::TakeDamage(instigator, damageType, damage);
+	Super::TakeDamage(instigator, skillInfo, damage);
 }
 
 void Enemy::TickIdle(float deltaTime)

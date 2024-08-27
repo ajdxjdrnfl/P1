@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "ComponentBase.h"
 #include "Room.h"
+#include "Skill.h"
 
 GameObject::GameObject(RoomRef room)
 {
@@ -153,10 +154,10 @@ void GameObject::TickDot(float deltaTime)
 	_dotDamages = tempQueue;
 }
 
-void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
+void GameObject::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
 {
 
-	switch (damageType)
+	switch (skillInfo.damageType)
 	{
 	case Protocol::DAMAGE_TYPE_NORMAL:
 	{
@@ -180,11 +181,28 @@ void GameObject::TakeDamage(GameObjectRef instigator, Protocol::DamageType damag
 		break;
 	}
 
+	switch (skillInfo.ccType)
+	{
+	case Protocol::CC_TYPE_NORMAL:
+	break;
+	default:
+	{
+		SetState(Protocol::MOVE_STATE_STUN);
+		SetCCTime(skillInfo.ccTime);
+	}
+	break;
+	}
+
 	if (_objectInfo->hp() == 0.f)
 	{
 		SetState(Protocol::MOVE_STATE_DEAD, true);
 	}
 	
+}
+
+void GameObject::SetCCTime(float ccTime)
+{
+	_ccTime = ccTime;
 }
 
 ComponentBase* GameObject::GetComponent(EComponentType type)

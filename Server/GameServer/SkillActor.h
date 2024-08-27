@@ -13,6 +13,8 @@ public:
     virtual void Init() override;
     virtual void Update(float deltaTime) override;
 
+    virtual void TickDead(float deltaTime) override;
+
 public:
     SkillInfo& GetSkillInfo() { return _skill->GetSkillInfo(); }
 public:
@@ -27,6 +29,6 @@ private:
     float _damage = 0.f;
 
     // 생성 후 지속시간
-    float _duration = 0.f;
+    float _lifeTime = 0.f;
 };
 

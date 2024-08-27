@@ -2,6 +2,7 @@
 #include "Structure.h"
 #include "Collision.h"
 #include "Collider.h"
+#include "Skill.h"
 
 Structure::Structure(RoomRef room) : Super(room)
 {
@@ -24,9 +25,9 @@ void Structure::Init()
 	Super::Init();
 }
 
-void Structure::TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage)
+void Structure::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
 {
-	Super::TakeDamage(instigator, damageType, damage);
+	Super::TakeDamage(instigator, skillInfo, damage);
 
 	// TODO : DESPAWN
 }

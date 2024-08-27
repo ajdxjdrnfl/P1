@@ -83,6 +83,7 @@ bool Player::HandleMovePacket(Protocol::C_MOVE pkt)
 	}
 	else if (targetInfo.state() == Protocol::MOVE_STATE_STUN)
 	{
+		_objectInfo->set_state(Protocol::MOVE_STATE_STUN);
 		return true;
 	}
 	else if (targetInfo.state() == Protocol::MOVE_STATE_STOP)

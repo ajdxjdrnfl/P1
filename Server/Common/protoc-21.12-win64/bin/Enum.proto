@@ -44,6 +44,7 @@ enum CCType
 	CC_TYPE_STUN = 1;
 	CC_TYPE_SLOW = 2;
 	CC_TYPE_AIRBORNE = 3;
+	CC_TYPE_KNOCKBACK = 4;
 }
 
 enum SkillType

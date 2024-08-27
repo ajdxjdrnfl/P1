@@ -10,6 +10,6 @@ public:
 
     virtual void Init() override;
     
-    virtual void TakeDamage(GameObjectRef instigator, Protocol::DamageType damageType, float damage) override;
+    virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage) override;
 };
 

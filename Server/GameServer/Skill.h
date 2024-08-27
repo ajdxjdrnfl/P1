@@ -17,6 +17,8 @@ struct SkillInfo
 	Protocol::SkillType skillType;
 
 	float castingTime;
+	float ccTime;
+	float lifeTime;
 
 }typedef SkillInfo;
 

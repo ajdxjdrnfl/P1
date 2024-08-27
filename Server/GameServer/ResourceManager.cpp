@@ -20,6 +20,8 @@ static string ccTypeKey = "CCType";
 static string damageTypeKey = "DamageType";
 static string skillTypeKey = "SkillType";
 static string castingTimeKey = "CastingTime";
+static string ccTimeKey = "CCTime";
+static string lifeTimeKey = "LifeTime";
 
 
 void ResourceManager::Init()
@@ -85,6 +87,8 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 		float damage = json[damageKey].get<float>();
 		float xscale = json[xscaleKey].get<float>();
 		float yscale = json[yscaleKey].get<float>();
+		float ccTime = json[ccTimeKey].get<float>();
+		float lifeTime = json[lifeTimeKey].get<float>();
 
 		string collisionTypeString = json[collisionTypeKey].get<string>();
 		string ccTypeString = json[ccTypeKey].get<string>();
@@ -100,7 +104,7 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 		float castingTime = json[castingTimeKey].get<float>();
 
 		Skill* skill = new Skill();
-		skill->SetSkillInfo({ skillNum, hitNum, coolDown, damage, xscale, yscale, collisionType, ccType, damageType, skillType, castingTime });
+		skill->SetSkillInfo({ skillNum, hitNum, coolDown, damage, xscale, yscale, collisionType, ccType, damageType, skillType, castingTime, ccTime, lifeTime});
 		_skills[casterType][skillNum] = skill;
 	}
 }
