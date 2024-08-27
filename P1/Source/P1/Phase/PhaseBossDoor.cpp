@@ -36,14 +36,25 @@ void APhaseBossDoor::Tick(float DeltaTime)
 
 void APhaseBossDoor::ClearPhase()
 {
-	bCanInteract = true;
+	if (!bCanInteract)
+	{
+		bCanInteract = true;
+	}
+	else
+	{
+		bIsOpeningDoor = true;
+		WidgetComponent->SetVisibility(false);
+	}
 }
 
 void APhaseBossDoor::Interact()
 {
 	if (!bCanInteract) return;
-	bIsOpeningDoor = true;
-	WidgetComponent->SetVisibility(false);
+	
+	{
+		Protocol::C_PHASE Pkt;
+		SEND_PACKET(Pkt);
+	}
 }
 
 void APhaseBossDoor::OnOpeningDoorEnd()

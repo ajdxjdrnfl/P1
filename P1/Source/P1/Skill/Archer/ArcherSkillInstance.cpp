@@ -132,6 +132,7 @@ void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 		_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
 
 		SEND_PACKET(Pkt);
@@ -171,12 +172,11 @@ void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 
-		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
-		{
-			float TargetYaw = (SubSystem->MouseLocation - GetActorLocation()).GetSafeNormal().Rotation().Yaw;
-			_TargetInfo->set_yaw(TargetYaw);
-		}
+		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
+		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+		_TargetInfo->set_yaw(TargetYaw);
 
 		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
 
@@ -286,5 +286,90 @@ void AArcherESkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 		{
 			SubSystem->bCanMove = true;
 		}
+	}
+}
+
+void AArcherRSkillInstance::UseSkill()
+{
+	Super::UseSkill();
+
+	if (OwnerCreature)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AArcherRSkillInstance::OnMontageEnded);
+	}
+
+	{
+		Protocol::C_MOVE Pkt;
+		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
+		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+		_TargetInfo->set_yaw(TargetYaw);
+
+		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
+
+		SEND_PACKET(Pkt);
+	}
+
+	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr || M_Skill == nullptr)
+		return;
+
+	bool bIsMontagePlaying = AnimInstance->Montage_IsPlaying(nullptr);
+	if (!bIsMontagePlaying)
+	{
+		{
+			Protocol::C_MONTAGE Pkt;
+			Protocol::ObjectInfo* CasterInfo = Pkt.mutable_caster();
+			CasterInfo->set_object_id(OwnerCreature->ObjectInfo->object_id());
+			Pkt.set_isstop(false);
+			Pkt.set_id(3);
+
+			SEND_PACKET(Pkt);
+		}
+
+		OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_SKILL);
+		if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->SetKeyCanUse(SkillInfo.SkillNumLocal);
+		}
+	}
+}
+
+void AArcherRSkillInstance::SpawnSkill()
+{
+	{
+		if (SkillActorClass == nullptr) return;
+
+		Protocol::C_SKILL Pkt;
+		Pkt.set_skillid(3);
+
+		Protocol::ObjectInfo* ObjectInfoRef = Pkt.mutable_caster();
+
+		FVector SpawnLocation = OwnerCreature->GetActorLocation();
+		Pkt.set_x(SpawnLocation.X);
+		Pkt.set_y(SpawnLocation.Y);
+		Pkt.set_yaw(OwnerCreature->GetActorRotation().Yaw);
+
+		ObjectInfoRef->CopyFrom(*OwnerCreature->ObjectInfo);
+
+		SEND_PACKET(Pkt);
+	}
+
+	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SubSystem->bCanMove = false;
+	}
+}
+
+void AArcherRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (AnimMontage == M_Skill)
+	{
+		Super::OnMontageEnded(AnimMontage, bInterrupted);
 	}
 }

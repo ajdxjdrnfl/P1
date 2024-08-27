@@ -38,7 +38,7 @@ void AWarriorQSkillInstance::Tick(float DeltaTime)
 void AWarriorQSkillInstance::SpawnSkill()
 {
 	if (bDoOnceActivated) return;
-	bDoOnceActivated = true; // set false at skill end anim notify
+	bDoOnceActivated = true;
 
 	{
 		Protocol::C_SKILL Pkt;
@@ -69,6 +69,7 @@ void AWarriorQSkillInstance::UseSkill()
 		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 
 		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
 		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
@@ -132,10 +133,13 @@ void AWarriorQSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 			Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
 			ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+			_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
 
 			SEND_PACKET(Pkt);
 		}
+
+		bDoOnceActivated = false;
 
 		Super::OnMontageEnded(AnimMontage, bInterrupted);
 	}
@@ -287,6 +291,7 @@ void AWarriorRSkillInstance::UseSkillAfterTargeting()
 		Protocol::C_MOVE Pkt;
 		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 
 		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
@@ -422,6 +427,7 @@ void AWarriorRSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInt
 			Protocol::C_MOVE Pkt;
 			Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
 			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+			_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
 			_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
 

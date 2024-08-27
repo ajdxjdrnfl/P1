@@ -35,6 +35,8 @@ void AP1Creature::BeginPlay()
 void AP1Creature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	SetObjectInfo();
 }
 
 // Called to bind functionality to input
@@ -120,24 +122,6 @@ void AP1Creature::SetMoveValueByServer(Protocol::S_MOVE Pkt)
 
 	TargetInfo->CopyFrom(Pkt.info());
 	ObjectInfo->set_state(Pkt.info().state());
-
-	/*FVector TargetLocation = FVector(Pkt.info().x(), Pkt.info().y(), Pkt.info().z());
-	FRotator TargetRotation = FRotator(GetActorRotation().Pitch, Pkt.info().yaw(), GetActorRotation().Roll);
-
-	bool NearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 2);
-	bool NearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 2);
-	bool NearYaw = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetRotation.Yaw, GetActorRotation().Yaw, 5);
-
-	bool bIsNearLoc = NearX && NearY;
-
-	if (bIsNearLoc)
-	{
-		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
-	}
-	else
-	{
-		ObjectInfo->set_state(Protocol::MOVE_STATE_RUN);
-	}*/
 	
 	GetCharacterMovement()->MaxWalkSpeed = Pkt.info().speed();
 }

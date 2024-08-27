@@ -55,7 +55,7 @@ void Boss::TickIdle(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
 	// 1. 체력 체크 후 기믹 발동 여부 확인
-	if(_objectInfo->hp() <= 500.f && !_isGimmik && _bossPhase == 1)
+	if(_objectInfo->hp() <= 1000.f && !_isGimmik && _bossPhase == 1)
 	{
 		_isGimmik = true;
 		_bossPhase = 2;

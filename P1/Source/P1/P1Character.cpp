@@ -132,7 +132,6 @@ void AP1Character::UseSkill(uint16 SkillIndex)
 
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
-		UE_LOG(LogTemp, Log, TEXT("%d"), SkillIndex);
 		if (SkillSubSystem->CanUseSkill(SkillIndex))
 		{
 			SkillComponent->UseSkill(SkillIndex);
@@ -189,7 +188,6 @@ void AP1Character::TickMove(float DeltaTime)
 	}
 	
 	AddMovementInput(TargetRotator.Vector().GetSafeNormal());
-	SetObjectInfo();
 }
 
 void AP1Character::TickIdle(float DeltaTime)

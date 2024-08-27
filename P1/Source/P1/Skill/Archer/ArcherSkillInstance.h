@@ -69,3 +69,18 @@ public:
 	virtual void OnCastingEnd() override;
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted) override;
 };
+
+UCLASS()
+class P1_API AArcherRSkillInstance : public ASkillInstanceBase
+{
+	GENERATED_BODY()
+
+private:
+	UPROPERTY()
+	class ASkillActorBase* CurrentSkillActor;
+
+public:
+	virtual void UseSkill() override;
+	virtual void SpawnSkill() override;
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted) override;
+};

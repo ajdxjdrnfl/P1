@@ -13,7 +13,7 @@
 #include "QuadTree.h"
 #include "Collision.h"
 
-//RoomRef GRoom = make_shared<Room>();
+RoomRef GRoom = make_shared<Room>();
 
 
 Room::Room()

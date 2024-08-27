@@ -273,17 +273,6 @@ void UP1GameInstance::MoveByServer(Protocol::S_MOVE& Pkt)
 			Pkt.info().castertype() == Protocol::CASTER_TYPE_ARCHER)
 	{
 		(*Characters.Find(Pkt.info().object_id()))->SetMoveValueByServer(Pkt);
-
-		/*if (MyCharacter->ObjectInfo->object_id() == Pkt.info().object_id() && Pkt.info().state() == Protocol::MOVE_STATE_IDLE)
-		{
-			Protocol::C_MOVE Pkt;
-			Protocol::ObjectInfo* TargetInfo = Pkt.mutable_targetinfo();
-			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
-			ObjInfo->CopyFrom(*MyCharacter->ObjectInfo);
-			TargetInfo->CopyFrom(*MyCharacter->ObjectInfo);
-
-			SEND_PACKET(Pkt);
-		}*/
 	}
 }
 
@@ -374,7 +363,7 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 
 	SpawnedActor->ObjectInfo->CopyFrom(ObjInfo);
 	SpawnedActor->InitOnSpawn(ObjInfo);
-	SpawnedActor->TargetInfo->set_x(ObjInfo.x());
+	SpawnedActor->TargetInfo->set_x(ObjInfo.x()); 
 	SpawnedActor->TargetInfo->set_y(ObjInfo.y());
 	SpawnedActor->TargetInfo->set_z(ObjInfo.z());
 
