@@ -56,7 +56,7 @@ void Boss::TickIdle(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_IDLE)
 		return;
 	// 1. 체력 체크 후 기믹 발동 여부 확인
-	if(_objectInfo->hp() <= 1000.f && !_isGimmik && _bossPhase == 1)
+	if(_objectInfo->hp() <= 500.f && !_isGimmik && _bossPhase == 1)
 	{
 		_isGimmik = true;
 		_bossPhase = 2;
@@ -212,8 +212,8 @@ void Boss::TickSkill(float deltaTime)
 
 void Boss::TickStun(float deltaTime)
 {
-	if (GetState() != Protocol::MOVE_STATE_STUN)
-		return;
+	Super::TickStun(deltaTime);
+
 }
 
 void Boss::TickDead(float deltaTime)
@@ -422,7 +422,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				_rushVector = (target->GetPos() - GetPos()).Normalize();
 				// TODO : 스킬액터 스폰
-				//room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)1, GetPos(), _objectInfo->yaw(), 100.f);
+				room->DoAsync(&Room::HandleSkill, shared_from_this(), _skillId, GetPos(), _objectInfo->yaw(), 100.f);
 			}
 			if(_isGimmik)
 			{
@@ -671,7 +671,6 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 		return;
 
 	RoomRef room = GetRoomRef();
-
 
 	if (room == nullptr)
 		return;
@@ -975,7 +974,7 @@ void Boss::MoveToTarget(GameObjectRef target)
 	}
 }
 
-void Boss::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
+void Boss::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage, bool counter)
 {
 
 	RoomRef room = GetRoomRef();
@@ -984,15 +983,36 @@ void Boss::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damag
 	{
 	case EBossSkillType::EBST_RUSH:
 	{
+		// 패링처리
+		if (counter && _isGimmik == false)
+		{
+			_montageType = MONTAGE_TYPE_END;
+			_attackDelay = 0.f;
+
+			Protocol::S_MONTAGE montagePkt;
+			*montagePkt.mutable_caster() = *GetObjectInfo();
+			montagePkt.set_id(_skillId);
+			montagePkt.set_section_num(0);
+			montagePkt.set_isstop(true);
+			room->HandleMontage(montagePkt);
+
+			Protocol::ObjectInfo info;
+			info.CopyFrom(*GetObjectInfo());
+			info.set_speed(_moveSpeed);
+			SetObjectInfo(info, false, true);
+
+			SetState(Protocol::MOVE_STATE_STUN, true);
+			SetCCTime(2.f);
+		}
 		switch (_montageType)
 		{
 		case MONTAGE_TYPE_START:
 			// TODO : 패링처리
+			
 			break;
 		case MONTAGE_TYPE_ING:
 		{
-			_montageType = MONTAGE_TYPE_END;
-			_forceNext = true;
+			
 		}
 			break;
 		}
@@ -1000,6 +1020,8 @@ void Boss::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damag
 		break;
 	}
 
-	Super::TakeDamage(instigator, skillInfo, damage);
+
+
+	Super::TakeDamage(instigator, skillInfo, damage, counter);
 
 }

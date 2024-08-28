@@ -58,7 +58,7 @@ void SkillActor::TickDead(float deltaTime)
 	room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
 }
 
-void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage)
+void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage, bool counter)
 {
 	_skill = GResourceManager.GetSkill(casterType, skillId);
 

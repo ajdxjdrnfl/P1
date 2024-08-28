@@ -51,6 +51,11 @@ void GameObject::Update(float deltaTime)
 		if (item != nullptr)
 			item->Update(deltaTime);
 	}
+
+	if (_objectInfo->hp() == 0.f)
+	{
+		SetState(Protocol::MOVE_STATE_DEAD, true);
+	}
 	
 	switch (GetState())
 	{
@@ -118,10 +123,28 @@ void GameObject::BroadcastUpdate()
 	_dirtyFlag = false;
 	_teleport = false;
 }
+void GameObject::TickStun(float deltaTime)
+{
+	if (GetState() != Protocol::MOVE_STATE_STUN)
+		return;
+
+	_ccTime -= deltaTime;
+
+	if (_ccTime <= 0.f)
+	{
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+	}
+}
 void GameObject::TickDot(float deltaTime)
 {
-	queue<vector<float>> tempQueue;
+	RoomRef room = GetRoomRef();
 
+	if (room == nullptr)
+		return;
+
+	queue<vector<float>> tempQueue;
+	vector<float > damages;
+	
 	while (!_dotDamages.empty())
 	{
 		vector<float> dotDamage = _dotDamages.front();
@@ -142,6 +165,7 @@ void GameObject::TickDot(float deltaTime)
 				float hp = max(0, currentHp - damage);
 				_objectInfo->set_hp(hp);
 				_dirtyFlag = true;
+				damages.push_back(damage);
 			}
 
 			if (totalTime > 0.f)
@@ -152,9 +176,21 @@ void GameObject::TickDot(float deltaTime)
 	}
 
 	_dotDamages = tempQueue;
+
+	if(damages.size() > 0)
+	{
+		Protocol::S_DAMAGE damagePkt;
+		Protocol::ObjectInfo* info = damagePkt.mutable_info();
+		info->CopyFrom(*GetObjectInfo());
+
+		for (int32 i = 0; i < damages.size(); i++)
+			damagePkt.add_damage(damages[i]);
+		
+		room->DoAsync(&Room::HandleDamage, damagePkt);
+	}
 }
 
-void GameObject::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
+void GameObject::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage, bool counter)
 {
 
 	switch (skillInfo.damageType)
@@ -191,11 +227,6 @@ void GameObject::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float
 		SetCCTime(skillInfo.ccTime);
 	}
 	break;
-	}
-
-	if (_objectInfo->hp() == 0.f)
-	{
-		SetState(Protocol::MOVE_STATE_DEAD, true);
 	}
 	
 }

@@ -117,3 +117,9 @@ message S_PHASE
 {
 	uint64 phasenumber = 1;
 }
+
+message S_DAMAGE
+{
+	ObjectInfo info = 1;
+	repeated float damage = 2;
+}

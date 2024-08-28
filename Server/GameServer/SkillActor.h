@@ -19,7 +19,7 @@ public:
     SkillInfo& GetSkillInfo() { return _skill->GetSkillInfo(); }
 public:
     // TEST Collider
-    void SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& id, float damage);
+    void SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& id, float damage, bool counter = false);
     float GetDamage() { return _damage; }
 private:
     weak_ptr<GameObject> _caster;

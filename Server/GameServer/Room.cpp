@@ -252,7 +252,7 @@ bool Room::HandleAttack(Protocol::C_ATTACK pkt)
 	SkillActorRef skillActorCast = static_pointer_cast<SkillActor>(skillActor);
 
 	bool bCounter = pkt.counter();
-	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo(), skillActorCast->GetDamage());
+	victim->TakeDamage(skillActor, skillActorCast->GetSkillInfo(), skillActorCast->GetDamage(), bCounter);
 	
 
 	{
@@ -333,6 +333,13 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 		Broadcast(sendBuffer);
 	}
 	return true;
+}
+
+bool Room::HandleDamage(Protocol::S_DAMAGE pkt)
+{
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	Broadcast(sendBuffer);
+	return false;
 }
 
 bool Room::HandleMontage(Protocol::S_MONTAGE pkt)

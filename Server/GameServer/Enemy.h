@@ -13,7 +13,7 @@ public:
 
 protected:
     virtual void BroadcastUpdate() override;
-    virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage) override;
+    virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage, bool counter = false) override;
 
 protected:
     virtual void TickIdle(float deltaTime) override;

@@ -25,9 +25,9 @@ void Structure::Init()
 	Super::Init();
 }
 
-void Structure::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
+void Structure::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage, bool counter)
 {
-	Super::TakeDamage(instigator, skillInfo, damage);
+	Super::TakeDamage(instigator, skillInfo, damage, counter);
 
 	// TODO : DESPAWN
 }

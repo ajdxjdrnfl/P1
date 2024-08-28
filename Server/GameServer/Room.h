@@ -35,6 +35,7 @@ public:
 public:
 	void			HandleDead(GameObjectRef gameObject);
 	bool			HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
+	bool			HandleDamage(Protocol::S_DAMAGE pkt);
 	bool			HandleMontage(Protocol::S_MONTAGE pkt);
 	bool			HandleSpawn(Protocol::S_SPAWN pkt);
 	bool			HandleDespawn(Protocol::S_DESPAWN pkt, bool remove = false);

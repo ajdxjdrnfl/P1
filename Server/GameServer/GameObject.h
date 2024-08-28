@@ -9,7 +9,7 @@ public:
 	virtual void PreUpdate(float deltaTime);
 	virtual void Update(float deltaTime);
 	
-	virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage);
+	virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage, bool counter = false);
 
 	virtual void SetCCTime(float ccTime);
 
@@ -34,7 +34,7 @@ protected:
 	virtual void TickRun(float deltaTime) { }
 	virtual void TickJump(float deltaTime) { }
 	virtual void TickSkill(float deltaTime) { }
-	virtual void TickStun(float deltaTime) { }
+	virtual void TickStun(float deltaTime);
 	virtual void TickDead(float deltaTime) { }
 
 	void TickDot(float deltaTime);

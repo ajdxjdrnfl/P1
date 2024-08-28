@@ -95,7 +95,7 @@ void Enemy::BroadcastUpdate()
 	Super::BroadcastUpdate();
 }
 
-void Enemy::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage)
+void Enemy::TakeDamage(GameObjectRef instigator, SkillInfo skillInfo, float damage, bool counter)
 {
 	Super::TakeDamage(instigator, skillInfo, damage);
 }

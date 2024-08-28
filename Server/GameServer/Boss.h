@@ -11,7 +11,7 @@ public:
     virtual void Update(float deltaTime);
     virtual void Init() override;
 
-    virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage) override;
+    virtual void TakeDamage(GameObjectRef instigator, struct SkillInfo skillInfo, float damage, bool counter = false) override;
 
 protected:
     virtual void TickIdle(float deltaTime) override;
@@ -102,7 +102,7 @@ private:
     Vector _rushVector;
 
     uint64 _bossPhase = 1;
-    uint64 _skillId = 2;
+    uint64 _skillId = 1;
 
     // Boss Skill
 private:
