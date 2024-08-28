@@ -165,7 +165,7 @@ void GameObject::TickDot(float deltaTime)
 				float hp = max(0, currentHp - damage);
 				_objectInfo->set_hp(hp);
 				_dirtyFlag = true;
-				damages.push_back(damage);
+				damages.push_back(hp);
 			}
 
 			if (totalTime > 0.f)
