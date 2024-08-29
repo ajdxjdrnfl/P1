@@ -296,8 +296,9 @@ void Boss::SelectSkill()
 
 		if(distance <= _attackRange)
 		{
-			StartDefaultAttack();
-			StartRush();
+			//StartDefaultAttack();
+			//StartRush();
+			StartDot();
 			SetState(Protocol::MOVE_STATE_SKILL, true);
 			return;
 		}
