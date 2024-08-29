@@ -123,10 +123,27 @@ void ABossWSkillInstance::RushToPillar()
 void ABossESkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 {
 	SkillActor->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
-	SkillActor->OnDestroyed.AddUniqueDynamic(this, &ABossESkillInstance::OnSkillDetroyed);
+	SkillActor->OnDestroyed.AddUniqueDynamic(this, &ABossESkillInstance::OnSkillDestroyed);
+	CurrentSkillActor = SkillActor;
+	OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &ABossESkillInstance::OnMontageEnded);
+
+	OwnerCreature->SetCollisionEnabled(false);
+
+	Cast<AEnemyBoss>(OwnerCreature)->OnSkillEndDelegate.AddUniqueDynamic(this, &ABossESkillInstance::OnSkillEnd);
 }
 
-void ABossESkillInstance::OnSkillDetroyed(AActor* ActorToDestroy)
+void ABossESkillInstance::OnSkillDestroyed(AActor* ActorToDestroy)
 {
 	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, M_Skill);
+}
+
+void ABossESkillInstance::OnSkillEnd(int idx)
+{
+	if (idx != 2) return;
+
+	OwnerCreature->SetCollisionEnabled(true);
+	if (IsValid(CurrentSkillActor))
+	{
+		CurrentSkillActor->Destroy();
+	}
 }

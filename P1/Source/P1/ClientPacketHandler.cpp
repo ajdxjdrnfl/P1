@@ -148,5 +148,23 @@ bool Handle_S_PHASE(PacketSessionRef& session, Protocol::S_PHASE& pkt)
 
 bool Handle_S_DAMAGE(PacketSessionRef& session, Protocol::S_DAMAGE& pkt)
 {
+
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->AttackTargetByDot(pkt);
+	return false;
+}
+
+bool Handle_S_PREDICTSKILL(PacketSessionRef& session, Protocol::S_PREDICTSKILL& pkt)
+{
+	UP1GameInstance* GameInstance = Cast<UP1GameInstance>(UGameplayStatics::GetGameInstance(GWorld));
+
+	if (GameInstance == nullptr)
+		return false;
+
+	GameInstance->PredictSkillPosition(pkt);
 	return false;
 }

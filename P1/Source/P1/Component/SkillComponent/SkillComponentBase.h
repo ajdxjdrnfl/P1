@@ -19,12 +19,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	friend class AP1Character;
+	friend class AEnemyBase;
+
 private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	FSkillInfo CurrentSkillInfo;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	ASkillActorBase* CurrentSkillActor;
+	class ASkillActorBase* CurrentSkillActor;
 
 	/*UPROPERTY()
 	class UCastingSkillManager* CastingSkillManager;
@@ -34,6 +37,18 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TArray<class ASkillInstanceBase*> SkillInstances;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	class UAnimMontage* M_KnockBack_L;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	class UAnimMontage* M_KnockBack_R;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	class UAnimMontage* M_Stun;
+
+	UPROPERTY()
+	class AP1Creature* OwnerCreature;
 
 public:
 	TArray<FSkillInfo> Skills;
@@ -49,6 +64,9 @@ public:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void InitOnSpawn();
+	void SetCC(class ASkillActorBase* SkillActor);
+	void ProcKnockBack(class ASkillActorBase* SkillActor);
+	void ProcStun();
 
 public:
 	void SetSkills();
@@ -59,8 +77,13 @@ public:
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt);
 	void PlayAnimMontageByDuration(class UAnimInstance* AnimInstance, class UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt);
 	void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor);
+	UFUNCTION()
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte) {}
 
 	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
 	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }
 	FORCEINLINE TArray<class ASkillInstanceBase*> GetSkillInstances() { return SkillInstances; }
+	FORCEINLINE UAnimMontage* GetKockBackLMontage() const { return M_KnockBack_L; }
+	FORCEINLINE UAnimMontage* GetKockBackRMontage() const { return M_KnockBack_R; }
+	FORCEINLINE UAnimMontage* GetStunMontage() const { return M_Stun; }
 };

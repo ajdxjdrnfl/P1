@@ -44,9 +44,11 @@ private:
 
 public:
 	void InitOnSpawn(Protocol::ObjectInfo& ObjInfo);
-	virtual void SetHealthByDamage(float HealthToSet) override;
+	virtual void SetHealthByDamage(float HealthToSet, class ASkillActorBase* HitSkill) override;
+	virtual void SetHealthByDamageByDot(float HealthToSet) override;
 	virtual void Die() override;
 	virtual void TickMove(float DeltaTime) override;
+	virtual void TickStun() override;
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) override;
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;

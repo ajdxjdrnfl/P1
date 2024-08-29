@@ -69,6 +69,10 @@ public:
 	void KillCreature(Protocol::S_DEAD& pkt);
 
 	void SetPhase(Protocol::S_PHASE& pkt);
+	
+	void AttackTargetByDot(Protocol::S_DAMAGE& Pkt);
+
+	void PredictSkillPosition(Protocol::S_PREDICTSKILL& Pkt);
 
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);

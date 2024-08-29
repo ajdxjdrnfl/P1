@@ -68,7 +68,7 @@ public:
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted);
 
 	UFUNCTION()
-	virtual void OnSkillDetroyed(AActor* ActorToDestroy) {}
+	virtual void OnSkillDestroyed(AActor* ActorToDestroy) {}
 
 	virtual void OnCastingEnd() {}
 

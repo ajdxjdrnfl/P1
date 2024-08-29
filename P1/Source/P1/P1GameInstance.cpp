@@ -20,6 +20,7 @@
 #include "P1/Skill/Boss/BossPillar.h"
 #include "AIController.h"
 #include "P1/SubSystem/GameInstance/DungeonManagerSubsystem.h"
+#include "P1/Skill/SkillPositionPredictor/SkillPositionPredictor.h"
 
 void UP1GameInstance::Init()
 {
@@ -282,7 +283,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	if (Creature == nullptr) 
 		return;
 
-	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
+	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z() + 60.f);
 	FRotator SpawnedRotation = FRotator(Creature->GetActorRotation().Pitch, Pkt.skillactor().yaw(), Creature->GetActorRotation().Roll);
 	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 	FTransform SpawnedTransform;
@@ -319,7 +320,7 @@ void UP1GameInstance::AttackTarget(Protocol::S_ATTACK& Pkt)
 
 	FSkillInfo InstigatorSkillInfo = InstigatorCreature->GetSkillInfoByIndex(Pkt.skillid());
 	VictimCreature->SetCreatureStateByServer(InstigatorSkillInfo);
-	VictimCreature->SetHealthByDamage(Pkt.victim().hp());
+	VictimCreature->SetHealthByDamage(Pkt.victim().hp(), Skills[Pkt.skillactor().object_id()]);
 }
 
 void UP1GameInstance::PlayMontage(Protocol::S_MONTAGE& Pkt)
@@ -465,6 +466,39 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster
 		break;
 	}
 	return nullptr;
+}
+
+void UP1GameInstance::AttackTargetByDot(Protocol::S_DAMAGE& Pkt)
+{
+	int32 TargetID = Pkt.info().object_id();
+
+	AP1Creature* VictimCreature = MyCharacter;
+	if (VictimCreature == nullptr)
+		return;
+
+	for (int32 i = 0; i < Pkt.damage_size(); i++)
+	{
+		VictimCreature->SetHealthByDamageByDot(Pkt.damage(i));
+	}
+}
+
+void UP1GameInstance::PredictSkillPosition(Protocol::S_PREDICTSKILL& Pkt)
+{
+	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
+
+	FVector SpawnedLocation = FVector(Pkt.x(), Pkt.y(), Pkt.z() + 60.f);
+	FRotator SpawnedRotation = FRotator();
+	FTransform SpawnedTransform;
+	SpawnedTransform.SetLocation(SpawnedLocation);
+	SpawnedTransform.SetRotation(SpawnedRotation.Quaternion());
+
+	ASkillPositionPredictor* ASkillPredictor = Cast<ASkillPositionPredictor>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld, CurrentSkillInfo.SkillPredictor, SpawnedTransform));
+	if (ASkillPredictor == nullptr)
+		return;
+
+	ASkillPredictor->InitOnSpawn(CurrentSkillInfo.DelayTimeToPredict);
+
+	UGameplayStatics::FinishSpawningActor(ASkillPredictor, SpawnedTransform);
 }
 
 AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)

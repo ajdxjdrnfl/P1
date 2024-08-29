@@ -6,17 +6,7 @@
 #include "EnemyBase.h"
 #include "EnemyBoss.generated.h"
 
-/*UENUM(BlueprintType)
-enum class EBossWSkillState : uint8
-{
-	Normal UMETA(Displayname = "Normal"),
-	Vanish UMETA(Displayname = "Vanish"),
-	Emergence UMETA(Displayname = "Emergence"),
-	SpawnPillar UMETA(Displayname = "SpawnPillar"),
-	SpellStart UMETA(Displayname = "SpellStart"),
-	SpellLoop UMETA(Displayname = "SpellLoop" ),
-	SpellStop UMETA(Displayname = "SpellStop" ),
-};*/
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSkillEndDelegate, int32, idx);
 
 UCLASS()
 class P1_API AEnemyBoss : public AEnemyBase
@@ -37,6 +27,8 @@ private:
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
 public:
+	FOnSkillEndDelegate OnSkillEndDelegate;
+
 	void MoveToTargetLocation(FVector TargetLoc);
 	void MoveToTargetActor(AActor* TargetActor);
 	void UseSkill(int32 SkillIndex);
