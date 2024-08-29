@@ -195,7 +195,11 @@ void Boss::TickSkill(float deltaTime)
 		}
 			
 			break;
+		case EBST_DOT:
+			DotSkill(target, deltaTime);
+			break;
 		}
+		
 		
 	}
 	
@@ -698,8 +702,8 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 			// Predict 패킷 전송
 			{
 				Protocol::S_PREDICTSKILL predictPkt;
-				predictPkt.mutable_caster();
-				predictPkt.skillid();
+				*predictPkt.mutable_caster() = *GetObjectInfo();
+				predictPkt.set_skillid(_skillId);
 				predictPkt.set_x(target->GetPos().x);
 				predictPkt.set_y(target->GetPos().y);
 				predictPkt.set_z(100.f);
@@ -715,13 +719,13 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
 			{
-				*montagePkt.mutable_caster() = *GetObjectInfo();
+				/**montagePkt.mutable_caster() = *GetObjectInfo();
 				montagePkt.set_id(_skillId);
 				montagePkt.set_section_num(2);
 				montagePkt.set_isstop(false);
 				montagePkt.set_scalable(true);
 				montagePkt.set_duration(1.f);
-				room->HandleMontage(montagePkt);
+				room->HandleMontage(montagePkt);*/
 				_attackDelay = 2.f;
 			}
 			break;
