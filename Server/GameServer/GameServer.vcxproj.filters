@@ -149,7 +149,7 @@
     <ClInclude Include="Raid.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
-    <ClInclude Include="Town.h">
+    <ClInclude Include="Field.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
     <ClInclude Include="Structure.h">
@@ -250,7 +250,7 @@
     <ClCompile Include="Raid.cpp">
       <Filter>Game\Room</Filter>
     </ClCompile>
-    <ClCompile Include="Town.cpp">
+    <ClCompile Include="Field.cpp">
       <Filter>Game\Room</Filter>
     </ClCompile>
     <ClCompile Include="Structure.cpp">

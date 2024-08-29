@@ -5,7 +5,7 @@ class Raid :
 {
     using Super = Room;
 public:
-    Raid();
+    Raid(uint64 roomId);
     virtual ~Raid();
 
     virtual void Init() override;

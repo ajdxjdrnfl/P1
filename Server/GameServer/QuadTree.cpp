@@ -2,6 +2,8 @@
 #include "QuadTree.h"
 #include "Collision.h"
 #include "GameObject.h"
+#include "Player.h"
+#include "Boss.h"
 
 QuadNode::~QuadNode()
 {
@@ -35,6 +37,12 @@ bool QuadNode::IsBoundOverlapped(Collision* collision)
 {
 	Bound cb = collision->GetBound();
 
+	return IsBoundOverlapped(cb);
+
+}
+
+bool QuadNode::IsBoundOverlapped(Bound cb)
+{
 	float cmaxX = cb.BottomRight.x;
 	float cminX = cb.topLeft.x;
 	float cmaxY = cb.BottomRight.y;
@@ -46,13 +54,17 @@ bool QuadNode::IsBoundOverlapped(Collision* collision)
 	float minY = bound.topLeft.y;
 
 	return !(cmaxX < cminX || maxX < cminX || cmaxY < minY || maxY < cminY);
-
 }
 
 bool QuadNode::IsInBound(Collision* collision)
 {
 	Bound cb = collision->GetBound();
 
+	return IsInBound(cb);
+}
+
+bool QuadNode::IsInBound(Bound cb)
+{
 	Vector bottomRight = cb.BottomRight;
 	Vector topLeft = cb.topLeft;
 
@@ -151,24 +163,28 @@ void QuadTree::Insert(GameObjectRef object)
 		if (node->nw == nullptr)
 		{
 			node->nw = new QuadNode();
+			node->nw->parent = node;
 			node->nw->bound = Bound(topLeft.x, topLeft.y, (bottomRight.x + topLeft.x) / 2, (bottomRight.y + topLeft.y) / 2);
 		}
 
 		if (node->ne == nullptr)
 		{
 			node->ne = new QuadNode();
+			node->ne->parent = node;
 			node->ne->bound = Bound((bottomRight.x + topLeft.x) / 2, topLeft.y, bottomRight.x, (bottomRight.y + topLeft.y) / 2);
 		}
 
 		if (node->se == nullptr)
 		{
 			node->se = new QuadNode();
+			node->se->parent = node;
 			node->se->bound = Bound((bottomRight.x + topLeft.x) / 2, (bottomRight.y + topLeft.y) / 2, bottomRight.x, bottomRight.y);
 		}
 
 		if (node->sw == nullptr)
 		{
 			node->sw = new QuadNode();
+			node->sw->parent = node;
 			node->sw->bound = Bound(topLeft.x, (bottomRight.y + topLeft.y) / 2, (bottomRight.x + topLeft.x) / 2, bottomRight.y);
 		}
 
@@ -199,6 +215,7 @@ void QuadTree::Insert(GameObjectRef object)
 		{
 			break;
 		}
+
 	}
 
 	node->objects.push_back(object);
@@ -275,4 +292,124 @@ void QuadTree::Clear()
 {
 	if (_head)
 		_head->Clear();
+}
+
+QuadNode* QuadTree::GetNode(GameObjectRef object)
+{
+	QuadNode* node = _head;
+
+	Collision* collision = static_cast<Collision*>(object->GetComponent(EComponentType::ECT_COLLISION));
+
+	while (node != nullptr)
+	{
+
+		if (node->ne && node->ne->IsInBound(collision))
+		{
+			node = node->ne;
+		}
+
+		else if (node->nw && node->nw->IsInBound(collision))
+		{
+			node = node->nw;
+		}
+
+		else if (node->se && node->se->IsInBound(collision))
+		{
+			node = node->se;
+		}
+
+		else if (node->sw && node->sw->IsInBound(collision))
+		{
+			node = node->sw;
+		}
+		else
+			break;
+	}
+
+	auto cmp = [object](weak_ptr<GameObject> a)
+	{
+		return (a.lock() == object);
+	};
+
+	if (find_if(node->objects.begin(), node->objects.end(), cmp) != node->objects.end())
+		return node;
+	else
+		return nullptr;
+}
+
+void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector<PlayerRef>& outputPlayers)
+{
+	QuadNode* node = GetNode(object);
+
+	if (node == nullptr)
+		return;
+	
+	Bound bound;
+	bound.topLeft = {object->GetPos().x - maxDistance.x, object->GetPos().y + maxDistance.y};
+	bound.BottomRight = { object->GetPos().x + maxDistance.x, object->GetPos().y - maxDistance.y };
+
+	while (node != _head)
+	{
+		if (node->IsInBound(bound))
+		{
+			break;
+		}
+	}
+
+	queue<QuadNode*> q;
+	q.push(node);
+
+	while (!q.empty())
+	{
+		QuadNode* node = q.front();
+		q.pop();
+
+		auto& v = node->objects;
+		
+		for (int32 i = 0; i < v.size(); i++)
+		{
+			if (GameObjectRef gameObject = v[i].lock())
+			{
+				if (PlayerRef player = static_pointer_cast<Player>(gameObject))
+				{
+					outputPlayers.push_back(player);
+				}
+			}
+		}
+
+		if (node->ne)
+		{
+			if (node->ne->IsInBound(bound))
+			{
+				q.push(node->ne);
+			}
+		}
+
+		if (node->nw)
+		{
+			if (node->nw->IsInBound(bound))
+			{
+				q.push(node->nw);
+			}
+		}
+
+		if (node->se)
+		{
+			if (node->se->IsInBound(bound))
+			{
+				q.push(node->se);
+			}
+		}
+
+		if (node->sw)
+		{
+			if (node->sw->IsInBound(bound))
+			{
+				q.push(node->sw);
+			}
+		}
+	}
+	
+	return;
+
 }

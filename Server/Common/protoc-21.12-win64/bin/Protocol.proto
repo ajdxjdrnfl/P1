@@ -123,3 +123,13 @@ message S_DAMAGE
 	ObjectInfo info = 1;
 	repeated float damage = 2;
 }
+
+message S_PREDICTSKILL
+{
+	ObjectInfo caster = 1;
+	uint64 skillid = 2;
+	float x = 3;
+	float y = 4;
+	float z = 5;
+	float yaw = 6;
+}

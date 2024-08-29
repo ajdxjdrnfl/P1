@@ -221,7 +221,7 @@ void Enemy::TickSkill(float deltaTime)
 	// 공격 범위 안
 	if(_attackDelay <= 0.5f && _sendSkillPacket == false)
 	{
-		room->DoAsync(&Room::HandleSkill, shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 20.f);
+		room->DoAsync(&Room::CreateSkillActor, shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 20.f);
 		_sendSkillPacket = true;
 	}
 

@@ -33,6 +33,16 @@ void SkillActor::Update(float deltaTime)
 	if (room == nullptr)
 		return;
 
+	_elapsedTime += deltaTime;
+
+	if (!_isSpawned)
+	{
+		if(_elapsedTime >= GetDelayTime())
+			SpawnSkill();
+		
+		return;
+	}
+
 	_lifeTime += deltaTime;
 	
 	if (_skill->GetSkillInfo().lifeTime <= _lifeTime)
@@ -56,6 +66,17 @@ void SkillActor::TickDead(float deltaTime)
 	Protocol::S_DESPAWN despawnPkt;
 	despawnPkt.add_info()->CopyFrom(*GetObjectInfo());
 	room->DoAsync(&Room::HandleDespawn, despawnPkt, true);
+}
+
+void SkillActor::SpawnSkill()
+{
+	RoomRef room = GetRoomRef();
+
+	if (room == nullptr)
+		return;
+
+	_isSpawned = true;
+	room->HandleSkill(static_pointer_cast<SkillActor>(shared_from_this()));
 }
 
 void SkillActor::SetCollisionBySkillId(Protocol::CasterType casterType, const uint64& skillId, float damage, bool counter)

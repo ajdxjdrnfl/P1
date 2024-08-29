@@ -22,6 +22,8 @@ static string skillTypeKey = "SkillType";
 static string castingTimeKey = "CastingTime";
 static string ccTimeKey = "CCTime";
 static string lifeTimeKey = "LifeTime";
+static string delayTimeKey = "DelayTimeToPredict";
+static string predictableKey = "bIsPredictable";
 
 
 void ResourceManager::Init()
@@ -89,11 +91,14 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 		float yscale = json[yscaleKey].get<float>();
 		float ccTime = json[ccTimeKey].get<float>();
 		float lifeTime = json[lifeTimeKey].get<float>();
+		float delayTime = json[delayTimeKey].get<float>();
 
 		string collisionTypeString = json[collisionTypeKey].get<string>();
 		string ccTypeString = json[ccTypeKey].get<string>();
 		string damageTypeString = json[damageTypeKey].get<string>();
 		string skillTypeString = json[skillTypeKey].get<string>();
+
+		bool isPredictable = json[predictableKey].get<bool>();
 		
 		Protocol::CollisionType collisionType = ConvertStringToCollisionType(collisionTypeString);
 		Protocol::CCType ccType = ConvertStringToCCType(ccTypeString);
@@ -104,7 +109,7 @@ void ResourceManager::SkillInfoParser(Protocol::CasterType casterType, json& jso
 		float castingTime = json[castingTimeKey].get<float>();
 
 		Skill* skill = new Skill();
-		skill->SetSkillInfo({ skillNum, hitNum, coolDown, damage, xscale, yscale, collisionType, ccType, damageType, skillType, castingTime, ccTime, lifeTime});
+		skill->SetSkillInfo({ skillNum, hitNum, coolDown, damage, xscale, yscale, collisionType, ccType, damageType, skillType, castingTime, ccTime, lifeTime, delayTime, isPredictable});
 		_skills[casterType][skillNum] = skill;
 	}
 }

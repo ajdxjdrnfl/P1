@@ -2,9 +2,12 @@
 #include "GameRoomManager.h"
 #include "Player.h"
 #include "Room.h"
+#include "Field.h"
+#include "Raid.h"
 #include "GameSession.h"
 
 GameRoomManager GRoomManager;
+atomic<int64> GameRoomManager::s_idGenerator = 1;
 
 GameRoomManager::GameRoomManager()
 {
@@ -19,11 +22,11 @@ GameRoomManager::~GameRoomManager()
 void GameRoomManager::Update(float deltaTime)
 {
 	WRITE_LOCK;
-	for (auto& p : _rooms)
+	/*for (auto& p : _rooms)
 	{
 		RoomRef room = p.second;
 		room->DoAsync(&Room::Update, deltaTime);
-	}
+	}*/
 
 	GRoom->Update(deltaTime);
 }
@@ -60,7 +63,6 @@ void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 
 void GameRoomManager::ExitGame(GameSessionRef session)
 {
-
 	WRITE_LOCK;
 	RoomRef room = session->_player.load()->GetRoomRef();
 
@@ -68,8 +70,39 @@ void GameRoomManager::ExitGame(GameSessionRef session)
 		room->DoAsync(&Room::HandleLeaveGame, session);
 }
 
+void GameRoomManager::EnterRaid(GameSessionRef session)
+{
+	RoomRef room = CreateRoom(ERT_RAID);
+	
+	
+}
+
 bool GameRoomManager::ChangeRoom(PlayerRef player)
 {
-
+	
 	return false;
+}
+
+RoomRef GameRoomManager::CreateRoom(ERoomType roomType)
+{
+	RoomRef room;
+
+	uint64 roomId = s_idGenerator.fetch_add(1);
+
+	switch (roomType)
+	{
+	case ERoomType::ERT_FIELD:
+		room = make_shared<Field>(roomId);
+		break;
+	case ERoomType::ERT_RAID:
+		room = make_shared<Raid>(roomId);
+		break;
+	}
+	
+	{
+		WRITE_LOCK;
+		_rooms[roomType][roomId] = room;
+	}
+	
+	return room;
 }

@@ -145,3 +145,8 @@ bool Handle_S_PHASE(PacketSessionRef& session, Protocol::S_PHASE& pkt)
 	GameInstance->SetPhase(pkt);
 	return false;
 }
+
+bool Handle_S_DAMAGE(PacketSessionRef& session, Protocol::S_DAMAGE& pkt)
+{
+	return false;
+}

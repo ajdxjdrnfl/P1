@@ -13,10 +13,10 @@
 #include "QuadTree.h"
 #include "Collision.h"
 
-RoomRef GRoom = make_shared<Room>();
+RoomRef GRoom = make_shared<Room>(ERT_NONE, 1);
 
 
-Room::Room()
+Room::Room(ERoomType roomType, uint64 roomId) : _roomType(roomType), _roomId(roomId)
 {
 	_tree = new QuadTree();
 	_updatedTree = new QuadTree();
@@ -106,7 +106,7 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 		
 	}
 	
-	// ���� ������ �����鿡�� ���ο� ���� ���� ����
+	// 새로 들어온 플레이어 스폰
 	{
 		Protocol::S_SPAWN pkt;
 		
@@ -117,7 +117,7 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 	}
 
-	// ������ �������� �����ϴ� ������Ʈ ����
+	// 이미 존재하는 오브젝트 패킷 전송
 	{
 		Protocol::S_SPAWN pkt;
 
@@ -129,8 +129,6 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 			Protocol::ObjectInfo* info = pkt.add_info();
 			info->CopyFrom(*gameObject->GetObjectInfo());
 		}
-
-		// TODO : ���� ������ �������� ��ų ���͵鵵 ���� ��������?
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		if (auto session = player->GetSessionRef())
@@ -148,7 +146,6 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 	session->_player.store(nullptr);
 	LeaveGame(player);
 
-	// �����ϴ� �÷��̾�� ���� ��� ����
 	{
 		Protocol::S_DESPAWN pkt;
 
@@ -174,7 +171,6 @@ bool Room::HandleLeaveGame(GameSessionRef session)
 			session->Send(sendBuffer);*/
 	}
 
-	// �ٸ� �÷��̾�鿡�� ���� ��� ����
 	{
 		Protocol::S_DESPAWN pkt;
 		pkt.add_info()->CopyFrom(*player->GetObjectInfo());
@@ -224,7 +220,7 @@ bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 	if (skill->GetSkillInfo().skillType == Protocol::SKILL_TYPE_CHARGING)
 		damage = pkt.damage();
 
-	return HandleSkill(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw(), damage);
+	return CreateSkillActor(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw(), damage);
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -306,7 +302,31 @@ void Room::HandleDead(GameObjectRef gameObject)
 	
 }
 
-bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage)
+bool Room::HandleSkill(SkillActorRef skillActor)
+{
+	
+	Protocol::S_SKILL skillPkt;
+	GameObjectRef caster = skillActor->GetCaster();
+
+	*skillPkt.mutable_caster() = *caster->GetObjectInfo();
+	*skillPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
+	skillPkt.set_skillid(skillActor->GetSkillInfo().skillNum);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
+	Broadcast(sendBuffer);
+
+	return true;
+}
+
+bool Room::HandlePredictSkill(Protocol::S_PREDICTSKILL pkt)
+{
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	Broadcast(sendBuffer);
+
+	return true;
+}
+
+bool Room::CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage)
 {
 	if (caster == nullptr)
 		return false;
@@ -322,16 +342,6 @@ bool Room::HandleSkill(GameObjectRef caster, uint64 skillid, Vector skillActorPo
 
 	SpawnSkill(skillActor);
 
-	// TODO : S_SKILL ���� ����
-	{
-		Protocol::S_SKILL skillPkt;
-		*skillPkt.mutable_caster() = *caster->GetObjectInfo();
-		*skillPkt.mutable_skillactor() = *skillActor->GetObjectInfo();
-		skillPkt.set_skillid(skillid);
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(skillPkt);
-		Broadcast(sendBuffer);
-	}
 	return true;
 }
 
@@ -519,6 +529,25 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 		}
 	}
 
+}
+
+void Room::BroadcastAOI(SendBufferRef sendBuffer, GameObjectRef gameObject, uint64 exceptId)
+{
+	
+	vector<PlayerRef> players;
+
+	_tree->GetAroundPlayers(gameObject, {1000.f, 1000.f}, players);
+
+	for (auto& player : players)
+	{
+		if (player->GetObjectInfo()->object_id() == exceptId)
+			continue;
+
+		if (GameSessionRef gameSession = player->GetSessionRef())
+		{
+			gameSession->Send(sendBuffer);
+		}
+	}
 }
 
 GameObjectRef Room::FindClosestPlayer(Vector pos, float maxDistance)

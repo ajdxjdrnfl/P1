@@ -19,6 +19,9 @@ struct SkillInfo
 	float castingTime;
 	float ccTime;
 	float lifeTime;
+	float delayTime;
+
+	bool isPredictable;
 
 }typedef SkillInfo;
 

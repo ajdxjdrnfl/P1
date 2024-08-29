@@ -40,6 +40,14 @@ enum EGridType : uint8
 	EGT_Walkable = 1,
 };
 
+enum ERoomType : uint8
+{
+	ERT_NONE = 0,
+	ERT_FIELD = 1, // 일반적인 마을
+	ERT_RAID = 2, // 레이드 상황
+	ERT_MAX,
+};
+
 enum EMapType : uint8
 {
 	EMT_NONE = 0,

@@ -8,7 +8,7 @@
 
 //RoomRef GRoom = make_shared<Raid>();
 
-Raid::Raid()
+Raid::Raid(uint64 roomId) : Super(ERoomType::ERT_RAID, roomId)
 {
 	_mapName = "Raid";
 }

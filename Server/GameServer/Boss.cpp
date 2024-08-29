@@ -351,7 +351,7 @@ void Boss::DefaultAttack(GameObjectRef target)
 		case MONTAGE_TYPE_ING:
 		{
 			_attackDelay = 1.5f;
-			room->HandleSkill(shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 30.f);
+			room->CreateSkillActor(shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 30.f);
 			_montageType = MONTAGE_TYPE_END;
 		}
 		case MONTAGE_TYPE_END:
@@ -422,7 +422,7 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				_rushVector = (target->GetPos() - GetPos()).Normalize();
 				// TODO : 스킬액터 스폰
-				room->DoAsync(&Room::HandleSkill, shared_from_this(), _skillId, GetPos(), _objectInfo->yaw(), 100.f);
+				room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, GetPos(), _objectInfo->yaw(), 100.f);
 			}
 			if(_isGimmik)
 			{
@@ -584,7 +584,7 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 
 			SetObjectInfo(newInfo, false, true);
 			{
-				room->HandleSkill(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
+				room->CreateSkillActor(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
 			}
 
 			{
@@ -663,6 +663,7 @@ void Boss::StartDot()
 {
 	_skillType = EBST_DOT;
 	_attackDelay = 1.f;
+	_skillId = 3;
 }
 
 void Boss::DotSkill(GameObjectRef target, float deltaTime)
@@ -684,20 +685,55 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 		case MONTAGE_TYPE_NONE:
 			_montageType = MONTAGE_TYPE_START;
 			{
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(1);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(1.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 1.f;
+			}
+			// Predict 패킷 전송
+			{
+				Protocol::S_PREDICTSKILL predictPkt;
+				predictPkt.mutable_caster();
+				predictPkt.skillid();
+				predictPkt.set_x(target->GetPos().x);
+				predictPkt.set_y(target->GetPos().y);
+				predictPkt.set_z(100.f);
+				predictPkt.set_yaw(GetObjectInfo()->yaw());
 				
+				room->DoAsync(&Room::HandlePredictSkill, predictPkt);
+			}
+			// 스킬 액터 생성
+			{
+				room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 30.f);
 			}
 			break;
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
 			{
-				
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(2);
+				montagePkt.set_isstop(false);
+				montagePkt.set_scalable(true);
+				montagePkt.set_duration(1.f);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 2.f;
 			}
 			break;
 
 		case MONTAGE_TYPE_ING:
 			_montageType = MONTAGE_TYPE_END;
 			{
-				
+				*montagePkt.mutable_caster() = *GetObjectInfo();
+				montagePkt.set_id(_skillId);
+				montagePkt.set_section_num(0);
+				montagePkt.set_isstop(true);
+				room->HandleMontage(montagePkt);
+				_attackDelay = 1.f;
 			}
 			break;
 

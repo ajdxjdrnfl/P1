@@ -15,8 +15,6 @@ uint64 FrameCount = 0;
 
 void DoWorkerJob(ServerServiceRef& service)
 {
-	GRoomManager.Update(0.f);
-
 	while (true)
 	{
 		LEndTickCount = ::GetTickCount64() + WORKER_TICK;
@@ -47,6 +45,8 @@ int main()
 		100);
 
 	ASSERT_CRASH(service->Start());
+
+	GRoomManager.Update(0.f);
 
 	for (int32 i = 0; i < 5; i++)
 	{
