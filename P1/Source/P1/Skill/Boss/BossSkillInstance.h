@@ -51,9 +51,26 @@ private:
 	UPROPERTY()
 	class UParticleSystemComponent* CurrentParticle;
 
+	UPROPERTY()
+	class ASkillActorBase* CurrentSkillActor;
+
 public:
 	virtual void ActivateSkill(class ASkillActorBase* SkillActor) override;
-	virtual void OnSkillDetroyed(AActor* ActorToDestroy) override;
+	virtual void OnSkillDestroyed(AActor* ActorToDestroy) override;
+
+	UFUNCTION()
+	void OnSkillEnd(int idx);
+
+};
+
+UCLASS()
+class P1_API ABossRSkillInstance : public ASkillInstanceBase
+{
+	GENERATED_BODY()
+
+private:
+	UPROPERTY()
+	class ASkillActorBase* CurrentSkillActor;
 
 };
 

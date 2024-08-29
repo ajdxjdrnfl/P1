@@ -5,6 +5,8 @@
 #include "Engine/DataTable.h"
 #include "P1/P1Character.h"
 #include "P1/SubSystem/GameInstance/SkillManagerSubSystem.h"
+#include "P1/Skill/SkillActorBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UCharacterSkillComponent::BeginPlay()
 {
@@ -90,12 +92,36 @@ void UCharacterSkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bI
 		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 		{
 			SubSystem->bCanMoveByAnimMontage = true;
-
 			SubSystem->bCanUseSkill = true;
 		}
 		OwnerCharacter->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		OwnerCharacter->TargetInfo->set_x(OwnerCharacter->GetActorLocation().X);
 		OwnerCharacter->TargetInfo->set_y(OwnerCharacter->GetActorLocation().Y);
 		OwnerCharacter->SetOnceDodge(false);
+	}
+
+	if (AnimMontage == GetKockBackLMontage() || AnimMontage == GetKockBackRMontage())
+	{
+		if (USkillManagerSubSystem* SubSystem = OwnerCharacter->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+		{
+			SubSystem->bCanMoveByAnimMontage = true;
+			SubSystem->bCanUseSkill = true;
+			SubSystem->bCanMove = true;
+		}
+
+		if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
+		{
+			if (GameInstance->IsMyCharacter(OwnerCharacter->ObjectInfo->object_id()))
+			{
+				Protocol::C_MOVE Pkt;
+				Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+				Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+				ObjInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+				_TargetInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
+				_TargetInfo->set_state(Protocol::MOVE_STATE_IDLE);
+
+				SEND_PACKET(Pkt);
+			}
+		}
 	}
 }

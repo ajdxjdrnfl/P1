@@ -11,6 +11,7 @@
 #include "P1/Skill/Mob/MobSkillInstance.h"
 #include "P1/Skill/Archer/ArcherSkillInstance.h"
 #include "P1/P1GameMode.h"
+#include "Kismet/KismetMathLibrary.h"
 
 USkillComponentBase::USkillComponentBase()
 {
@@ -24,7 +25,6 @@ void USkillComponentBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 }
 
 
@@ -38,6 +38,7 @@ void USkillComponentBase::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void USkillComponentBase::InitOnSpawn()
 {
 	SetSkills();
+
 }
 
 void USkillComponentBase::SetSkills()
@@ -88,8 +89,8 @@ void USkillComponentBase::SetSkills()
 			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
 			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 
-			/*SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
-			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);*/
+			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
+			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 		}
 		else if (P1Creature->GetClassType() == FName("Mob"))
 		{
@@ -178,3 +179,55 @@ void USkillComponentBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillA
 	SkillInstances[SkillID]->ActivateSkill(SkillActor);
 }
 
+void USkillComponentBase::SetCC(ASkillActorBase* SkillActor)
+{
+	if (!IsValid(SkillActor)) return;
+	if (SkillActor->DoOnceCCSet.Contains(OwnerCreature)) return;
+	SkillActor->DoOnceCCSet.Add(OwnerCreature);
+
+	if (OwnerCreature->ObjectInfo->state() != Protocol::MOVE_STATE_DEAD)
+	{
+		if (!OwnerCreature->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr))
+		{
+			OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(0.3f);
+		}
+
+		if (SkillActor->SkillInfo.CCType == ECCType::NockBack)
+		{
+			OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_STUN);
+			ProcKnockBack(SkillActor);
+		}
+		else if (SkillActor->SkillInfo.CCType == ECCType::Stun)
+		{
+			OwnerCreature->ObjectInfo->set_state(Protocol::MOVE_STATE_STUN);
+			ProcStun();
+		}
+	}
+}
+
+void USkillComponentBase::ProcKnockBack(ASkillActorBase* SkillActor)
+{
+	OwnerCreature->GetKnockBack(SkillActor->SkillInfo.CCTime);
+
+	FVector2D CharacterLocation = FVector2D(OwnerCreature->GetActorLocation().X, OwnerCreature->GetActorLocation().Y);
+	FVector2D SkillLocation = FVector2D(SkillActor->GetActorLocation().X, SkillActor->GetActorLocation().Y);
+	float CrossResult = UKismetMathLibrary::CrossProduct2D(CharacterLocation, SkillLocation);
+
+	if (OwnerCreature->GetMesh()->GetAnimInstance()->Montage_IsPlaying(M_KnockBack_L) ||
+		OwnerCreature->GetMesh()->GetAnimInstance()->Montage_IsPlaying(M_KnockBack_R))
+		return;
+
+	if (CrossResult > 0)
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Play(M_KnockBack_R);
+	}
+	else
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Play(M_KnockBack_L);
+	}
+}
+
+void USkillComponentBase::ProcStun()
+{
+	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Play(M_Stun);
+}

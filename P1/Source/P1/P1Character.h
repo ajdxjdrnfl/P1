@@ -46,6 +46,9 @@ private:
 	UPROPERTY()
 	TScriptInterface<IInteractInterface> InteractInterfaceActor;
 
+	UPROPERTY(EditAnywhere, Category = Editable)
+	bool bShowMoveState;
+
 public:
 	void InitOnSpawn(Protocol::ObjectInfo ObjInfo);
 	void UseSkill(uint16 SkillIndex);
@@ -59,12 +62,13 @@ public:
 	void TickStop();
 	void TickJump();
 	void TickSkill(float DeltaTime);
-	virtual void SetHealthByDamage(float HealthToSet) override;
+	virtual void SetHealthByDamage(float HealthToSet, class ASkillActorBase* HitSkill) override;
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) override;
 	void Dodge();
 	void AddCameraBoomLength(float Value);
 	void StopMoving();
 	void Interact();
+	virtual void SetHealthByDamageByDot(float HealthToSet) override;
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }

@@ -28,6 +28,7 @@ enum class ECCType : uint8
 	Stun UMETA(Displayname = "Stun"),
 	Slow UMETA(Displayname = "Slow"),
 	Airborne UMETA(Displayname = "Airborne"),
+	NockBack UMETA(Displayname = "NOckBack"),
 };
 
 UENUM(BlueprintType)
@@ -115,6 +116,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ASkillTargetingBase> SkillTargeting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPredictable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsPredictable == true"))
+	float DelayTimeToPredict;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "bIsPredictable == true"))
+	TSubclassOf<class ASkillPositionPredictor> SkillPredictor;
 };
 
 USTRUCT(BlueprintType)

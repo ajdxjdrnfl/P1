@@ -26,4 +26,6 @@ public:
 	virtual void InitOnSpawn();
 	virtual void UseSkill(int32 SkillIndex) override;
 	void UsePillarSkill(FVector2D Location);
+
+	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte) override;
 };

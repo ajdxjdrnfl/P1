@@ -45,14 +45,21 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	FName ClassType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	int32 ClassTypeInt;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
+	UMaterialInterface* HitMaterial;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bIsCounterState;
 
 	float CurrentTimeToMove;
 	float DefaultTimeToMove = 0.1f;
+
+	float TargetHitMaterialTime = 0.5f;
+	float CurrentHitMaterialTime;
+	bool bIsHit;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
@@ -65,6 +72,8 @@ public:
 	float CCTime;
 	float DefaultWalkSpeed;
 
+	TArray<UMaterialInterface*> DefaultMaterials;
+
 	virtual void Die();
 	virtual void Despawn();
 
@@ -74,9 +83,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GetStun(float _CCTime);
 
+	UFUNCTION(BlueprintCallable)
+	void GetKnockBack(float _CCTime);
+
 	void GetClassTypeInt();
 
 	virtual void TickMove(float DeltaTime) {}
+	virtual void TickStun() {}
 	void SetMoveValueByServer(Protocol::S_MOVE Pkt);
 
 	bool CheckDeath(Protocol::S_MOVE Pkt);
@@ -85,7 +98,8 @@ public:
 	virtual void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor) {}
 
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt) {}
-	virtual void SetHealthByDamage(float HealthToSet) {}
+	virtual void SetHealthByDamage(float HealthToSet, class ASkillActorBase* HitSkill) {}
+	virtual void SetHealthByDamageByDot(float HealthToSet) {}
 	virtual FSkillInfo GetSkillInfoByIndex(int32 SkillIndex) { return FSkillInfo(); }
 	void SetWalkSpeed(float WalkSpeed);
 
@@ -95,8 +109,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FRotator GetTargetYaw();
 
+	void SetCollisionEnabled(bool bEnable);
+
+	void SetHitMaterial();
+	void SetDefaultMaterial();
+
 	FORCEINLINE class UP1ObjectBase* GetObjectBase() { return ObjectBase; }
 	FORCEINLINE FName GetClassType() const { return ClassType; }
 	FORCEINLINE void SetInfo(Protocol::ObjectInfo InfoToSet) { ObjectInfo->CopyFrom(InfoToSet); }
 	FORCEINLINE bool GetCounterState() const { return bIsCounterState; }
+	FORCEINLINE UMaterialInterface* GetHitMaterial() const { return HitMaterial; }
 };

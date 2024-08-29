@@ -33,6 +33,8 @@ public:
 	Protocol::ObjectInfo* ObjectInfo;
 	//Protocol::SkillInfo* SkillInfo;
 
+	TSet<AP1Creature*> DoOnceCCSet;
+
 	UPROPERTY()
 	AActor* InstigatorOfSkill;
 

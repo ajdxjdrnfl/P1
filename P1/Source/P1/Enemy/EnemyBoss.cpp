@@ -16,12 +16,12 @@ void AEnemyBoss::BeginPlay()
 
 	EnemyController = Cast<AAIControllerEnemy>(GetController());
 
-	/*if (HealthBarWidgetClass)
+	if (HealthBarWidgetClass)
 	{
 		UBossStatWidget* StatWidget = Cast<UBossStatWidget>(CreateWidget(GetWorld(), HealthBarWidgetClass));
 		StatWidget->AddToViewport();
 		GetWidgetComponent()->SetStatWidget(StatWidget);
-	}*/
+	}
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBoss::OnCollisionOverlapBegin);
 
@@ -39,6 +39,9 @@ void AEnemyBoss::Tick(float DeltaTime)
 	case Protocol::MOVE_STATE_SKILL:
 	case Protocol::MOVE_STATE_RUN:
 		TickMove(DeltaTime);
+		break;
+	case Protocol::MOVE_STATE_STUN:
+		TickStun();
 		break;
 	default:
 		break;
@@ -89,6 +92,7 @@ void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 		if (pkt.isstop())
 		{
 			BossSkillState[pkt.id()] = 0;
+			OnSkillEndDelegate.Broadcast(pkt.id());
 		}
 		return;
 	}

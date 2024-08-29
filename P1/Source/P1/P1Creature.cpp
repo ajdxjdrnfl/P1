@@ -29,6 +29,10 @@ void AP1Creature::BeginPlay()
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	GetClassTypeInt();
 	
+	for (int i = 0; i < GetMesh()->GetMaterials().Num(); i++)
+	{
+		DefaultMaterials.Add(GetMesh()->GetMaterial(i));
+	}
 }
 
 // Called every frame
@@ -37,6 +41,20 @@ void AP1Creature::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetObjectInfo();
+
+	if (bIsHit)
+	{
+		if (CurrentHitMaterialTime < TargetHitMaterialTime)
+		{
+			CurrentHitMaterialTime += DeltaTime;
+		}
+		else
+		{
+			CurrentHitMaterialTime = 0;
+			bIsHit = false;
+			SetDefaultMaterial();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -75,6 +93,9 @@ void AP1Creature::SetCreatureStateByServer(FSkillInfo SkillInfo)
 	case ECCType::Stun:
 		GetStun(SkillInfo.CCTime);
 		break;
+	case ECCType::NockBack:
+		GetKnockBack(SkillInfo.CCTime);
+		break;
 	default:
 		break;
 	}
@@ -83,6 +104,17 @@ void AP1Creature::SetCreatureStateByServer(FSkillInfo SkillInfo)
 void AP1Creature::GetStun(float _CCTime)
 {
 	//CreatureState = ECreatureState::Stun;
+	CCTime = _CCTime;
+
+	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
+	{
+		SkillSubSystem->bCanUseSkill = false;
+		SkillSubSystem->bCanMove = false;
+	}
+}
+
+void AP1Creature::GetKnockBack(float _CCTime)
+{
 	CCTime = _CCTime;
 
 	if (USkillManagerSubSystem* SkillSubSystem = GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
@@ -163,4 +195,39 @@ FRotator AP1Creature::GetTargetYaw()
 	}
 
 	return RotationToGet;
+}
+
+void AP1Creature::SetCollisionEnabled(bool bEnable)
+{
+	if (bEnable)
+	{
+		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	}
+	else
+	{
+		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	}
+}
+
+void AP1Creature::SetHitMaterial()
+{
+	TArray<UMaterialInterface*> Materials = GetMesh()->GetMaterials();
+	for (int i = 0; i < Materials.Num(); i++)
+	{
+		GetMesh()->SetMaterial(i, HitMaterial);
+	}
+
+	bIsHit = true;
+	CurrentHitMaterialTime = 0;
+}
+
+void AP1Creature::SetDefaultMaterial()
+{
+	TArray<UMaterialInterface*> Materials = GetMesh()->GetMaterials();
+	for (int i = 0; i < Materials.Num(); i++)
+	{
+		GetMesh()->SetMaterial(i, DefaultMaterials[i]);
+	}
 }

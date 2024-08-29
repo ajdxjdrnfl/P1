@@ -21,7 +21,7 @@
 #include "P1GameInstance.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
-//#include "P1/Component/DamageIndicator/EnemyDamageIndicatorComponent.h"
+#include "P1/Skill/SkillActorBase.h"
 
 AP1Character::AP1Character()
 {
@@ -69,7 +69,7 @@ void AP1Character::BeginPlay()
 
 void AP1Character::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 
 	CameraBoom->TargetArmLength = UKismetMathLibrary::FInterpTo(CameraBoom->TargetArmLength, TargetCameraBoomLength, DeltaSeconds, 20);
 
@@ -89,8 +89,42 @@ void AP1Character::Tick(float DeltaSeconds)
 		break;
 	case Protocol::MOVE_STATE_SKILL:
 		TickSkill(DeltaSeconds);
+		break;
+	case Protocol::MOVE_STATE_STUN:
+		break;
 	default:
 		break;
+	}
+
+	if (bShowMoveState)
+	{
+		if (UP1GameInstance* GameInstance = GetWorld()->GetGameInstance<UP1GameInstance>())
+		{
+			if (GameInstance->IsMyCharacter(ObjectInfo->object_id()))
+			{
+				FString Str = FString();
+
+				if (ObjectInfo->state() == Protocol::MOVE_STATE_IDLE)
+				{
+					Str = FString("Idle");
+				}
+				else if (ObjectInfo->state() == Protocol::MOVE_STATE_STUN)
+				{
+					Str = FString("KNOCKBACK");
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s"), *Str));
+				}
+				else if (ObjectInfo->state() == Protocol::MOVE_STATE_RUN)
+				{
+					Str = FString("Run");
+				}
+				else if (ObjectInfo->state() == Protocol::MOVE_STATE_JUMP)
+				{
+					Str = FString("Jump");
+				}
+
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%s"), *Str));
+			}
+		}
 	}
 }
 
@@ -102,8 +136,9 @@ void AP1Character::PostInitializeComponents()
 	{
 		SkillComponent->OwnerAnimInstance = GetMesh()->GetAnimInstance();
 		SkillComponent->OwnerCharacter = this;
+		SkillComponent->OwnerCreature = this;
 	}
-		
+
 
 	if (WidgetComponent)
 	{
@@ -179,14 +214,14 @@ void AP1Character::TickMove(float DeltaTime)
 
 	bool bNearX = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.X, GetActorLocation().X, 5);
 	bool bNearY = UKismetMathLibrary::NearlyEqual_FloatFloat(TargetLocation.Y, GetActorLocation().Y, 5);
-	
+
 	if (bNearX && bNearY)
 	{
 		ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
 		SetActorRotation(FRotator(GetActorRotation().Pitch, TargetInfo->yaw(), GetActorRotation().Roll));
 		return;
 	}
-	
+
 	AddMovementInput(TargetRotator.Vector().GetSafeNormal());
 }
 
@@ -243,11 +278,23 @@ void AP1Character::TickSkill(float DeltaTime)
 	SetActorRotation(NextRotation);
 }
 
-void AP1Character::SetHealthByDamage(float HealthToSet)
+void AP1Character::SetHealthByDamage(float HealthToSet, ASkillActorBase* HitSkill)
 {
+	if (WidgetComponent)
+	{
+		WidgetComponent->SpawnDamageIndicator(ObjectInfo->hp() - HealthToSet);
+	}
+
 	if (StatComponent)
 	{
 		StatComponent->SetHealth(HealthToSet);
+
+		SetHitMaterial();
+	}
+
+	if (SkillComponent)
+	{
+		SkillComponent->SetCC(HitSkill);
 	}
 }
 
@@ -269,7 +316,7 @@ void AP1Character::Dodge()
 
 void AP1Character::AddCameraBoomLength(float Value)
 {
-	 TargetCameraBoomLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 100, 500, 2500);
+	TargetCameraBoomLength = FMath::Clamp(CameraBoom->TargetArmLength - Value * 100, 500, 2500);
 }
 
 void AP1Character::StopMoving()
@@ -280,7 +327,7 @@ void AP1Character::StopMoving()
 	ObjInfo->CopyFrom(*ObjectInfo);
 	_TargetInfo->CopyFrom(*TargetInfo);
 	_TargetInfo->set_state(Protocol::MOVE_STATE_STOP);
-	
+
 	SEND_PACKET(Pkt);
 }
 
@@ -288,5 +335,20 @@ void AP1Character::Interact()
 {
 	if (InteractInterfaceActor == nullptr) return;
 	InteractInterfaceActor->Interact();
+}
+
+void AP1Character::SetHealthByDamageByDot(float HealthToSet)
+{
+	if (WidgetComponent)
+	{
+		WidgetComponent->SpawnDamageIndicator(ObjectInfo->hp() - HealthToSet);
+	}
+
+	if (StatComponent)
+	{
+		StatComponent->SetHealth(HealthToSet);
+
+		SetHitMaterial();
+	}
 }
 

@@ -93,9 +93,24 @@ void AEnemyBase::PostInitializeComponents()
 	{
 		WidgetComponent->OwnerEnemy = this;
 	}
+
+	if (SkillComponent)
+	{
+		SkillComponent->OwnerCreature = this;
+		SkillComponent->OwnerEnemy = this;
+	}
 }
 
-void AEnemyBase::SetHealthByDamage(float HealthToSet)
+void AEnemyBase::SetHealthByDamage(float HealthToSet, ASkillActorBase* HitSkill)
+{
+	WidgetComponent->SpawnDamageIndicator(ObjectInfo->hp() - HealthToSet);
+	StatComponent->SetHealth(HealthToSet);
+	SetHitMaterial();
+
+	SkillComponent->SetCC(HitSkill);
+}
+
+void AEnemyBase::SetHealthByDamageByDot(float HealthToSet)
 {
 	if (WidgetComponent)
 	{
@@ -105,6 +120,7 @@ void AEnemyBase::SetHealthByDamage(float HealthToSet)
 	if (StatComponent)
 	{
 		StatComponent->SetHealth(HealthToSet);
+		SetHitMaterial();
 	}
 }
 
@@ -155,6 +171,12 @@ void AEnemyBase::TickMove(float DeltaTime)
 	
 
 	SetObjectInfo();
+}
+
+void AEnemyBase::TickStun()
+{
+	if (SkillComponent == nullptr) return;
+	SkillComponent->ProcStun();
 }
 
 void AEnemyBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
