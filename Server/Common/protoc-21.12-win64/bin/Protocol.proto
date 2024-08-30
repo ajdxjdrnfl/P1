@@ -6,13 +6,17 @@ import "Struct.proto";
 
 message C_LOGIN
 {
-	CasterType castertype = 1;
+	
 }
 
 message S_LOGIN
 {
 	bool success = 1;
-	
+}
+
+message C_ENTER_GAME
+{
+	CasterType castertype = 1;
 }
 
 message S_ENTER_GAME

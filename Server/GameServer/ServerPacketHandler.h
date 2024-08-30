@@ -12,28 +12,30 @@ enum : uint16
 {
 	PKT_C_LOGIN = 1000,
 	PKT_S_LOGIN = 1001,
-	PKT_S_ENTER_GAME = 1002,
-	PKT_C_LEAVE_GAME = 1003,
-	PKT_S_SPAWN = 1004,
-	PKT_S_DESPAWN = 1005,
-	PKT_S_MOVE = 1006,
-	PKT_C_MOVE = 1007,
-	PKT_C_SKILL = 1008,
-	PKT_S_SKILL = 1009,
-	PKT_C_ATTACK = 1010,
-	PKT_S_ATTACK = 1011,
-	PKT_C_MONTAGE = 1012,
-	PKT_S_MONTAGE = 1013,
-	PKT_S_DEAD = 1014,
-	PKT_C_PHASE = 1015,
-	PKT_S_PHASE = 1016,
-	PKT_S_DAMAGE = 1017,
-	PKT_S_PREDICTSKILL = 1018,
+	PKT_C_ENTER_GAME = 1002,
+	PKT_S_ENTER_GAME = 1003,
+	PKT_C_LEAVE_GAME = 1004,
+	PKT_S_SPAWN = 1005,
+	PKT_S_DESPAWN = 1006,
+	PKT_S_MOVE = 1007,
+	PKT_C_MOVE = 1008,
+	PKT_C_SKILL = 1009,
+	PKT_S_SKILL = 1010,
+	PKT_C_ATTACK = 1011,
+	PKT_S_ATTACK = 1012,
+	PKT_C_MONTAGE = 1013,
+	PKT_S_MONTAGE = 1014,
+	PKT_S_DEAD = 1015,
+	PKT_C_PHASE = 1016,
+	PKT_S_PHASE = 1017,
+	PKT_S_DAMAGE = 1018,
+	PKT_S_PREDICTSKILL = 1019,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
+bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
 bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt);
 bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
 bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt);
@@ -49,6 +51,7 @@ public:
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
+		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LEAVE_GAME>(Handle_C_LEAVE_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_C_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_SKILL>(Handle_C_SKILL, session, buffer, len); };

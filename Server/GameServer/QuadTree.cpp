@@ -45,13 +45,13 @@ bool QuadNode::IsBoundOverlapped(Bound cb)
 {
 	float cmaxX = cb.BottomRight.x;
 	float cminX = cb.topLeft.x;
-	float cmaxY = cb.BottomRight.y;
-	float cminY = cb.topLeft.y;
+	float cmaxY = cb.topLeft.y;
+	float cminY = cb.BottomRight.y;
 
 	float maxX = bound.BottomRight.x;
 	float minX = bound.topLeft.x;
-	float maxY = bound.BottomRight.y;
-	float minY = bound.topLeft.y;
+	float maxY = bound.topLeft.y;
+	float minY = bound.BottomRight.y;
 
 	return !(cmaxX < cminX || maxX < cminX || cmaxY < minY || maxY < cminY);
 }
@@ -354,6 +354,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 		{
 			break;
 		}
+		node = node->parent;
 	}
 
 	queue<QuadNode*> q;
@@ -379,7 +380,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 
 		if (node->ne)
 		{
-			if (node->ne->IsInBound(bound))
+			if (node->ne->IsBoundOverlapped(bound))
 			{
 				q.push(node->ne);
 			}
@@ -387,7 +388,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 
 		if (node->nw)
 		{
-			if (node->nw->IsInBound(bound))
+			if (node->nw->IsBoundOverlapped(bound))
 			{
 				q.push(node->nw);
 			}
@@ -395,7 +396,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 
 		if (node->se)
 		{
-			if (node->se->IsInBound(bound))
+			if (node->se->IsBoundOverlapped(bound))
 			{
 				q.push(node->se);
 			}
@@ -403,7 +404,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 
 		if (node->sw)
 		{
-			if (node->sw->IsInBound(bound))
+			if (node->sw->IsBoundOverlapped(bound))
 			{
 				q.push(node->sw);
 			}

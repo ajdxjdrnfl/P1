@@ -25,9 +25,31 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		return false;
 
 	LOG(pkt);
-	GRoomManager.EnterGame(gameSession, pkt);
+	
+	{
+		Protocol::S_LOGIN pkt;
+		pkt.set_success(true);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+		gameSession->Send(sendBuffer);
+	}
+	
 
 	return true;
+}
+
+bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession == nullptr)
+		return false;
+
+	LOG(pkt);
+
+	GRoomManager.EnterGame(gameSession, pkt);
+
+	return false;
 }
 
 bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)

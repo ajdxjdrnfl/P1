@@ -138,7 +138,7 @@ struct Bound
 		if (topLeft.x > x || BottomRight.x < x)
 			return false;
 
-		else if (topLeft.y > y || BottomRight.y < y)
+		else if (topLeft.y < y || BottomRight.y > y)
 			return false;
 
 		return true;

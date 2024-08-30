@@ -52,7 +52,7 @@ void GameRoomManager::Init()
 	GRoom->Init();
 }
 
-void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
+void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 {
 	WRITE_LOCK;
 	RoomRef room = GRoom;

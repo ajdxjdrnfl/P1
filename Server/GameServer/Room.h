@@ -25,7 +25,7 @@ public:
 	virtual void	Update(float deltaTime);
 
 public:
-	bool			HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt);
+	bool			HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt);
 	bool			HandleLeaveGame(GameSessionRef session);
 	bool			HandleMove(Protocol::C_MOVE pkt);
 	bool			HandleSkillPkt(Protocol::C_SKILL pkt);

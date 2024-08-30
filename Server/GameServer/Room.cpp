@@ -88,7 +88,7 @@ void Room::Update(float deltaTime)
 	DoTimer(64, &Room::Update, deltaTime);
 }
 
-bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
+bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 {
 	PlayerRef player = ObjectUtils::CreatePlayer(session, GetRoomRef(), pkt.castertype());
 	session->_player.store(player);
@@ -197,7 +197,7 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		Broadcast(sendBuffer);
+		BroadcastAOI(sendBuffer, player);
 	}
 	else return false;
 	
@@ -536,7 +536,7 @@ void Room::BroadcastAOI(SendBufferRef sendBuffer, GameObjectRef gameObject, uint
 	
 	vector<PlayerRef> players;
 
-	_tree->GetAroundPlayers(gameObject, {1000.f, 1000.f}, players);
+	_tree->GetAroundPlayers(gameObject, {100.f, 100.f}, players);
 
 	for (auto& player : players)
 	{
