@@ -39,6 +39,8 @@ protected:
 	class UEnemySkillComponent* SkillComponent;
 
 private:
+	bool bDoOnceStun;
+
 	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = "true"))
 	int32 PhaseNum;
 
@@ -56,4 +58,5 @@ public:
 	FORCEINLINE class UEnemyStatComponent* GetStatComponent() { return StatComponent; }
 	FORCEINLINE class UEnemyWidgetComponent* GetWidgetComponent() { return WidgetComponent; }
 	FORCEINLINE int32 GetPhaseNum() { return PhaseNum; }
+	FORCEINLINE void SetDoOnceStun(bool bDoOnceToSet) { bDoOnceStun = bDoOnceToSet; }
 };

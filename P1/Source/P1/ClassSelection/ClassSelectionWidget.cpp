@@ -9,18 +9,32 @@ void UClassSelectionWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SelectLeft->OnClicked.AddDynamic(this, &UClassSelectionWidget::OnSelectLeftClicked);
-	SelectRight->OnClicked.AddDynamic(this, &UClassSelectionWidget::OnSelectRightClicked);
+	LeftButton->OnClicked.AddDynamic(this, &UClassSelectionWidget::OnLeftButtonClicked);
+	RightButton->OnClicked.AddDynamic(this, &UClassSelectionWidget::OnRightButtonClicked);
+	SelectButton->OnClicked.AddDynamic(this, &UClassSelectionWidget::OnSelectButtonClicked);
+
+	ClassMap.Add(0, Protocol::CasterType::CASTER_TYPE_WARRIOR);
+	ClassMap.Add(1, Protocol::CasterType::CASTER_TYPE_ARCHER);
 }
 
-void UClassSelectionWidget::OnSelectRightClicked()
+void UClassSelectionWidget::OnSelectButtonClicked()
+{
+	{
+		Protocol::C_ENTER_GAME Pkt;
+		Pkt.set_castertype(*ClassMap.Find(ClassIndex));
+
+		SEND_PACKET(Pkt);
+	}
+}
+
+void UClassSelectionWidget::OnRightButtonClicked()
 {
 	ClassIndex++;
 	if (ClassIndex == ClassMaterials.Num()) ClassIndex = 0;
 	MeshCaptureImage->SetBrushFromMaterial(ClassMaterials[ClassIndex]);
 }
 
-void UClassSelectionWidget::OnSelectLeftClicked()
+void UClassSelectionWidget::OnLeftButtonClicked()
 {
 	ClassIndex--;
 	if (ClassIndex == -1) ClassIndex = ClassMaterials.Num() - 1;

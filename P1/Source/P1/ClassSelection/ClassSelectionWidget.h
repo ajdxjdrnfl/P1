@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "P1/P1.h"
 #include "ClassSelectionWidget.generated.h"
 
 /**
@@ -13,7 +14,7 @@ UCLASS()
 class P1_API UClassSelectionWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void NativeConstruct() override;
 
@@ -26,15 +27,23 @@ public:
 	class UImage* MeshCaptureImage;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* SelectRight;
+	class UButton* RightButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* SelectLeft;
+	class UButton* LeftButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* SelectButton;
 
 	UFUNCTION()
-	void OnSelectRightClicked();
+	void OnRightButtonClicked();
 
 	UFUNCTION()
-	void OnSelectLeftClicked();
+	void OnLeftButtonClicked();
+
+	UFUNCTION()
+	void OnSelectButtonClicked();
+
+	TMap<int32, Protocol::CasterType> ClassMap;
 
 };

@@ -32,3 +32,8 @@ void UDamageIndicatorWidget::OnDamageIndicatorAnimationEnd()
 		DamageIndicatorActor->Destroy();
 	}
 }
+
+void UDamageIndicatorWidget::SetDamageIndicatorTextColor(FLinearColor ColorToSet)
+{
+	DamageIndicatorText->SetColorAndOpacity(FSlateColor(ColorToSet));
+}

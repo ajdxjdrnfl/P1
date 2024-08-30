@@ -76,6 +76,7 @@ public:
 	virtual void UseSkill(int32 SkillIndex);
 	virtual void PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt);
 	void PlayAnimMontageByDuration(class UAnimInstance* AnimInstance, class UAnimMontage* AnimMontage, Protocol::S_MONTAGE& pkt);
+	void PlayAnimMontageByDurationNotPacket(class UAnimInstance* AnimInstance, class UAnimMontage* AnimMontage, int32 SectionNum, float TimeDuration);
 	void SetSpawnedSkill(int32 SkillID, class ASkillActorBase* SkillActor);
 	UFUNCTION()
 	virtual void OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte) {}

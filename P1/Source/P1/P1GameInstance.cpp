@@ -42,7 +42,7 @@ void UP1GameInstance::Init()
 		
 	InitSkillMap();
 
-	TickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UP1GameInstance::Tick));
+	TickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UP1GameInstance::Tick), 1.f);
 
 	Super::Init();
 }
@@ -68,6 +68,18 @@ bool UP1GameInstance::Tick(float DeltaTime)
 			Iter.RemoveCurrent();
 	}
 
+	for (TMap<uint64, AEnemyBase*>::TIterator Iter = Enemies.CreateIterator(); Iter; ++Iter)
+	{
+		if (Iter->Value == nullptr)
+			Iter.RemoveCurrent();
+	}
+
+	for (TMap<uint64, AP1Character*>::TIterator Iter = Characters.CreateIterator(); Iter; ++Iter)
+	{
+		if (Iter->Value == nullptr)
+			Iter.RemoveCurrent();
+	}
+
 	return false;
 }
 
@@ -80,16 +92,18 @@ void UP1GameInstance::InitSkillMap()
 	TArray<FName> RowNames = SkillDataTable->GetRowNames();
 	for (FName Row : RowNames)
 	{
-		FString ContextString;
+		FString	ContextString;
 		FSkillsByClass* SkillInfos = SkillDataTable->FindRow<FSkillsByClass>(Row, ContextString);
+
 		for (FSkillInfo& CurrentSkillInfo : SkillInfos->SkillInfos)
 		{
 			Protocol::CasterType* CasterType = ClassCasterMap.Find(Row);
-			if (CasterType == nullptr) continue;
+
+			if (CasterType == nullptr) 
+				continue;
 
 			SkillInfo[*CasterType].Add(CurrentSkillInfo);
 
-			// Set skillinfo to each skill game default object
 			SetSkillInfo(CurrentSkillInfo);
 		}
 	}
@@ -97,13 +111,14 @@ void UP1GameInstance::InitSkillMap()
 
 void UP1GameInstance::SetSkillInfo(const FSkillInfo& CurrentSkillInfo)
 {
-	if (CurrentSkillInfo.SkillActorClass == nullptr) return;
+	if (CurrentSkillInfo.SkillActorClass == nullptr) 
+		return;
+
 	ASkillActorBase* SkillActor = Cast<ASkillActorBase>(CurrentSkillInfo.SkillActorClass->GetDefaultObject());
+	FVector2D CollisionSize = FVector2D(CurrentSkillInfo.XScale, CurrentSkillInfo.YScale);
 
 	if (SkillActor == nullptr) 
 		return;
-
-	FVector2D CollisionSize = FVector2D(CurrentSkillInfo.XScale, CurrentSkillInfo.YScale);
 
 	SkillActor->SkillInfo = CurrentSkillInfo;
 	SkillActor->SetCollisionSize(CollisionSize);
@@ -139,7 +154,6 @@ void UP1GameInstance::ConnectToGameServer()
 		// TODO : 로비에서 캐릭터 선택
 		{
 			Protocol::C_LOGIN Pkt;
-			Pkt.set_castertype(Protocol::CASTER_TYPE_WARRIOR);
 			SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);
 
 			SendPacket(SendBuffer);
@@ -283,7 +297,7 @@ void UP1GameInstance::SkillSpawn(Protocol::S_SKILL& Pkt)
 	if (Creature == nullptr) 
 		return;
 
-	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z() + 60.f);
+	FVector SpawnedLocation = FVector(Pkt.skillactor().x(), Pkt.skillactor().y(), Pkt.skillactor().z());
 	FRotator SpawnedRotation = FRotator(Creature->GetActorRotation().Pitch, Pkt.skillactor().yaw(), Creature->GetActorRotation().Roll);
 	FSkillInfo CurrentSkillInfo = SkillInfo[Pkt.caster().castertype()][Pkt.skillid()];
 	FTransform SpawnedTransform;

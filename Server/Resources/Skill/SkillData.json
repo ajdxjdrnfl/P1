@@ -15,7 +15,7 @@
 				"AnimMontage": "/Script/Engine.AnimMontage'/Game/TopDown/Blueprint/Animation/Warrior/Montage_Attack.Montage_Attack'",
 				"CollisionType": "Box",
 				"CCType": "Normal",
-				"DamageType": "Dot",
+				"DamageType": "Normal",
 				"SkillType": "Normal",
 				"CastingTime": 0,
 				"CCTime": 0,

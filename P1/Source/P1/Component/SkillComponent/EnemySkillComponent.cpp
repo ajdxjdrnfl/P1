@@ -37,6 +37,7 @@ void UEnemySkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bInter
 		if (AnimMontage == GetStunMontage())
 		{
 			OwnerEnemy->ObjectInfo->set_state(Protocol::MOVE_STATE_IDLE);
+			OwnerEnemy->SetDoOnceStun(false);
 		}
 	}
 }

@@ -175,6 +175,9 @@ void AEnemyBase::TickMove(float DeltaTime)
 
 void AEnemyBase::TickStun()
 {
+	if (bDoOnceStun) return;
+	bDoOnceStun = true;
+
 	if (SkillComponent == nullptr) return;
 	SkillComponent->ProcStun();
 }

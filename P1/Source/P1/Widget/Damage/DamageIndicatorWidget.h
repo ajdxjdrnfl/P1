@@ -41,4 +41,5 @@ public:
 	UFUNCTION()
 	void OnDamageIndicatorAnimationEnd();
 
+	void SetDamageIndicatorTextColor(FLinearColor ColorToSet);
 };

@@ -116,7 +116,7 @@ void AArcherWSkillInstance::UseSkill()
 
 void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupted)
 {
-	if ((AnimMontage == M_Skill) && IsValid(CurrentSkillActor))
+	if (AnimMontage == M_Skill && IsValid(CurrentSkillActor))
 	{
 		CurrentSkillActor->Destroy();
 		CurrentSkillActor = nullptr;
@@ -142,6 +142,7 @@ void AArcherWSkillInstance::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 void AArcherWSkillInstance::SpawnSkill()
 {
 	if (SkillActorClass == nullptr) return;
+	if (IsValid(CurrentSkillActor)) return;
 
 	{
 		Protocol::C_SKILL Pkt;
@@ -167,24 +168,6 @@ void AArcherWSkillInstance::SpawnSkill()
 
 void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 {
-	{
-		Protocol::C_MOVE Pkt;
-		Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
-		Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
-		ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
-		_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
-
-		FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
-		float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
-		_TargetInfo->set_yaw(TargetYaw);
-
-		_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
-
-		SEND_PACKET(Pkt);
-	}
-
-	SkillPos = TargetPos;
-
 	if (OwnerCreature)
 	{
 		OwnerCreature->GetMesh()->GetAnimInstance()->OnMontageEnded.AddUniqueDynamic(this, &AArcherWSkillInstance::OnMontageEnded);
@@ -192,19 +175,37 @@ void AArcherWSkillInstance::UseSkillAfterTargetingWithPos(FVector TargetPos)
 
 	if (!IsValid(HoldingByTickSkillManager))
 	{
+		SkillPos = TargetPos;
 		HoldingByTickSkillManager = Cast<AHoldingByTickSkillManager>(OwnerCreature->GetWorld()->SpawnActor(AHoldingByTickSkillManager::StaticClass()));
 		HoldingByTickSkillManager->AttachToActor(OwnerCreature, FAttachmentTransformRules::KeepWorldTransform);
 		HoldingByTickSkillManager->Init(Cast<AP1Character>(OwnerCreature), this, SkillInfo);
 		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
+
+		{
+			Protocol::C_MOVE Pkt;
+			Protocol::ObjectInfo* _TargetInfo = Pkt.mutable_targetinfo();
+			Protocol::ObjectInfo* ObjInfo = Pkt.mutable_info();
+			ObjInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+			_TargetInfo->CopyFrom(*OwnerCreature->ObjectInfo);
+
+			FVector MouseLocation = Cast<AP1PlayerController>(OwnerCreature->GetController())->GetMouseLocation();
+			float TargetYaw = (MouseLocation - OwnerCreature->GetActorLocation()).GetSafeNormal().Rotation().Yaw;
+			_TargetInfo->set_yaw(TargetYaw);
+
+			_TargetInfo->set_state(Protocol::MOVE_STATE_SKILL);
+
+			SEND_PACKET(Pkt);
+		}
 	}
 	else
 	{
 		HoldingByTickSkillManager->StartCasting(SkillInfo.CastingTime);
 		HoldingByTickSkillManager = nullptr;
-		if (IsValid(CurrentSkillActor))
+
+		if (OwnerCreature->GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillInfo.AnimMontage))
 		{
-			CurrentSkillActor->Destroy();
-			CurrentSkillActor = nullptr;
+			OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(0.3f, SkillInfo.AnimMontage);
+			return;
 		}
 	}
 }
@@ -218,6 +219,13 @@ void AArcherWSkillInstance::ActivateSkill(ASkillActorBase* SkillActor)
 void AArcherESkillInstance::UseSkill()
 {
 	Super::UseSkill();
+
+	if (OwnerCreature->GetMesh()->GetAnimInstance()->Montage_IsPlaying(SkillInfo.AnimMontage))
+	{
+		OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Stop(1.f, SkillInfo.AnimMontage);
+		return;
+	}
+
 	if (!IsValid(CastingSkillManager))
 	{
 		CastingSkillManager = Cast<ACastingSkillManager>(OwnerCreature->GetWorld()->SpawnActor(ACastingSkillManager::StaticClass()));

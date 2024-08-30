@@ -12,23 +12,24 @@ enum : uint16
 {
 	PKT_C_LOGIN = 1000,
 	PKT_S_LOGIN = 1001,
-	PKT_S_ENTER_GAME = 1002,
-	PKT_C_LEAVE_GAME = 1003,
-	PKT_S_SPAWN = 1004,
-	PKT_S_DESPAWN = 1005,
-	PKT_S_MOVE = 1006,
-	PKT_C_MOVE = 1007,
-	PKT_C_SKILL = 1008,
-	PKT_S_SKILL = 1009,
-	PKT_C_ATTACK = 1010,
-	PKT_S_ATTACK = 1011,
-	PKT_C_MONTAGE = 1012,
-	PKT_S_MONTAGE = 1013,
-	PKT_S_DEAD = 1014,
-	PKT_C_PHASE = 1015,
-	PKT_S_PHASE = 1016,
-	PKT_S_DAMAGE = 1017,
-	PKT_S_PREDICTSKILL = 1018,
+	PKT_C_ENTER_GAME = 1002,
+	PKT_S_ENTER_GAME = 1003,
+	PKT_C_LEAVE_GAME = 1004,
+	PKT_S_SPAWN = 1005,
+	PKT_S_DESPAWN = 1006,
+	PKT_S_MOVE = 1007,
+	PKT_C_MOVE = 1008,
+	PKT_C_SKILL = 1009,
+	PKT_S_SKILL = 1010,
+	PKT_C_ATTACK = 1011,
+	PKT_S_ATTACK = 1012,
+	PKT_C_MONTAGE = 1013,
+	PKT_S_MONTAGE = 1014,
+	PKT_S_DEAD = 1015,
+	PKT_C_PHASE = 1016,
+	PKT_S_PHASE = 1017,
+	PKT_S_DAMAGE = 1018,
+	PKT_S_PREDICTSKILL = 1019,
 };
 
 // Custom Handlers
@@ -73,6 +74,7 @@ public:
 		return GPacketHandler[header->id](session, buffer, len);
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::C_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_C_LOGIN); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_LEAVE_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_C_SKILL); }

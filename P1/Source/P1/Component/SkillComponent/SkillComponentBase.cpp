@@ -173,6 +173,12 @@ void USkillComponentBase::PlayAnimMontageByDuration(UAnimInstance* AnimInstance,
 	AnimInstance->Montage_Play(AnimMontage, PlayRate);
 }
 
+void USkillComponentBase::PlayAnimMontageByDurationNotPacket(UAnimInstance* AnimInstance, UAnimMontage* AnimMontage, int32 SectionNum, float TimeDuration)
+{
+	float PlayRate = AnimMontage->GetSectionLength(SectionNum / TimeDuration);
+	AnimInstance->Montage_Play(AnimMontage, PlayRate);
+}
+
 void USkillComponentBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 {
 	if (SkillInstances[SkillID] == nullptr) return;
@@ -229,5 +235,6 @@ void USkillComponentBase::ProcKnockBack(ASkillActorBase* SkillActor)
 
 void USkillComponentBase::ProcStun()
 {
+	PlayAnimMontageByDurationNotPacket(OwnerCreature->GetMesh()->GetAnimInstance(), M_Stun, 1, 2);
 	OwnerCreature->GetMesh()->GetAnimInstance()->Montage_Play(M_Stun);
 }
