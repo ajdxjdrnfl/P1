@@ -21,6 +21,7 @@
 #include "AIController.h"
 #include "P1/SubSystem/GameInstance/DungeonManagerSubsystem.h"
 #include "P1/Skill/SkillPositionPredictor/SkillPositionPredictor.h"
+#include "P1/P1PlayerController.h"
 
 void UP1GameInstance::Init()
 {
@@ -413,8 +414,6 @@ AP1Character* UP1GameInstance::SpawnMyCharacter(Protocol::ObjectInfo ObjInfo, FV
 
 	MyCharacter = Cast<AP1Character>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld, ClassToSpawn, SpawnedTransform));
 
-	
-
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(MyCharacter);
 	MyCharacter->EnableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	//MyCharacter->PossessedBy(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -426,6 +425,8 @@ AP1Character* UP1GameInstance::SpawnMyCharacter(Protocol::ObjectInfo ObjInfo, FV
 	MyCharacter->TargetInfo->set_x(ObjInfo.x());
 	MyCharacter->TargetInfo->set_y(ObjInfo.y());
 	MyCharacter->TargetInfo->set_z(ObjInfo.z());
+
+	Characters.Add(MyCharacter->ObjectInfo->object_id(), MyCharacter);
 
 	return MyCharacter;
 }
@@ -608,6 +609,22 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)
 
 void UP1GameInstance::InitMapOnLoadLevel()
 {
+	InitData();
+	InitLevel();
+	InitSpawn();
+}
+
+void UP1GameInstance::InitData()
+{
+	Boss = nullptr;
+	Characters.Empty();
+	Enemies.Empty();
+	BossPillars.Empty();
+	Skills.Empty();
+}
+
+void UP1GameInstance::InitLevel()
+{
 	switch (EnterGamePacket.roomtype())
 	{
 	case Protocol::ROOM_TYPE_FIELD:
@@ -628,9 +645,12 @@ void UP1GameInstance::InitMapOnLoadLevel()
 			DungeonManager->Init();
 		break;
 	}
-		break;
+	break;
 	}
+}
 
+void UP1GameInstance::InitSpawn()
+{
 	Protocol::ObjectInfo info;
 	FVector Loc;
 	Loc = FVector(EnterGamePacket.info().x(), EnterGamePacket.info().y(), EnterGamePacket.info().z());

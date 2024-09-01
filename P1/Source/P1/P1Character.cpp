@@ -160,7 +160,7 @@ void AP1Character::InitOnSpawn(Protocol::ObjectInfo ObjInfo)
 	StatComponent->InitOnSpawn(ObjInfo);
 	SkillComponent->InitOnSpawn();
 
-	ObjectInfo = &ObjInfo;
+	ObjectInfo->CopyFrom(ObjInfo);
 }
 
 void AP1Character::UseSkill(uint16 SkillIndex)

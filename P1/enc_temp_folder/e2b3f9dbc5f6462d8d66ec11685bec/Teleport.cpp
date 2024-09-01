@@ -59,7 +59,7 @@ void ATeleport::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	AP1Character* HitCharacter = Cast<AP1Character>(OtherActor);
 	if (GameInstance && HitCharacter && GameInstance->IsMyCharacter(HitCharacter->ObjectInfo->object_id()) && HitCharacter)
 	{
-		bCanInteract = true;
+		if (!bCanInteract) return;
 		HitCharacter->SetInteractInterfaceActor(this);
 		WidgetComponent->SetVisibility(true);
 	}
@@ -71,7 +71,6 @@ void ATeleport::OnCollisionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 	AP1Character* HitCharacter = Cast<AP1Character>(OtherActor);
 	if (GameInstance && HitCharacter && GameInstance->IsMyCharacter(HitCharacter->ObjectInfo->object_id()) && HitCharacter)
 	{
-		bCanInteract = false;
 		HitCharacter->SetInteractInterfaceActor(nullptr);
 		WidgetComponent->SetVisibility(false);
 	}

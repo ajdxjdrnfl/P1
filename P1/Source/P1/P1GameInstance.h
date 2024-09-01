@@ -93,6 +93,9 @@ public:
 	class AP1Creature* GetCreature(Protocol::S_DEAD& Pkt);
 
 	void InitMapOnLoadLevel();
+	void InitData();
+	void InitLevel();
+	void InitSpawn();
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
