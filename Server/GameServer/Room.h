@@ -73,7 +73,7 @@ public:
 	bool			CanGoByVector(class Collision* collision, Vector moveVector, bool checkCollision = false);
 
 	bool			CheckCollisionInMap(class Collision* collison);
-	bool			CheckCollisionInQuadTree(class Collision* collision, vector<GameObjectRef>& collideObjects);
+	bool			CheckCollisionInQuadTree(class Collision* collision);
 	bool			IsWalkableAtPos(VectorInt gridPos);
 
 	// 움직일 수 있는지 검사 : Vector 버전

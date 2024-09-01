@@ -30,7 +30,7 @@ message S_ENTER_GAME
 
 message C_LEAVE_GAME
 {
-
+	RoomType roomtype = 1;
 }
 
 message S_SPAWN

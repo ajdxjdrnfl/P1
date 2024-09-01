@@ -760,9 +760,10 @@ class S_ENTER_GAME final :
 // -------------------------------------------------------------------
 
 class C_LEAVE_GAME final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.C_LEAVE_GAME) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_LEAVE_GAME) */ {
  public:
   inline C_LEAVE_GAME() : C_LEAVE_GAME(nullptr) {}
+  ~C_LEAVE_GAME() override;
   explicit PROTOBUF_CONSTEXPR C_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
   C_LEAVE_GAME(const C_LEAVE_GAME& from);
@@ -835,15 +836,29 @@ class C_LEAVE_GAME final :
   C_LEAVE_GAME* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<C_LEAVE_GAME>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const C_LEAVE_GAME& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_LEAVE_GAME& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_LEAVE_GAME& from) {
+    C_LEAVE_GAME::MergeImpl(*this, from);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const C_LEAVE_GAME& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
   public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_LEAVE_GAME* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
@@ -864,6 +879,18 @@ class C_LEAVE_GAME final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kRoomtypeFieldNumber = 1,
+  };
+  // .Protocol.RoomType roomtype = 1;
+  void clear_roomtype();
+  ::Protocol::RoomType roomtype() const;
+  void set_roomtype(::Protocol::RoomType value);
+  private:
+  ::Protocol::RoomType _internal_roomtype() const;
+  void _internal_set_roomtype(::Protocol::RoomType value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_LEAVE_GAME)
  private:
   class _Internal;
@@ -872,7 +899,10 @@ class C_LEAVE_GAME final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    int roomtype_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
 // -------------------------------------------------------------------
@@ -3838,6 +3868,26 @@ inline void S_ENTER_GAME::set_roomtype(::Protocol::RoomType value) {
 // -------------------------------------------------------------------
 
 // C_LEAVE_GAME
+
+// .Protocol.RoomType roomtype = 1;
+inline void C_LEAVE_GAME::clear_roomtype() {
+  _impl_.roomtype_ = 0;
+}
+inline ::Protocol::RoomType C_LEAVE_GAME::_internal_roomtype() const {
+  return static_cast< ::Protocol::RoomType >(_impl_.roomtype_);
+}
+inline ::Protocol::RoomType C_LEAVE_GAME::roomtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_LEAVE_GAME.roomtype)
+  return _internal_roomtype();
+}
+inline void C_LEAVE_GAME::_internal_set_roomtype(::Protocol::RoomType value) {
+  
+  _impl_.roomtype_ = value;
+}
+inline void C_LEAVE_GAME::set_roomtype(::Protocol::RoomType value) {
+  _internal_set_roomtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_LEAVE_GAME.roomtype)
+}
 
 // -------------------------------------------------------------------
 
