@@ -6,7 +6,7 @@
 #include "ObjectUtils.h"
 #include "Map.h"
 
-//RoomRef GRoom = make_shared<Raid>();
+RaidRef GRaid = make_shared<Raid>(2);
 
 Raid::Raid(uint64 roomId) : Super(ERoomType::ERT_RAID, roomId)
 {

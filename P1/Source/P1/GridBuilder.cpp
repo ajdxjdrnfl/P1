@@ -55,6 +55,9 @@ void AGridBuilder::SaveToFile(FString path)
 			+ FString::SanitizeFloat(pos.X) + " " + FString::SanitizeFloat(pos.Y) + " "
 			+ FString::FromInt(_nodes.Num()) +  " " + FString::FromInt(_nodes[0].Num()) + "\n";
 
+		// Start point 지정
+		content += FString::SanitizeFloat(_startPoint.X) + " " + FString::SanitizeFloat(_startPoint.Y) + "\n";
+
 		// x좌표, y좌표 순으로 타일종류 , 만약 움직일 수 있는 타일일 경우 주변 타일 종류도 함께 저장
 		for (int32 i = 0; i < _nodes.Num(); i++)
 		{
@@ -170,6 +173,14 @@ void AGridBuilder::BuildWorldEnemies(UWorld* world)
 
 	for (int32 i = 0; i < OutActors.Num(); i++)
 	{
+
+		AActor* actor = OutActors[i];
+
+		if (actor->GetFName() == "StartPoint")
+		{
+			_startPoint = actor->GetActorLocation();
+			continue;
+		}
 		AEnemyBase* enemy = Cast<AEnemyBase>(OutActors[i]);
 
 		FEnemyInfo info;

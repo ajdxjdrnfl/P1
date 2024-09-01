@@ -99,8 +99,21 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 		pkt.set_success(true);
 
 		*pkt.mutable_info() = *player->GetObjectInfo();
+		// 이미 존재하는 오브젝트 패킷 전송
+		{
+			auto v = GetGameObjects();
+
+			for (auto& item : v)
+			{
+				GameObjectRef gameObject = item;
+				Protocol::ObjectInfo* info = pkt.add_objects();
+				info->CopyFrom(*gameObject->GetObjectInfo());
+			}
+
+		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+
 		if (auto session = player->GetSessionRef())
 			session->Send(sendBuffer);
 		
@@ -115,25 +128,6 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
-	}
-
-	// 이미 존재하는 오브젝트 패킷 전송
-	{
-		Protocol::S_SPAWN pkt;
-
-		auto v = GetGameObjects();
-
-		for (auto& item : v)
-		{
-			GameObjectRef gameObject = item;
-			Protocol::ObjectInfo* info = pkt.add_info();
-			info->CopyFrom(*gameObject->GetObjectInfo());
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-		if (auto session = player->GetSessionRef())
-			session->Send(sendBuffer);
-
 	}
 	
 	return true;
@@ -493,23 +487,30 @@ vector<GameObjectRef> Room::GetGameObjects()
 
 void Room::SetObjectToRandomPos(GameObjectRef player)
 {
-	while (true)
-	{
-		int32 x = Utils::GetRandom(0, 100);
-		int32 y = Utils::GetRandom(0, 100);
 
-		if (IsWalkableAtPos({ x, y }))
+	if (_map)
+	{
+		Vector startPos = _map->GetStartPoint();
+		VectorInt gridPos = GetGridPos(startPos);
+
+		VectorInt d[9] = { {-1,0}, {-1,-1}, {-1,1}, {0,0}, {0,1},{0,-1}, {1,0}, {1,-1}, {1,1} };
+		int direction = 3;
+
+		VectorInt newPos = gridPos + d[direction];
+
+		while (!IsWalkableAtPos(newPos))
 		{
-			Vector pos = GetPosition({ x,y });
-			player->GetObjectInfo()->set_x(pos.x);
-			player->GetObjectInfo()->set_y(pos.y);
-			player->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)) + 80.f);
-			player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
-			break;
+			direction = Utils::GetRandom(0, 8);
+			newPos = gridPos + d[direction];
 		}
+
+		Vector pos = GetPosition(newPos);
+		player->GetObjectInfo()->set_x(pos.x);
+		player->GetObjectInfo()->set_y(pos.y);
+		player->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)) + 80.f);
+		player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
+		
 	}
-	
-	
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
@@ -536,7 +537,7 @@ void Room::BroadcastAOI(SendBufferRef sendBuffer, GameObjectRef gameObject, uint
 	
 	vector<PlayerRef> players;
 
-	_tree->GetAroundPlayers(gameObject, {100.f, 100.f}, players);
+	_tree->GetAroundPlayers(gameObject, {1000.f, 1000.f}, players);
 
 	for (auto& player : players)
 	{

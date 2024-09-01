@@ -43,17 +43,7 @@ bool QuadNode::IsBoundOverlapped(Collision* collision)
 
 bool QuadNode::IsBoundOverlapped(Bound cb)
 {
-	float cmaxX = cb.BottomRight.x;
-	float cminX = cb.topLeft.x;
-	float cmaxY = cb.topLeft.y;
-	float cminY = cb.BottomRight.y;
-
-	float maxX = bound.BottomRight.x;
-	float minX = bound.topLeft.x;
-	float maxY = bound.topLeft.y;
-	float minY = bound.BottomRight.y;
-
-	return !(cmaxX < cminX || maxX < cminX || cmaxY < minY || maxY < cminY);
+	return bound.IsBoundOverlapped(cb);
 }
 
 bool QuadNode::IsInBound(Collision* collision)
@@ -373,7 +363,12 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 			{
 				if (PlayerRef player = static_pointer_cast<Player>(gameObject))
 				{
-					outputPlayers.push_back(player);
+					Collision* collision = static_cast<Collision*>(player->GetComponent(EComponentType::ECT_COLLISION));
+
+					if (bound.IsBoundOverlapped(collision->GetBound()))
+					{
+						outputPlayers.push_back(player);
+					}
 				}
 			}
 		}

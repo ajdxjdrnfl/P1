@@ -12,6 +12,7 @@ void Map::Load(const filesystem::path& path)
 	{
 		int32 nodeCountX, nodeCountY;
 		ifs >> _mapSize.x >> _mapSize.y >> _gridSize.x >> _gridSize.y >> _pos.x >> _pos.y >> nodeCountY >> nodeCountX;
+		ifs >> _startPoint.x >> _startPoint.y;
 
 		for (int32 i = 0; i < nodeCountY; i++)
 		{

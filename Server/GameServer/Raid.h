@@ -27,3 +27,5 @@ private:
     
     vector<vector<weak_ptr<GameObject>>> _phaseRequirements;
 };
+
+extern RaidRef GRaid;

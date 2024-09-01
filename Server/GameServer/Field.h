@@ -17,3 +17,4 @@ private:
 	unordered_map<uint64, NpcRef> _npcs;
 };
 
+extern FieldRef GField;

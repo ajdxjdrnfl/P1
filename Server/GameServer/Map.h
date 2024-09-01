@@ -30,6 +30,7 @@ public:
 	Vector GetGridSize() { return _gridSize; }
 	Vector GetMapSize() { return _mapSize; }
 	Vector GetPos() { return _pos; }
+	Vector GetStartPoint() { return _startPoint; }
 	Bound  GetBound() { return _bound; }
 	GridNode GetNode(VectorInt pos);
 
@@ -46,6 +47,7 @@ private:
 	Vector							_gridSize;
 	Vector							_mapSize;
 	Vector							_pos;
+	Vector							_startPoint;
 	Bound							_bound;
 	vector<vector<GridNode>>		_nodes;
 

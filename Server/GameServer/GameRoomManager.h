@@ -9,6 +9,7 @@ public:
 	void Update(float deltaTime);
 
 	void EnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt);
+	void EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt);
 	void ExitGame(GameSessionRef session);
 
 	void EnterRaid(GameSessionRef session);

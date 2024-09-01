@@ -84,9 +84,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _downDirectionVectorLength = 1000.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector _startPoint;
 
 private:
 	TArray<TArray<FNode>> _nodes;
 
 	TArray<FEnemyInfo> _enemies;
+
+
 };

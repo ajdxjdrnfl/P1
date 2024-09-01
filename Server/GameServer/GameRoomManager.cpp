@@ -28,37 +28,56 @@ void GameRoomManager::Update(float deltaTime)
 		room->DoAsync(&Room::Update, deltaTime);
 	}*/
 
-	GRoom->Update(deltaTime);
+	GRaid->Update(deltaTime);
+	GField->Update(deltaTime);
 }
 
 void GameRoomManager::Init()
 {
-	/*namespace fs = std::filesystem;
-
-	filesystem::directory_iterator itr(filesystem::current_path() / "Map");
-	while (itr != fs::end(itr))
-	{
-		const fs::directory_entry& entry = *itr;
-
-		string name = entry.path().filename().replace_extension("").string();
-
-		RoomRef room = make_shared<Room>(entry.path().string());
-		room->Init();
-		_rooms[name] = room;
-		itr++;
-
-	}*/
-
-	GRoom->Init();
+	GRaid->Init();
+	GField->Init();
 }
 
 void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 {
 	WRITE_LOCK;
-	RoomRef room = GRoom;
+
+	// 이미 Room에 들어가 있다면 종료
+	PlayerRef player = session->_player.load();
+
+	if (player)
+	{
+		if (RoomRef room = player->GetRoomRef())
+			room->HandleLeaveGame(session);
+	}
+
+	RoomRef room;
+
+	switch (pkt.roomtype())
+	{
+	case Protocol::ROOM_TYPE_FIELD:
+		room = GField;
+		break;
+
+	case Protocol::ROOM_TYPE_DUNGEON:
+		room = GRaid;
+		break;
+	}
+
+	if(room)
+		room->DoAsync(&Room::HandleEnterGame, session, pkt);
+}
+
+void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
+{
+	WRITE_LOCK;
+	RoomRef room = GField;
+
+	Protocol::C_ENTER_GAME enterPkt;
+	enterPkt.set_castertype(Protocol::CASTER_TYPE_ARCHER);
 
 	if (room)
-		room->DoAsync(&Room::HandleEnterGame, session, pkt);
+		room->DoAsync(&Room::HandleEnterGame, session, enterPkt);
 }
 
 void GameRoomManager::ExitGame(GameSessionRef session)
@@ -72,14 +91,21 @@ void GameRoomManager::ExitGame(GameSessionRef session)
 
 void GameRoomManager::EnterRaid(GameSessionRef session)
 {
-	RoomRef room = CreateRoom(ERT_RAID);
+	WRITE_LOCK;
+	RoomRef room = GRaid;
+
+	RoomRef prevRoom = session->_player.load()->GetRoomRef();
+
+	/*if (room)
+		room->DoAsync(&Room::HandleEnterGame, session, enterPkt);
+	*/
 	
-	
+	if (prevRoom)
+		prevRoom->DoAsync(&Room::HandleLeaveGame, session);
 }
 
 bool GameRoomManager::ChangeRoom(PlayerRef player)
 {
-	
 	return false;
 }
 

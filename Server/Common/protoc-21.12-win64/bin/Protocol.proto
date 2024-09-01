@@ -17,13 +17,15 @@ message S_LOGIN
 message C_ENTER_GAME
 {
 	CasterType castertype = 1;
+	RoomType roomtype = 2;
 }
 
 message S_ENTER_GAME
 {
 	bool success = 1;
 	ObjectInfo info = 2;
-	RoomType roomtype = 3;
+	repeated ObjectInfo objects = 3;
+	RoomType roomtype = 4;
 }
 
 message C_LEAVE_GAME

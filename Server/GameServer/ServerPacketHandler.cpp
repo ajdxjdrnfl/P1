@@ -33,7 +33,6 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		gameSession->Send(sendBuffer);
 	}
-	
 
 	return true;
 }

@@ -144,6 +144,21 @@ struct Bound
 		return true;
 	}
 
+	bool IsBoundOverlapped(Bound ob)
+	{
+		float cmaxX = ob.BottomRight.x;
+		float cminX = ob.topLeft.x;
+		float cmaxY = ob.topLeft.y;
+		float cminY = ob.BottomRight.y;
+
+		float maxX = BottomRight.x;
+		float minX = topLeft.x;
+		float maxY = topLeft.y;
+		float minY = BottomRight.y;
+
+		return !(cmaxX < cminX || maxX < cminX || cmaxY < minY || maxY < cminY);
+	}
+
 	Vector GetSize()
 	{
 		return { BottomRight.x - topLeft.x, BottomRight.y - topLeft.y };
