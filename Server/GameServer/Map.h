@@ -5,6 +5,7 @@ struct GridNode
 {
 	Vector pos;
 	float z;
+	float height;
 	EGridType value;
 	EGridType around[8];
 };

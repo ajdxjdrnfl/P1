@@ -40,7 +40,7 @@ void Enemy::Init()
 {
 	Collision* collision = new Collision();
 	ColliderCircle* collider = new ColliderCircle();
-	collider->_radius = 38.f;
+	collider->_radius = 60.f;
 	collision->SetCollider(collider);
 
 	AddComponent(collision);
@@ -152,9 +152,23 @@ void Enemy::TickRun(float deltaTime)
 	if (GetState() != Protocol::MOVE_STATE_RUN)
 		return;
 
+	GameObjectRef target = _target.lock();
+
+	if (target == nullptr)
+		SetState(Protocol::MOVE_STATE_IDLE, true);
+
+	float realDist = GetPos().Distance(target->GetPos());
+
+	if (realDist <= 50.f)
+	{
+		SetState(Protocol::MOVE_STATE_IDLE);
+		_moveToTargetDelay = 0.f;
+		_attackCooldown = 0.f;
+	}
+
 	float dist = GetPos().Distance(_targetPos);
 	// 충분히 가까울 때
-	if (dist <= 10.f)
+	if (dist <= 30.f)
 	{
 		Protocol::ObjectInfo newInfo = *GetObjectInfo();
 		newInfo.set_x(_targetPos.x);
@@ -221,7 +235,13 @@ void Enemy::TickSkill(float deltaTime)
 	// 공격 범위 안
 	if(_attackDelay <= 0.5f && _sendSkillPacket == false)
 	{
-		room->DoAsync(&Room::CreateSkillActor, shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 20.f);
+		Vector dV = Utils::GetVectorByYaw(GetObjectInfo()->yaw());
+		dV.Normalize();
+
+		dV = dV * min(_targetPos.Distance(GetPos()), 150.f);
+
+		float height = room->GetValidHeight(room->GetGridPos(GetPos())) + 60.f;
+		room->DoAsync(&Room::CreateSkillActor, shared_from_this(), (uint64)0, GetPos() + dV, height, GetObjectInfo()->yaw(), 20.f);
 		_sendSkillPacket = true;
 	}
 

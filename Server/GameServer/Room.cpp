@@ -214,7 +214,9 @@ bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 	if (skill->GetSkillInfo().skillType == Protocol::SKILL_TYPE_CHARGING)
 		damage = pkt.damage();
 
-	return CreateSkillActor(caster, pkt.skillid(), { pkt.x(), pkt.y() }, pkt.yaw(), damage);
+	float height = GetValidHeight(GetGridPos({pkt.caster().x(), pkt.caster().y()})) + 60.f;
+
+	return CreateSkillActor(caster, pkt.skillid(), { pkt.x(), pkt.y() }, height, pkt.yaw(), damage);
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -320,7 +322,7 @@ bool Room::HandlePredictSkill(Protocol::S_PREDICTSKILL pkt)
 	return true;
 }
 
-bool Room::CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage)
+bool Room::CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float height, float yaw, float damage)
 {
 	if (caster == nullptr)
 		return false;
@@ -330,7 +332,7 @@ bool Room::CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillAc
 	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
 	info->set_x(skillActorPos.x);
 	info->set_y(skillActorPos.y);
-	info->set_z(GetValidHeight(GetGridPos(skillActorPos)) + 60.f);
+	info->set_z(height);
 	info->set_yaw(yaw);
 	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid, damage);
 
@@ -381,9 +383,10 @@ StructureRef Room::SpawnStructure(Vector pos)
 	
 	AddGameObject(structure);
 
+	float height = GetValidHeight(GetGridPos(pos));
 	structure->GetObjectInfo()->set_x(pos.x);
 	structure->GetObjectInfo()->set_y(pos.y);
-	structure->GetObjectInfo()->set_z(100.f);
+	structure->GetObjectInfo()->set_z(height);
 	structure->GetObjectInfo()->set_yaw(0.f);
 
 	return structure;

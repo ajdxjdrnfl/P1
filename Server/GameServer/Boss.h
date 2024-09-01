@@ -79,9 +79,10 @@ private:
     
 private:
     weak_ptr<class Player> _target;
+    float _skillRange = 1200.f;
     float _attackRange = 300.f;
 
-    float _teleportRange = 600.f;
+    float _teleportRange = 800.f;
     float _defaultAttackRange = 300.f;
 
     bool _isGimmik = false;
@@ -93,6 +94,8 @@ private:
     float _rushSpeed = 600.f;
 
     float _attackDelay = 0.f;
+    float _rushCoolDown = 0.f; // 20초 이상
+    float _dotCoolDown = 0.f; // 20초 이상
 
     // update time
     float _updatePacketCooldown = 0.2f;
@@ -109,7 +112,12 @@ private:
     EBossSkillType _skillType = EBST_NONE;
     EBossMontageType _montageType = MONTAGE_TYPE_NONE;
 
+public:
+    Vector GetStartPoint() { return _startPoint; }
+    void SetStartPoint(Vector point) { _startPoint = point; }
+
 private:
     uint64 _phaseNumber = 0;
+    Vector _startPoint;
 };
 

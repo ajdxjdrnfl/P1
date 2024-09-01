@@ -23,7 +23,8 @@ void Boss::Update(float deltaTime)
 {
 	_target = FindClosestTarget();
 	_elapsedPacket += deltaTime;
-	
+	_rushCoolDown += deltaTime;
+	_dotCoolDown += deltaTime;
 	PlayerRef target = _target.lock();
 
 	if (target == nullptr)
@@ -73,7 +74,7 @@ void Boss::TickIdle(float deltaTime)
 
 		_targetPos = target->GetPos();
 
-		if (GetPos().Distance(_targetPos) <= _attackRange)
+		if (GetPos().Distance(_targetPos) <= _skillRange)
 		{
 			SelectSkill();
 		}
@@ -176,7 +177,7 @@ void Boss::TickSkill(float deltaTime)
 		{
 			Vector pos;
 			if (_isGimmik)
-				pos = { 0.f , 0.f };
+				pos = { GetStartPoint() };
 			else
 			{
 				float yaw = Utils::GetRandom(-180.f, 180.f);
@@ -292,7 +293,7 @@ void Boss::SelectSkill()
 
 	else
 	{
-		PlayerRef player = static_pointer_cast<Player>(room->FindClosestPlayer(GetPos(), FLT_MAX));
+		PlayerRef player = static_pointer_cast<Player>(room->FindClosestPlayer(GetPos(), 2000.f));
 
 		_target = player;
 
@@ -300,11 +301,51 @@ void Boss::SelectSkill()
 
 		if(distance <= _attackRange)
 		{
-			//StartDefaultAttack();
-			//StartRush();
-			StartDot();
-			SetState(Protocol::MOVE_STATE_SKILL, true);
-			return;
+			int32 num = Utils::GetRandom(0, 1);
+
+			if (num == 0 && _rushCoolDown <= 15.f)
+			{
+				StartRush();
+				SetState(Protocol::MOVE_STATE_SKILL, true);
+				_rushCoolDown = 0.f;
+				return;
+			}
+			else if (num == 1 && _dotCoolDown <= 15.f)
+			{
+				StartDot();
+				SetState(Protocol::MOVE_STATE_SKILL, true);
+				_dotCoolDown = 0.f;
+				return;
+			}
+			else
+			{
+				StartDefaultAttack();
+				SetState(Protocol::MOVE_STATE_SKILL, true);
+				return;
+			}
+			
+		}
+		else if (distance < _teleportRange)
+		{
+			int32 num =	Utils::GetRandom(0, 1);
+
+			if (num == 0 && _rushCoolDown <= 15.f)
+			{
+				StartRush();
+				SetState(Protocol::MOVE_STATE_SKILL, true);
+				return;
+			}
+			else if (num == 1 && _dotCoolDown <= 15.f)
+			{
+				StartDot();
+				SetState(Protocol::MOVE_STATE_SKILL, true);
+				return;
+			}
+			else
+			{
+				MoveToTarget(_target.lock());
+			}
+			
 		}
 		else if(distance >= _teleportRange)
 		{
@@ -356,7 +397,14 @@ void Boss::DefaultAttack(GameObjectRef target)
 		case MONTAGE_TYPE_ING:
 		{
 			_attackDelay = 1.5f;
-			room->CreateSkillActor(shared_from_this(), (uint64)0, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 30.f);
+			float height = room->GetValidHeight(room->GetGridPos(GetPos())) + 60.f;
+
+			Vector dV = Utils::GetVectorByYaw(GetObjectInfo()->yaw());
+			dV.Normalize();
+
+			dV = dV * min(_targetPos.Distance(GetPos()), 200.f);
+
+			room->CreateSkillActor(shared_from_this(), (uint64)0, GetPos() + dV, height, GetObjectInfo()->yaw(), 15.f);
 			_montageType = MONTAGE_TYPE_END;
 		}
 		case MONTAGE_TYPE_END:
@@ -427,7 +475,11 @@ void Boss::Rush(GameObjectRef target, float deltaTime)
 			{
 				_rushVector = (target->GetPos() - GetPos()).Normalize();
 				// TODO : 스킬액터 스폰
-				room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, GetPos(), _objectInfo->yaw(), 100.f);
+				if (!_isGimmik)
+				{
+					float height = room->GetValidHeight(room->GetGridPos(GetPos())) + 60.f;
+					room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, GetPos(), height, _objectInfo->yaw(), 100.f);
+				}
 			}
 			if(_isGimmik)
 			{
@@ -589,7 +641,8 @@ void Boss::Rush_ING(GameObjectRef target, float deltaTime)
 
 			SetObjectInfo(newInfo, false, true);
 			{
-				room->CreateSkillActor(shared_from_this(), 1, target->GetPos(), 0.f, 100.f);
+				float height = room->GetValidHeight(room->GetGridPos(GetPos())) + 60.f;
+				room->CreateSkillActor(shared_from_this(), 1, target->GetPos(), height, 0.f, 100.f);
 			}
 
 			{
@@ -701,20 +754,41 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 			}
 			// Predict 패킷 전송
 			{
-				Protocol::S_PREDICTSKILL predictPkt;
-				*predictPkt.mutable_caster() = *GetObjectInfo();
-				predictPkt.set_skillid(_skillId);
-				predictPkt.set_x(target->GetPos().x);
-				predictPkt.set_y(target->GetPos().y);
-				predictPkt.set_z(100.f);
-				predictPkt.set_yaw(GetObjectInfo()->yaw());
-				
-				room->DoAsync(&Room::HandlePredictSkill, predictPkt);
+				_targetPos = target->GetPos();
+				vector<Vector> dotPoses;
+
+				dotPoses.push_back(_targetPos);
+				for (int32 i = 0; i < 3; i++)
+				{
+					float dx = Utils::GetRandom(-400.f, 400.f);
+					float dy = Utils::GetRandom(-400.f, 400.f);
+
+					dotPoses.push_back(_targetPos + Vector(dx, dy));
+				}
+
+				for (int32 i = 0; i < dotPoses.size(); i++)
+				{
+					Vector targetPos = dotPoses[i];
+
+					{
+						Protocol::S_PREDICTSKILL predictPkt;
+						float height = room->GetValidHeight(room->GetGridPos(targetPos)) + 60.f;
+						*predictPkt.mutable_caster() = *GetObjectInfo();
+						predictPkt.set_skillid(_skillId);
+						predictPkt.set_x(targetPos.x);
+						predictPkt.set_y(targetPos.y);
+						predictPkt.set_z(height);
+						predictPkt.set_yaw(GetObjectInfo()->yaw());
+						room->DoAsync(&Room::HandlePredictSkill, predictPkt);
+					}
+					{
+						float height = room->GetValidHeight(room->GetGridPos(targetPos)) + 60.f;
+						room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, { targetPos.x, targetPos.y }, height, GetObjectInfo()->yaw(), 3.f);
+					}
+				}
 			}
 			// 스킬 액터 생성
-			{
-				room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, { _targetPos.x, _targetPos.y }, GetObjectInfo()->yaw(), 30.f);
-			}
+			
 			break;
 		case MONTAGE_TYPE_START:
 			_montageType = MONTAGE_TYPE_ING;
@@ -831,7 +905,7 @@ void Boss::SpawnPillars(float deltaTime)
 
 				for (int32 i = 0; i < 4; i++)
 				{
-					Vector pos = d[i] * 1000;
+					Vector pos = d[i] * 800 + GetPos();
 					StructureRef structure = room->SpawnStructure(pos);
 					_pillars.push_back(structure);
 					Protocol::ObjectInfo* info = spawnPkt.add_info();

@@ -65,7 +65,11 @@ private:
     float _updatePacketCooldown = 1.f;
     float _elapsedPacket = 0.f;
 
+public:
+    Vector GetStartPoint() { return _startPoint; }
+    void SetStartPoint(Vector point) { _startPoint = point; }
 private:
     uint64 _phaseNumber = 0;
+    Vector _startPoint;
 };
 

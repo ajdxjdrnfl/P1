@@ -41,7 +41,7 @@ public:
 	bool			HandleSpawn(Protocol::S_SPAWN pkt);
 	bool			HandleDespawn(Protocol::S_DESPAWN pkt, bool remove = false);
 
-	bool			CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float yaw, float damage);
+	bool			CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillActorPos, float height, float yaw, float damage);
 
 	StructureRef	SpawnStructure(Vector pos);
 

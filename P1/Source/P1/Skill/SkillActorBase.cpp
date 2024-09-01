@@ -30,6 +30,9 @@ void ASkillActorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	ObjectInfo->set_x(GetActorLocation().X);
+	ObjectInfo->set_y(GetActorLocation().Y);
+
 	if (CurrentLifeTime > 0)
 	{
 		CurrentLifeTime -= DeltaTime;

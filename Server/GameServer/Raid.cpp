@@ -42,7 +42,7 @@ void Raid::Init()
 			enemy->GetObjectInfo()->set_y(pos.y);
 			enemy->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)));
 			enemy->GetObjectInfo()->set_yaw(yaw);
-
+			enemy->SetStartPoint(pos);
 			_phaseRequirements[v[i].phaseNumber].push_back(enemy);
 		}
 		else if (type == Protocol::CASTER_TYPE_BOSS)
@@ -51,9 +51,9 @@ void Raid::Init()
 		
 			boss->GetObjectInfo()->set_x(pos.x);
 			boss->GetObjectInfo()->set_y(pos.y);
-			boss->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)));
+			boss->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)) + 100.f);
 			boss->GetObjectInfo()->set_yaw(yaw);
-
+			boss->SetStartPoint(pos);
 			_phaseRequirements[v[i].phaseNumber].push_back(boss);
 		}
 	}
