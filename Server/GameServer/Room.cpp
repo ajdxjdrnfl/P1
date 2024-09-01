@@ -94,10 +94,11 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 	EnterGame(player);
 
 	{
-		Protocol::S_ENTER_GAME pkt;
-		pkt.set_success(true);
+		Protocol::S_ENTER_GAME enterPkt;
+		enterPkt.set_success(true);
+		enterPkt.set_roomtype(pkt.roomtype());
 
-		*pkt.mutable_info() = *player->GetObjectInfo();
+		* enterPkt.mutable_info() = *player->GetObjectInfo();
 		// 이미 존재하는 오브젝트 패킷 전송
 		{
 			auto v = GetGameObjects();
@@ -105,13 +106,13 @@ bool Room::HandleEnterGame(GameSessionRef session, Protocol::C_ENTER_GAME pkt)
 			for (auto& item : v)
 			{
 				GameObjectRef gameObject = item;
-				Protocol::ObjectInfo* info = pkt.add_objects();
+				Protocol::ObjectInfo* info = enterPkt.add_objects();
 				info->CopyFrom(*gameObject->GetObjectInfo());
 			}
 
 		}
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterPkt);
 
 		if (auto session = player->GetSessionRef())
 			session->Send(sendBuffer);
