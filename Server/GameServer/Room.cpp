@@ -30,7 +30,6 @@ Room::~Room()
 
 void Room::Init()
 {
-	// TODO : enemy �߰�
 	_tickManager.Init();
 	_map = GResourceManager.GetMap(_mapName);
 	_tree->Init(_map->GetBound());
@@ -330,7 +329,7 @@ bool Room::CreateSkillActor(GameObjectRef caster, uint64 skillid, Vector skillAc
 	Protocol::ObjectInfo* casterInfo = caster->GetObjectInfo();
 	info->set_x(skillActorPos.x);
 	info->set_y(skillActorPos.y);
-	info->set_z(GetValidHeight(GetGridPos(skillActorPos)));
+	info->set_z(GetValidHeight(GetGridPos(skillActorPos)) + 60.f);
 	info->set_yaw(yaw);
 	skillActor->SetCollisionBySkillId(casterInfo->castertype(), skillid, damage);
 
@@ -493,21 +492,26 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 		Vector startPos = _map->GetStartPoint();
 		VectorInt gridPos = GetGridPos(startPos);
 
-		VectorInt d[9] = { {-1,0}, {-1,-1}, {-1,1}, {0,0}, {0,1},{0,-1}, {1,0}, {1,-1}, {1,1} };
+		VectorInt d[9] = { {-2,0}, {-2,-2}, {-2,2}, {0,0}, {0,2},{0,-2}, {2,0}, {2,-2}, {2,2} };
 		int direction = 3;
 
 		VectorInt newPos = gridPos + d[direction];
 
-		while (!IsWalkableAtPos(newPos))
+		Collision* collision = static_cast<Collision*>(player->GetComponent(EComponentType::ECT_COLLISION));
+		collision->SetPos(GetPosition(newPos));
+		while (!IsWalkableAtPos(newPos) || CheckCollisionInQuadTree(collision) || CheckCollisionInMap(collision))
 		{
-			direction = Utils::GetRandom(0, 8);
+			direction = (direction + 1) % 9;
 			newPos = gridPos + d[direction];
+
+			collision->SetPos(GetPosition(newPos));
 		}
 
 		Vector pos = GetPosition(newPos);
+		float height = GetValidHeight(newPos) + 60.f;
 		player->GetObjectInfo()->set_x(pos.x);
 		player->GetObjectInfo()->set_y(pos.y);
-		player->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)) + 80.f);
+		player->GetObjectInfo()->set_z(height);
 		player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 		
 	}
@@ -732,10 +736,8 @@ bool Room::CanGoByVector(Collision* collision, Vector moveVector, bool checkColl
 	if (!checkCollision)
 		return true;
 
-	vector<GameObjectRef> collideObjects;
-
 	collision->SetPos(currentPos + moveVector);
-	bool result = CheckCollisionInQuadTree(collision, collideObjects);
+	bool result = CheckCollisionInQuadTree(collision);
 	collision->SetPos(currentPos);
 
 	return !result;
@@ -763,13 +765,10 @@ bool Room::CheckCollisionInMap(Collision* collision)
 	return false;
 }
 
-bool Room::CheckCollisionInQuadTree(Collision* collision, vector<GameObjectRef>& collideObjects)
+bool Room::CheckCollisionInQuadTree(Collision* collision)
 {
 	auto v1 = _tree->Check(collision);
 	auto v2 = _updatedTree->Check(collision);
-
-	collideObjects.insert(collideObjects.begin(), v1.begin(), v1.end());
-	collideObjects.insert(collideObjects.begin(), v2.begin(), v2.end());
 
 	for (auto gameObject : v1)
 	{
