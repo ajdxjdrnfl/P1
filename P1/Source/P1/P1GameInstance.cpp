@@ -58,6 +58,8 @@ void UP1GameInstance::Shutdown()
 	FTSTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
 
 	Super::Shutdown();
+
+	DisconnectFromGameServer();
 }
 
 bool UP1GameInstance::Tick(float DeltaTime)
