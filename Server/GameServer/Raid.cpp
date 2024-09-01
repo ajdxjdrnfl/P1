@@ -81,6 +81,10 @@ bool Raid::HandleNextPhase()
 	if (_currentPhase == _phaseCount)
 	{
 		AddGameObject(boss);
+		Protocol::S_SPAWN spawnPkt;
+		spawnPkt.add_info()->CopyFrom(*boss->GetObjectInfo());
+
+		DoAsync(&Room::HandleSpawn, spawnPkt);
 	}
 
 	return HandlePhaseNumber(_currentPhase);
