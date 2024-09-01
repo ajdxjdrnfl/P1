@@ -361,7 +361,7 @@ void QuadTree::GetAroundPlayers(GameObjectRef object, Vector maxDistance, vector
 		{
 			if (GameObjectRef gameObject = v[i].lock())
 			{
-				if (PlayerRef player = static_pointer_cast<Player>(gameObject))
+				if (PlayerRef player = dynamic_pointer_cast<Player>(gameObject))
 				{
 					Collision* collision = static_cast<Collision*>(player->GetComponent(EComponentType::ECT_COLLISION));
 

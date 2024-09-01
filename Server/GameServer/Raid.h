@@ -26,6 +26,7 @@ private:
     uint64 _phaseCount = 3;
     
     vector<vector<weak_ptr<GameObject>>> _phaseRequirements;
+    BossRef boss;
 };
 
 extern RaidRef GRaid;

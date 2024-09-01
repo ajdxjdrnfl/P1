@@ -47,8 +47,8 @@ void Raid::Init()
 		}
 		else if (type == Protocol::CASTER_TYPE_BOSS)
 		{
-			BossRef boss = ObjectUtils::CreateBoss(GetRoomRef(), v[i].phaseNumber);
-			AddGameObject(boss);
+			boss = ObjectUtils::CreateBoss(GetRoomRef(), v[i].phaseNumber);
+		
 			boss->GetObjectInfo()->set_x(pos.x);
 			boss->GetObjectInfo()->set_y(pos.y);
 			boss->GetObjectInfo()->set_z(GetValidHeight(GetGridPos(pos)));
@@ -65,7 +65,6 @@ void Raid::Update(float deltaTime)
 	if (ProceedNextPhase())
 	{
 		HandleNextPhase();
-		_currentPhase += 1;
 	}
 
 	Super::Update(deltaTime);
@@ -74,10 +73,15 @@ void Raid::Update(float deltaTime)
 
 bool Raid::HandleNextPhase()
 {
-	if (_currentPhase > _phaseCount)
+	if (_currentPhase >= _phaseCount)
 		return false;
 
 	_currentPhase += 1;
+
+	if (_currentPhase == _phaseCount)
+	{
+		AddGameObject(boss);
+	}
 
 	return HandlePhaseNumber(_currentPhase);
 }
@@ -104,5 +108,6 @@ bool Raid::ProceedNextPhase()
 		if (gameObject != nullptr && gameObject->GetState() != Protocol::MOVE_STATE_DEAD)
 			return false;
 	}
+
 	return true;
 }

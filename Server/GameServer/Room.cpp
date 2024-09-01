@@ -546,6 +546,9 @@ void Room::BroadcastAOI(SendBufferRef sendBuffer, GameObjectRef gameObject, uint
 
 	for (auto& player : players)
 	{
+		if (player == nullptr)
+			continue;
+
 		if (player->GetObjectInfo()->object_id() == exceptId)
 			continue;
 
