@@ -34,6 +34,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool bNoEnemyMode;
 
+	Protocol::S_ENTER_GAME EnterGamePacket;
+
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -56,6 +58,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsMyCharacter(int32 ID);
 
+	void EnterGame(Protocol::S_ENTER_GAME& Pkt);
+
 	void SpawnActorByServer(Protocol::S_SPAWN& Pkt);
 	void DespawnActorByServer(Protocol::S_DESPAWN& Pkt);
 	void MoveByServer(Protocol::S_MOVE& Pkt);
@@ -74,8 +78,12 @@ public:
 
 	void PredictSkillPosition(Protocol::S_PREDICTSKILL& Pkt);
 
+	UFUNCTION(BlueprintCallable)
+	void LoadDataOnLevelOpened();
+
 	class AEnemyMob* SpawnMob(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AP1Character* SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
+	class AP1Character* SpawnMyCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class AEnemyBoss* SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc);
 	class ABossPillar* SpawnBossPillar(Protocol::ObjectInfo ObjInfo, FVector Loc);
 
@@ -83,6 +91,8 @@ public:
 	class AP1Creature* GetCreature(Protocol::S_MONTAGE& Pkt);
 	class AP1Creature* GetCreature(Protocol::S_ATTACK& Pkt, bool isCaster);
 	class AP1Creature* GetCreature(Protocol::S_DEAD& Pkt);
+
+	void InitMapOnLoadLevel();
 
 	UPROPERTY()
 	TMap<uint64, class AP1Character*> Characters;
@@ -121,6 +131,8 @@ public:
 
 	TMap<FName, Protocol::CasterType> ClassCasterMap;
 	TMap<Protocol::CasterType, UClass*> CasterClassMap;
+
+	TMap<Protocol::RoomType, FName> RoomMap;
 
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 

@@ -523,6 +523,7 @@ class C_ENTER_GAME final :
 
   enum : int {
     kCastertypeFieldNumber = 1,
+    kRoomtypeFieldNumber = 2,
   };
   // .Protocol.CasterType castertype = 1;
   void clear_castertype();
@@ -531,6 +532,15 @@ class C_ENTER_GAME final :
   private:
   ::Protocol::CasterType _internal_castertype() const;
   void _internal_set_castertype(::Protocol::CasterType value);
+  public:
+
+  // .Protocol.RoomType roomtype = 2;
+  void clear_roomtype();
+  ::Protocol::RoomType roomtype() const;
+  void set_roomtype(::Protocol::RoomType value);
+  private:
+  ::Protocol::RoomType _internal_roomtype() const;
+  void _internal_set_roomtype(::Protocol::RoomType value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.C_ENTER_GAME)
@@ -542,6 +552,7 @@ class C_ENTER_GAME final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     int castertype_;
+    int roomtype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -670,10 +681,29 @@ class S_ENTER_GAME final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kObjectsFieldNumber = 3,
     kInfoFieldNumber = 2,
     kSuccessFieldNumber = 1,
-    kRoomtypeFieldNumber = 3,
+    kRoomtypeFieldNumber = 4,
   };
+  // repeated .Protocol.ObjectInfo objects = 3;
+  int objects_size() const;
+  private:
+  int _internal_objects_size() const;
+  public:
+  void clear_objects();
+  ::Protocol::ObjectInfo* mutable_objects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_objects();
+  private:
+  const ::Protocol::ObjectInfo& _internal_objects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_objects();
+  public:
+  const ::Protocol::ObjectInfo& objects(int index) const;
+  ::Protocol::ObjectInfo* add_objects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      objects() const;
+
   // .Protocol.ObjectInfo info = 2;
   bool has_info() const;
   private:
@@ -701,7 +731,7 @@ class S_ENTER_GAME final :
   void _internal_set_success(bool value);
   public:
 
-  // .Protocol.RoomType roomtype = 3;
+  // .Protocol.RoomType roomtype = 4;
   void clear_roomtype();
   ::Protocol::RoomType roomtype() const;
   void set_roomtype(::Protocol::RoomType value);
@@ -718,6 +748,7 @@ class S_ENTER_GAME final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > objects_;
     ::Protocol::ObjectInfo* info_;
     bool success_;
     int roomtype_;
@@ -3618,6 +3649,26 @@ inline void C_ENTER_GAME::set_castertype(::Protocol::CasterType value) {
   // @@protoc_insertion_point(field_set:Protocol.C_ENTER_GAME.castertype)
 }
 
+// .Protocol.RoomType roomtype = 2;
+inline void C_ENTER_GAME::clear_roomtype() {
+  _impl_.roomtype_ = 0;
+}
+inline ::Protocol::RoomType C_ENTER_GAME::_internal_roomtype() const {
+  return static_cast< ::Protocol::RoomType >(_impl_.roomtype_);
+}
+inline ::Protocol::RoomType C_ENTER_GAME::roomtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ENTER_GAME.roomtype)
+  return _internal_roomtype();
+}
+inline void C_ENTER_GAME::_internal_set_roomtype(::Protocol::RoomType value) {
+  
+  _impl_.roomtype_ = value;
+}
+inline void C_ENTER_GAME::set_roomtype(::Protocol::RoomType value) {
+  _internal_set_roomtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ENTER_GAME.roomtype)
+}
+
 // -------------------------------------------------------------------
 
 // S_ENTER_GAME
@@ -3727,7 +3778,44 @@ inline void S_ENTER_GAME::set_allocated_info(::Protocol::ObjectInfo* info) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ENTER_GAME.info)
 }
 
-// .Protocol.RoomType roomtype = 3;
+// repeated .Protocol.ObjectInfo objects = 3;
+inline int S_ENTER_GAME::_internal_objects_size() const {
+  return _impl_.objects_.size();
+}
+inline int S_ENTER_GAME::objects_size() const {
+  return _internal_objects_size();
+}
+inline ::Protocol::ObjectInfo* S_ENTER_GAME::mutable_objects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_ENTER_GAME.objects)
+  return _impl_.objects_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+S_ENTER_GAME::mutable_objects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_ENTER_GAME.objects)
+  return &_impl_.objects_;
+}
+inline const ::Protocol::ObjectInfo& S_ENTER_GAME::_internal_objects(int index) const {
+  return _impl_.objects_.Get(index);
+}
+inline const ::Protocol::ObjectInfo& S_ENTER_GAME::objects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ENTER_GAME.objects)
+  return _internal_objects(index);
+}
+inline ::Protocol::ObjectInfo* S_ENTER_GAME::_internal_add_objects() {
+  return _impl_.objects_.Add();
+}
+inline ::Protocol::ObjectInfo* S_ENTER_GAME::add_objects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_objects();
+  // @@protoc_insertion_point(field_add:Protocol.S_ENTER_GAME.objects)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+S_ENTER_GAME::objects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_ENTER_GAME.objects)
+  return _impl_.objects_;
+}
+
+// .Protocol.RoomType roomtype = 4;
 inline void S_ENTER_GAME::clear_roomtype() {
   _impl_.roomtype_ = 0;
 }

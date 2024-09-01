@@ -159,6 +159,8 @@ void AP1Character::InitOnSpawn(Protocol::ObjectInfo ObjInfo)
 	WidgetComponent->InitOnSpawn(StatComponent);
 	StatComponent->InitOnSpawn(ObjInfo);
 	SkillComponent->InitOnSpawn();
+
+	ObjectInfo = &ObjInfo;
 }
 
 void AP1Character::UseSkill(uint16 SkillIndex)

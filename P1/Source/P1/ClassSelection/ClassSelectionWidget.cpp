@@ -4,6 +4,7 @@
 #include "ClassSelectionWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 void UClassSelectionWidget::NativeConstruct()
 {
@@ -22,6 +23,7 @@ void UClassSelectionWidget::OnSelectButtonClicked()
 	{
 		Protocol::C_ENTER_GAME Pkt;
 		Pkt.set_castertype(*ClassMap.Find(ClassIndex));
+		Pkt.set_roomtype(Protocol::RoomType::ROOM_TYPE_FIELD);
 
 		SEND_PACKET(Pkt);
 	}

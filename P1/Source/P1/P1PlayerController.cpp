@@ -52,6 +52,8 @@ void AP1PlayerController::Tick(float DeltaTime)
 	// MoveByServer(DeltaTime);
 
 	
+	if (GetCharacter() == nullptr) return;
+
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);

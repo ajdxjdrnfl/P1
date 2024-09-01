@@ -39,6 +39,12 @@ void UP1GameInstance::Init()
 		{ Protocol::CasterType::CASTER_TYPE_BOSS, EnemyBossClass },
 		{ Protocol::CasterType::CASTER_TYPE_ARCHER, ArcherClass },
 	};
+
+	RoomMap =
+	{
+		{ Protocol::RoomType::ROOM_TYPE_FIELD, FName("M_Field")},
+		{ Protocol::RoomType::ROOM_TYPE_DUNGEON, FName("Level_Sky_Temple_Complete")},
+	};
 		
 	InitSkillMap();
 
@@ -126,8 +132,8 @@ void UP1GameInstance::SetSkillInfo(const FSkillInfo& CurrentSkillInfo)
 
 void UP1GameInstance::ConnectToGameServer()
 {
-	MyCharacter = Cast<AP1Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	check(MyCharacter != nullptr);
+	//MyCharacter = Cast<AP1Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	//check(MyCharacter != nullptr);
 
 	ClientPacketHandler::Init();
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
@@ -194,6 +200,13 @@ void UP1GameInstance::SendPacket(SendBufferRef SendBuffer)
 bool UP1GameInstance::IsMyCharacter(int32 ID)
 {
 	return MyCharacter->ObjectInfo->object_id() == ID;
+}
+
+void UP1GameInstance::EnterGame(Protocol::S_ENTER_GAME& Pkt)
+{
+	UGameplayStatics::OpenLevel(GetWorld(), *RoomMap.Find(Pkt.roomtype()));
+
+	EnterGamePacket = Pkt;
 }
 
 void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
@@ -385,6 +398,36 @@ AP1Character* UP1GameInstance::SpawnCharacter(Protocol::ObjectInfo ObjInfo, FVec
 	return SpawnedActor;
 }
 
+AP1Character* UP1GameInstance::SpawnMyCharacter(Protocol::ObjectInfo ObjInfo, FVector Loc)
+{
+	UClass* ClassToSpawn = *CasterClassMap.Find(ObjInfo.castertype());
+	if (ClassToSpawn == nullptr)
+		return nullptr;
+
+	FRotator SpawnedRotation = FRotator();
+	FTransform SpawnedTransform;
+	SpawnedTransform.SetLocation(Loc);
+	SpawnedTransform.SetRotation(SpawnedRotation.Quaternion());
+
+	MyCharacter = Cast<AP1Character>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld, ClassToSpawn, SpawnedTransform));
+
+	
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(MyCharacter);
+	MyCharacter->EnableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	//MyCharacter->PossessedBy(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	UGameplayStatics::FinishSpawningActor(MyCharacter, SpawnedTransform);
+
+	MyCharacter->ObjectInfo->CopyFrom(ObjInfo);
+	MyCharacter->InitOnSpawn(ObjInfo);
+	MyCharacter->TargetInfo->set_x(ObjInfo.x());
+	MyCharacter->TargetInfo->set_y(ObjInfo.y());
+	MyCharacter->TargetInfo->set_z(ObjInfo.z());
+
+	return MyCharacter;
+}
+
 AEnemyBoss* UP1GameInstance::SpawnBoss(Protocol::ObjectInfo ObjInfo, FVector Loc)
 {
 	AEnemyBoss* SpawnedActor = Cast<AEnemyBoss>(GetWorld()->SpawnActor(EnemyBossClass, &Loc));
@@ -515,6 +558,31 @@ void UP1GameInstance::PredictSkillPosition(Protocol::S_PREDICTSKILL& Pkt)
 	UGameplayStatics::FinishSpawningActor(ASkillPredictor, SpawnedTransform);
 }
 
+void UP1GameInstance::LoadDataOnLevelOpened()
+{	
+	/* {
+		UClass* ClassToSpawn = *CasterClassMap.Find(EnterGamePacket.info().castertype());
+		if (ClassToSpawn == nullptr)
+			return;
+
+		FVector SpawnedLocation = FVector(EnterGamePacket.info().x(), EnterGamePacket.info().y(), EnterGamePacket.info().z());
+		FTransform SpawnedTransform;
+		SpawnedTransform.SetLocation(SpawnedLocation);
+
+		MyCharacter = Cast<AP1Character>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld, ClassToSpawn, SpawnedTransform));
+		if (MyCharacter == nullptr)
+			return;
+
+		MyCharacter->InitOnSpawn(EnterGamePacket.info());
+
+		UGameplayStatics::FinishSpawningActor(MyCharacter, SpawnedTransform);
+	}
+
+	Characters.Add(EnterGamePacket.info().object_id(), MyCharacter);
+	MyCharacter->SetActorLocation(FVector(EnterGamePacket.info().x(), EnterGamePacket.info().y(), EnterGamePacket.info().z()));*/
+	InitMapOnLoadLevel();
+}
+
 AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)
 {
 	switch (Pkt.info().castertype())
@@ -536,4 +604,65 @@ AP1Creature* UP1GameInstance::GetCreature(Protocol::S_DEAD& Pkt)
 	return nullptr;
 }
 
+void UP1GameInstance::InitMapOnLoadLevel()
+{
+	switch (EnterGamePacket.roomtype())
+	{
+	case Protocol::ROOM_TYPE_FIELD:
+		break;
+	case Protocol::ROOM_TYPE_DUNGEON:
+	{
+		UDungeonManagerSubsystem* DungeonManager = GetSubsystem<UDungeonManagerSubsystem>();
 
+		if (DungeonManager)
+			DungeonManager->Init();
+		break;
+	}
+	default:
+	{
+		UDungeonManagerSubsystem* DungeonManager = GetSubsystem<UDungeonManagerSubsystem>();
+
+		if (DungeonManager)
+			DungeonManager->Init();
+		break;
+	}
+		break;
+	}
+
+	Protocol::ObjectInfo info;
+	FVector Loc;
+	Loc = FVector(EnterGamePacket.info().x(), EnterGamePacket.info().y(), EnterGamePacket.info().z());
+
+	SpawnMyCharacter(EnterGamePacket.info(), Loc);
+
+	for (int32 i = 0; i < EnterGamePacket.objects_size(); i++)
+	{
+		if (Characters.Contains(EnterGamePacket.objects(i).object_id()) || IsMyCharacter(EnterGamePacket.objects(i).object_id()))
+			continue;
+
+		info = EnterGamePacket.objects(i);
+		Loc = FVector(info.x(), info.y(), info.z());
+
+		switch (info.castertype())
+		{
+		case Protocol::CASTER_TYPE_MOB:
+			if (bNoEnemyMode) break;
+			Enemies.Add({ info.object_id(), SpawnMob(EnterGamePacket.objects(i), Loc) });
+			break;
+		case Protocol::CASTER_TYPE_ARCHER:
+		case Protocol::CASTER_TYPE_WARRIOR:
+			Characters.Add({ info.object_id(), SpawnCharacter(EnterGamePacket.objects(i), Loc) });
+			break;
+		case Protocol::CASTER_TYPE_BOSS:
+			if (bNoEnemyMode) break;
+			Boss = SpawnBoss(EnterGamePacket.objects(i), Loc);
+			break;
+		case Protocol::CASTER_TYPE_STRUCTURE:
+			if (bNoEnemyMode) break;
+			BossPillars.Add({ info.object_id(), SpawnBossPillar(EnterGamePacket.objects(i), Loc) });
+			break;
+		default:
+			break;
+		}
+	}
+}
