@@ -161,7 +161,6 @@ void AP1PlayerController::OnSetDestinationTriggered()
 			Protocol::C_MOVE Pkt;
 			Protocol::ObjectInfo* ObjectInfo = Pkt.mutable_info();
 			Protocol::ObjectInfo* TargetInfo = Pkt.mutable_targetinfo();
-			// TODO: State
 
 			TargetInfo->CopyFrom(*OwnerCharacter->ObjectInfo);
 

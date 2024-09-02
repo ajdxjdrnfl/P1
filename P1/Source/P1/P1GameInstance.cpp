@@ -210,6 +210,18 @@ void UP1GameInstance::EnterGame(Protocol::S_ENTER_GAME& Pkt)
 	UGameplayStatics::OpenLevel(GetWorld(), *RoomMap.Find(Pkt.roomtype()));
 
 	EnterGamePacket = Pkt;
+
+	Protocol::ObjectInfo info;
+
+	for (int32 i = 0; i < Pkt.objects_size(); i++)
+	{
+		if (!Characters.Contains(Pkt.objects(i).object_id()))
+			continue;
+
+		info = Pkt.objects(i);
+		(*Characters.Find(info.object_id()))->Despawn();
+		Characters.Remove(info.object_id());
+	}
 }
 
 void UP1GameInstance::SpawnActorByServer(Protocol::S_SPAWN& Pkt)
@@ -258,9 +270,6 @@ void UP1GameInstance::DespawnActorByServer(Protocol::S_DESPAWN& Pkt)
 
 	for (int32 i = 0; i < Pkt.info_size(); i++)
 	{
-		if (Characters.Contains(Pkt.info(i).object_id()))
-			continue;
-
 		info = Pkt.info(i);
 
 		switch (info.castertype())

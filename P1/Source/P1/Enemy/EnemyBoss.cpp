@@ -9,6 +9,15 @@
 #include "Components/CapsuleComponent.h"
 #include "P1/P1Character.h"
 #include "P1/P1GameInstance.h"
+#include "Camera/CameraComponent.h"
+#include "P1/Widget/CinemaWidget.h"
+#include "P1/SubSystem/GameInstance/CinematicSubsystem.h"
+
+AEnemyBoss::AEnemyBoss()
+{
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(RootComponent);
+}
 
 void AEnemyBoss::BeginPlay()
 {
@@ -18,7 +27,7 @@ void AEnemyBoss::BeginPlay()
 
 	if (HealthBarWidgetClass)
 	{
-		UBossStatWidget* StatWidget = Cast<UBossStatWidget>(CreateWidget(GetWorld(), HealthBarWidgetClass));
+		StatWidget = Cast<UBossStatWidget>(CreateWidget(GetWorld(), HealthBarWidgetClass));
 		StatWidget->AddToViewport();
 		GetWidgetComponent()->SetStatWidget(StatWidget);
 	}
@@ -81,6 +90,29 @@ void AEnemyBoss::SetAttackMode(bool bAttackMode)
 	bIsAttackMode = bAttackMode;
 }
 
+void AEnemyBoss::Die()
+{
+	StatWidget->RemoveFromParent();
+	if (CinemaWidgetClass)
+	{
+		SetActorHiddenInGame(true);
+		CinemaWidget = Cast<UCinemaWidget>(CreateWidget(GetWorld(), CinemaWidgetClass));
+		if (CinemaWidget)
+		{
+			CinemaWidget->AddToViewport();
+			CinemaWidget->PlayCinemaStartAnimation();
+
+			if (UCinematicSubsystem* CinemaSubSystem = GetWorld()->GetGameInstance()->GetSubsystem<UCinematicSubsystem>())
+			{
+				if (DeathSequence)
+				{
+					CinemaSubSystem->StartCinema(DeathSequence, this);
+				}
+			}
+		}
+	}
+}
+
 void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 {
 	BossSkillStateIndex = pkt.section_num();
@@ -98,6 +130,15 @@ void AEnemyBoss::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
 	}
 
 	BossSkillState[pkt.id()] = pkt.section_num();
+}
+
+void AEnemyBoss::OnDeathSequenceEnd()
+{
+	if (CinemaWidget)
+	{
+		CinemaWidget->PlayCinemaEndAnimation();
+		Destroy();
+	}
 }
 
 void AEnemyBoss::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
