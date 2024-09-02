@@ -56,13 +56,10 @@ void USkillComponentBase::SetSkills()
 		{
 			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorQSkillInstance::StaticClass()));
 			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorWSkillInstance::StaticClass()));
 			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorESkillInstance::StaticClass()));
 			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorRSkillInstance::StaticClass()));
 			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 		}
@@ -82,13 +79,10 @@ void USkillComponentBase::SetSkills()
 		{
 			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossQSkillInstance::StaticClass()));
 			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
 			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
 			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-
 			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
 			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
 		}
@@ -107,6 +101,7 @@ void USkillComponentBase::SetSkills()
 
 	for (int i = 0; i < Skills.Num(); i++)
 	{
+		SkillInstances[i]->SetSkillInfo(Skills[i]);
 		SkillInstances[i]->SetSkillActorClass(Skills[i].SkillActorClass);
 		SkillInstances[i]->SetSkillAnim(Skills[i].AnimMontage);
 		SkillInstances[i]->Init(Cast<AP1Creature>(GetOwner()));
@@ -127,7 +122,7 @@ void USkillComponentBase::UseSkill(int32 SkillIndex)
 	if (CurrentSkillInfo.AnimMontage == nullptr) 
 		return;
 
-	SkillInstances[SkillIndex]->SetSkillInfo(Skills[SkillIndex]);
+	// SkillInstances[SkillIndex]->SetSkillInfo(Skills[SkillIndex]);
 	SkillInstances[SkillIndex]->UseSkill();
 }
 

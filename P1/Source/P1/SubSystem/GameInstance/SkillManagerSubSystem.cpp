@@ -10,6 +10,17 @@ void USkillManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
+	CastingSkillGaugeRate = 0;
+
+	bCanMove = true;
+	bCanUseSkill = true;
+	bCanMoveByAnimMontage = true;
+
+	CurrentSkillTargeting = nullptr;
+
+	SkillCanUseMapByCooldownTime.Empty();
+	SkillCanUseMapByCasting.Empty();
+
 	for (int i = 0; i < 4; i++)
 	{
 		SkillCanUseMapByCooldownTime.Add(i, true);
@@ -53,4 +64,10 @@ void USkillManagerSubSystem::CheckSkillTargeting()
 		CurrentSkillTargeting->Destroy();
 		CurrentSkillTargeting = nullptr;
 	}
+}
+
+void USkillManagerSubSystem::SetCanMove(bool _bCanMove)
+{
+	bCanMove = bCanMove;
+	bCanUseSkill = bCanMove;
 }

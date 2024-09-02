@@ -8,14 +8,13 @@ public class P1 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Networking", "Sockets", "InputCore", "Niagara", "AIModule","EnhancedInput" });
-
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Networking", "Sockets", "InputCore", "Niagara", "AIModule","EnhancedInput", "MovieScene", "LevelSequence" } );
         PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
 
         PrivateIncludePaths.AddRange(new string[]
         {
             "P1/Network/",
             "P1/",
-        });
+        } );
     }
 }

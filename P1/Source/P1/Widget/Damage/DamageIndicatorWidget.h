@@ -24,12 +24,6 @@ private:
 	UPROPERTY(meta = (BindWidgetAnim), meta = (AllowPrivateAccess = "true"), Transient)
 	class UWidgetAnimation* DamageIndicatorAnimation;
 
-	/*UPROPERTY(EditAnywhere, Category = Editable)
-	FSlateColor EnemyDamageColor;
-
-	UPROPERTY(EditAnywhere, Category = Editable)
-	FSlateColor CharacterDamageColor;*/
-
 	FWidgetAnimationDynamicEvent OnDamageIndicatorAnimationEndDelegate;
 
 	UPROPERTY()

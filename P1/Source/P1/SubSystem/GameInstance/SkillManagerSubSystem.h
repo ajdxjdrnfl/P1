@@ -36,4 +36,5 @@ public:
 	bool CanUseSkill(int32 SkillIndex);
 	bool CanMove();
 	void CheckSkillTargeting();
+	void SetCanMove(bool _bCanMove);
 };

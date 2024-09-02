@@ -16,6 +16,8 @@ void UClassSelectionWidget::NativeConstruct()
 
 	ClassMap.Add(0, Protocol::CasterType::CASTER_TYPE_WARRIOR);
 	ClassMap.Add(1, Protocol::CasterType::CASTER_TYPE_ARCHER);
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
 }
 
 void UClassSelectionWidget::OnSelectButtonClicked()
