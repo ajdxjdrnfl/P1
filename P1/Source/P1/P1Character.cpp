@@ -354,3 +354,11 @@ void AP1Character::SetHealthByDamageByDot(float HealthToSet)
 	}
 }
 
+void AP1Character::SetWidgetVisibility(bool bIsVisible)
+{
+	if (WidgetComponent)
+	{
+		WidgetComponent->SetWidgetVisibility(bIsVisible);
+	}
+}
+

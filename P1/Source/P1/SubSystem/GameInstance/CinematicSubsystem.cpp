@@ -35,6 +35,10 @@ void UCinematicSubsystem::SetCharactersVisibility(bool bIsVisible)
 	{
 		for (auto Info : GameInstance->Characters)
 		{
+			if (GameInstance->IsMyCharacter(Info.Value->ObjectInfo->object_id()))
+			{
+				Info.Value->SetWidgetVisibility(bIsVisible);
+			}
 			if (Info.Value)
 			{
 				Info.Value->SetActorHiddenInGame(!bIsVisible);

@@ -127,3 +127,15 @@ void UCharacterWidgetComponent::SpawnDamageIndicator(float Damage)
 		DamageIndicator->ActivateDamageIndicator(Damage, false);
 	}
 }
+
+void UCharacterWidgetComponent::SetWidgetVisibility(bool bIsVisible)
+{
+	if (bIsVisible)
+	{
+		CharacterOverlayWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		CharacterOverlayWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}

@@ -69,6 +69,7 @@ public:
 	void StopMoving();
 	void Interact();
 	virtual void SetHealthByDamageByDot(float HealthToSet) override;
+	void SetWidgetVisibility(bool bIsVisible);
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }
