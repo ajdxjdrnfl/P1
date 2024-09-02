@@ -303,14 +303,14 @@ void Boss::SelectSkill()
 		{
 			int32 num = Utils::GetRandom(0, 1);
 
-			if (num == 0 && _rushCoolDown <= 15.f)
+			if (num == 0 && _rushCoolDown >= 15.f)
 			{
 				StartRush();
 				SetState(Protocol::MOVE_STATE_SKILL, true);
 				_rushCoolDown = 0.f;
 				return;
 			}
-			else if (num == 1 && _dotCoolDown <= 15.f)
+			else if (num == 1 && _dotCoolDown >= 15.f)
 			{
 				StartDot();
 				SetState(Protocol::MOVE_STATE_SKILL, true);
@@ -329,16 +329,18 @@ void Boss::SelectSkill()
 		{
 			int32 num =	Utils::GetRandom(0, 1);
 
-			if (num == 0 && _rushCoolDown <= 15.f)
+			if (num == 0 && _rushCoolDown >= 15.f)
 			{
 				StartRush();
 				SetState(Protocol::MOVE_STATE_SKILL, true);
+				_rushCoolDown = 0.f;
 				return;
 			}
-			else if (num == 1 && _dotCoolDown <= 15.f)
+			else if (num == 1 && _dotCoolDown >= 15.f)
 			{
 				StartDot();
 				SetState(Protocol::MOVE_STATE_SKILL, true);
+				_dotCoolDown = 0.f;
 				return;
 			}
 			else

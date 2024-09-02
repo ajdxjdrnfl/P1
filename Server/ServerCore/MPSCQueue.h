@@ -26,8 +26,8 @@ public:
 
 	bool Pop(T& output)
 	{
-		shared_ptr<Node> tail = _tail.load(::memory_order_releaxed);
-		shared_ptr<Node> next = tail->next.load(::memory_order_acquire);
+		shared_ptr<Node> tail = _tail.load(::memory_order_relaxed);
+		shared_ptr<Node> next = tail->next.load(::memory_order_acquire).lock();
 
 		if (next == nullptr)
 			return false;
@@ -36,6 +36,12 @@ public:
 		_tail.store(next, ::memory_order_release);
 		
 		return true;
+	}
+
+	void Clear()
+	{
+		T dummy;
+		while (Pop(dummy));
 	}
 
 private:

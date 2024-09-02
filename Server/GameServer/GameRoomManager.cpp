@@ -83,7 +83,12 @@ void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_LOGIN pkt)
 void GameRoomManager::ExitGame(GameSessionRef session)
 {
 	WRITE_LOCK;
-	RoomRef room = session->_player.load()->GetRoomRef();
+	PlayerRef player = session->_player.load();
+
+	if (player == nullptr)
+		return;
+
+	RoomRef room = player->GetRoomRef();
 
 	if (room)
 		room->DoAsync(&Room::HandleLeaveGame, session);
