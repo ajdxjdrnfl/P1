@@ -67,6 +67,19 @@ void Raid::Update(float deltaTime)
 		HandleNextPhase();
 	}
 
+	if (_currentPhase == _phaseCount && _bossEmergency)
+	{
+		if (_bossExist == false)
+		{
+			AddGameObject(boss);
+			Protocol::S_SPAWN spawnPkt;
+			spawnPkt.add_info()->CopyFrom(*boss->GetObjectInfo());
+
+			DoAsync(&Room::HandleSpawn, spawnPkt);
+			_bossExist = true;
+		}
+		
+	}
 	Super::Update(deltaTime);
 	
 }

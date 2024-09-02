@@ -18,13 +18,16 @@ public:
 
     uint64 GetCurrentPhase() { return _currentPhase; }
 
+    void SetBossEmergency(bool emergency) { _bossEmergency = emergency; }
 private:
     bool ProceedNextPhase();
 
 private:
     uint64 _currentPhase = 1;
     uint64 _phaseCount = 3;
-    
+       
+    bool _bossEmergency = false;
+    bool _bossExist = false;
     vector<vector<weak_ptr<GameObject>>> _phaseRequirements;
     BossRef boss;
 };

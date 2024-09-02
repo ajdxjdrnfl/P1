@@ -170,5 +170,7 @@ bool Handle_C_PHASE(PacketSessionRef& session, Protocol::C_PHASE& pkt)
 		return false;
 
 	raid->DoAsync(&Raid::HandlePhaseNumber, raid->GetCurrentPhase());
+	raid->SetBossEmergency(true);
+
 	return true;
 }
