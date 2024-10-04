@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "P1/Data/SkillData.h"
 #include "P1/P1.h"
+#include "P1/Interface/SkillCommand.h"
 #include "SkillComponentBase.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -36,7 +37,7 @@ private:
 	class UChargingSkillManager* ChargingSkillManager;*/
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	TArray<class ASkillInstanceBase*> SkillInstances;
+	TArray<TScriptInterface<ISkillCommand>> SkillCommands;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Editable, meta = (AllowPrivateAccess = true))
 	class UAnimMontage* M_KnockBack_L;
@@ -83,7 +84,7 @@ public:
 
 	FORCEINLINE ESkillType GetSkillState() const { return SkillState; }
 	FORCEINLINE void SetSkillState(ESkillType SkillStateToSet) { SkillState = SkillStateToSet; }
-	FORCEINLINE TArray<class ASkillInstanceBase*> GetSkillInstances() { return SkillInstances; }
+	FORCEINLINE TArray<TScriptInterface<ISkillCommand>> GetSkillInstances() { return SkillCommands; }
 	FORCEINLINE UAnimMontage* GetKockBackLMontage() const { return M_KnockBack_L; }
 	FORCEINLINE UAnimMontage* GetKockBackRMontage() const { return M_KnockBack_R; }
 	FORCEINLINE UAnimMontage* GetStunMontage() const { return M_Stun; }

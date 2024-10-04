@@ -15,27 +15,33 @@ ASkillInstanceBase::ASkillInstanceBase()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
 }
 
-void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
-{
-	OwnerCreature = _OwnerCreature;
-
-	check(OwnerCreature != nullptr);
-
-
-	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
-
-	if (AnimInstance == nullptr)
-		return;
-
-	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
-}
-
 void ASkillInstanceBase::UseSkill()
 {
 	if (USkillManagerSubSystem* SubSystem = OwnerCreature->GetGameInstance()->GetSubsystem<USkillManagerSubSystem>())
 	{
 		SubSystem->CheckSkillTargeting();
 	}
+}
+
+void ASkillInstanceBase::InitOnSpawn(AP1Creature* _OwnerCreature, const FSkillInfo& SkillInfoToSet)
+{
+	SkillInfo = SkillInfoToSet;
+	SkillActorClass = SkillInfoToSet.SkillActorClass;
+	M_Skill = SkillInfoToSet.AnimMontage;
+
+	Init(_OwnerCreature);
+}
+
+void ASkillInstanceBase::Init(AP1Creature* _OwnerCreature)
+{
+	OwnerCreature = _OwnerCreature;
+	check(OwnerCreature != nullptr);
+	UAnimInstance* AnimInstance = OwnerCreature->GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr)
+		return;
+
+	AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &ASkillInstanceBase::OnMontageEnded);
 }
 
 void ASkillInstanceBase::ActivateSkill(ASkillActorBase* SkillActor)
