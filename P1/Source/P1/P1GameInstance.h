@@ -137,6 +137,9 @@ public:
 
 	TMap<Protocol::RoomType, FName> RoomMap;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UItemSubsystem> ItemSubsystemClass;
+
 	FORCEINLINE class AP1Character* GetMyCharacter() const { return MyCharacter; }
 
 };

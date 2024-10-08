@@ -13,6 +13,7 @@
 #include "Component/SkillComponent/CharacterSkillComponent.h"
 #include "Component/StatComponent/CharacterStatComponent.h"
 #include "Component/WidgetComponent/CharacterWidgetComponent.h"
+#include "Component/Inventory/InventoryComponent.h"
 #include "Widget/Stat/CharacterStatWidget.h"
 #include "Widget/CharacterOverlayWidget.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -22,6 +23,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
 #include "P1/Skill/SkillActorBase.h"
+#include "P1/Item/ItemBase.h"
 
 AP1Character::AP1Character()
 {
@@ -57,6 +59,8 @@ AP1Character::AP1Character()
 	StatComponent = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("CharacterStatComponent"));
 
 	WidgetComponent = CreateDefaultSubobject<UCharacterWidgetComponent>(TEXT("CharacterSWidgetComponent"));
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 void AP1Character::BeginPlay()
@@ -335,8 +339,15 @@ void AP1Character::StopMoving()
 
 void AP1Character::Interact()
 {
-	if (InteractInterfaceActor == nullptr) return;
-	InteractInterfaceActor->Interact();
+	if (InteractInterfaceActor)
+	{
+		InteractInterfaceActor->Interact();
+	}
+	
+	if (OverlappedItems.Num() > 0)
+	{
+		OverlappedItems[0]->Interact(InventoryComponent);
+	}
 }
 
 void AP1Character::SetHealthByDamageByDot(float HealthToSet)
@@ -359,6 +370,14 @@ void AP1Character::SetWidgetVisibility(bool bIsVisible)
 	if (WidgetComponent)
 	{
 		WidgetComponent->SetWidgetVisibility(bIsVisible);
+	}
+}
+
+void AP1Character::OnInventoryClicked()
+{
+	if (WidgetComponent)
+	{
+		WidgetComponent->OnInventoryClicked();
 	}
 }
 

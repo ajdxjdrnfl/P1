@@ -9,7 +9,7 @@
 #include "P1Character.generated.h"
 
 UCLASS(Blueprintable)
-class AP1Character : public AP1Creature, public IInteractInterface
+class AP1Character : public AP1Creature
 {
 	GENERATED_BODY()
 
@@ -39,6 +39,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCharacterWidgetComponent* WidgetComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UInventoryComponent* InventoryComponent;
+
 	float TargetCameraBoomLength;
 
 	bool bDoOnceDodge;
@@ -48,6 +51,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Editable)
 	bool bShowMoveState;
+
+	UPROPERTY()
+	TArray<class AItemBase*> OverlappedItems;
 
 public:
 	void InitOnSpawn(Protocol::ObjectInfo ObjInfo);
@@ -70,6 +76,7 @@ public:
 	void Interact();
 	virtual void SetHealthByDamageByDot(float HealthToSet) override;
 	void SetWidgetVisibility(bool bIsVisible);
+	void OnInventoryClicked();
 
 	FORCEINLINE class UCharacterStatComponent* GetStatComponent() const { return StatComponent; }
 	FORCEINLINE class UCharacterSkillComponent* GetSkillComponent() const { return SkillComponent; }
@@ -77,5 +84,7 @@ public:
 	FORCEINLINE void SetOnceDodge(bool bOnce) { bDoOnceDodge = bOnce; }
 	FORCEINLINE void SetInteractInterfaceActor(TScriptInterface<IInteractInterface> ActorToSet) { InteractInterfaceActor = ActorToSet; }
 	FORCEINLINE TScriptInterface<IInteractInterface> GetInteractInterfaceActor() const { return InteractInterfaceActor; }
+	FORCEINLINE TArray<class AItemBase*>& GetOverlappedItems() { return OverlappedItems; }
+	FORCEINLINE class UInventoryComponent* GetInventoryComponent() { return InventoryComponent; }
 };
 
