@@ -7,14 +7,17 @@
     <Filter Include="Network">
       <UniqueIdentifier>{efb0ca8b-3927-4225-a72f-8ea9348391e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Thread">
-      <UniqueIdentifier>{571af80e-f0ff-408d-a276-89c16b505784}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Job">
       <UniqueIdentifier>{ce7733e9-9735-4bfa-95d0-e10dc877e436}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{13f8da5f-8028-43f7-908f-ab7928fa6c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{571af80e-f0ff-408d-a276-89c16b505784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{c6e63862-dfa0-4b13-9559-0c4add749a6e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +93,21 @@
     <ClInclude Include="MPSCQueue.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryPool.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MPAllocator.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DBConnection.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="DBConnectionPool.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="DBStatement.h">
+      <Filter>Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePch.cpp">
@@ -157,6 +175,21 @@
     </ClCompile>
     <ClCompile Include="MPSCQueue.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryPool.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MPAllocator.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="DBConnection.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="DBConnectionPool.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="DBStatement.cpp">
+      <Filter>Database</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

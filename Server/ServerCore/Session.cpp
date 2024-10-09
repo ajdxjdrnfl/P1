@@ -211,13 +211,11 @@ void Session::ProcessConnect()
 
 	_connected.store(true);
 
-	// 세션 등록
 	GetService()->AddSession(GetSessionRef());
 
-	// 컨텐츠 코드에서 재정의
 	OnConnected();
 
-	// 수신 등록
+	// 자동으로 Recv 등록
 	RegisterRecv();
 }
 
@@ -291,8 +289,11 @@ void Session::HandleError(int32 errorCode)
 		Disconnect(L"HandleError");
 		break;
 	default:
-		// TODO : Log
 		cout << "Handle Error : " << errorCode << endl;
+		char msgBuf[1024];
+		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), msgBuf, 1024, NULL);
+		std::cout << msgBuf << std::endl;
 		break;
 	}
 }

@@ -8,10 +8,13 @@
 #include "SendBuffer.h"
 #include "GlobalQueue.h"
 #include "JobTimer.h"
+#include "MemoryPool.h"
+#include "DBConnectionPool.h"
 
 ThreadManager* GThreadManager = nullptr;
 GlobalQueue* GGlobalQueue = nullptr;
 JobTimer* GJobTimer = nullptr;
+Memory* GMemory = nullptr;
 
 class CoreGlobal
 {
@@ -21,6 +24,7 @@ public:
 		GThreadManager = new ThreadManager();
 		GGlobalQueue = new GlobalQueue();
 		GJobTimer = new JobTimer();
+		GMemory = new Memory();
 		SocketUtils::Init();
 	}
 
@@ -29,6 +33,7 @@ public:
 		delete GThreadManager;
 		delete GGlobalQueue;
 		delete GJobTimer;
+		delete GMemory;
 		SocketUtils::Clear();
 	}
 } GCoreGlobal;

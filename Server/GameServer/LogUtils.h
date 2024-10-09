@@ -11,7 +11,7 @@ public:
 		string metainfo = pkt.DebugString();
 		
 		string timestamp = GTickManager.GetCurrentTimestamp();
-		cout << timestamp << "\"" << funcName << "\"" << "packetsize : " << packetSize << endl << metainfo << endl;
+		//cout << timestamp << "\"" << funcName << "\"" << "packetsize : " << packetSize << endl << metainfo << endl;
 
 	}
 

@@ -20,6 +20,7 @@ Room::Room(ERoomType roomType, uint64 roomId) : _roomType(roomType), _roomId(roo
 {
 	_tree = new QuadTree();
 	_updatedTree = new QuadTree();
+	_mapName = "Test";
 }
 
 Room::~Room()
@@ -191,6 +192,8 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+
+		//BroadcastAOI(sendBuffer, player);
 		Broadcast(sendBuffer);
 	}
 	else return false;
@@ -216,7 +219,7 @@ bool Room::HandleSkillPkt(Protocol::C_SKILL pkt)
 
 	float height = GetValidHeight(GetGridPos({pkt.caster().x(), pkt.caster().y()})) + 60.f;
 
-	return CreateSkillActor(caster, pkt.skillid(), { pkt.x(), pkt.y() }, height, pkt.yaw(), damage);
+	return CreateSkillActor(caster, pkt.skillid(), Vector{ pkt.x(), pkt.y() }, height, pkt.yaw(), damage);
 }
 
 bool Room::HandleAttack(Protocol::C_ATTACK pkt)
@@ -488,7 +491,7 @@ vector<GameObjectRef> Room::GetGameObjects()
 	return results;
 }
 
-void Room::SetObjectToRandomPos(GameObjectRef player)
+void Room::SetObjectToRandomPos(GameObjectRef gameObject)
 {
 
 	if (_map)
@@ -496,27 +499,30 @@ void Room::SetObjectToRandomPos(GameObjectRef player)
 		Vector startPos = _map->GetStartPoint();
 		VectorInt gridPos = GetGridPos(startPos);
 
-		VectorInt d[9] = { {-2,0}, {-2,-2}, {-2,2}, {0,0}, {0,2},{0,-2}, {2,0}, {2,-2}, {2,2} };
-		int direction = 3;
+		int32 dx = Utils::GetRandom(-100, 100);
+		int32 dy = Utils::GetRandom(-100, 100);
 
-		VectorInt newPos = gridPos + d[direction];
+		VectorInt newPos = gridPos + VectorInt{dx, dy};
 
-		Collision* collision = static_cast<Collision*>(player->GetComponent(EComponentType::ECT_COLLISION));
+		Collision* collision = static_cast<Collision*>(gameObject->GetComponent(EComponentType::ECT_COLLISION));
 		collision->SetPos(GetPosition(newPos));
+		
 		while (!IsWalkableAtPos(newPos) || CheckCollisionInQuadTree(collision) || CheckCollisionInMap(collision))
 		{
-			direction = (direction + 1) % 9;
-			newPos = gridPos + d[direction];
+			dx = Utils::GetRandom(-100, 100);
+			dy = Utils::GetRandom(-100, 100);
+
+			newPos = gridPos + VectorInt{dx, dy};
 
 			collision->SetPos(GetPosition(newPos));
 		}
 
 		Vector pos = GetPosition(newPos);
-		float height = GetValidHeight(newPos) + 60.f;
-		player->GetObjectInfo()->set_x(pos.x);
-		player->GetObjectInfo()->set_y(pos.y);
-		player->GetObjectInfo()->set_z(height);
-		player->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
+		float height = GetValidHeight(newPos) + 160.f;
+		gameObject->GetObjectInfo()->set_x(pos.x);
+		gameObject->GetObjectInfo()->set_y(pos.y);
+		gameObject->GetObjectInfo()->set_z(height);
+		gameObject->GetObjectInfo()->set_yaw(Utils::GetRandom(0.f, 100.f));
 		
 	}
 }
