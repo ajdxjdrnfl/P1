@@ -10,3 +10,6 @@
 #define LOG(pkt) LogUtils::LogPacket(__FUNCTION__, pkt);
 
 #define PI 3.141592
+
+#define DB_CONNECTION_NUM 10
+#define THREAD_NUM 10

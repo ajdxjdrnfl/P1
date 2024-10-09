@@ -10,6 +10,8 @@
 #pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
 #endif
 
+#pragma comment(lib, "mysql\\libmariadb.lib")
+
 #include "CorePch.h"
 
 #include <filesystem>
@@ -39,3 +41,5 @@ USING_SHARED_PTR(SkillActor);
 USING_SHARED_PTR(Boss);
 USING_SHARED_PTR(Structure);
 USING_SHARED_PTR(Npc);
+
+extern class DBConnectionPool* GDatabase;

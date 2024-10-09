@@ -3,9 +3,7 @@
 #include "Session.h"
 #include "Listener.h"
 
-/*-------------
-	Service
---------------*/
+// 
 
 Service::Service(ServiceType type, NetAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount)
 	: _type(type), _netAddress(address), _iocpCore(core), _sessionFactory(factory), _maxSessionCount(maxSessionCount)
@@ -37,7 +35,14 @@ SessionRef Service::CreateSession()
 	session->SetService(shared_from_this());
 
 	if (_iocpCore->Register(session) == false)
+	{
+		int32 errorCode = ::WSAGetLastError();
+		char msgBuf[1024];
+		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), msgBuf, 1024, NULL);
+		std::cout << msgBuf << std::endl;
 		return nullptr;
+	}
 
 	return session;
 }
@@ -56,9 +61,7 @@ void Service::ReleaseSession(SessionRef session)
 	_sessionCount--;
 }
 
-/*-----------------
-	ClientService
-------------------*/
+// 
 
 ClientService::ClientService(NetAddress targetAddress, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount)
 	: Service(ServiceType::Client, targetAddress, core, factory, maxSessionCount)

@@ -28,12 +28,14 @@ void GameRoomManager::Update(float deltaTime)
 		room->DoAsync(&Room::Update, deltaTime);
 	}*/
 
+	GRoom->Update(deltaTime);
 	GRaid->Update(deltaTime);
 	GField->Update(deltaTime);
 }
 
 void GameRoomManager::Init()
 {
+	GRoom->Init();
 	GRaid->Init();
 	GField->Init();
 }
@@ -56,11 +58,13 @@ void GameRoomManager::EnterGame(GameSessionRef session, Protocol::C_ENTER_GAME p
 	switch (pkt.roomtype())
 	{
 	case Protocol::ROOM_TYPE_FIELD:
-		room = GField;
+		//room = GField;
+		room = GRoom;
 		break;
 
 	case Protocol::ROOM_TYPE_DUNGEON:
-		room = GRaid;
+		//room = GRaid;
+		room = GRoom;
 		break;
 	}
 

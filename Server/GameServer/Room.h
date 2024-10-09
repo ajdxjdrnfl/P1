@@ -50,7 +50,7 @@ private:
 	void			SpawnSkill(SkillActorRef skillActor);
 	void			LeaveGame(PlayerRef player);
 
-	void			SetObjectToRandomPos(GameObjectRef player);
+	virtual void	SetObjectToRandomPos(GameObjectRef gameObject);
 
 public:
 	void			Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);

@@ -13,7 +13,6 @@ public:
     
 public:
     bool HandleNextPhase();
-
     bool HandlePhaseNumber(uint64 currentPhase);
 
     uint64 GetCurrentPhase() { return _currentPhase; }
@@ -21,6 +20,8 @@ public:
     void SetBossEmergency(bool emergency) { _bossEmergency = emergency; }
 private:
     bool ProceedNextPhase();
+    virtual void SetObjectToRandomPos(GameObjectRef gameObject) override;
+
 
 private:
     uint64 _currentPhase = 1;

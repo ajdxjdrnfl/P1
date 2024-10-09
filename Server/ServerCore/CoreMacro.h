@@ -33,3 +33,6 @@
 		__analysis_assume(expr);	\
 	}								\
 }
+
+#define c_alloc(size) GMemory->Allocate(size)
+#define c_delocate(ptr) GMemory->Delocate(ptr)

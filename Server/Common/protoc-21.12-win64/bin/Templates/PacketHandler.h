@@ -3,6 +3,8 @@
 
 #if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
 #include "P1.h"
+#else
+#include "MPAllocator.h"
 #endif
 
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
@@ -65,7 +67,7 @@ private:
 #if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
 		SendBufferRef sendBuffer = MakeShared<SendBuffer>(packetSize);
 #else
-		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
+		SendBufferRef sendBuffer = Make_Shared<SendBuffer>(packetSize);
 #endif
 
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());

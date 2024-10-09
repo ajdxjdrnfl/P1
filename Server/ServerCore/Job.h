@@ -1,10 +1,6 @@
 #pragma once
 #include <functional>
 
-/*---------
-	Job
-----------*/
-
 using CallbackType = std::function<void()>;
 
 class Job
@@ -14,8 +10,8 @@ public:
 	{
 	}
 
-	template<typename T, typename Ret, typename... Args>
-	Job(shared_ptr<T> owner, Ret(T::* memFunc)(Args...), Args&&... args)
+	template<typename T, typename Ret, typename... Params, typename... Args>
+	Job(shared_ptr<T> owner, Ret(T::* memFunc)(Params...), Args&&... args)
 	{
 		_callback = [owner, memFunc, args...]()
 		{

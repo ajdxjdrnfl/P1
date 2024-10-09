@@ -45,7 +45,7 @@ void Boss::Init()
 {
 	Collision* collision = new Collision();
 	ColliderCircle* collider = new ColliderCircle();
-	collider->_radius = 38.f;
+	collider->_radius = 60.f;
 	collision->SetCollider(collider);
 
 	AddComponent(collision);
@@ -785,7 +785,7 @@ void Boss::DotSkill(GameObjectRef target, float deltaTime)
 					}
 					{
 						float height = room->GetValidHeight(room->GetGridPos(targetPos)) + 60.f;
-						room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, { targetPos.x, targetPos.y }, height, GetObjectInfo()->yaw(), 3.f);
+						room->DoAsync(&Room::CreateSkillActor, shared_from_this(), _skillId, Vector{ targetPos.x, targetPos.y }, height, GetObjectInfo()->yaw(), 3.f);
 					}
 				}
 			}
