@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "P1/Data/SkillData.h"
+#include "P1/Interface/SkillCommand.h"
 #include "SkillInstanceBase.generated.h"
 
 UCLASS()
-class P1_API ASkillInstanceBase : public AActor
+class P1_API ASkillInstanceBase : public AActor, public ISkillCommand
 {
 	GENERATED_BODY()
 
@@ -32,17 +33,18 @@ protected:
 	FSkillInfo SkillInfo;
 
 public:
-	void Init(class AP1Creature* _OwnerCreature);
-
-	// UseSkill -> SpawnSkill -> (UseSkillAfterTargeting) -> ActivateSkill
-
 	// Call after click key
 	UFUNCTION(BlueprintCallable)
-	virtual void UseSkill();
+	virtual void UseSkill() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void InitOnSpawn(class AP1Creature* _OwnerCreature, const FSkillInfo& SkillInfoToSet) override;
+
+	void Init(class AP1Creature* _OwnerCreature);
 
 	// Call when spawn skill
 	UFUNCTION(BlueprintCallable)
-	virtual void SpawnSkill() {};
+	virtual void SpawnSkill() override {};
 
 	// If using targeting skill actor, call after click targeting skill
 	UFUNCTION(BlueprintCallable)
@@ -74,9 +76,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void SetSkillInstanceOfSkill(class ASkillActorBase* SkillActor);
-
-	FORCEINLINE void SetSkillInfo(FSkillInfo SkillInfoToSet) { SkillInfo = SkillInfoToSet; }
-	FORCEINLINE void SetSkillAnim(class UAnimMontage* M_Montage) { M_Skill = M_Montage; }
-	FORCEINLINE void SetSkillActorClass(TSubclassOf<class ASkillActorBase> _SkillActorClass) { SkillActorClass = _SkillActorClass; }
 
 };

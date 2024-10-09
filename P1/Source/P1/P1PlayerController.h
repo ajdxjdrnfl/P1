@@ -67,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryAction;
+
 	FOnRMBClickedDelegate OnRMBClickedDelegate;
 
 protected:
@@ -100,6 +103,7 @@ protected:
 	void OnStopMovingTriggered();
 	void OnFOVTriggered(const FInputActionValue& Value);
 	void OnInteractTriggered();
+	void OnInventoryTriggered();
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))

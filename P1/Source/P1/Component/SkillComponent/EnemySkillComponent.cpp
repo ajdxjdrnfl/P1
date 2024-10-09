@@ -27,7 +27,7 @@ void UEnemySkillComponent::UsePillarSkill(FVector2D Location)
 {
 	if (GetSkillInstances().Num() <= 1 || GetSkillInstances()[1] == nullptr) return;
 
-	GetSkillInstances()[1]->SpawnSkillAtLocation(Location);
+	//GetSkillInstances()[1]->SpawnSkillAtLocation(Location);
 }
 
 void UEnemySkillComponent::OnMontageEnded(UAnimMontage* AnimMontage, bool bInterrupte)

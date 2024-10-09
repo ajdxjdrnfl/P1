@@ -102,6 +102,8 @@ void AP1PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(StopMovingAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnStopMovingTriggered);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnInteractTriggered);
+
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Triggered, this, &AP1PlayerController::OnInventoryTriggered);
 	}
 	else
 	{
@@ -283,6 +285,11 @@ void AP1PlayerController::OnFOVTriggered(const FInputActionValue& Value)
 void AP1PlayerController::OnInteractTriggered()
 {
 	OwnerCharacter->Interact();
+}
+
+void AP1PlayerController::OnInventoryTriggered()
+{
+	OwnerCharacter->OnInventoryClicked();
 }
 
 void AP1PlayerController::SendMovePacketToServer()

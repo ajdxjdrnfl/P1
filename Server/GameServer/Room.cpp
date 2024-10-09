@@ -192,6 +192,7 @@ bool Room::HandleMove(Protocol::C_MOVE pkt)
 		}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+
 		//BroadcastAOI(sendBuffer, player);
 		Broadcast(sendBuffer);
 	}

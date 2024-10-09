@@ -10,6 +10,7 @@
 #include "P1/Widget/CastingSkillWidget.h"
 #include "P1/DamageIndicator/DamageIndicatorActor.h"
 #include "P1/Widget/InteractWidget.h"
+#include "P1/Widget/Inventory/InventoryWidget.h"
 
 void UCharacterWidgetComponent::BeginPlay()
 {
@@ -125,5 +126,37 @@ void UCharacterWidgetComponent::SpawnDamageIndicator(float Damage)
 	if (DamageIndicator)
 	{
 		DamageIndicator->ActivateDamageIndicator(Damage, false);
+	}
+}
+
+void UCharacterWidgetComponent::SetWidgetVisibility(bool bIsVisible)
+{
+	if (bIsVisible)
+	{
+		CharacterOverlayWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		CharacterOverlayWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UCharacterWidgetComponent::OnInventoryClicked()
+{
+	if (InventoryWidgetClass)
+	{
+		if (InventoryWidget)
+		{
+			InventoryWidget->RemoveFromParent();
+			InventoryWidget = nullptr;
+		}
+		else
+		{
+			InventoryWidget = Cast<UInventoryWidget>(CreateWidget(GetWorld(), InventoryWidgetClass));
+			if (InventoryWidget)
+			{
+				InventoryWidget->AddToViewport();
+			}
+		}
 	}
 }

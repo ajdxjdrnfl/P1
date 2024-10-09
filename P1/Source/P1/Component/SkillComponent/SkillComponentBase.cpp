@@ -12,6 +12,7 @@
 #include "P1/Skill/Archer/ArcherSkillInstance.h"
 #include "P1/P1GameMode.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "P1/Interface/SkillCommand.h"
 
 USkillComponentBase::USkillComponentBase()
 {
@@ -51,45 +52,114 @@ void USkillComponentBase::SetSkills()
 	AP1Creature* P1Creature = Cast<AP1Creature>(GetOwner());
 	if (P1Creature)
 	{
-		SkillInstances.SetNum(4);
+		//SkillCommands.SetNum(4);
 		if (P1Creature->GetClassType() == FName("Warrior"))
 		{
-			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorQSkillInstance::StaticClass()));
-			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorWSkillInstance::StaticClass()));
-			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorESkillInstance::StaticClass()));
-			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AWarriorRSkillInstance::StaticClass()));
-			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AWarriorQSkillInstance* QSkill = Cast<AWarriorQSkillInstance>(P1Creature->GetWorld()->SpawnActor(AWarriorQSkillInstance::StaticClass()));
+			QSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AWarriorWSkillInstance* WSkill = Cast<AWarriorWSkillInstance>(P1Creature->GetWorld()->SpawnActor(AWarriorWSkillInstance::StaticClass()));
+			WSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AWarriorESkillInstance* ESkill = Cast<AWarriorESkillInstance>(P1Creature->GetWorld()->SpawnActor(AWarriorESkillInstance::StaticClass()));
+			ESkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AWarriorRSkillInstance* RSkill = Cast<AWarriorRSkillInstance>(P1Creature->GetWorld()->SpawnActor(AWarriorRSkillInstance::StaticClass()));
+			RSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			TScriptInterface<ISkillCommand> QInterfaceInstance;
+			QInterfaceInstance.SetObject(QSkill);
+			QInterfaceInstance.SetInterface(Cast<ISkillCommand>(QSkill));
+
+			TScriptInterface<ISkillCommand> WInterfaceInstance;
+			WInterfaceInstance.SetObject(WSkill);
+			WInterfaceInstance.SetInterface(Cast<ISkillCommand>(WSkill));
+
+			TScriptInterface<ISkillCommand> EInterfaceInstance;
+			EInterfaceInstance.SetObject(ESkill);
+			EInterfaceInstance.SetInterface(Cast<ISkillCommand>(ESkill));
+
+			TScriptInterface<ISkillCommand> RInterfaceInstance;
+			RInterfaceInstance.SetObject(RSkill);
+			RInterfaceInstance.SetInterface(Cast<ISkillCommand>(RSkill));
+			
+			SkillCommands.Add(QInterfaceInstance);
+			SkillCommands.Add(WInterfaceInstance);
+			SkillCommands.Add(EInterfaceInstance);
+			SkillCommands.Add(RInterfaceInstance);
 		}
 		else if (P1Creature->GetClassType() == FName("Archer"))
 		{
-			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherQSkillInstance::StaticClass()));
-			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherWSkillInstance::StaticClass()));
-			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherESkillInstance::StaticClass()));
-			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AArcherRSkillInstance::StaticClass()));
-			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AArcherQSkillInstance* QSkill = Cast<AArcherQSkillInstance>(P1Creature->GetWorld()->SpawnActor(AArcherQSkillInstance::StaticClass()));
+			QSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AArcherWSkillInstance* WSkill = Cast<AArcherWSkillInstance>(P1Creature->GetWorld()->SpawnActor(AArcherWSkillInstance::StaticClass()));
+			WSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AArcherESkillInstance* ESkill = Cast<AArcherESkillInstance>(P1Creature->GetWorld()->SpawnActor(AArcherESkillInstance::StaticClass()));
+			ESkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AArcherRSkillInstance* RSkill = Cast<AArcherRSkillInstance>(P1Creature->GetWorld()->SpawnActor(AArcherRSkillInstance::StaticClass()));
+			RSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			TScriptInterface<ISkillCommand> QInterfaceInstance;
+			QInterfaceInstance.SetObject(QSkill);
+			QInterfaceInstance.SetInterface(Cast<ISkillCommand>(QSkill));
+
+			TScriptInterface<ISkillCommand> WInterfaceInstance;
+			WInterfaceInstance.SetObject(WSkill);
+			WInterfaceInstance.SetInterface(Cast<ISkillCommand>(WSkill));
+
+			TScriptInterface<ISkillCommand> EInterfaceInstance;
+			EInterfaceInstance.SetObject(ESkill);
+			EInterfaceInstance.SetInterface(Cast<ISkillCommand>(ESkill));
+
+			TScriptInterface<ISkillCommand> RInterfaceInstance;
+			RInterfaceInstance.SetObject(RSkill);
+			RInterfaceInstance.SetInterface(Cast<ISkillCommand>(RSkill));
+
+			SkillCommands.Add(QInterfaceInstance);
+			SkillCommands.Add(WInterfaceInstance);
+			SkillCommands.Add(EInterfaceInstance);
+			SkillCommands.Add(RInterfaceInstance);
 
 		}
 		else if (P1Creature->GetClassType() == FName("Boss"))
 		{
-			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossQSkillInstance::StaticClass()));
-			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[1] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
-			SkillInstances[1]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[2] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
-			SkillInstances[2]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
-			SkillInstances[3] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
-			SkillInstances[3]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			ABossQSkillInstance* QSkill = Cast<ABossQSkillInstance>(P1Creature->GetWorld()->SpawnActor(ABossQSkillInstance::StaticClass()));
+			QSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			ABossWSkillInstance* WSkill = Cast<ABossWSkillInstance>(P1Creature->GetWorld()->SpawnActor(ABossWSkillInstance::StaticClass()));
+			WSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			ABossESkillInstance* ESkill = Cast<ABossESkillInstance>(P1Creature->GetWorld()->SpawnActor(ABossESkillInstance::StaticClass()));
+			ESkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			ABossRSkillInstance* RSkill = Cast<ABossRSkillInstance>(P1Creature->GetWorld()->SpawnActor(ABossRSkillInstance::StaticClass()));
+			RSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			TScriptInterface<ISkillCommand> QInterfaceInstance;
+			QInterfaceInstance.SetObject(QSkill);
+			QInterfaceInstance.SetInterface(Cast<ISkillCommand>(QSkill));
+
+			TScriptInterface<ISkillCommand> WInterfaceInstance;
+			WInterfaceInstance.SetObject(WSkill);
+			WInterfaceInstance.SetInterface(Cast<ISkillCommand>(WSkill));
+
+			TScriptInterface<ISkillCommand> EInterfaceInstance;
+			EInterfaceInstance.SetObject(ESkill);
+			EInterfaceInstance.SetInterface(Cast<ISkillCommand>(ESkill));
+
+			TScriptInterface<ISkillCommand> RInterfaceInstance;
+			RInterfaceInstance.SetObject(RSkill);
+			RInterfaceInstance.SetInterface(Cast<ISkillCommand>(RSkill));
+
+			SkillCommands.Add(QInterfaceInstance);
+			SkillCommands.Add(WInterfaceInstance);
+			SkillCommands.Add(EInterfaceInstance);
+			SkillCommands.Add(RInterfaceInstance);
 		}
 		else if (P1Creature->GetClassType() == FName("Mob"))
 		{
-			SkillInstances[0] = Cast<ASkillInstanceBase>(P1Creature->GetWorld()->SpawnActor(AMobQSkillInstance::StaticClass()));
-			SkillInstances[0]->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+			AMobQSkillInstance* QSkill = Cast<AMobQSkillInstance>(P1Creature->GetWorld()->SpawnActor(AMobQSkillInstance::StaticClass()));
+			QSkill->AttachToActor(P1Creature, FAttachmentTransformRules::KeepWorldTransform);
+
+			TScriptInterface<ISkillCommand> QInterfaceInstance;
+			QInterfaceInstance.SetObject(QSkill);
+			QInterfaceInstance.SetInterface(Cast<ISkillCommand>(QSkill));
+
+			SkillCommands.Add(QInterfaceInstance);
 		}
 	}
 
@@ -101,10 +171,7 @@ void USkillComponentBase::SetSkills()
 
 	for (int i = 0; i < Skills.Num(); i++)
 	{
-		SkillInstances[i]->SetSkillInfo(Skills[i]);
-		SkillInstances[i]->SetSkillActorClass(Skills[i].SkillActorClass);
-		SkillInstances[i]->SetSkillAnim(Skills[i].AnimMontage);
-		SkillInstances[i]->Init(Cast<AP1Creature>(GetOwner()));
+		SkillCommands[i]->InitOnSpawn(Cast<AP1Creature>(GetOwner()), Skills[i]);
 	}
 }
 
@@ -115,7 +182,7 @@ FSkillInfo USkillComponentBase::GetSkillInfoByIndex(int32 SkillIndex)
 
 void USkillComponentBase::UseSkill(int32 SkillIndex)
 {
-	if (Skills.Num() <= SkillIndex || SkillInstances.Num() <= SkillIndex) return;
+	if (Skills.Num() <= SkillIndex || SkillCommands.Num() <= SkillIndex) return;
 
 	CurrentSkillInfo = Skills[SkillIndex];
 
@@ -123,7 +190,7 @@ void USkillComponentBase::UseSkill(int32 SkillIndex)
 		return;
 
 	// SkillInstances[SkillIndex]->SetSkillInfo(Skills[SkillIndex]);
-	SkillInstances[SkillIndex]->UseSkill();
+	SkillCommands[SkillIndex]->UseSkill();
 }
 
 void USkillComponentBase::PlayAnimMontageByServer(Protocol::S_MONTAGE& pkt)
@@ -176,8 +243,8 @@ void USkillComponentBase::PlayAnimMontageByDurationNotPacket(UAnimInstance* Anim
 
 void USkillComponentBase::SetSpawnedSkill(int32 SkillID, ASkillActorBase* SkillActor)
 {
-	if (SkillInstances[SkillID] == nullptr) return;
-	SkillInstances[SkillID]->ActivateSkill(SkillActor);
+	if (SkillCommands[SkillID] == nullptr) return;
+	SkillCommands[SkillID]->ActivateSkill(SkillActor);
 }
 
 void USkillComponentBase::SetCC(ASkillActorBase* SkillActor)

@@ -43,6 +43,12 @@ private:
 	UPROPERTY()
 	class AP1Character* OwnerCharacter;
 
+	UPROPERTY(EditAnywhere, Category = Editable, meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> InventoryWidgetClass;
+
+	UPROPERTY()
+	class UInventoryWidget* InventoryWidget;
+
 	void OpenOverlayWidget();
 
 public:
@@ -60,6 +66,10 @@ public:
 	float GetGaugeRate();
 	void SetSkillButton();
 	virtual void SpawnDamageIndicator(float Damage) override;
+
+	void SetWidgetVisibility(bool bIsVisible);
+
+	void OnInventoryClicked();
 	
 	FORCEINLINE class UCharacterOverlayWidget* GetCharacterOverlayWidget() const { return CharacterOverlayWidget; }
 	FORCEINLINE FSkillInfo GetSkillInfoBySkillIndex(int32 SkillIndex) const { return Skills[SkillIndex]; }
