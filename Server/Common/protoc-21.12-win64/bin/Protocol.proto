@@ -139,3 +139,13 @@ message S_PREDICTSKILL
 	float z = 5;
 	float yaw = 6;
 }
+
+message C_GETITEM
+{
+	ObjectInfo info = 1;
+}
+
+message C_DROPITEM
+{
+	ObjectInfo info = 1;
+}

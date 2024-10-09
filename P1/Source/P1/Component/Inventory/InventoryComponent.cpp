@@ -3,6 +3,7 @@
 
 #include "Component/Inventory/InventoryComponent.h"
 #include "P1/Item/ItemBase.h"
+#include "P1/P1.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -73,6 +74,8 @@ bool UInventoryComponent::AddToInventory(FItemData ItemData)
 	{
 		if (Slot.Quantity == 0 || (ItemData.ItemID == Slot.ItemID && Slot.Quantity < 1000))
 		{
+			//Protocol::C_GETITEM Pkt;
+			//SEND_PACKET(Pkt);
 			Assign(Slot, ItemData);
 
 			OnInventoryUpdateDelegate.Broadcast();
@@ -83,17 +86,18 @@ bool UInventoryComponent::AddToInventory(FItemData ItemData)
 	return false;
 }
 
-TTuple<bool, FItemData> UInventoryComponent::PopFromInventory(int32 Index, int32 Quantity)
+void UInventoryComponent::PopFromInventory(int32 Index, int32 Quantity)
 {
 	if (!Slots.IsValidIndex(Index) || Slots[Index].Quantity == 0)
-		return MakeTuple(false, FItemData());
+		return;
+
+	//Protocol::C_DROPITEM Pkt;
+	//SEND_PACKET(Pkt);
 
 	FItemData Tmp;
 	Slots[Index].Quantity -= Quantity;
 	Assign(Tmp, Slots[Index]);
 
 	OnInventoryUpdateDelegate.Broadcast();
-
-	return MakeTuple(true, Tmp);
 }
 
