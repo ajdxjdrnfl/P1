@@ -108,8 +108,10 @@ Server/.vs/
 Server/Intermediate/*
 Server/Binaries/*
 !Server/Server.sln
+!Server/GameServer/libmariadb.dll
 !Server/Libraries/Libs/Protobuf/Debug/*
 !Server/Libraries/Libs/Protobuf/Release/*
+!Server/Libraries/Libs/mysql/*
 !Server/Tools/PacketGenerator/GenPackets.exe
 !Server/Common/protoc-21.12-win64/bin/GenPackets.exe
 !Server/Common/protoc-21.12-win64/bin/protoc.exe
