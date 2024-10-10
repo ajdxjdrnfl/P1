@@ -174,3 +174,13 @@ bool Handle_C_PHASE(PacketSessionRef& session, Protocol::C_PHASE& pkt)
 
 	return true;
 }
+
+bool Handle_C_GETITEM(PacketSessionRef& session, Protocol::C_GETITEM& pkt)
+{
+	return false;
+}
+
+bool Handle_C_DROPITEM(PacketSessionRef& session, Protocol::C_DROPITEM& pkt)
+{
+	return false;
+}

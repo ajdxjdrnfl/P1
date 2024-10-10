@@ -33,7 +33,7 @@ public:
 	FOnInventoryUpdateDelegate OnInventoryUpdateDelegate;
 	bool SwitchSlot(int32 Index1, int32 Index2);
 	bool AddToInventory(FItemData ItemData);
-	TTuple<bool, FItemData> PopFromInventory(int32 Index, int32 Quantity);
+	void PopFromInventory(int32 Index, int32 Quantity);
 	
 	FORCEINLINE TArray<FInventorySlotData> GetSlots() { return Slots; }
 

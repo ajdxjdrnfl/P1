@@ -1,5 +1,16 @@
 #pragma once
 #include "GameObject.h"
+
+// @Yang
+struct FSlotData
+{
+public:
+    int32 index;
+    int32 quantity;
+    const char* itemID;
+
+};
+
 class Player :
     public GameObject
 {
@@ -23,6 +34,11 @@ public:
     void AddTargetPath(vector<VectorInt>& path);
     bool PopTargetPath();
 
+    // @Yang
+    void AddToInventory(FSlotData _itemData);
+    void SwitchSlot(int32 _index1, int32 _index2);
+    void RemoveFromInventory(int32 _index);
+
 protected:
     virtual void TickIdle(float deltaTime) override;
     virtual void TickJump(float deltaTime) override;
@@ -40,5 +56,8 @@ protected:
     Vector _targetPos;
 
     float _jumpSpeed = 300.f;
+
+    // @Yang
+    std::vector<FSlotData> _inventory;
 };
 

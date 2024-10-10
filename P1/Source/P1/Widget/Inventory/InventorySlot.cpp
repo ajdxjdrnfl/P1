@@ -43,13 +43,14 @@ void UInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPo
 		if (DragView)
 		{
 			if (ItemData.ItemID == "" || ItemData.Quantity == 0) return;
+
 			DragView->ItemData = ItemData;
 			UDDO_Inventory* DDO = Cast<UDDO_Inventory>(UWidgetBlueprintLibrary::CreateDragDropOperation(UDDO_Inventory::StaticClass()));
 			if (DDO)
 			{
 				DDO->Index = Index;
 				DDO->ItemData = ItemData;
-
+				DDO->DefaultDragVisual = DragView;
 				OutOperation = DDO;
 			}
 		}
@@ -93,8 +94,11 @@ void UInventorySlot::UpdateSlot()
 	if (ItemData.ItemID == "" || ItemData.Quantity == 0)
 	{
 		Thumbnail->SetBrushFromTexture(nullptr);
+		Thumbnail->SetVisibility(ESlateVisibility::Hidden);
+		QuantityText->SetText(FText::FromString(FString()));
 		return;
 	}
+	Thumbnail->SetVisibility(ESlateVisibility::Visible);
 	FString ContextString = "";
 	FItemTableData* ItemTableData = Subsystem->ItemDataTable->FindRow<FItemTableData>(FName(ItemData.ItemID), ContextString);
 	if (ItemTableData)

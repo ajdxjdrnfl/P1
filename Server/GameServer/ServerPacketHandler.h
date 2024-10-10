@@ -32,6 +32,8 @@ enum : uint16
 	PKT_S_PHASE = 1017,
 	PKT_S_DAMAGE = 1018,
 	PKT_S_PREDICTSKILL = 1019,
+	PKT_C_GETITEM = 1020,
+	PKT_C_DROPITEM = 1021,
 };
 
 // Custom Handlers
@@ -44,6 +46,8 @@ bool Handle_C_SKILL(PacketSessionRef& session, Protocol::C_SKILL& pkt);
 bool Handle_C_ATTACK(PacketSessionRef& session, Protocol::C_ATTACK& pkt);
 bool Handle_C_MONTAGE(PacketSessionRef& session, Protocol::C_MONTAGE& pkt);
 bool Handle_C_PHASE(PacketSessionRef& session, Protocol::C_PHASE& pkt);
+bool Handle_C_GETITEM(PacketSessionRef& session, Protocol::C_GETITEM& pkt);
+bool Handle_C_DROPITEM(PacketSessionRef& session, Protocol::C_DROPITEM& pkt);
 
 class ServerPacketHandler
 {
@@ -60,6 +64,8 @@ public:
 		GPacketHandler[PKT_C_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ATTACK>(Handle_C_ATTACK, session, buffer, len); };
 		GPacketHandler[PKT_C_MONTAGE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MONTAGE>(Handle_C_MONTAGE, session, buffer, len); };
 		GPacketHandler[PKT_C_PHASE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_PHASE>(Handle_C_PHASE, session, buffer, len); };
+		GPacketHandler[PKT_C_GETITEM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_GETITEM>(Handle_C_GETITEM, session, buffer, len); };
+		GPacketHandler[PKT_C_DROPITEM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_DROPITEM>(Handle_C_DROPITEM, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)

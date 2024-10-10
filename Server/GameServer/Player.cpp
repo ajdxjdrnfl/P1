@@ -36,6 +36,9 @@ void Player::Init()
 
 	AddComponent(collision);
 	Super::Init();
+
+	for (int i = 0; i < 20; i++)
+		_inventory.push_back(FSlotData());
 }
 
 void Player::Update(float deltaTime)
@@ -139,7 +142,6 @@ bool Player::PopTargetPath()
 		_targetPos = room->GetPosition(gridPos);
 }
 
-
 void Player::TickIdle(float deltaTime)
 {
 	Super::TickIdle(deltaTime);
@@ -202,4 +204,37 @@ void Player::TickStun(float deltaTime)
 void Player::TickDead(float deltaTime)
 {
 	Super::TickDead(deltaTime);
+}
+
+void Player::AddToInventory(FSlotData _itemData)
+{
+	for (FSlotData& data : _inventory)
+	{
+		if (data.quantity == 0 || (_itemData.itemID == data.itemID && data.quantity < 1000))
+		{
+			data.itemID = _itemData.itemID;
+			data.quantity += _itemData.quantity;
+
+			if (data.quantity <= 999)
+				break;
+
+			int32 rest = data.quantity - 999;
+			data.quantity = 999;
+			_itemData.quantity = rest;
+		}
+	}
+}
+
+void Player::SwitchSlot(int32 _index1, int32 _index2)
+{
+	if (_inventory.size() <= _index1 || _inventory.size() <= _index2) return;
+
+	swap(_inventory[_index1], _inventory[_index2]);
+}
+
+void Player::RemoveFromInventory(int32 _index)
+{
+	if (_inventory.size() <= _index || _inventory[_index].quantity == 0) return;
+
+	_inventory[_index] = FSlotData();
 }
